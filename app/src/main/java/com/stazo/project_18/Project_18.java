@@ -9,5 +9,5 @@ import com.firebase.client.Firebase;
  */
 public class Project_18 extends Application {
     private static final String fb = "https://stazo-project-18.firebaseio.com/";
-    private Firebase getFB() { return new Firebase(fb);}
+    public Firebase getFB() { return new Firebase(fb);}
 }

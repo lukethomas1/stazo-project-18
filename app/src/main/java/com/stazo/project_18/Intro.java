@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Date;
+
 public class Intro extends AppCompatActivity {
 
     @Override
@@ -26,6 +28,8 @@ public class Intro extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        Event e = new Event("name", "description", "creator_id", 0, new Date(2016, 12, 25, 12, 10));
+        e.pushToFirebase(((Project_18) getApplication()).getFB());
     }
 
     @Override
