@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 /**
+<<<<<<< HEAD
  * Created by ericzhang on 4/25/16.
  */
 public class User {
@@ -45,4 +46,9 @@ public class User {
         userRef.setValue(this); // set the value for the user_id child to this user
     }
 
+=======
+ * Created by isaacwang on 4/25/16.
+ */
+public class User {
+>>>>>>> ab554a33b5e47021fbb1141471e18390fb9ff141
 }
