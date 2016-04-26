@@ -17,12 +17,20 @@ public class User {
     public User() {
     }
 
-    //Setters and getters
     public User(String user_id, String name) {
         this.user_id = user_id;
         this.name = name;
     }
 
+    /**
+     * Pushes the user's info onto Firebase
+     */
+    private void pushToFirebase(Firebase ref) {
+        Firebase userRef = ref.child("Users").child(user_id);
+        userRef.setValue(this); // set the value for the user_id child to this user
+    }
+
+    //Getters and setters
     public String getID() {
         return this.user_id;
     }
@@ -37,13 +45,5 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Pushes the user's info onto Firebase
-     */
-    private void pushToFirebase(Firebase ref) {
-        Firebase userRef = ref.child("Users").child(user_id);
-        userRef.setValue(this); // set the value for the user_id child to this user
     }
 }

@@ -9,13 +9,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.Date;
+import com.firebase.client.Firebase;
 
 public class Intro extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this); // random firebase shit
         setContentView(R.layout.activity_intro);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -28,8 +29,18 @@ public class Intro extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        Event e = new Event("name", "description", "creator_id", 0, new Date(2016, 12, 25, 12, 10));
+        Event e = new Event("name", "description", "creator_id", 0, 12345);
         e.pushToFirebase(((Project_18) getApplication()).getFB());
+
+        Event q = new Event(((Project_18) getApplication()).getFB(), "yoo");
+
+        while (true) {
+            if (q.isConstructed()) {
+                System.out.println(q.getTime());
+                break;
+            }
+        }
+        System.out.println(q.getTime());
     }
 
     @Override
