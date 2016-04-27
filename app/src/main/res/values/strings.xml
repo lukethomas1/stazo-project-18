@@ -15,4 +15,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_map">MapAct</string>
+    <string name="title_activity_event_info">EventInfoAct</string>
+    <string name="title_activity_login">LoginAct</string>
 </resources>

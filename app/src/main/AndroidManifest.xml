@@ -27,6 +27,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateEvent" />
+        <activity
+            android:name=".MapAct"
+            android:label="@string/title_activity_map"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventInfoAct"
+            android:label="@string/title_activity_event_info"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LoginAct"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
