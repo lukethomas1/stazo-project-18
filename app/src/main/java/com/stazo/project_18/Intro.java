@@ -29,18 +29,10 @@ public class Intro extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        Firebase.setAndroidContext(this);
         Event e = new Event("name", "description", "creator_id", 0, 12345);
         e.pushToFirebase(((Project_18) getApplication()).getFB());
 
-        Event q = new Event(((Project_18) getApplication()).getFB(), "yoo");
-
-        while (true) {
-            if (q.isConstructed()) {
-                System.out.println(q.getTime());
-                break;
-            }
-        }
-        System.out.println(q.getTime());
     }
 
     @Override

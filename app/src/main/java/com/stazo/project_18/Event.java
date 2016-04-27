@@ -21,7 +21,6 @@ public class Event {
     private int type;
     private int popularity = 0;
     private long time;
-    private boolean isConstructed = false; // has the event been constructed?
 
     // default constructor
     public Event(){}
@@ -34,7 +33,6 @@ public class Event {
         this.creator_id = creator_id;
         this.type = type;
         this.time = time;
-        this.isConstructed = true;
     }
 
     /**
@@ -43,37 +41,6 @@ public class Event {
      */
     public void pushToFirebase(Firebase fb) {
         fb.child("Events").child(event_id).setValue(this);
-    }
-
-    /**
-     * Constructor for grabbing an already existing event on Firebase
-     * Event myEvent = newEvent(fb, String event_id);
-     */
-    public Event(Firebase fb, String event_id) {
-
-        // One-time listener for pulling information
-        fb.child("Events").child(event_id).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        HashMap<String, Object> event = dataSnapshot.getValue(
-                                new GenericTypeIndicator<HashMap<String, Object>>() {
-                                });
-                        name = (String) event.get("name");
-                        description = (String) event.get("description");
-                        creator_id = (String) event.get("creator_id");
-                        type = ((Integer) event.get("type")).intValue();
-                        time = ((Integer) event.get("time")).longValue();
-                        isConstructed = true;
-                        System.out.println(time);
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
-
-
-                });
     }
 
     //Getters and setters
@@ -105,10 +72,6 @@ public class Event {
         this.time = time;
     }
 
-    public void setIsConstructed(boolean isConstructed) {
-        this.isConstructed = isConstructed;
-    }
-
     public String getName() {
         return name;
     }
@@ -137,7 +100,4 @@ public class Event {
         return time;
     }
 
-    public boolean isConstructed() {
-        return isConstructed;
-    }
 }
