@@ -34,13 +34,6 @@ public class Intro extends AppCompatActivity {
         e.pushToFirebase(((Project_18) getApplication()).getFB());
 
         Event q = new Event(((Project_18) getApplication()).getFB(), "yoo");
-
-        while (true) {
-            if (q.isConstructed()) {
-                System.out.println(q.getTime());
-                break;
-            }
-        }
         System.out.println(q.getTime());
     }
 

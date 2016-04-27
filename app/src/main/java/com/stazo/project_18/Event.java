@@ -21,7 +21,6 @@ public class Event {
     private int type;
     private int popularity = 0;
     private long time;
-    private boolean isConstructed = false; // has the event been constructed?
 
     // default constructor
     public Event(){}
@@ -34,7 +33,6 @@ public class Event {
         this.creator_id = creator_id;
         this.type = type;
         this.time = time;
-        this.isConstructed = true;
     }
 
     /**
@@ -64,7 +62,6 @@ public class Event {
                         creator_id = (String) event.get("creator_id");
                         type = ((Integer) event.get("type")).intValue();
                         time = ((Integer) event.get("time")).longValue();
-                        isConstructed = true;
                         System.out.println(time);
                     }
 
@@ -105,10 +102,6 @@ public class Event {
         this.time = time;
     }
 
-    public void setIsConstructed(boolean isConstructed) {
-        this.isConstructed = isConstructed;
-    }
-
     public String getName() {
         return name;
     }
@@ -137,7 +130,4 @@ public class Event {
         return time;
     }
 
-    public boolean isConstructed() {
-        return isConstructed;
-    }
 }
