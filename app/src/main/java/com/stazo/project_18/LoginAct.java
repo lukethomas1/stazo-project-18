@@ -9,6 +9,9 @@ import android.view.View;
 
 public class LoginAct extends AppCompatActivity {
 
+    private String user_name;
+    private String user_id;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,5 +28,7 @@ public class LoginAct extends AppCompatActivity {
             }
         });
     }
+
+
 
 }

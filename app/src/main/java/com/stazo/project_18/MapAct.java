@@ -33,9 +33,10 @@ public class MapAct extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
     }
 
-    // Display all the events
+    // Display all the events, should probably be called in onCreate
     private void displayAllEvents(Firebase fb) {
 
         // Listener for pulling the events
@@ -70,6 +71,8 @@ public class MapAct extends AppCompatActivity {
     }
 
     // Ansel and Matt TODO Should add marker for event
-    private void displayEvent(Event e) {}
+    private void displayEvent(Event e) {
+        // Add marker for single event
+    }
 
 }

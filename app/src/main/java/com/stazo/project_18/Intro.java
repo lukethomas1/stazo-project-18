@@ -33,8 +33,6 @@ public class Intro extends AppCompatActivity {
         Event e = new Event("name", "description", "creator_id", 0, 12345);
         e.pushToFirebase(((Project_18) getApplication()).getFB());
 
-        Event q = new Event(((Project_18) getApplication()).getFB(), "yoo");
-        System.out.println(q.getTime());
     }
 
     @Override
