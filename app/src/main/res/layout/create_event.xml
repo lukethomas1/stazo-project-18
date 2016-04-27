@@ -30,7 +30,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Event Name"
                 android:id="@+id/EventName"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:singleLine="true"/>
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
