@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.stazo.project_18.CreateEvent">
+    tools:context=".CreateEventAct">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -36,15 +36,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Event Description"
+                android:gravity="start"
                 android:id="@+id/EventDesc"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:minLines="4"
+                android:maxLines="8"
+                android:scrollbars="vertical"/>
 
-            <AutoCompleteTextView
+            <Spinner
+                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Event Type"
                 android:id="@+id/EventType"
-                android:layout_gravity="center_horizontal"/>
+                android:entries="@array/event_types" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -53,7 +57,7 @@
 
                 <AutoCompleteTextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="0.5"
                     android:hint="Start Time"
                     android:id="@+id/StartTime"
@@ -61,7 +65,7 @@
 
                 <AutoCompleteTextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="0.5"
                     android:hint="End Time"
                     android:id="@+id/EndTime"
@@ -74,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:text="Create Event"
                 android:textAllCaps="false"
-                android:id="@+id/button"
+                android:id="@+id/CreateEvent"
                 android:singleLine="false"/>
         </LinearLayout>
     </ScrollView>
