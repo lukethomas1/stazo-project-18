@@ -8,9 +8,6 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
-import java.lang.reflect.Type;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -20,34 +17,23 @@ public class Event {
     private String name;
     private String description;
     private String creator_id;
-    private String event_id;
+    private String event_id = "yoo";
     private int type;
     private int popularity = 0;
-    private Date date;
+    private long time;
     private boolean isConstructed = false; // has the event been constructed?
 
     // default constructor
-    public Event(){ this.isConstructed = true; }
+    public Event(){}
 
     // constructor with Date
     public Event(String name, String description, String creator_id,
-                 int type, Date date) {
+                 int type, long time) {
         this.name = name;
         this.description = description;
         this.creator_id = creator_id;
         this.type = type;
-        this.date = date;
-        this.isConstructed = true;
-    }
-
-    // constructor with Date broken up
-    public Event(String name, String description, String creator_id, int type,
-                 int year, int month, int day, int hour, int minute) {
-        this.name = name;
-        this.description = description;
-        this.creator_id = creator_id;
-        this.type = type;
-        this.date = new Date(year, month, day, hour, minute);
+        this.time = time;
         this.isConstructed = true;
     }
 
@@ -72,35 +58,86 @@ public class Event {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         HashMap<String, Object> event = dataSnapshot.getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
-                        });
-                        HashMap<String, Object> dateMap = (HashMap<String, Object>) event.get("date");
+                                });
                         name = (String) event.get("name");
                         description = (String) event.get("description");
                         creator_id = (String) event.get("creator_id");
                         type = ((Integer) event.get("type")).intValue();
-                        date = new Date(
-                                ((Integer) dateMap.get("year")).intValue(),
-                                ((Integer) dateMap.get("month")).intValue(),
-                                ((Integer) dateMap.get("day")).intValue(),
-                                ((Integer) dateMap.get("hour")).intValue(),
-                                ((Integer) dateMap.get("minute")).intValue()
-                        );
+                        time = ((Integer) event.get("time")).longValue();
                         isConstructed = true;
+                        System.out.println(time);
                     }
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
-                });
 
-        // Wait until the event isConstructed
-        while (!isConstructed){
-            try {
-                Thread.sleep(1000);                 //1000 milliseconds is one second.
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
+
+                });
     }
 
+    //Getters and setters
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCreator_id(String creator_id) {
+        this.creator_id = creator_id;
+    }
+
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setPopularity(int popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public void setIsConstructed(boolean isConstructed) {
+        this.isConstructed = isConstructed;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCreator_id() {
+        return creator_id;
+    }
+
+    public String getEvent_id() {
+        return event_id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public int getPopularity() {
+        return popularity;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public boolean isConstructed() {
+        return isConstructed;
+    }
 }
