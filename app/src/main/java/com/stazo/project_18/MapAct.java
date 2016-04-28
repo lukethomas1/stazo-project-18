@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -20,6 +21,7 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -27,9 +29,12 @@ import java.util.HashMap;
 
 public class MapAct extends AppCompatActivity {
 
+    private static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
+
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
+    private boolean isPlacingMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,19 +104,56 @@ public class MapAct extends AppCompatActivity {
 
     // Ansel and Matt TODO Should add marker for event
     private void displayEvent(Event e) {
+        isPlacingMarker = true;
         // Add marker for single event
         MarkerOptions marker = new MarkerOptions();
 
         marker.title(e.getName());
+        marker.draggable(true);
     }
 
-    private class MapHandler extends FragmentActivity implements OnMapReadyCallback
+    public void onMapLongClick(LatLng point) {
+        MarkerOptions marker = new MarkerOptions();
+
+        marker.draggable(true);
+        marker.position(point);
+
+        map.addMarker(marker);
+        map.moveCamera(CameraUpdateFactory.newLatLng(REVELLE));
+    }
+
+    private class MapHandler extends FragmentActivity
+            implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
     {
         public void onMapReady(GoogleMap googleMap) {
+            // Initialize global variable
             map = googleMap;
-            LatLng sydney = new LatLng(-34, 151);
-            map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+            // Set OnMapLongClickListener to add markers
+            map.setOnMapLongClickListener(this);
+
+            // Set initial view to Revelle Plaza
+            map.addMarker(new MarkerOptions().position(REVELLE).title("Revelle Plaza"));
+
+            // Initial Camera Position
+            float zoom = 17;
+            float tilt = 0;
+            float bearing = 0;
+
+            CameraPosition camPos = new CameraPosition(REVELLE, zoom, tilt, bearing);
+
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        }
+
+        // Add a marker where a long click occurs
+        public void onMapLongClick(LatLng point) {
+            // Add a new marker on the click location
+            MarkerOptions marker = new MarkerOptions();
+
+            marker.draggable(true);
+            marker.position(point);
+
+            map.addMarker(marker);
         }
     }
 
