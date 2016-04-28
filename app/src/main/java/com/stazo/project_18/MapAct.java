@@ -34,7 +34,8 @@ public class MapAct extends AppCompatActivity {
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
-    private boolean isPlacingMarker;
+    private boolean isPlacingMarker = true;
+    private Event placingEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,11 @@ public class MapAct extends AppCompatActivity {
 
         mapFrag.getMapAsync(new MapHandler());
 
+        placingEvent = new Event();
+
+        placingEvent.setName("Roaring Revelle");
+        placingEvent.setDescription("This event takes place off campus.\n" +
+                                    "It is a Gatsby themed party, so come well-dressed!");
     }
 
     // Display all the events, should probably be called in onCreate
@@ -105,21 +111,7 @@ public class MapAct extends AppCompatActivity {
     // Ansel and Matt TODO Should add marker for event
     private void displayEvent(Event e) {
         isPlacingMarker = true;
-        // Add marker for single event
-        MarkerOptions marker = new MarkerOptions();
-
-        marker.title(e.getName());
-        marker.draggable(true);
-    }
-
-    public void onMapLongClick(LatLng point) {
-        MarkerOptions marker = new MarkerOptions();
-
-        marker.draggable(true);
-        marker.position(point);
-
-        map.addMarker(marker);
-        map.moveCamera(CameraUpdateFactory.newLatLng(REVELLE));
+        placingEvent = e;
     }
 
     private class MapHandler extends FragmentActivity
@@ -147,13 +139,20 @@ public class MapAct extends AppCompatActivity {
 
         // Add a marker where a long click occurs
         public void onMapLongClick(LatLng point) {
-            // Add a new marker on the click location
-            MarkerOptions marker = new MarkerOptions();
+            if (isPlacingMarker) {
+                // Add a new marker on the click location
+                MarkerOptions marker = new MarkerOptions();
 
-            marker.draggable(true);
-            marker.position(point);
+                marker.draggable(true);
+                marker.position(point);
 
-            map.addMarker(marker);
+                marker.title(placingEvent.getName());
+                marker.snippet(placingEvent.getDescription());
+
+                map.addMarker(marker);
+
+                isPlacingMarker = false;
+            }
         }
     }
 
