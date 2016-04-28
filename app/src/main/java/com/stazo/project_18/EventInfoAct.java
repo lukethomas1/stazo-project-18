@@ -17,6 +17,8 @@ import java.util.HashMap;
 
 public class EventInfoAct extends AppCompatActivity {
 
+    Firebase fb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +34,14 @@ public class EventInfoAct extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        fb = ((Project_18) getApplication()).getFB();
 
         // Set textviews to have correct info
-        grabEventInfo(((Project_18) getApplication()).getFB(),
-                getIntent().getStringExtra("event_id"));
+        grabEventInfo(getIntent().getStringExtra("event_id"));
     }
 
     // Pulls event info and delegates to showInfo to display the correct info
-    private void grabEventInfo(Firebase fb, String event_id) {
+    private void grabEventInfo(final String event_id) {
         fb.child("Events").child(event_id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -58,6 +60,9 @@ public class EventInfoAct extends AppCompatActivity {
 
                         // display event
                         showInfo(e);
+
+                        // remove this listener
+                        fb.child("Events").child(event_id).removeEventListener(this);
                     }
 
                     @Override

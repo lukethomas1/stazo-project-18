@@ -18,6 +18,8 @@ import java.util.HashMap;
 
 public class MapAct extends AppCompatActivity {
 
+    Firebase fb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +36,12 @@ public class MapAct extends AppCompatActivity {
             }
         });
 
+        fb = ((Project_18) getApplication()).getFB();
+
     }
 
     // Display all the events, should probably be called in onCreate
-    private void displayAllEvents(Firebase fb) {
+    private void displayAllEvents() {
 
         // Listener for pulling the events
         fb.child("Events").addListenerForSingleValueEvent(
@@ -62,6 +66,11 @@ public class MapAct extends AppCompatActivity {
                             // display event
                             displayEvent(e);
                         }
+
+                        // remove this listener
+                        fb.child("Events").removeEventListener(this);
+
+
                     }
 
                     @Override

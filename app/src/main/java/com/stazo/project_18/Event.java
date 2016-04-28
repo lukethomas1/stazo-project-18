@@ -9,6 +9,7 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by isaacwang on 4/25/16.
@@ -40,7 +41,12 @@ public class Event {
      * @param fb The Firebase ref
      */
     public void pushToFirebase(Firebase fb) {
+
+        // Add event to the Events dictionary under event_id
         fb.child("Events").child(event_id).setValue(this);
+
+        // Add event_id to the creator's list of events (myEvents)
+        fb.child("Users").child(creator_id).child("myEvents").push().setValue(event_id);
     }
 
     //Getters and setters
