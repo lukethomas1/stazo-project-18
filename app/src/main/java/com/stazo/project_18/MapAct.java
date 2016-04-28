@@ -3,22 +3,33 @@ package com.stazo.project_18;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
-import com.firebase.client.MutableData;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
 public class MapAct extends AppCompatActivity {
 
-    Firebase fb;
+    private Firebase fb;
+    private GoogleMap map;
+    private MapHandler mapHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +38,25 @@ public class MapAct extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        }); */
+
+        // Initialize Firebase
+        Firebase.setAndroidContext(this);
 
         fb = ((Project_18) getApplication()).getFB();
+
+        // Initialize the map
+        MapFragment mapFrag =
+                (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+        mapFrag.getMapAsync(new MapHandler());
 
     }
 
@@ -69,8 +89,6 @@ public class MapAct extends AppCompatActivity {
 
                         // remove this listener
                         fb.child("Events").removeEventListener(this);
-
-
                     }
 
                     @Override
@@ -82,6 +100,19 @@ public class MapAct extends AppCompatActivity {
     // Ansel and Matt TODO Should add marker for event
     private void displayEvent(Event e) {
         // Add marker for single event
+        MarkerOptions marker = new MarkerOptions();
+
+        marker.title(e.getName());
+    }
+
+    private class MapHandler extends FragmentActivity implements OnMapReadyCallback
+    {
+        public void onMapReady(GoogleMap googleMap) {
+            map = googleMap;
+            LatLng sydney = new LatLng(-34, 151);
+            map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        }
     }
 
 }
