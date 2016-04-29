@@ -16,11 +16,11 @@
         <ImageView
             android:layout_width="53dp"
             android:layout_height="match_parent"
-            android:id="@+id/imageView"
-            android:background="@drawable/gameicon"
+            android:id="@+id/eventIcon"
+            android:src="@drawable/gameicon"
             android:layout_gravity="right"
             android:layout_weight="0.14"
-            android:scaleType="center"/>
+            android:paddingBottom="20dp"/>
 
         <TextView
             android:layout_width="wrap_content"
