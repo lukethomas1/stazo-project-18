@@ -71,6 +71,19 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/EventType" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Date"
+                android:id="@+id/DateText" />
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="MM/DD/YYYY"
+                android:id="@+id/EventDate" />
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -92,7 +105,7 @@
                     <AutoCompleteTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="hh:mm am/pm"
+                        android:hint="HH:MM"
                         android:id="@+id/StartTime"
                         android:layout_gravity="start"/>
                 </LinearLayout>
@@ -113,7 +126,7 @@
                     <AutoCompleteTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="hh:mm am/pm"
+                        android:hint="HH:MM"
                         android:id="@+id/EndTime"
                         android:singleLine="false"/>
                 </LinearLayout>

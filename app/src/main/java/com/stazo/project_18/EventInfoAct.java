@@ -41,7 +41,7 @@ public class EventInfoAct extends AppCompatActivity {
         Event tester = new Event("FBGM",
                 "The goal of this event is to disregard women and acquire riches." +
                         "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 2034, 2034);
+                "Wiz Khalifa", 3, 15, 2034, 2034);
         showInfo(tester);
 
 
@@ -67,6 +67,7 @@ public class EventInfoAct extends AppCompatActivity {
                                 (String) event.get("description"),
                                 (String) event.get("creator_id"),
                                 ((Integer) event.get("type")).intValue(),
+                                ((Integer) event.get("date")).longValue(),
                                 ((Integer) event.get("startTime")).longValue(),
                                 ((Integer) event.get("endTime")).longValue());
 
