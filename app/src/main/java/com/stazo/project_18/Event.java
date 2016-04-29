@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by isaacwang on 4/25/16.
@@ -13,6 +14,7 @@ public class Event {
     private int type;
     private int popularity = 0;
     private long startTime, endTime;
+    private LatLng location;
 
     // default constructor
     public Event(){}
@@ -46,6 +48,10 @@ public class Event {
         this.name = name;
     }
 
+    public void setLocation(LatLng newLoc) {
+        this.location = newLoc;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -76,6 +82,10 @@ public class Event {
 
     public String getName() {
         return name;
+    }
+
+    public LatLng getLocation() {
+        return location;
     }
 
     public String getDescription() {
