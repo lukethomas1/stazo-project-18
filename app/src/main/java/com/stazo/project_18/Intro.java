@@ -30,7 +30,7 @@ public class Intro extends AppCompatActivity {
             }
         });
         Firebase.setAndroidContext(this);
-        Event e = new Event("name", "description", "creator_id", 0, 12345);
+        Event e = new Event("name", "description", "creator_id", 0, 12345, 1234);
         e.pushToFirebase(((Project_18) getApplication()).getFB());
 
     }

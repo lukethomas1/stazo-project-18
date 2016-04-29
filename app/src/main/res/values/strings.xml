@@ -18,11 +18,4 @@
     <string name="title_activity_map">MapAct</string>
     <string name="title_activity_event_info">EventInfoAct</string>
     <string name="title_activity_login">LoginAct</string>
-    <string-array name="event_types">
-        <item>Pick an Event Type</item>
-        <item>Sports</item>
-        <item>Food</item>
-        <item>Party</item>
-        <item>Fundraiser</item>
-    </string-array>
 </resources>
