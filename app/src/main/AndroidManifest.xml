@@ -9,6 +9,9 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- Give the map_overview access to the user's location -->
+    <users-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".Project_18"
         android:allowBackup="true"

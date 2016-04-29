@@ -1,14 +1,10 @@
 package com.stazo.project_18;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -20,7 +16,6 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,14 +28,13 @@ public class MapAct extends AppCompatActivity {
 
     private Firebase fb;
     private GoogleMap map;
-    private MapHandler mapHandler;
     private boolean isPlacingMarker = true;
     private Event placingEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map);
+        setContentView(R.layout.map_overview);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -58,7 +52,7 @@ public class MapAct extends AppCompatActivity {
 
         fb = ((Project_18) getApplication()).getFB();
 
-        // Initialize the map
+        // Initialize the map_overview
         MapFragment mapFrag =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
@@ -73,7 +67,6 @@ public class MapAct extends AppCompatActivity {
 
     // Display all the events, should probably be called in onCreate
     private void displayAllEvents() {
-
         // Listener for pulling the events
         fb.child("Events").addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -115,14 +108,11 @@ public class MapAct extends AppCompatActivity {
     }
 
     private class MapHandler extends FragmentActivity
-            implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
+            implements OnMapReadyCallback
     {
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable
             map = googleMap;
-
-            // Set OnMapLongClickListener to add markers
-            map.setOnMapLongClickListener(this);
 
             // Set initial view to Revelle Plaza
             map.addMarker(new MarkerOptions().position(REVELLE).title("Revelle Plaza"));
@@ -137,23 +127,6 @@ public class MapAct extends AppCompatActivity {
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
 
-        // Add a marker where a long click occurs
-        public void onMapLongClick(LatLng point) {
-            if (isPlacingMarker) {
-                // Add a new marker on the click location
-                MarkerOptions marker = new MarkerOptions();
-
-                marker.draggable(true);
-                marker.position(point);
-
-                marker.title(placingEvent.getName());
-                marker.snippet(placingEvent.getDescription());
-
-                map.addMarker(marker);
-
-                isPlacingMarker = false;
-            }
-        }
     }
 
 }
