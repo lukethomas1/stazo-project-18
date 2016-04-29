@@ -1,15 +1,7 @@
 package com.stazo.project_18;
 
-import android.support.v7.app.AppCompatActivity;
-
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.GenericTypeIndicator;
-import com.firebase.client.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by isaacwang on 4/25/16.
@@ -21,19 +13,22 @@ public class Event {
     private String event_id = "yoo";
     private int type;
     private int popularity = 0;
-    private long time;
+    private long date, startTime, endTime;
+    private LatLng location;
 
     // default constructor
     public Event(){}
 
     // constructor with Date
     public Event(String name, String description, String creator_id,
-                 int type, long time) {
+                 int type, long date, long startTime, long endTime) {
         this.name = name;
         this.description = description;
         this.creator_id = creator_id;
         this.type = type;
-        this.time = time;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     /**
@@ -52,6 +47,10 @@ public class Event {
     //Getters and setters
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setLocation(LatLng newLoc) {
+        this.location = newLoc;
     }
 
     public void setDescription(String description) {
@@ -74,12 +73,24 @@ public class Event {
         this.popularity = popularity;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public void setStartTime(long time) {
+        this.startTime = time;
+    }
+
+    public void setEndTime(long time) {
+        this.endTime = time;
     }
 
     public String getName() {
         return name;
+    }
+
+    public LatLng getLocation() {
+        return location;
     }
 
     public String getDescription() {
@@ -102,8 +113,16 @@ public class Event {
         return popularity;
     }
 
-    public long getTime() {
-        return time;
+    public long getDate() {
+        return date;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
     }
 
 }

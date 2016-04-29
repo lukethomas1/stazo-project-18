@@ -85,7 +85,9 @@ public class MapAct extends AppCompatActivity {
                                     (String) event.get("description"),
                                     (String) event.get("creator_id"),
                                     ((Integer) event.get("type")).intValue(),
-                                    ((Integer) event.get("time")).longValue());
+                                    ((Integer) event.get("date")).longValue(),
+                                    ((Integer) event.get("startTime")).longValue(),
+                                    ((Integer) event.get("endTime")).longValue());
 
                             // display event
                             displayEvent(e);
