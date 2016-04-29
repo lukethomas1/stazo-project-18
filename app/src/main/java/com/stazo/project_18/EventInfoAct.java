@@ -27,25 +27,35 @@ import java.util.HashMap;
 
 public class EventInfoAct extends AppCompatActivity {
 
+    Firebase fb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Firebase.setAndroidContext(this);
-        // Set textviews to have correct info
-        //grabEventInfo(((Project_18) getApplication()).getFB(),
-        //        getIntent().getStringExtra("event_id"));
 
-        //Event object to use for testing
         Event tester = new Event("Smash Tournament",
-                "No Plebs Allowed.", "Dank Memes", 3, 2034);
+                "No Plebs Allowed.", "Dank Memes", 3, 2034, 2034);
         showInfo(tester);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+        fb = ((Project_18) getApplication()).getFB();
+
+        // Set textviews to have correct info
+        grabEventInfo(getIntent().getStringExtra("event_id"));
     }
 
     // Pulls event info and delegates to showInfo to display the correct info
-    private void grabEventInfo(Firebase fb, String event_id) {
+    private void grabEventInfo(final String event_id) {
         fb.child("Events").child(event_id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -60,10 +70,14 @@ public class EventInfoAct extends AppCompatActivity {
                                 (String) event.get("description"),
                                 (String) event.get("creator_id"),
                                 ((Integer) event.get("type")).intValue(),
-                                ((Integer) event.get("time")).longValue());
+                                ((Integer) event.get("startTime")).longValue(),
+                                ((Integer) event.get("endTime")).longValue());
 
                         // display event
                         showInfo(e);
+
+                        // remove this listener
+                        fb.child("Events").child(event_id).removeEventListener(this);
                     }
 
                     @Override
@@ -84,8 +98,8 @@ public class EventInfoAct extends AppCompatActivity {
         eventCreator.setText("Created by: " + e.getCreator_id());
         TextView eventTime = (TextView) findViewById(R.id.eventClock);
         //Converstion to turn a long (ex. 2014) into (8:14 PM)
-        long hours = e.getTime()/100;
-        long minutes = (e.getTime() - (hours*100));
+        long hours = e.getStartTime()/100;
+        long minutes = (e.getStartTime() - (hours*100));
         String timePeriod = "AM";
         if(hours > 12){
             timePeriod = "PM";

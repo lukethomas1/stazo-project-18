@@ -18,6 +18,7 @@
     <string name="title_activity_map">MapAct</string>
     <string name="title_activity_event_info">EventInfoAct</string>
     <string name="title_activity_login">LoginAct</string>
+<<<<<<< HEAD
     <string-array name="event_types">
         <item>Pick an Event Type</item>
         <item>Sports</item>
@@ -26,4 +27,6 @@
         <item>Fundraiser</item>
     </string-array>
 >>>>>>> 80c07e1260202c552e793e479db3f27603b8d938
+=======
+>>>>>>> fb01ffd418fe08838b99c1a7e0a05b44dba6ead4
 </resources>
