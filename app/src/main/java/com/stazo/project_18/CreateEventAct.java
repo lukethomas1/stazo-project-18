@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
  * @author Brian Chan
  */
 public class CreateEventAct extends AppCompatActivity {
+
     private Event event = new Event();
     private List<String> typeList;
     private final int normColor = Color.BLACK;
@@ -45,6 +48,9 @@ public class CreateEventAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event);
+
+        // comment out later, needed for testing
+        Firebase.setAndroidContext(this);
 
         nameText = (TextView) findViewById(R.id.NameText);
         descText = (TextView) findViewById(R.id.DescText);
@@ -93,9 +99,7 @@ public class CreateEventAct extends AppCompatActivity {
 
         setUpInput();
 
-        valid = checkInput();
-
-        if (valid) {
+        if (checkInput()) {
             //Eliminate non digits
             startTime = startTime.replaceAll("[^\\d.]", "");
             endTime = endTime.replaceAll("[^\\d.]", "");
@@ -106,12 +110,24 @@ public class CreateEventAct extends AppCompatActivity {
             int dateInt = Integer.parseInt(date);
 
             event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
-            event.setLocation(new LatLng(32.874447, -117.240914));
 
+            // Location is cafe v by default, will add location selection later
+            event.setLocation(new LatLng(32.886030, -117.242590));
+
+            // Push the event to firebase
             event.pushToFirebase(((Project_18) getApplication()).getFB());
+
+            // Return to the Map screen now that we've finished
+            goToMapAct();
         }
     }
 
+    // Navigate to the map activity
+    private void goToMapAct() {
+        startActivity(new Intent(this, MapAct.class));
+    }
+
+    // Sets up text fields
     private void setUpInput() {
         //Sets up the views
         nameView = (AutoCompleteTextView) findViewById(R.id.EventName);
@@ -129,6 +145,7 @@ public class CreateEventAct extends AppCompatActivity {
         type = typeSpinner.getSelectedItem().toString();
     }
 
+    // Checks if text fields are set properly
     private boolean checkInput() {
         boolean valid = true;
 

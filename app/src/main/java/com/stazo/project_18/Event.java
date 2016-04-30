@@ -19,7 +19,7 @@ public class Event {
     // default constructor
     public Event(){}
 
-    // constructor with Date
+    // constructor without location
     public Event(String name, String description, String creator_id,
                  int type, long date, long startTime, long endTime) {
         this.name = name;
@@ -29,6 +29,18 @@ public class Event {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+    // constructor with location
+    public Event(String name, String description, String creator_id,
+                 int type, long date, long startTime, long endTime, LatLng location) {
+        this.name = name;
+        this.description = description;
+        this.creator_id = creator_id;
+        this.type = type;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
     }
 
     /**

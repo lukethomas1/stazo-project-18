@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ import com.firebase.client.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LoginAct extends AppCompatActivity {
 
@@ -43,8 +45,8 @@ public class LoginAct extends AppCompatActivity {
                 return;
             }
 
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.login_button, new ContentFragment()).commit();
+            /*getSupportFragmentManager().beginTransaction()
+                    .add(R.id.login_button, new ContentFragment()).commit();*/
         }
 
 
@@ -59,9 +61,17 @@ public class LoginAct extends AppCompatActivity {
 
                 // if the user exists, pull their data and goToMapAct
                 if (dataSnapshot.child(user_id).exists()) {
+
+                    // pull data
                     user_name = ((String) dataSnapshot.child(user_id).child("name").getValue());
                     myEvents = ((ArrayList<String>)
                             dataSnapshot.child(user_id).child("my_events").getValue());
+                    User me = new User(user_name, user_id, myEvents);
+
+                    // save the user to the application
+                    ((Project_18) getApplication()).setMe(me);
+
+                    // go to the Map screen
                     goToMapAct();
                 }
 
@@ -77,20 +87,21 @@ public class LoginAct extends AppCompatActivity {
         });
     }
 
-    // creating a new user
-    private void pushUserToFirebase() {
+    // create and push new user to Firebase
+    private void createUser() {
 
-        // users will be represented as a hashmap
-        HashMap<String, Object> user = new HashMap<String, Object>();
+        // add user to firebase
+        User me = new User(user_name, user_id);
+        fb.child("Users").child(user_id).setValue(me);
 
-        // add name and my_events to the user
-        user.put("name", user_name);
-        user.put("my_events", myEvents);
-        fb.child("Users").child(user_id).setValue(user);
+        // save the user to the application
+        ((Project_18) getApplication()).setMe(me);
     }
 
     // proceed to the Map activity
-    private void goToMapAct(){}
+    private void goToMapAct(){
+        startActivity(new Intent(this, MapAct.class));
+    }
 
 
 

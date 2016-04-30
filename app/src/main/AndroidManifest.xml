@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".EventInfoAct"
+            android:name=".CreateEventAct"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,18 +27,14 @@
             </intent-filter>
         </activity>
         <!-- <activity android:name=".CreateEventAct" /> -->
-        <!--
-            <activity
+        <activity
             android:name=".MapAct"
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme.NoActionBar" />
-        -->
-        <!--
-            activity
+        <!--activity
             android:name=".EventInfoAct"
             android:label="@string/title_activity_event_info"
-            android:theme="@style/AppTheme.NoActionBar" /
-        -->
+            android:theme="@style/AppTheme.NoActionBar" /-->
         <activity
             android:name=".LoginAct"
             android:label="@string/title_activity_login"
