@@ -64,57 +64,20 @@ public class MapAct extends AppCompatActivity {
 
         mapFrag.getMapAsync(new MapHandler());
 
-        placingEvent = new Event();
+        /*placingEvent = new Event();
 
         placingEvent.setName("Roaring Revelle");
         placingEvent.setDescription("This event takes place off campus.\n" +
-                                    "It is a Gatsby themed party, so come well-dressed!");
+                                    "It is a Gatsby themed party, so come well-dressed!");*/
+        //displayAllEvents();
     }
 
-    // Display all the events, should probably be called in onCreate
-    private void displayAllEvents() {
-
-        // Listener for pulling the events
-        fb.child("Events").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        // For every event in fb.child("Events"), create event and displayEvent
-                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-
-                            // get the info, storage?
-                            HashMap<String, Object> event = eventSnapshot.getValue(
-                                    new GenericTypeIndicator<HashMap<String, Object>>() {
-                                    });
-                            Event e = new Event(
-                                    (String) event.get("name"),
-                                    (String) event.get("description"),
-                                    (String) event.get("creator_id"),
-                                    ((Integer) event.get("type")).intValue(),
-                                    ((Integer) event.get("date")).longValue(),
-                                    ((Integer) event.get("startTime")).longValue(),
-                                    ((Integer) event.get("endTime")).longValue());
-
-                            // display event
-                            displayEvent(e);
-                        }
-
-                        // remove this listener
-                        fb.child("Events").removeEventListener(this);
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
-                });
-    }
 
     // Ansel and Matt TODO Should add marker for event
-    private void displayEvent(Event e) {
+    /*private void displayEvent(Event e) {
         isPlacingMarker = true;
         placingEvent = e;
-    }
+    }*/
 
     private class MapHandler extends FragmentActivity
             implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
@@ -137,11 +100,13 @@ public class MapAct extends AppCompatActivity {
             CameraPosition camPos = new CameraPosition(REVELLE, zoom, tilt, bearing);
 
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
+            displayAllEvents();
         }
 
         // Add a marker where a long click occurs
         public void onMapLongClick(LatLng point) {
-            if (isPlacingMarker) {
+            /*if (isPlacingMarker) {
                 // Add a new marker on the click location
                 MarkerOptions marker = new MarkerOptions();
 
@@ -154,7 +119,65 @@ public class MapAct extends AppCompatActivity {
                 map.addMarker(marker);
 
                 isPlacingMarker = false;
-            }
+            }*/
+        }
+
+        private void displayEvent(Event e) {
+            // Add a new marker on the click location
+            MarkerOptions marker = new MarkerOptions();
+
+            marker.draggable(true);
+            marker.position(e.getLocation());
+
+            marker.title(e.getName());
+            marker.snippet(e.getDescription());
+
+            map.addMarker(marker);
+        }
+
+        // Display all the events, should probably be called in onCreate
+        private void displayAllEvents() {
+
+            // Listener for pulling the events
+            fb.child("Events").addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            // For every event in fb.child("Events"), create event and displayEvent
+                            for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+
+                                // get the info, storage?
+                                HashMap<String, Object> event = eventSnapshot.getValue(
+                                        new GenericTypeIndicator<HashMap<String, Object>>() {
+                                        });
+                                HashMap<String, Object> locMap =
+                                        ((HashMap<String, Object>) event.get("location"));
+                                double lat = (double) locMap.get("latitude");
+                                LatLng loc = new LatLng((double) (locMap.get("latitude")),
+                                        (double) (locMap.get("longitude")));
+                                Event e = new Event(
+                                        (String) event.get("name"),
+                                        (String) event.get("description"),
+                                        (String) event.get("creator_id"),
+                                        ((Integer) event.get("type")).intValue(),
+                                        ((Integer) event.get("date")).longValue(),
+                                        ((Integer) event.get("startTime")).longValue(),
+                                        ((Integer) event.get("endTime")).longValue(),
+                                        loc);
+
+                                // display event
+                                displayEvent(e);
+                            }
+
+                            // remove this listener
+                            fb.child("Events").removeEventListener(this);
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
         }
     }
 

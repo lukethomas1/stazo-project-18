@@ -38,17 +38,23 @@ public class EventInfoAct extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // comment this out later, necessary for testing
+        Firebase.setAndroidContext(this);
+
         Event tester = new Event("FBGM",
                 "The goal of this event is to disregard women and acquire riches." +
                         "We will be offering free bro-tanks and snapbacks.",
                 "Wiz Khalifa", 3, 15, 2034, 2034);
-        showInfo(tester);
+        //showInfo(tester);
 
 
         fb = ((Project_18) getApplication()).getFB();
 
         // Set textviews to have correct info
-        grabEventInfo(getIntent().getStringExtra("event_id"));
+        //commented out for testing
+        //grabEventInfo(getIntent().getStringExtra("event_id"));
+
+        grabEventInfo("yoo");
     }
 
     // Pulls event info and delegates to showInfo to display the correct info
@@ -87,9 +93,12 @@ public class EventInfoAct extends AppCompatActivity {
     // Called from grabEventInfo, programatically updates the textviews to display the correct info
     // Justin TODO Update the textviews in the layout to show the correct info
     private void showInfo(Event e) {
+
         ImageView eventIcon = (ImageView) findViewById(R.id.eventIcon);
         int findType = e.getType();
         Drawable d = getResources().getDrawable(R.drawable.gameicon);
+
+        // determining the icon
         switch(findType) {
             case 1:
                 d = getResources().getDrawable(R.drawable.sportsicon);
@@ -107,8 +116,11 @@ public class EventInfoAct extends AppCompatActivity {
             case 6:
                 break;
         }
+
+        // setting the icon
         eventIcon.setImageDrawable(d);
-        //Initializing local variables to display relevant information
+
+        // setting the event info text fields
         TextView eventName = (TextView) findViewById(R.id.eventName);
         eventName.setText(e.getName());
         TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
@@ -116,7 +128,8 @@ public class EventInfoAct extends AppCompatActivity {
         TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
         eventCreator.setText("Created by: " + e.getCreator_id());
         TextView eventTime = (TextView) findViewById(R.id.eventClock);
-        //Converstion to turn a long (ex. 2014) into (8:14 PM)
+
+        //Conversion to turn a long (ex. 2014) into (8:14 PM)
         long hours = e.getStartTime()/100;
         long minutes = (e.getStartTime() - (hours*100));
         String timePeriod = "AM";
@@ -125,6 +138,7 @@ public class EventInfoAct extends AppCompatActivity {
             hours = hours - 12;
         }
         eventTime.setText(hours + ":" + minutes + " " + timePeriod);
+
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
         TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);

@@ -22,14 +22,15 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".CreateEventAct" />-->
-        <!--<activity
+        <!-- <activity android:name=".CreateEventAct" /> -->
+        <activity
             android:name=".MapAct"
             android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar" /> -->
+            android:theme="@style/AppTheme.NoActionBar" />
         <!--activity
             android:name=".EventInfoAct"
             android:label="@string/title_activity_event_info"
