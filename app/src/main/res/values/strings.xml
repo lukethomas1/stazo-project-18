@@ -4,6 +4,7 @@
     <string name="title_activity_test">Sign in</string>
 
     <!-- Strings related to login -->
+    <string name="facebook_app_id">1071049549602950</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -26,7 +27,7 @@
         <item>Party</item>
         <item>Fundraiser</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
+<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_facebook">FacebookActivity</string>
 </resources>
