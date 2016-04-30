@@ -5,12 +5,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
@@ -21,6 +20,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,28 +29,19 @@ public class LoginAct extends AppCompatActivity {
     private String user_name;
     private String user_id;
     ArrayList<String> myEvents = new ArrayList<String>();
-    Firebase fb;
+    //Firebase fb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext()); // initializes FB sdk
         AppEventsLogger.activateApp(this); // tracks App Events
         setContentView(R.layout.login);
-
-        if (findViewById(R.id.login_button) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.login_button, new ContentFragment()).commit();
-        }
+        Log.d("FB SDK", "PLEAAAASE SHOW UPPPP");
 
 
-        fb = ((Project_18) getApplication()).getFB();
+                //   fb = ((Project_18) getApplication()).getFB();
     }
-
+/*
     // tries to login with the current user_id
     private void tryAccount() {
         fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,7 +82,7 @@ public class LoginAct extends AppCompatActivity {
 
     // proceed to the Map activity
     private void goToMapAct(){}
-
+*/
 
 
 }

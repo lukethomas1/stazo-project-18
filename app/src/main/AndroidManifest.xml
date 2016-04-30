@@ -17,8 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".EventInfoAct"
-            android:label="@string/app_name"
+            android:name=".LoginAct"
+            android:label="@string/login_title"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,10 +34,10 @@
             android:name=".EventInfoAct"
             android:label="@string/title_activity_event_info"
             android:theme="@style/AppTheme.NoActionBar" /-->
-        <activity
+        <!--<activity
             android:name=".LoginAct"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" /> -->
         <!-- for FB Login-->
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
