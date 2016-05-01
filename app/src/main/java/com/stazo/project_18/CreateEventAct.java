@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -167,9 +168,16 @@ public class CreateEventAct extends AppCompatActivity {
             int dateInt = Integer.parseInt(date);
 
             event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
-            event.setLocation(new LatLng(32.874447, -117.240914));
 
-            event.pushToFirebase(((Project_18) getApplication()).getFB());
+            // Send intent to Location selector
+            Intent intent = new Intent(this, LocSelectAct.class);
+            intent.putExtra("eventToInit", event);
+
+            startActivity(intent);
+
+            //event.setLocation(new LatLng(32.874447, -117.240914));
+
+            //event.pushToFirebase(((Project_18) getApplication()).getFB());
         }
     }
 }

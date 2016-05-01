@@ -3,10 +3,12 @@ package com.stazo.project_18;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
+
 /**
  * Created by isaacwang on 4/25/16.
  */
-public class Event {
+public class Event implements Serializable {
     private String name;
     private String description;
     private String creator_id;
