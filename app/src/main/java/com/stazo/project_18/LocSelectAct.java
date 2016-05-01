@@ -1,14 +1,20 @@
 package com.stazo.project_18;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -18,15 +24,18 @@ public class LocSelectAct extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
 {
     private GoogleMap map;
-    private Intent callingIntent;
     private Event eventToInit;
+    private Marker eventMarker;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_loc_selector);
 
-        callingIntent = getIntent();
-        //eventToInit = callingIntent.getSerializableExtra("eventToInit");
+        // The intent that led to this activity
+        Intent callingIntent = getIntent();
+
+        // Get the event to initialize
+        eventToInit = (Event) callingIntent.getParcelableExtra("eventToInit");
 
         // Initialize the map_overview
         MapFragment mapFrag =
@@ -38,16 +47,63 @@ public class LocSelectAct extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMapLongClickListener(this);
+
+        // Initial Camera Position
+        float zoom = 15;
+        float tilt = 0;
+        float bearing = 0;
+
+        CameraPosition camPos = new CameraPosition(MapAct.REVELLE, zoom, tilt, bearing);
+
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
     }
 
     // Add a marker where a long click occurs
     public void onMapLongClick(LatLng point) {
-            // Add a new marker on the click location
-            MarkerOptions markerOpts = new MarkerOptions();
+        // Intitialize the event with the Lat/Lng of the event
+        eventToInit.setLocation(point);
 
-            markerOpts.draggable(true);
-            markerOpts.position(point);
+        // Set the marker's location
+        MarkerOptions markerOpts = new MarkerOptions();
+        markerOpts.position(point);
+        markerOpts.draggable(true);
+
+        // Remove the previous marker if there is one on the map
+        if (eventMarker != null) {
+            eventMarker.remove();
+        }
+
+        // Add marker to map
+        eventMarker = map.addMarker(markerOpts);
     }
 
+    public void goToMap(View view) {
 
+        if (eventToInit == null) {
+            System.err.println("EVENTTOINIT IS NULL");
+        }
+        // Check if user placed a marker for event location
+        if (eventToInit.getLocation() == null) {
+            Context context = getApplicationContext();
+
+            // Error message
+            CharSequence text = "Please select a location";
+
+            // How long to display the toast
+            int duration = Toast.LENGTH_LONG;
+
+            // display the toast
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
+        else {
+            // Push the event to the database
+            eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
+
+            // Go to the map screen
+            Intent intent = new Intent(this, MapAct.class);
+            startActivity(intent);
+        }
+    }
 }

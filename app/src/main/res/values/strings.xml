@@ -16,6 +16,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="login_title">"Project 18"</string>
     <string name="title_activity_map">MapAct</string>
     <string name="title_activity_event_info">EventInfoAct</string>
     <string name="title_activity_login">LoginAct</string>
@@ -30,5 +31,4 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

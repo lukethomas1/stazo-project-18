@@ -1,108 +1,113 @@
 package com.stazo.project_18;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LoginFrag.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link LoginFrag#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class LoginFrag extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private TextView mTextDetails;
 
-    private OnFragmentInteractionListener mListener;
+    private String userName;
+    private String userId;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFrag.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFrag newInstance(String param1, String param2) {
-        LoginFrag fragment = new LoginFrag();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    /* For call back from activity or fragment */
+    private CallbackManager mCallbackManager;
+    /* Will tell us if the login is successful, fail, or error */
+    private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+
+            AccessToken accessToken = loginResult.getAccessToken(); // Access token for FB
+            Profile profile = Profile.getCurrentProfile(); // gets the current profile, it could be null
+
+            if (profile != null) {
+                userName = profile.getName();
+                userId = profile.getId();
+                mTextDetails.setText("Welcome " + userName);
+            }
+            else {
+                userName = "null";
+                userId = "null";
+                mTextDetails.setText("Welcome " + userName);
+            }
+
+            Log.d("FB SDK", "Name: " + userName);
+            Log.d("FB SDK", "UserId: " + userId);
+            System.out.println ("Name: " + userName);
+            System.out.println ("UserId: " + userId);
+
+        }
+
+        @Override
+        public void onCancel() {
+            Log.d("FB SDK", "Facebook Login Cancelled");
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+            Log.d("FB SDK", "Facebook Login Error");
+
+        }
+    };
+
     public LoginFrag() {
-        // Required empty public constructor
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        mCallbackManager = CallbackManager.Factory.create();
+        Log.d("FB SDK", "onCreate Completed");
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        Log.d("FB SDK", "onCreateView Completed");
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // initialize button from xml
+        LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+        loginButton.setFragment(this); // passes reference to current fragment
+        loginButton.registerCallback(mCallbackManager, mCallback);
+        Log.d("FB SDK", "onViewCreate Completed");
+
+        setupTextDetails(view);
+
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        Log.d("FB SDK", "onActivityResult Completed");
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void setupTextDetails(View view) {
+        mTextDetails = (TextView) view.findViewById(R.id.title_text);
     }
 }
