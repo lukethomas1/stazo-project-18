@@ -115,7 +115,7 @@ public class CreateEventAct extends AppCompatActivity {
             event.setLocation(new LatLng(32.886030, -117.242590));
 
             // Push the event to firebase
-            event.pushToFirebase(((Project_18) getApplication()).getFB());
+            //event.pushToFirebase(((Project_18) getApplication()).getFB());
 
             // Return to the Map screen now that we've finished
             goToMapAct();
@@ -124,7 +124,7 @@ public class CreateEventAct extends AppCompatActivity {
 
     // Navigate to the map activity
     private void goToMapAct() {
-        startActivity(new Intent(this, MapAct.class));
+        startActivity(new Intent(this, LocSelectAct.class).putExtra("eventToInit", event));
     }
 
     // Sets up text fields
@@ -199,6 +199,22 @@ public class CreateEventAct extends AppCompatActivity {
             valid = false;
         }
 
+        if (valid) {
+            //Eliminate non digits
+            startTime = startTime.replaceAll("[^\\d.]", "");
+            endTime = endTime.replaceAll("[^\\d.]", "");
+            date = date.replaceAll("[^\\d.]", "");
+
+            int startTimeInt = Integer.parseInt(startTime);
+            int endTimeInt = Integer.parseInt(endTime);
+            int dateInt = Integer.parseInt(date);
+
+            event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
+
+            //event.setLocation(new LatLng(32.874447, -117.240914));
+
+            //event.pushToFirebase(((Project_18) getApplication()).getFB());
+        }
         return valid;
     }
 }

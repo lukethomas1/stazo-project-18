@@ -1,14 +1,12 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -20,27 +18,24 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
 public class MapAct extends AppCompatActivity {
 
-    private static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
+    public static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
 
     private Firebase fb;
     private GoogleMap map;
-    private MapHandler mapHandler;
-    private boolean isPlacingMarker = true;
-    private Event placingEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map);
+        setContentView(R.layout.map_overview);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -58,7 +53,7 @@ public class MapAct extends AppCompatActivity {
 
         fb = ((Project_18) getApplication()).getFB();
 
-        // Initialize the map
+        // Initialize the map_overview
         MapFragment mapFrag =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
@@ -73,70 +68,45 @@ public class MapAct extends AppCompatActivity {
     }
 
 
-    // Ansel and Matt TODO Should add marker for event
-    /*private void displayEvent(Event e) {
-        isPlacingMarker = true;
-        placingEvent = e;
-    }*/
+    protected void goToCreateEvent(View view) {
+        startActivity(new Intent(this, CreateEventAct.class));
+    }
 
-    private class MapHandler extends FragmentActivity
-            implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
+    private void goToEventInfo() {
+        startActivity(new Intent(this, EventInfoAct.class));
+    }
+
+    private class MapHandler extends FragmentActivity implements OnMapReadyCallback
     {
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable
             map = googleMap;
 
-            // Set OnMapLongClickListener to add markers
-            map.setOnMapLongClickListener(this);
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    goToEventInfo();
 
-            // Set initial view to Revelle Plaza
-            map.addMarker(new MarkerOptions().position(REVELLE).title("Revelle Plaza"));
+                    return true; // Do not perform default behavior: displaying InfoWindow
+                }
+            });
+
+            displayAllEvents();
 
             // Initial Camera Position
-            float zoom = 17;
+            float zoom = 15;
             float tilt = 0;
             float bearing = 0;
 
             CameraPosition camPos = new CameraPosition(REVELLE, zoom, tilt, bearing);
 
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-
-            displayAllEvents();
-        }
-
-        // Add a marker where a long click occurs
-        public void onMapLongClick(LatLng point) {
-            /*if (isPlacingMarker) {
-                // Add a new marker on the click location
-                MarkerOptions marker = new MarkerOptions();
-
-                marker.draggable(true);
-                marker.position(point);
-
-                marker.title(placingEvent.getName());
-                marker.snippet(placingEvent.getDescription());
-
-                map.addMarker(marker);
-
-                isPlacingMarker = false;
-            }*/
-        }
-
-        private void displayEvent(Event e) {
-            // Add a new marker on the click location
-            MarkerOptions marker = new MarkerOptions();
-
-            marker.draggable(true);
-            marker.position(e.getLocation());
-
-            marker.title(e.getName());
-            marker.snippet(e.getDescription());
-
-            map.addMarker(marker);
         }
 
         // Display all the events, should probably be called in onCreate
         private void displayAllEvents() {
+            // Clear existing markers on the map
+            map.clear();
 
             // Listener for pulling the events
             fb.child("Events").addListenerForSingleValueEvent(
@@ -179,6 +149,17 @@ public class MapAct extends AppCompatActivity {
                         }
                     });
         }
-    }
 
+        private void displayEvent(Event e) {
+            // Set the marker's parameters
+            MarkerOptions markerOpts = new MarkerOptions();
+
+            markerOpts.title(e.getName());
+            markerOpts.snippet(e.getDescription());
+            markerOpts.position(e.getLocation());
+
+            // Add the marker to the map
+            Marker marker = map.addMarker(markerOpts);
+        }
+    }
 }
