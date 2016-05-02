@@ -45,10 +45,10 @@ public class EventInfoAct extends AppCompatActivity {
         showInfo(tester);
 
 
-        //fb = ((Project_18) getApplication()).getFB();
+        fb = ((Project_18) getApplication()).getFB();
 
-        // Set textviews to have correct info
-        //grabEventInfo(getIntent().getStringExtra("event_id"));
+        //Set textviews to have correct info
+        grabEventInfo(getIntent().getStringExtra("event_id"));
     }
 
     // Pulls event info and delegates to showInfo to display the correct info
