@@ -1,14 +1,12 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -20,27 +18,24 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
 public class MapAct extends AppCompatActivity {
 
-    private static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
+    public static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
 
     private Firebase fb;
     private GoogleMap map;
-    private MapHandler mapHandler;
-    private boolean isPlacingMarker = true;
-    private Event placingEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map);
+        setContentView(R.layout.map_overview);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -58,79 +53,48 @@ public class MapAct extends AppCompatActivity {
 
         fb = ((Project_18) getApplication()).getFB();
 
-        // Initialize the map
+        // Initialize the map_overview
         MapFragment mapFrag =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
         mapFrag.getMapAsync(new MapHandler());
 
-        placingEvent = new Event();
+        /*placingEvent = new Event();
 
         placingEvent.setName("Roaring Revelle");
         placingEvent.setDescription("This event takes place off campus.\n" +
-                                    "It is a Gatsby themed party, so come well-dressed!");
+                                    "It is a Gatsby themed party, so come well-dressed!");*/
+        //displayAllEvents();
     }
 
-    // Display all the events, should probably be called in onCreate
-    private void displayAllEvents() {
 
-        // Listener for pulling the events
-        fb.child("Events").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        // For every event in fb.child("Events"), create event and displayEvent
-                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-
-                            // get the info, storage?
-                            HashMap<String, Object> event = eventSnapshot.getValue(
-                                    new GenericTypeIndicator<HashMap<String, Object>>() {
-                                    });
-                            Event e = new Event(
-                                    (String) event.get("name"),
-                                    (String) event.get("description"),
-                                    (String) event.get("creator_id"),
-                                    ((Integer) event.get("type")).intValue(),
-                                    ((Integer) event.get("date")).longValue(),
-                                    ((Integer) event.get("startTime")).longValue(),
-                                    ((Integer) event.get("endTime")).longValue());
-
-                            // display event
-                            displayEvent(e);
-                        }
-
-                        // remove this listener
-                        fb.child("Events").removeEventListener(this);
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
-                });
+    protected void goToCreateEvent(View view) {
+        startActivity(new Intent(this, CreateEventAct.class));
     }
 
-    // Ansel and Matt TODO Should add marker for event
-    private void displayEvent(Event e) {
-        isPlacingMarker = true;
-        placingEvent = e;
+    private void goToEventInfo() {
+        startActivity(new Intent(this, EventInfoAct.class));
     }
 
-    private class MapHandler extends FragmentActivity
-            implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
+    private class MapHandler extends FragmentActivity implements OnMapReadyCallback
     {
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable
             map = googleMap;
 
-            // Set OnMapLongClickListener to add markers
-            map.setOnMapLongClickListener(this);
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    goToEventInfo();
 
-            // Set initial view to Revelle Plaza
-            map.addMarker(new MarkerOptions().position(REVELLE).title("Revelle Plaza"));
+                    return true; // Do not perform default behavior: displaying InfoWindow
+                }
+            });
+
+            displayAllEvents();
 
             // Initial Camera Position
-            float zoom = 17;
+            float zoom = 15;
             float tilt = 0;
             float bearing = 0;
 
@@ -139,23 +103,63 @@ public class MapAct extends AppCompatActivity {
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
 
-        // Add a marker where a long click occurs
-        public void onMapLongClick(LatLng point) {
-            if (isPlacingMarker) {
-                // Add a new marker on the click location
-                MarkerOptions marker = new MarkerOptions();
+        // Display all the events, should probably be called in onCreate
+        private void displayAllEvents() {
+            // Clear existing markers on the map
+            map.clear();
 
-                marker.draggable(true);
-                marker.position(point);
+            // Listener for pulling the events
+            fb.child("Events").addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                marker.title(placingEvent.getName());
-                marker.snippet(placingEvent.getDescription());
+                            // For every event in fb.child("Events"), create event and displayEvent
+                            for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
 
-                map.addMarker(marker);
+                                // get the info, storage?
+                                HashMap<String, Object> event = eventSnapshot.getValue(
+                                        new GenericTypeIndicator<HashMap<String, Object>>() {
+                                        });
+                                HashMap<String, Object> locMap =
+                                        ((HashMap<String, Object>) event.get("location"));
+                                double lat = (double) locMap.get("latitude");
+                                LatLng loc = new LatLng((double) (locMap.get("latitude")),
+                                        (double) (locMap.get("longitude")));
+                                Event e = new Event(
+                                        (String) event.get("name"),
+                                        (String) event.get("description"),
+                                        (String) event.get("creator_id"),
+                                        ((Integer) event.get("type")).intValue(),
+                                        ((Integer) event.get("date")).longValue(),
+                                        ((Integer) event.get("startTime")).longValue(),
+                                        ((Integer) event.get("endTime")).longValue(),
+                                        loc);
 
-                isPlacingMarker = false;
-            }
+                                // display event
+                                displayEvent(e);
+                            }
+
+                            // remove this listener
+                            fb.child("Events").removeEventListener(this);
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
+        }
+
+        private void displayEvent(Event e) {
+            // Set the marker's parameters
+            MarkerOptions markerOpts = new MarkerOptions();
+
+            markerOpts.title(e.getName());
+            markerOpts.snippet(e.getDescription());
+            markerOpts.position(e.getLocation());
+
+            // Add the marker to the map
+            Marker marker = map.addMarker(markerOpts);
         }
     }
-
 }

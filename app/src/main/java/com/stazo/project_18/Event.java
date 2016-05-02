@@ -1,12 +1,17 @@
 package com.stazo.project_18;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
 
 /**
  * Created by isaacwang on 4/25/16.
  */
-public class Event {
+public class Event implements Parcelable {
     private String name;
     private String description;
     private String creator_id;
@@ -16,10 +21,36 @@ public class Event {
     private long date, startTime, endTime;
     private LatLng location;
 
+    // Extracts the Event from a Parcel for CreateEventAct -> LocSelectAct
+    public static final Parcelable.Creator<Event> CREATOR
+            = new Parcelable.Creator<Event>() {
+
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
     // default constructor
     public Event(){}
 
-    // constructor with Date
+    // Parsing Parcel Constructor
+    public Event(Parcel in) {
+        setName(in.readString());
+        setDescription(in.readString());
+        setCreator_id(in.readString());
+        setEvent_id(in.readString());
+        setType(in.readInt());
+        setPopularity(in.readInt());
+        setDate(in.readLong());
+        setStartTime(in.readLong());
+        setEndTime(in.readLong());
+    }
+
+    // constructor without location
     public Event(String name, String description, String creator_id,
                  int type, long date, long startTime, long endTime) {
         this.name = name;
@@ -29,6 +60,18 @@ public class Event {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+    // constructor with location
+    public Event(String name, String description, String creator_id,
+                 int type, long date, long startTime, long endTime, LatLng location) {
+        this.name = name;
+        this.description = description;
+        this.creator_id = creator_id;
+        this.type = type;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
     }
 
     /**
@@ -125,4 +168,24 @@ public class Event {
         return endTime;
     }
 
+    /**
+     * Packages the Event in a Parcel for the CreateEventAct -> LocSelectAct Intent.
+     * @param out The Parcel to package the Event in.
+     * @param flags Special state flags for the Parcel (unused).
+     */
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(getName());
+        out.writeString(getDescription());
+        out.writeString(getCreator_id());
+        out.writeString(getEvent_id());
+        out.writeInt(getType());
+        out.writeInt(getPopularity());
+        out.writeLong(getDate());
+        out.writeLong(getStartTime());
+        out.writeLong(getEndTime());
+    }
+
+    public int describeContents() {
+        return 0;
+    }
 }
