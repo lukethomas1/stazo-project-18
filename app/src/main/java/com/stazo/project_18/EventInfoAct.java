@@ -214,4 +214,8 @@ public class EventInfoAct extends AppCompatActivity {
         }
         System.out.println(currTime.HOUR + ":" + currTime.MINUTE);
     }
+    @Override
+    public void onBackPressed(){
+        
+    }
 }
