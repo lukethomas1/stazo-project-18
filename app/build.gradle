@@ -22,17 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-<<<<<<< HEAD
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-=======
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.android.support:support-v4:23.3.0'
->>>>>>> f7f7c2d3ee717f0e0f1fed9f58b6bbdd7bcfb3ec
 }
 
 // Repo for facebook sdk

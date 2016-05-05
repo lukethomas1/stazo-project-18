@@ -68,7 +68,7 @@ public class MapAct extends AppCompatActivity {
     }
 
 
-    protected void goToCreateEvent(View view) {
+    public void goToCreateEvent(View view) {
         startActivity(new Intent(this, CreateEventAct.class));
     }
 
