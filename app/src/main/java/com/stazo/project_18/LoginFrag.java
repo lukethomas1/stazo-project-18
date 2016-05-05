@@ -92,6 +92,8 @@ public class LoginFrag extends Fragment {
         mCallbackManager = CallbackManager.Factory.create();
         Log.d("FB SDK", "onCreate Completed");
 
+        fb = ((Project_18)getActivity().getApplication()).getFB();
+
     }
 
     @Override
@@ -146,11 +148,13 @@ public class LoginFrag extends Fragment {
                     // save the userId to this device
                     setSharedPreferences();
 
+                    // go to the Map screen
+                    goToMapAct();
+
                     // remove listener
                     fb.child("Users").removeEventListener(this);
 
-                    // go to the Map screen
-                    goToMapAct();
+
                 }
 
                 // if the user doesn't exist, create a User and goToMapAct
@@ -161,11 +165,12 @@ public class LoginFrag extends Fragment {
                     // save the userId to this device
                     setSharedPreferences();
 
+                    //go to the Map screen
+                    goToMapAct();
+
                     // remove listener
                     fb.child("Users").removeEventListener(this);
 
-                    //go to the Map screen
-                    goToMapAct();
                 }
             }
 
@@ -180,6 +185,7 @@ public class LoginFrag extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId", userId);
+        editor.commit();
     }
 
     private void goToMapAct(){
