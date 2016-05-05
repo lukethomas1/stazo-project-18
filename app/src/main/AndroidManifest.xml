@@ -9,28 +9,32 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- Give the map_overview access to the user's location -->
+    <users-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".Project_18"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".CreateEventAct"
+            android:name=".MapAct"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- <activity android:name=".CreateEventAct" /> -->
         <activity
+            android:name=".CreateEventAct"
+        />\
+        <!--activity
             android:name=".MapAct"
             android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />-->
         <!--activity
             android:name=".EventInfoAct"
             android:label="@string/title_activity_event_info"
@@ -39,19 +43,28 @@
             android:name=".LoginAct"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".EventInfoAct" />
         <!-- for FB Login-->
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name" />
+        <activity android:name=".LocSelectAct" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBsxIIBP6pSzAtlcB_lY-juUCBHLu9WP-E"/>
+            android:value="AIzaSyBsxIIBP6pSzAtlcB_lY-juUCBHLu9WP-E" />
         <!-- for FB login -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name=".ListAct"
+            android:label="@string/title_activity_list"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>
