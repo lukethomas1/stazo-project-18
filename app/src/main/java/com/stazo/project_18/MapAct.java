@@ -126,23 +126,9 @@ public class MapAct extends AppCompatActivity {
                             for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
 
                                 // get the info, storage?
-                                HashMap<String, Object> event = eventSnapshot.getValue(
+                                Event e = new Event(eventSnapshot.getValue(
                                         new GenericTypeIndicator<HashMap<String, Object>>() {
-                                        });
-                                HashMap<String, Object> locMap =
-                                        ((HashMap<String, Object>) event.get("location"));
-                                double lat = (double) locMap.get("latitude");
-                                LatLng loc = new LatLng((double) (locMap.get("latitude")),
-                                        (double) (locMap.get("longitude")));
-                                Event e = new Event(
-                                        (String) event.get("name"),
-                                        (String) event.get("description"),
-                                        (String) event.get("creator_id"),
-                                        ((Integer) event.get("type")).intValue(),
-                                        ((Integer) event.get("startDate")).longValue(),
-                                        ((Integer) event.get("startTime")).longValue(),
-                                        ((Integer) event.get("endTime")).longValue(),
-                                        loc);
+                                        }));
 
                                 // display event
                                 displayEvent(e);
