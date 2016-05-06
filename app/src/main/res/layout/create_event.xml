@@ -71,22 +71,55 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/EventType" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Event Date"
-                android:id="@+id/DateText" />
-
-            <EditText
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Touch here to select a date"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:clickable="true"
-                android:id="@+id/Date"
-                />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Start Date"
+                    android:id="@+id/StartDateText" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="End Date"
+                    android:id="@+id/EndDateText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="Tap to set date"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="true"
+                    android:id="@+id/StartDate"
+                    />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="Tap to set date"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="true"
+                    android:id="@+id/EndDate" />
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -120,7 +153,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:hint="Touch to set"
+                    android:hint="Tap to set time"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:clickable="true"
@@ -130,7 +163,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:hint="Touch to set"
+                    android:hint="Tap to set time"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:clickable="true"
