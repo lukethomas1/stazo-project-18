@@ -60,9 +60,6 @@ public class LocSelectAct extends FragmentActivity
 
     // Add a marker where a long click occurs
     public void onMapLongClick(LatLng point) {
-        // Intitialize the event with the Lat/Lng of the event
-        eventToInit.setLocation(point);
-
         // Set the marker's location
         MarkerOptions markerOpts = new MarkerOptions();
         markerOpts.position(point);
@@ -75,13 +72,15 @@ public class LocSelectAct extends FragmentActivity
 
         // Add marker to map
         eventMarker = map.addMarker(markerOpts);
+
+        // Intitialize the event with the Lat/Lng of the event
+        eventToInit.setLocation(point);
+
+        // Initialize the event's id
+        eventToInit.setEvent_id(eventMarker.getId());
     }
 
     public void goToMap(View view) {
-
-        if (eventToInit == null) {
-            System.err.println("EVENTTOINIT IS NULL");
-        }
         // Check if user placed a marker for event location
         if (eventToInit.getLocation() == null) {
             Context context = getApplicationContext();

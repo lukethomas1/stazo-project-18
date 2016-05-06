@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -48,11 +49,14 @@ public class EventInfoAct extends AppCompatActivity {
 
         fb = ((Project_18) getApplication()).getFB();
 
-        // Set textviews to have correct info
-        //commented out for testing
-        //grabEventInfo(getIntent().getStringExtra("event_id"));
+        // Get the Intent that led to this Activity
+        Intent callingIntent = getIntent();
 
-        grabEventInfo("yoo");
+        // Get the event_id to display
+        String event_id = callingIntent.getStringExtra("event_id");
+
+        // Display event info
+        grabEventInfo(event_id);
     }
 
     // Pulls event info and delegates to showInfo to display the correct info

@@ -31,7 +31,6 @@ public class LoginAct extends AppCompatActivity {
     private String user_name;
     private String user_id;
     ArrayList<String> myEvents = new ArrayList<String>();
-    //Firebase fb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
