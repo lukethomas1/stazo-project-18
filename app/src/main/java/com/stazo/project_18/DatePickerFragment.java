@@ -19,15 +19,14 @@ public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
     private String date; //The date the user inputted
     EditText dateText; //The text we want to update once the user inputs a date
+    int year, month, day;
 
     /**
      * Constructor for a DatePicker fragment.
      * @param text The EditText we want to update
-     * @param date The date the user inputted
      */
-    public DatePickerFragment(EditText text, String date) {
+    public DatePickerFragment(EditText text) {
         dateText = text;
-        this.date = date;
     }
 
     @Override
@@ -43,8 +42,33 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        date = (month+1)+"/"+day+"/"+year;
+        String monthStr = "" + (month + 1);
+        String dayStr = "" + day;
+
+        if (month + 1 < 10) {
+            monthStr = "0" + (month + 1);
+        }
+        if (day < 10) {
+            dayStr = "0" + day;
+        }
+        date = monthStr+"/"+dayStr+"/"+year;
+
+        this.year = year;
+        this.month = month + 1;
+        this.day = day;
 
         dateText.setText(date);
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
     }
 }
