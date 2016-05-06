@@ -56,14 +56,9 @@ public class MapAct extends AppCompatActivity {
         MapFragment mapFrag =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
-<<<<<<< HEAD
-        mapFrag.getMapAsync(new MapHandler());
-=======
         mapHandler = new MapHandler();
 
         mapFrag.getMapAsync(mapHandler);
-
->>>>>>> 3748225f1883d3ba99f96399fede030e2f4e7756
         /*placingEvent = new Event();
 
         placingEvent.setName("Roaring Revelle");
