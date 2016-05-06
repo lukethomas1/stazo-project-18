@@ -3,6 +3,7 @@ package com.stazo.project_18;
 import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by ericzhang on 4/25/16.
@@ -32,6 +33,14 @@ public class User {
         this.ID = user_id;
         this.name = name;
         this.myEvents = myEvents;
+    }
+
+    // constructor with HashMap
+    public User(HashMap<String, Object> userMap) {
+        this.name = (String) userMap.get("name");
+        System.out.println(name + '\n');
+        this.ID = (String) userMap.get("ID");
+        // TODO add myEvents initialization
     }
 
     /**

@@ -31,6 +31,8 @@ public class MapAct extends AppCompatActivity {
 
     private Firebase fb;
     private GoogleMap map;
+    private MapHandler mapHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +40,6 @@ public class MapAct extends AppCompatActivity {
         setContentView(R.layout.map_overview);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }); */
 
         // Initialize Firebase
         Firebase.setAndroidContext(this);
@@ -57,7 +50,9 @@ public class MapAct extends AppCompatActivity {
         MapFragment mapFrag =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
-        mapFrag.getMapAsync(new MapHandler());
+        mapHandler = new MapHandler();
+
+        mapFrag.getMapAsync(mapHandler);
 
         /*placingEvent = new Event();
 
@@ -72,12 +67,22 @@ public class MapAct extends AppCompatActivity {
         startActivity(new Intent(this, CreateEventAct.class));
     }
 
-    private void goToEventInfo() {
-        startActivity(new Intent(this, EventInfoAct.class));
+    private void goToEventInfo(Marker marker) {
+        Intent intent = new Intent(this, EventInfoAct.class);
+
+        // Get event's database id
+        String event_id = mapHandler.idLookupHM.get(marker.getId());
+
+        // Store the event ID as an extra
+        intent.putExtra("event_id", event_id);
+
+        startActivity(intent);
     }
 
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback
     {
+        private HashMap<String, String> idLookupHM = new HashMap<>();
+
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable
             map = googleMap;
@@ -85,7 +90,7 @@ public class MapAct extends AppCompatActivity {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    goToEventInfo();
+                    goToEventInfo(marker);
 
                     return true; // Do not perform default behavior: displaying InfoWindow
                 }
@@ -103,7 +108,7 @@ public class MapAct extends AppCompatActivity {
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
 
-        // Display all the events, should probably be called in onCreate
+        // Display all the events
         private void displayAllEvents() {
             // Clear existing markers on the map
             map.clear();
@@ -150,6 +155,7 @@ public class MapAct extends AppCompatActivity {
                     });
         }
 
+        // Displays a single event
         private void displayEvent(Event e) {
             // Set the marker's parameters
             MarkerOptions markerOpts = new MarkerOptions();
@@ -160,6 +166,9 @@ public class MapAct extends AppCompatActivity {
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);
+
+            // Put the marker in a HashMap to look up IDs later
+            idLookupHM.put(marker.getId(), e.getEvent_id());
         }
     }
 }

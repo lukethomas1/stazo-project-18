@@ -154,7 +154,7 @@ public class LoginFrag extends Fragment {
                     userName = ((String) dataSnapshot.child(userId).child("name").getValue());
                     myEvents = ((ArrayList<String>)
                             dataSnapshot.child(userId).child("my_events").getValue());
-                    User me = new User(userName, userId, myEvents);
+                    User me = new User(userId, userName, myEvents);
 
                     // save the user to the application
                     ((Project_18) getActivity().getApplication()).setMe(me);
@@ -206,7 +206,7 @@ public class LoginFrag extends Fragment {
     // creates a User and pushes it to Firebase
     private void createUser() {
         // add user to firebase
-        User me = new User(userName, userId);
+        User me = new User(userId, userName);
         fb.child("Users").child(userId).setValue(me);
 
         // save the user to the application
