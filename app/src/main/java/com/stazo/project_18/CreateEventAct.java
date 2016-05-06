@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
+
 import com.firebase.client.Firebase;
 import com.firebase.client.snapshot.BooleanNode;
 
@@ -84,6 +86,8 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(View v) {
                 startDateFrag = new DatePickerFragment(startDateView);
                 startDateFrag.show(getSupportFragmentManager(), "datePicker");
+
+                startDateView.setError(null);
             }
         });
 
@@ -92,6 +96,8 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(View v) {
                 endDateFrag = new DatePickerFragment(endDateView);
                 endDateFrag.show(getSupportFragmentManager(), "datePicker");
+
+                endDateView.setError(null);
             }
         });
 
@@ -100,6 +106,8 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(View v) {
                 startTimeFrag = new TimePickerFragment(startTimeView);
                 startTimeFrag.show(getSupportFragmentManager(), "timePicker");
+
+                startTimeView.setError(null);
             }
         });
 
@@ -108,6 +116,8 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(View v) {
                 endTimeFrag = new TimePickerFragment(endTimeView);
                 endTimeFrag.show(getSupportFragmentManager(), "timePicker");
+
+                endTimeView.setError(null);
             }
         });
     }
