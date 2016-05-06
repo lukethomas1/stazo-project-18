@@ -216,6 +216,6 @@ public class EventInfoAct extends AppCompatActivity {
     }
     @Override
     public void onBackPressed(){
-        
+
     }
 }
