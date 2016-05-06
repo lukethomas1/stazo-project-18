@@ -32,7 +32,7 @@
                 android:text="Event Name:"
                 android:id="@+id/NameText" />
 
-            <AutoCompleteTextView
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter your event's name!"
@@ -47,7 +47,7 @@
                 android:text="Event Description:"
                 android:id="@+id/DescText" />
 
-            <AutoCompleteTextView
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter your event's description!"
@@ -78,59 +78,12 @@
                 android:text="Date"
                 android:id="@+id/DateText" />
 
-            <AutoCompleteTextView
+            <EditText
+                android:id="@+id/Date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="MM/DD/YYYY"
-                android:id="@+id/EventDate" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Start Time"
-                        android:id="@+id/StartText" />
-
-                    <AutoCompleteTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="HH:MM"
-                        android:id="@+id/StartTime"
-                        android:layout_gravity="start"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="End Time"
-                        android:id="@+id/EndText" />
-
-                    <AutoCompleteTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="HH:MM"
-                        android:id="@+id/EndTime"
-                        android:singleLine="false"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:hint="Touch here to select a date"
+                />
 
             <Button
                 android:layout_width="match_parent"
