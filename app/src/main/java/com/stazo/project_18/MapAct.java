@@ -31,6 +31,8 @@ public class MapAct extends AppCompatActivity {
 
     private Firebase fb;
     private GoogleMap map;
+    private MapHandler mapHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,9 @@ public class MapAct extends AppCompatActivity {
         MapFragment mapFrag =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
-        mapFrag.getMapAsync(new MapHandler());
+        mapHandler = new MapHandler();
+
+        mapFrag.getMapAsync(mapHandler);
 
         /*placingEvent = new Event();
 
@@ -72,12 +76,22 @@ public class MapAct extends AppCompatActivity {
         startActivity(new Intent(this, CreateEventAct.class));
     }
 
-    private void goToEventInfo() {
-        startActivity(new Intent(this, EventInfoAct.class));
+    private void goToEventInfo(Marker marker) {
+        Intent intent = new Intent(this, EventInfoAct.class);
+
+        // Get event's database id
+        String event_id = mapHandler.idLookupHM.get(marker.getId());
+
+        // Store the event ID as an extra
+        intent.putExtra("event_id", event_id);
+
+        startActivity(intent);
     }
 
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback
     {
+        private HashMap<String, String> idLookupHM = new HashMap<>();
+
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable
             map = googleMap;
@@ -85,7 +99,7 @@ public class MapAct extends AppCompatActivity {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    goToEventInfo();
+                    goToEventInfo(marker);
 
                     return true; // Do not perform default behavior: displaying InfoWindow
                 }
@@ -160,6 +174,9 @@ public class MapAct extends AppCompatActivity {
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);
+
+            // Put the marker in a HashMap to look up IDs later
+            idLookupHM.put(marker.getId(), e.getEvent_id());
         }
     }
 }
