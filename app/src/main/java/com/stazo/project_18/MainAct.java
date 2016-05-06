@@ -34,7 +34,7 @@ public class MainAct extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
 
-        //tab stuff
+        //tab stuff    http://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
