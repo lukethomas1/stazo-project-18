@@ -7,6 +7,7 @@ import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by isaacwang on 4/25/16.
@@ -61,6 +62,7 @@ public class Event implements Parcelable {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
     // constructor with location
     public Event(String name, String description, String creator_id,
                  int type, long date, long startTime, long endTime, LatLng location) {
@@ -72,6 +74,17 @@ public class Event implements Parcelable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
+    }
+
+    // constructor with HashMap
+    public Event(HashMap<String, Object> eventMap) {
+        this.name = (String) eventMap.get("name");
+        this.description = (String) eventMap.get("description");
+        this.creator_id = (String) eventMap.get("creator_id");
+        this.type = ((Integer) eventMap.get("type")).intValue();
+        this.date = ((Integer) eventMap.get("date")).longValue();
+        this.startTime = ((Integer) eventMap.get("startTime")).longValue();
+        this.endTime = ((Integer) eventMap.get("endTime")).longValue();
     }
 
     /**
