@@ -109,7 +109,8 @@ public class CreateEventAct extends AppCompatActivity {
             int endTimeInt = Integer.parseInt(endTime);
             int dateInt = Integer.parseInt(date);
 
-            event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
+            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(),
+                    0, dateInt, startTimeInt, endTimeInt);
 
             // Location is cafe v by default, will add location selection later
             event.setLocation(new LatLng(32.886030, -117.242590));
@@ -118,12 +119,12 @@ public class CreateEventAct extends AppCompatActivity {
             //event.pushToFirebase(((Project_18) getApplication()).getFB());
 
             // Return to the Map screen now that we've finished
-            goToMapAct();
+            goToLocSelectAct();
         }
     }
 
     // Navigate to the map activity
-    private void goToMapAct() {
+    private void goToLocSelectAct() {
         startActivity(new Intent(this, LocSelectAct.class).putExtra("eventToInit", event));
     }
 
@@ -209,7 +210,7 @@ public class CreateEventAct extends AppCompatActivity {
             int endTimeInt = Integer.parseInt(endTime);
             int dateInt = Integer.parseInt(date);
 
-            event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
+            //event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
 
             //event.setLocation(new LatLng(32.874447, -117.240914));
 

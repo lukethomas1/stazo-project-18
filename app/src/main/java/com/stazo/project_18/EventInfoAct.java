@@ -57,26 +57,25 @@ public class EventInfoAct extends AppCompatActivity {
 
     // Pulls event info and delegates to showInfo to display the correct info
     private void grabEventInfo(final String event_id) {
-        fb.child("Events").child(event_id).addListenerForSingleValueEvent(
+        fb.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        // get the info, storage?
-                        HashMap<String, Object> event = dataSnapshot.getValue(
+                        // get the info for the event
+                        Event e = new Event(dataSnapshot.child("Events").
+                                child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
-                                });
-                        Event e = new Event(
-                                (String) event.get("name"),
-                                (String) event.get("description"),
-                                (String) event.get("creator_id"),
-                                ((Integer) event.get("type")).intValue(),
-                                ((Integer) event.get("date")).longValue(),
-                                ((Integer) event.get("startTime")).longValue(),
-                                ((Integer) event.get("endTime")).longValue());
+                                }));
+
+                        // get the info for the user
+                        User u = new User((HashMap<String, Object>) dataSnapshot.child("Users").
+                                child(e.getCreator_id()).getValue());
+
+                        System.out.println(((Project_18) getApplication()).getMe().getName());
 
                         // display event
-                        showInfo(e);
+                        showInfo(e, u);
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
@@ -90,7 +89,7 @@ public class EventInfoAct extends AppCompatActivity {
 
     // Called from grabEventInfo, programatically updates the textviews to display the correct info
     // Justin TODO Update the textviews in the layout to show the correct info
-    private void showInfo(Event e) {
+    private void showInfo(Event e, User u) {
         //Initialize Local Variables
         TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) findViewById(R.id.eventLength);
@@ -143,7 +142,7 @@ public class EventInfoAct extends AppCompatActivity {
         } else {
             eventLength.setText(eventLength.getText() + "" + eventMinute + " minutes");
         }
-        eventCreator.setText("Created by: " + e.getCreator_id());
+        eventCreator.setText("Created by: " + u.getName());
         TextView eventTime = (TextView) findViewById(R.id.eventClock);
 
         //Conversion to turn a long (ex. 2014) into (8:14 PM)
@@ -166,8 +165,8 @@ public class EventInfoAct extends AppCompatActivity {
         }
         System.out.println(currTime.HOUR + ":" + currTime.MINUTE);
     }
-    @Override
+    /*@Override
     public void onBackPressed(){
 
-    }
+    }*/
 }
