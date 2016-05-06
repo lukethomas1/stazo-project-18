@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
+import android.support.v4.app.DialogFragment;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +23,16 @@ public class CreateEventAct extends AppCompatActivity {
 
     private Event event = new Event();
     private List<String> typeList;
-    private final int normColor = Color.BLACK;
-    private final int errorColor = Color.RED;
+    int normColor = Color.BLACK;
+    int errorColor = Color.RED;
 
     //The events itself
-    AutoCompleteTextView nameView;
-    AutoCompleteTextView descView;
-    AutoCompleteTextView dateView;
-    AutoCompleteTextView startTimeView;
-    AutoCompleteTextView endTimeView;
+    EditText nameView;
+    EditText descView;
+    EditText dateView;
+    EditText startTimeView;
+    EditText endTimeView;
+
     Spinner typeSpinner;
     TextView nameText, descText, pickText, dateText, startText, endText;
 
@@ -52,19 +52,11 @@ public class CreateEventAct extends AppCompatActivity {
         // comment out later, needed for testing
         Firebase.setAndroidContext(this);
 
-        nameText = (TextView) findViewById(R.id.NameText);
-        descText = (TextView) findViewById(R.id.DescText);
-        pickText = (TextView) findViewById(R.id.PickText);
-        dateText = (TextView) findViewById(R.id.DateText);
-        startText = (TextView) findViewById(R.id.StartText);
-        endText = (TextView) findViewById(R.id.EndText);
+        setUpTextColors();
 
-        nameText.setTextColor(normColor);
-        descText.setTextColor(normColor);
-        pickText.setTextColor(normColor);
-        dateText.setTextColor(normColor);
-        startText.setTextColor(normColor);
-        endText.setTextColor(normColor);
+        dateView = (EditText) findViewById(R.id.Date);
+        startTimeView = (EditText) findViewById(R.id.StartTime);
+        endTimeView = (EditText) findViewById(R.id.EndTime);
 
         //Sets up the Spinner for selecting an Event Type
         typeSpinner = (Spinner) findViewById(R.id.EventType);
@@ -92,22 +84,46 @@ public class CreateEventAct extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
+
+        dateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(dateView, date);
+            }
+        });
+
+        startTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(startTimeView, startTime);
+            }
+        });
+
+        endTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(endTimeView, endTime);
+            }
+        });
     }
 
-    public void makeEvent(View view) {
+    public void showDatePickerDialog(EditText text, String date) {
+        DatePickerFragment newFragment = new DatePickerFragment(text, date);
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public void showTimePickerDialog(EditText text, String time) {
+        DialogFragment newFragment = new TimePickerFragment(text, time);
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    /* public void makeEvent(View view) {
         boolean valid = true; //If the event is valid
 
         setUpInput();
 
         if (checkInput()) {
             //Eliminate non digits
-            startTime = startTime.replaceAll("[^\\d.]", "");
-            endTime = endTime.replaceAll("[^\\d.]", "");
-            date = date.replaceAll("[^\\d.]", "");
-
-            int startTimeInt = Integer.parseInt(startTime);
-            int endTimeInt = Integer.parseInt(endTime);
-            int dateInt = Integer.parseInt(date);
 
             event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(),
                     0, dateInt, startTimeInt, endTimeInt);
@@ -121,6 +137,11 @@ public class CreateEventAct extends AppCompatActivity {
             // Return to the Map screen now that we've finished
             goToLocSelectAct();
         }
+    } */
+
+    public void makeEvent(View view) {
+        setUpInput();
+        checkInput();
     }
 
     // Navigate to the map activity
@@ -128,21 +149,31 @@ public class CreateEventAct extends AppCompatActivity {
         startActivity(new Intent(this, LocSelectAct.class).putExtra("eventToInit", event));
     }
 
+    private void setUpTextColors() {
+        nameText = (TextView) findViewById(R.id.NameText);
+        descText = (TextView) findViewById(R.id.DescText);
+        pickText = (TextView) findViewById(R.id.PickText);
+        dateText = (TextView) findViewById(R.id.DateText);
+        startText = (TextView) findViewById(R.id.StartText);
+        endText = (TextView) findViewById(R.id.EndText);
+
+        nameText.setTextColor(normColor);
+        descText.setTextColor(normColor);
+        pickText.setTextColor(normColor);
+        dateText.setTextColor(normColor);
+        startText.setTextColor(normColor);
+        endText.setTextColor(normColor);
+    }
+
     // Sets up text fields
     private void setUpInput() {
         //Sets up the views
-        nameView = (AutoCompleteTextView) findViewById(R.id.EventName);
-        descView = (AutoCompleteTextView) findViewById(R.id.EventDesc);
-        dateView = (AutoCompleteTextView) findViewById(R.id.EventDate);
-        startTimeView = (AutoCompleteTextView) findViewById(R.id.StartTime);
-        endTimeView = (AutoCompleteTextView) findViewById(R.id.EndTime);
+        nameView = (EditText) findViewById(R.id.EventName);
+        descView = (EditText) findViewById(R.id.EventDesc);
 
         //Grabs user input
         name = nameView.getText().toString();
         desc = descView.getText().toString();
-        date = dateView.getText().toString();
-        startTime = startTimeView.getText().toString();
-        endTime = endTimeView.getText().toString();
         type = typeSpinner.getSelectedItem().toString();
     }
 
@@ -152,47 +183,13 @@ public class CreateEventAct extends AppCompatActivity {
 
         //Error checking
         if (name.isEmpty()) {
-            nameText.setTextColor(errorColor);
+            nameView.setError("This field cannot be blank");
             valid = false;
-        }
-        else {
-            nameText.setTextColor(normColor);
         }
 
         if (desc.isEmpty()) {
-            descText.setTextColor(errorColor);
+            descView.setError("This field cannot be blank");
             valid = false;
-        }
-        else {
-            descText.setTextColor(normColor);
-        }
-
-        if (date.isEmpty()) {
-            dateText.setTextColor(errorColor);
-            valid = false;
-        }
-        else {
-            dateText.setTextColor(normColor);
-        }
-
-        if (startTime.isEmpty()) {
-            startText.setText("Enter a Start Time!");
-            startText.setTextColor(errorColor);
-            valid = false;
-        }
-        else {
-            startText.setText("Start Time");
-            startText.setTextColor(normColor);
-        }
-
-        if (endTime.isEmpty()) {
-            endText.setText("Enter an End Time!");
-            endText.setTextColor(errorColor);
-            valid = false;
-        }
-        else {
-            startText.setText("End Time");
-            endText.setTextColor(normColor);
         }
 
         if (type.equals(typeList.get(0))) {
@@ -201,21 +198,9 @@ public class CreateEventAct extends AppCompatActivity {
         }
 
         if (valid) {
-            //Eliminate non digits
-            startTime = startTime.replaceAll("[^\\d.]", "");
-            endTime = endTime.replaceAll("[^\\d.]", "");
-            date = date.replaceAll("[^\\d.]", "");
-
-            int startTimeInt = Integer.parseInt(startTime);
-            int endTimeInt = Integer.parseInt(endTime);
-            int dateInt = Integer.parseInt(date);
-
-            //event = new Event(name, desc, "creator id", 0, dateInt, startTimeInt, endTimeInt);
-
-            //event.setLocation(new LatLng(32.874447, -117.240914));
-
-            //event.pushToFirebase(((Project_18) getApplication()).getFB());
+            return valid;
         }
+
         return valid;
     }
 }

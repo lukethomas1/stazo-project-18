@@ -17,7 +17,9 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
+import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -32,10 +34,14 @@ public class LoginFrag extends Fragment {
     private TextView mTextDetails;
     private String userName;
     private String userId;
+    private Profile profile;
+    private AccessToken accessToken;
     ArrayList<String> myEvents = new ArrayList<String>();
     SharedPreferences sharedPreferences;
     Firebase fb;
 
+    /* ProfileTracker to receive notifications of profile changes */
+    private ProfileTracker mProfileTracker;
     /* For call back from activity or fragment */
     private CallbackManager mCallbackManager;
     /* Will tell us if the login is successful, fail, or error */
@@ -44,27 +50,36 @@ public class LoginFrag extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
 
-            AccessToken accessToken = loginResult.getAccessToken(); // Access token for FB
-            Profile profile = Profile.getCurrentProfile(); // gets the current profile, it could be null
+            if(Profile.getCurrentProfile() == null) {
+                mProfileTracker = new ProfileTracker() {
+                    @Override
+                    protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                        profile = currentProfile.getCurrentProfile(); // gets the current profile, it could be null
 
-            if (profile != null) {
+                        mProfileTracker.stopTracking();
+                        userName = profile.getName();
+                        userId = profile.getId();
+                        mTextDetails.setText("Welcome\n" + userName);
+
+                        // try logging in with the account
+                        tryAccount();
+                    }
+                };
+                mProfileTracker.startTracking();
+            }
+            else {
+                profile = Profile.getCurrentProfile(); // gets the current profile, it could be null
+                accessToken = loginResult.getAccessToken();
                 userName = profile.getName();
                 userId = profile.getId();
-                mTextDetails.setText("Welcome " + userName);
+                mTextDetails.setText("Welcome\n" + userName);
 
                 // try logging in with the account
                 tryAccount();
             }
-            else {
-                userName = "null";
-                userId = "null";
-                mTextDetails.setText("Welcome " + userName);
-            }
 
             Log.d("FB SDK", "Name: " + userName);
             Log.d("FB SDK", "UserId: " + userId);
-            System.out.println ("Name: " + userName);
-            System.out.println("UserId: " + userId);
 
         }
 
@@ -114,7 +129,6 @@ public class LoginFrag extends Fragment {
         Log.d("FB SDK", "onViewCreate Completed");
 
         setupTextDetails(view);
-
     }
 
     @Override
@@ -169,7 +183,6 @@ public class LoginFrag extends Fragment {
 
                     // remove listener
                     fb.child("Users").removeEventListener(this);
-
                 }
             }
 
@@ -184,7 +197,7 @@ public class LoginFrag extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId", userId);
-        editor.commit();
+        editor.apply();
     }
 
     private void goToMapAct(){
