@@ -43,68 +43,6 @@ public class LoginAct extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
-
-            /*getSupportFragmentManager().beginTransaction()
-                    .add(R.id.login_button, new ContentFragment()).commit();*/
         }
-
-                //   fb = ((Project_18) getApplication()).getFB();
     }
-/*
-    // tries to login with the current user_id
-    private void tryAccount() {
-        fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                // if the user exists, pull their data and goToMapAct
-                if (dataSnapshot.child(user_id).exists()) {
-
-                    // pull data
-                    user_name = ((String) dataSnapshot.child(user_id).child("name").getValue());
-                    myEvents = ((ArrayList<String>)
-                            dataSnapshot.child(user_id).child("my_events").getValue());
-                    User me = new User(user_name, user_id, myEvents);
-
-                    // save the user to the application
-                    ((Project_18) getApplication()).setMe(me);
-
-                    // go to the Map screen
-                    goToMapAct();
-                }
-
-                // if the user doesn't exist, remove this listener
-                else {
-                    fb.child("Users").removeEventListener(this);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-    }
-
-    // create and push new user to Firebase
-    private void createUser() {
-
-        // add user to firebase
-        User me = new User(user_name, user_id);
-        fb.child("Users").child(user_id).setValue(me);
-
-        // save the user to the application
-        ((Project_18) getApplication()).setMe(me);
-    }
-
-    // proceed to the Map activity
-
-*/
-
-    private void goToMapAct(){
-        startActivity(new Intent(this, MapAct.class));
-    }
-
-
-
-
 }

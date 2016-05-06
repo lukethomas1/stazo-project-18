@@ -26,6 +26,7 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class EventInfoAct extends AppCompatActivity {
 
@@ -38,13 +39,10 @@ public class EventInfoAct extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // comment this out later, necessary for testing
-        Firebase.setAndroidContext(this);
-
         Event tester = new Event("FBGM",
-                "The goal of this event is to disregard women and acquire riches." +
+                "The goal of this event is to disregard women and acquire capital." +
                         "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 15, 2034, 2034);
+                "Wiz Khalifa", 3, 42042000, 2034, 2054);
         //showInfo(tester);
 
 
@@ -59,26 +57,25 @@ public class EventInfoAct extends AppCompatActivity {
 
     // Pulls event info and delegates to showInfo to display the correct info
     private void grabEventInfo(final String event_id) {
-        fb.child("Events").child(event_id).addListenerForSingleValueEvent(
+        fb.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        // get the info, storage?
-                        HashMap<String, Object> event = dataSnapshot.getValue(
+                        // get the info for the event
+                        Event e = new Event(dataSnapshot.child("Events").
+                                child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
-                                });
-                        Event e = new Event(
-                                (String) event.get("name"),
-                                (String) event.get("description"),
-                                (String) event.get("creator_id"),
-                                ((Integer) event.get("type")).intValue(),
-                                ((Integer) event.get("date")).longValue(),
-                                ((Integer) event.get("startTime")).longValue(),
-                                ((Integer) event.get("endTime")).longValue());
+                                }));
+
+                        // get the info for the user
+                        User u = new User((HashMap<String, Object>) dataSnapshot.child("Users").
+                                child(e.getCreator_id()).getValue());
+
+                        System.out.println(((Project_18) getApplication()).getMe().getName());
 
                         // display event
-                        showInfo(e);
+                        showInfo(e, u);
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
@@ -92,7 +89,16 @@ public class EventInfoAct extends AppCompatActivity {
 
     // Called from grabEventInfo, programatically updates the textviews to display the correct info
     // Justin TODO Update the textviews in the layout to show the correct info
-    private void showInfo(Event e) {
+    private void showInfo(Event e, User u) {
+        //Initialize Local Variables
+        TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
+        TextView eventLength = (TextView) findViewById(R.id.eventLength);
+        TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
+        long startMinute = 0;
+        long startHour = 0;
+        long eventMinute = 0;
+        long eventHour = 0;
+        //End Initialization
 
         ImageView eventIcon = (ImageView) findViewById(R.id.eventIcon);
         int findType = e.getType();
@@ -123,30 +129,44 @@ public class EventInfoAct extends AppCompatActivity {
         // setting the event info text fields
         TextView eventName = (TextView) findViewById(R.id.eventName);
         eventName.setText(e.getName());
-        TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
         eventDescription.setText(e.getDescription());
-        TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
-        eventCreator.setText("Created by: " + e.getCreator_id());
+        if(eventHour > 0){
+            if(eventHour == 1){
+                eventLength.setText(eventHour + " hour and ");
+            } else {
+                eventLength.setText(eventHour + " hours and ");
+            }
+        }
+        if(eventMinute == 1){
+            eventLength.setText(eventLength.getText() + "" + eventMinute + " minute");
+        } else {
+            eventLength.setText(eventLength.getText() + "" + eventMinute + " minutes");
+        }
+        eventCreator.setText("Created by: " + u.getName());
         TextView eventTime = (TextView) findViewById(R.id.eventClock);
 
         //Conversion to turn a long (ex. 2014) into (8:14 PM)
         long hours = e.getStartTime()/100;
         long minutes = (e.getStartTime() - (hours*100));
         String timePeriod = "AM";
-        if(hours > 12){
+        if(startHour > 12){
             timePeriod = "PM";
-            hours = hours - 12;
+            startHour = startHour - 12;
         }
         eventTime.setText(hours + ":" + minutes + " " + timePeriod);
-
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
+        currTime.getTime();
         TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);
         if(timePeriod.equalsIgnoreCase("PM")){
-            eventTimeTo.setText(((hours + 12) - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
+            eventTimeTo.setText(((startHour + 12) - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
         } else {
-            eventTimeTo.setText((hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
+            eventTimeTo.setText((startHour - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
         }
+        System.out.println(currTime.HOUR + ":" + currTime.MINUTE);
     }
+    /*@Override
+    public void onBackPressed(){
 
+    }*/
 }
