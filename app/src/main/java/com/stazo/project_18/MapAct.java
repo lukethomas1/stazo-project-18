@@ -41,15 +41,6 @@ public class MapAct extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }); */
-
         // Initialize Firebase
         Firebase.setAndroidContext(this);
 
@@ -117,7 +108,7 @@ public class MapAct extends AppCompatActivity {
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
 
-        // Display all the events, should probably be called in onCreate
+        // Display all the events
         private void displayAllEvents() {
             // Clear existing markers on the map
             map.clear();
@@ -164,6 +155,7 @@ public class MapAct extends AppCompatActivity {
                     });
         }
 
+        // Displays a single event
         private void displayEvent(Event e) {
             // Set the marker's parameters
             MarkerOptions markerOpts = new MarkerOptions();
