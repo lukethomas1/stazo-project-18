@@ -17,12 +17,12 @@ import java.util.Calendar;
 @SuppressLint("ValidFragment")
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
-    private String dateTxt;
+    private String date;
+    EditText dateText;
 
-    EditText date;
-
-    public DatePickerFragment(EditText text) {
-        date = text;
+    public DatePickerFragment(EditText text, String date) {
+        dateText = text;
+        this.date = date;
     }
 
     @Override
@@ -38,8 +38,8 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        dateTxt = (month+1)+"/"+day+"/"+year;
+        date = (month+1)+"/"+day+"/"+year;
 
-        date.setText(dateTxt);
+        dateText.setText(date);
     }
 }

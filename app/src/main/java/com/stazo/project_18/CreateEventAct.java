@@ -23,15 +23,18 @@ public class CreateEventAct extends AppCompatActivity {
 
     private Event event = new Event();
     private List<String> typeList;
-    private final int normColor = Color.BLACK;
-    private final int errorColor = Color.RED;
+    int normColor = Color.BLACK;
+    int errorColor = Color.RED;
 
     //The events itself
     EditText nameView;
     EditText descView;
-    EditText datePicker;
+    EditText dateView;
+    EditText startTimeView;
+    EditText endTimeView;
+
     Spinner typeSpinner;
-    TextView nameText, descText, pickText;
+    TextView nameText, descText, pickText, dateText, startText, endText;
 
     //User inputted values
     String name;
@@ -49,15 +52,11 @@ public class CreateEventAct extends AppCompatActivity {
         // comment out later, needed for testing
         Firebase.setAndroidContext(this);
 
-        nameText = (TextView) findViewById(R.id.NameText);
-        descText = (TextView) findViewById(R.id.DescText);
-        pickText = (TextView) findViewById(R.id.PickText);
+        setUpTextColors();
 
-        nameText.setTextColor(normColor);
-        descText.setTextColor(normColor);
-        pickText.setTextColor(normColor);
-
-        datePicker = (EditText) findViewById(R.id.Date);
+        dateView = (EditText) findViewById(R.id.Date);
+        startTimeView = (EditText) findViewById(R.id.StartTime);
+        endTimeView = (EditText) findViewById(R.id.EndTime);
 
         //Sets up the Spinner for selecting an Event Type
         typeSpinner = (Spinner) findViewById(R.id.EventType);
@@ -86,14 +85,36 @@ public class CreateEventAct extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
 
-        datePicker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        dateView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showDatePickerDialog(datePicker);
-                }
+            public void onClick(View v) {
+                showDatePickerDialog(dateView, date);
             }
         });
+
+        startTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(startTimeView, startTime);
+            }
+        });
+
+        endTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(endTimeView, endTime);
+            }
+        });
+    }
+
+    public void showDatePickerDialog(EditText text, String date) {
+        DatePickerFragment newFragment = new DatePickerFragment(text, date);
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public void showTimePickerDialog(EditText text, String time) {
+        DialogFragment newFragment = new TimePickerFragment(text, time);
+        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     /* public void makeEvent(View view) {
@@ -126,6 +147,22 @@ public class CreateEventAct extends AppCompatActivity {
     // Navigate to the map activity
     private void goToLocSelectAct() {
         startActivity(new Intent(this, LocSelectAct.class).putExtra("eventToInit", event));
+    }
+
+    private void setUpTextColors() {
+        nameText = (TextView) findViewById(R.id.NameText);
+        descText = (TextView) findViewById(R.id.DescText);
+        pickText = (TextView) findViewById(R.id.PickText);
+        dateText = (TextView) findViewById(R.id.DateText);
+        startText = (TextView) findViewById(R.id.StartText);
+        endText = (TextView) findViewById(R.id.EndText);
+
+        nameText.setTextColor(normColor);
+        descText.setTextColor(normColor);
+        pickText.setTextColor(normColor);
+        dateText.setTextColor(normColor);
+        startText.setTextColor(normColor);
+        endText.setTextColor(normColor);
     }
 
     // Sets up text fields
@@ -165,10 +202,5 @@ public class CreateEventAct extends AppCompatActivity {
         }
 
         return valid;
-    }
-
-    public void showDatePickerDialog(EditText text) {
-        DatePickerFragment newFragment = new DatePickerFragment(text);
-        newFragment.show( getSupportFragmentManager(), "datePicker");
     }
 }

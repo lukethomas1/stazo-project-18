@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".InitialAct"
+            android:name=".CreateEventAct"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CreateEventAct" />
+        <!-- <activity android:name=".CreateEventAct" /-->
 
         <activity
             android:name=".MapAct"
