@@ -1,8 +1,14 @@
 package com.stazo.project_18;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -49,7 +55,6 @@ public class MapAct extends AppCompatActivity {
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
         mapFrag.getMapAsync(new MapHandler());
-
         /*placingEvent = new Event();
 
         placingEvent.setName("Roaring Revelle");
@@ -72,7 +77,6 @@ public class MapAct extends AppCompatActivity {
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable
             map = googleMap;
-
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
@@ -81,7 +85,6 @@ public class MapAct extends AppCompatActivity {
                     return true; // Do not perform default behavior: displaying InfoWindow
                 }
             });
-
             displayAllEvents();
 
             // Initial Camera Position
