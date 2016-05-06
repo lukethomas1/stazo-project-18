@@ -12,7 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.support.v4.app.DialogFragment;
 import com.firebase.client.Firebase;
-import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,29 +20,19 @@ import java.util.List;
  * @author Brian Chan
  */
 public class CreateEventAct extends AppCompatActivity {
+    private Event event = new Event(); //Create a new event object
+    private List<String> typeList; //Array of the types of events
+    int normColor = Color.BLACK; //Color of default text
+    int errorColor = Color.RED; //Color of error text
 
-    private Event event = new Event();
-    private List<String> typeList;
-    int normColor = Color.BLACK;
-    int errorColor = Color.RED;
-
-    //The events itself
-    EditText nameView;
-    EditText descView;
-    EditText dateView;
-    EditText startTimeView;
-    EditText endTimeView;
-
+    //The Text labeling the EditTexts
+    TextView nameText, descText, pickText, startDateText, endDateText, startText, endText;
+    //The EditText views for each input
+    EditText nameView, descView, startDateView, endDateView, startTimeView, endTimeView;
+    // The Spinner to pick what type the event is
     Spinner typeSpinner;
-    TextView nameText, descText, pickText, dateText, startText, endText;
-
-    //User inputted values
-    String name;
-    String desc;
-    String date;
-    String startTime;
-    String endTime;
-    String type;
+    //User inputted values, upload these to Firebase
+    String name, desc, startDate, endDate, startTime, endTime, type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +44,7 @@ public class CreateEventAct extends AppCompatActivity {
 
         setUpTextColors();
 
-        dateView = (EditText) findViewById(R.id.Date);
-        startTimeView = (EditText) findViewById(R.id.StartTime);
-        endTimeView = (EditText) findViewById(R.id.EndTime);
+        grabEditTextViews();
 
         //Sets up the Spinner for selecting an Event Type
         typeSpinner = (Spinner) findViewById(R.id.EventType);
@@ -85,10 +73,17 @@ public class CreateEventAct extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
 
-        dateView.setOnClickListener(new View.OnClickListener() {
+        startDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog(dateView, date);
+                showDatePickerDialog(startDateView, startDate);
+            }
+        });
+
+        endDateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(endDateView, endDate);
             }
         });
 
@@ -107,14 +102,97 @@ public class CreateEventAct extends AppCompatActivity {
         });
     }
 
+    /**
+     * Changes all of the TextViews to the color black.
+     */
+    private void setUpTextColors() {
+        nameText = (TextView) findViewById(R.id.NameText);
+        descText = (TextView) findViewById(R.id.DescText);
+        pickText = (TextView) findViewById(R.id.PickText);
+        startDateText = (TextView) findViewById(R.id.StartDateText);
+        endDateText = (TextView) findViewById(R.id.EndDateText);
+        startText = (TextView) findViewById(R.id.StartText);
+        endText = (TextView) findViewById(R.id.EndText);
+
+        nameText.setTextColor(normColor);
+        descText.setTextColor(normColor);
+        pickText.setTextColor(normColor);
+        startDateText.setTextColor(normColor);
+        endDateText.setTextColor(normColor);
+        startText.setTextColor(normColor);
+        endText.setTextColor(normColor);
+    }
+
+    /**
+     * Grabs all of the EditText Views for future use.
+     */
+    private void grabEditTextViews() {
+        nameView = (EditText) findViewById(R.id.EventName);
+        descView = (EditText) findViewById(R.id.EventDesc);
+        startDateView = (EditText) findViewById(R.id.StartDate);
+        endDateView = (EditText) findViewById(R.id.EndDate);
+        startTimeView = (EditText) findViewById(R.id.StartTime);
+        endTimeView = (EditText) findViewById(R.id.EndTime);
+    }
+
+    /**
+     * Shows a DatePicker fragment and sets up what happens when user enters a date.
+     * @param text The EditText view that we want to change when a date is inputted
+     * @param date The date string to store the date the user inputted
+     */
     public void showDatePickerDialog(EditText text, String date) {
         DatePickerFragment newFragment = new DatePickerFragment(text, date);
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * Shows a TimePicker fragment and sets up what happens after the user enters a time
+     * @param text The EditText we want to change to whatever time the user inputted
+     * @param time The time string to store the time the user inputted
+     */
     public void showTimePickerDialog(EditText text, String time) {
         DialogFragment newFragment = new TimePickerFragment(text, time);
         newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    /**
+     * Parses the user input.
+     */
+    private void setUpInput() {
+        //Grabs user input
+        name = nameView.getText().toString();
+        desc = descView.getText().toString();
+        type = typeSpinner.getSelectedItem().toString();
+    }
+
+    /**
+     * Checks if the user entered valid input.
+     * @return True/False depending on if we have valid input
+     */
+    private boolean checkInput() {
+        boolean valid = true;
+
+        //Error checking
+        if (name.isEmpty()) {
+            nameView.setError("This field cannot be blank");
+            valid = false;
+        }
+
+        if (desc.isEmpty()) {
+            descView.setError("This field cannot be blank");
+            valid = false;
+        }
+
+        if (type.equals(typeList.get(0))) {
+            pickText.setTextColor(errorColor);
+            valid = false;
+        }
+
+        if (valid) {
+            return valid;
+        }
+
+        return valid;
     }
 
     /* public void makeEvent(View view) {
@@ -144,63 +222,10 @@ public class CreateEventAct extends AppCompatActivity {
         checkInput();
     }
 
-    // Navigate to the map activity
+    /**
+     * Navigate to the map activity.
+     */
     private void goToLocSelectAct() {
         startActivity(new Intent(this, LocSelectAct.class).putExtra("eventToInit", event));
-    }
-
-    private void setUpTextColors() {
-        nameText = (TextView) findViewById(R.id.NameText);
-        descText = (TextView) findViewById(R.id.DescText);
-        pickText = (TextView) findViewById(R.id.PickText);
-        dateText = (TextView) findViewById(R.id.DateText);
-        startText = (TextView) findViewById(R.id.StartText);
-        endText = (TextView) findViewById(R.id.EndText);
-
-        nameText.setTextColor(normColor);
-        descText.setTextColor(normColor);
-        pickText.setTextColor(normColor);
-        dateText.setTextColor(normColor);
-        startText.setTextColor(normColor);
-        endText.setTextColor(normColor);
-    }
-
-    // Sets up text fields
-    private void setUpInput() {
-        //Sets up the views
-        nameView = (EditText) findViewById(R.id.EventName);
-        descView = (EditText) findViewById(R.id.EventDesc);
-
-        //Grabs user input
-        name = nameView.getText().toString();
-        desc = descView.getText().toString();
-        type = typeSpinner.getSelectedItem().toString();
-    }
-
-    // Checks if text fields are set properly
-    private boolean checkInput() {
-        boolean valid = true;
-
-        //Error checking
-        if (name.isEmpty()) {
-            nameView.setError("This field cannot be blank");
-            valid = false;
-        }
-
-        if (desc.isEmpty()) {
-            descView.setError("This field cannot be blank");
-            valid = false;
-        }
-
-        if (type.equals(typeList.get(0))) {
-            pickText.setTextColor(errorColor);
-            valid = false;
-        }
-
-        if (valid) {
-            return valid;
-        }
-
-        return valid;
     }
 }

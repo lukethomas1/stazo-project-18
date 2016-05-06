@@ -12,14 +12,19 @@ import android.widget.EditText;
 import java.util.Calendar;
 
 /**
- * Created by Brian on 5/5/2016.
+ * Created by Brian Chan on 5/5/2016.
  */
 @SuppressLint("ValidFragment")
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
-    private String date;
-    EditText dateText;
+    private String date; //The date the user inputted
+    EditText dateText; //The text we want to update once the user inputs a date
 
+    /**
+     * Constructor for a DatePicker fragment.
+     * @param text The EditText we want to update
+     * @param date The date the user inputted
+     */
     public DatePickerFragment(EditText text, String date) {
         dateText = text;
         this.date = date;
@@ -27,7 +32,7 @@ public class DatePickerFragment extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current date as the default date in the picker
+        // Use the current startDate as the default startDate in the picker
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
