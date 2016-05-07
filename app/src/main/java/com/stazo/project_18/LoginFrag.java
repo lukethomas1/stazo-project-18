@@ -46,6 +46,7 @@ public class LoginFrag extends Fragment {
     private CallbackManager mCallbackManager;
     /* Will tell us if the login is successful, fail, or error */
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
+
         @Override
         public void onSuccess(LoginResult loginResult) {
 
