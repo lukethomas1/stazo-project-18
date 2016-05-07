@@ -71,6 +71,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".InitialAct"></activity>
         -->
+        onBar"/>
     </application>
 
 </manifest>

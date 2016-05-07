@@ -17,8 +17,14 @@ import java.util.List;
 /**
  * Created by ericzhang on 5/5/16.
  */
+
+/**
+ * Main activity with the tab switching through ViewPager.
+ * Add fragments in the setupViewPager method and follow the TestFrag1 and 2 for example
+ * Fragments are different than FragmentActivities btw! Must use onCreateView and return a view for
+ * it to be displayed (as opposed to onCreate and setContentView) as it lives inside the main activity
+ */
 public class MainAct extends AppCompatActivity{
-    private FragmentTabHost mTabHost;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -48,8 +54,13 @@ public class MainAct extends AppCompatActivity{
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        //ADD FRAGMENTS TO HERE
-        //adapter.addFragment(new FRAGMENTCLASS(), "NAME");
+        //-----> REPLACE FRAGMENTS HERE <---------------
+        adapter.addFragment(new TestFrag1(), "ERIC");
+        adapter.addFragment(new TestFrag2(), "SO SWAG");
+        adapter.addFragment(new TestFrag1(), "I");
+        adapter.addFragment(new TestFrag2(), "AGREE");
+
+
         viewPager.setAdapter(adapter);
     }
 
