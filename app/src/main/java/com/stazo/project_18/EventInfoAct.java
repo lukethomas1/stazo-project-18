@@ -95,11 +95,19 @@ public class EventInfoAct extends AppCompatActivity {
     // Justin TODO Update the textviews in the layout to show the correct info
     private void showInfo(Event e, User u) {
         //Initialize Local Variables
+        TextView eventDate = (TextView) findViewById(R.id.eventDate);
+        TextView eventName = (TextView) findViewById(R.id.eventName);
         TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
-        long startMinute = 0;
+        TextView eventTime = (TextView) findViewById(R.id.eventClock);
         long startHour = 0;
+        long endHour = 0;
+        long startMinute = 0;
+        long endMinute = 0;
+        long eventDay = 0;
+        long eventMonth = 0;
+        long eventYear = 0;
         long eventMinute = 0;
         long eventHour = 0;
         //End Initialization
@@ -127,11 +135,27 @@ public class EventInfoAct extends AppCompatActivity {
                 break;
         }
 
+        startHour = e.getStartTime()/100;
+        startMinute = (e.getStartTime() - (startHour*100));
+        endHour = e.getEndTime()/100;
+        endMinute = (e.getEndTime() - (endHour*100));
+
+        eventHour = endHour - startHour;
+        eventMinute = endMinute - startMinute;
+        if(eventMinute < 0){
+            eventHour--;
+            eventMinute = eventMinute + 60;
+        }
+
+        eventMonth = e.getDate()/1000000;
+        eventDay = e.getDate()/10000 - (eventMonth * 100);
+        eventYear = e.getDate() - ((eventMonth * 1000000)  + (eventDay * 10000));
+
+        eventDate.setText(eventMonth + "/" + eventDay + "/" + eventYear);
         // setting the icon
         eventIcon.setImageDrawable(d);
 
         // setting the event info text fields
-        TextView eventName = (TextView) findViewById(R.id.eventName);
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
         if(eventHour > 0){
@@ -147,7 +171,6 @@ public class EventInfoAct extends AppCompatActivity {
             eventLength.setText(eventLength.getText() + "" + eventMinute + " minutes");
         }
         eventCreator.setText("Created by: " + u.getName());
-        TextView eventTime = (TextView) findViewById(R.id.eventClock);
 
         //Conversion to turn a long (ex. 2014) into (8:14 PM)
         long hours = e.getStartTime()/100;
@@ -162,12 +185,15 @@ public class EventInfoAct extends AppCompatActivity {
         Calendar currTime = Calendar.getInstance();
         currTime.getTime();
         TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);
-        if(timePeriod.equalsIgnoreCase("PM")){
-            eventTimeTo.setText(((startHour + 12) - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+        if(eventDay - currTime.DAY_OF_MONTH > 0){
+            eventTimeTo.setText(eventDay - currTime.DAY_OF_MONTH + " d");
         } else {
-            eventTimeTo.setText((startHour - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+            if (timePeriod.equalsIgnoreCase("PM")) {
+                eventTimeTo.setText(((startHour + 12) - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+            } else {
+                eventTimeTo.setText((startHour - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+            }
         }
-        System.out.println(currTime.HOUR + ":" + currTime.MINUTE);
     }
     /*@Override
     public void onBackPressed(){
