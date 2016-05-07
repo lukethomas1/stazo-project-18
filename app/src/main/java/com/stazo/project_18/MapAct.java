@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.PermissionRequest;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.security.acl.Permission;
 import java.util.HashMap;
 
 public class MapAct extends AppCompatActivity {
@@ -38,7 +42,6 @@ public class MapAct extends AppCompatActivity {
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +87,21 @@ public class MapAct extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private class MapHandler extends FragmentActivity implements OnMapReadyCallback
+    private class MapHandler extends FragmentActivity implements OnMapReadyCallback,
+            ActivityCompat.OnRequestPermissionsResultCallback
     {
         private HashMap<String, String> idLookupHM = new HashMap<>();
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                final boolean enabled = true;
+            } else {
+                // Show rationale and request permission.
+            }
+        }
 
         public void onMapReady(GoogleMap googleMap) {
             // Initialize global variable

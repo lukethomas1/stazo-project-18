@@ -1,7 +1,10 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
@@ -20,7 +23,7 @@ public class Event implements Parcelable {
     private String event_id = "yoo";
     private int type;
     private int popularity = 0;
-    //private String startDate, endDate, startTime, endTime;
+    private int reports = 0;
     private Date startDate;
     private Date endDate;
     private LatLng location;
@@ -90,10 +93,13 @@ public class Event implements Parcelable {
         this.description = (String) eventMap.get("description");
         this.creator_id = (String) eventMap.get("creator_id");
         this.type = ((Integer) eventMap.get("type")).intValue();
-        this.startDate = makeDate((HashMap<String, Object>) eventMap.get("startDate"));
-        this.endDate = makeDate((HashMap<String, Object>) eventMap.get("endDate"));
-        this.location = new LatLng((double) eventMap.get("latitude"),
-                (double)eventMap.get("longitude"));
+        //this.startDate = makeDate((HashMap<String, Object>) eventMap.get("startDate"));
+        //this.endDate = makeDate((HashMap<String, Object>) eventMap.get("endDate"));
+        this.startDate = new Date((Long) eventMap.get("startDate"));
+        this.endDate = new Date((Long) eventMap.get("endDate"));
+        HashMap<String, Object> locMap = ((HashMap<String,Object>) eventMap.get("location"));
+        this.location = new LatLng((double) locMap.get("latitude"),
+                (double) locMap.get("longitude"));
     }
 
     // makes a Date object out of a hashmap
@@ -148,6 +154,8 @@ public class Event implements Parcelable {
         this.popularity = popularity;
     }
 
+    public void setReports(int r) { this.reports = r; }
+
     public void setStartDate(Date date) {
         this.startDate = date;
     }
@@ -181,6 +189,8 @@ public class Event implements Parcelable {
     public int getPopularity() {
         return popularity;
     }
+
+    public int getReports() { return reports; }
 
     public Date getStartDate() {
         return startDate;
@@ -222,6 +232,7 @@ public class Event implements Parcelable {
         out.writeString(getEvent_id());
         out.writeInt(getType());
         out.writeInt(getPopularity());
+        out.writeInt(getReports());
 
         out.writeInt(getStartYear());
         out.writeInt(getStartMonth());
