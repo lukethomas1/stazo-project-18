@@ -27,7 +27,7 @@ public class ListAct extends AppCompatActivity {
         // This is where the events will be loaded into the arraylist from firebase
 
         ArrayList<Event> eventList = new ArrayList<Event>();
-        Event tester = new Event("FBGM",
+        /*Event tester = new Event("FBGM",
                 "The goal of this event is to disregard women and acquire riches." +
                         "We will be offering free bro-tanks and snapbacks.",
                 "Wiz Khalifa", 3, 15, 2034, 2034);
@@ -64,6 +64,6 @@ public class ListAct extends AppCompatActivity {
             Button evtButton = new Button(this);
             evtButton.setText(evt.getName());
             listLayout.addView(evtButton, listParams);
-        }
+        }*/
     }
 }
