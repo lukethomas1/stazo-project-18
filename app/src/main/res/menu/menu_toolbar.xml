@@ -7,12 +7,12 @@
         android:id="@+id/game"
         android:icon="@drawable/gameicon"
         app:showAsAction="ifRoom"
-        android:title="Compose">
+        android:title="game">
     </item>
     <item
         android:id="@+id/food"
         android:icon="@drawable/foodicon"
         app:showAsAction="ifRoom|withText"
-        android:title="Profile">
+        android:title="food">
     </item>
 </menu>
