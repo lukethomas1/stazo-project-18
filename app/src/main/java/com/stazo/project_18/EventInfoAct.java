@@ -40,10 +40,10 @@ public class EventInfoAct extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Event tester = new Event("FBGM",
+        /*Event tester = new Event("FBGM",
                 "The goal of this event is to disregard women and acquire capital." +
                         "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 42042000, 2034, 2054);
+                "Wiz Khalifa", 3, "42042000", "6969", "2034", "2054");*/
         //showInfo(tester);
 
 
@@ -173,8 +173,8 @@ public class EventInfoAct extends AppCompatActivity {
         eventCreator.setText("Created by: " + u.getName());
 
         //Conversion to turn a long (ex. 2014) into (8:14 PM)
-        long hours = e.getStartTime()/100;
-        long minutes = (e.getStartTime() - (hours*100));
+        long hours = e.getStartHour();
+        long minutes = e.getStartMinute();
         String timePeriod = "AM";
         if(startHour > 12){
             timePeriod = "PM";

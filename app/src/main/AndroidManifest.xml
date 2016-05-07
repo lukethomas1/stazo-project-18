@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!-- Give the map_overview access to the user's location -->
-    <users-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <application
         android:name=".Project_18"
@@ -29,7 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateEventAct" />
+
+        <!--<activity android:name=".CreateEventAct" />-->
 
         <activity
             android:name=".MapAct"
@@ -44,6 +46,8 @@
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".EventInfoAct" />
+        <activity android:name=".CreateEventAct"/>
+
         <!-- for FB Login -->
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -67,6 +71,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".InitialAct"></activity>
         -->
+        onBar"/>
     </application>
 
 </manifest>

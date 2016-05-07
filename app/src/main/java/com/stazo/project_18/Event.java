@@ -1,12 +1,16 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -19,7 +23,9 @@ public class Event implements Parcelable {
     private String event_id = "yoo";
     private int type;
     private int popularity = 0;
-    private long date, startTime, endTime;
+    private int reports = 0;
+    private Date startDate;
+    private Date endDate;
     private LatLng location;
 
     // Extracts the Event from a Parcel for CreateEventAct -> LocSelectAct
@@ -46,33 +52,38 @@ public class Event implements Parcelable {
         setEvent_id(in.readString());
         setType(in.readInt());
         setPopularity(in.readInt());
-        setDate(in.readLong());
-        setStartTime(in.readLong());
-        setEndTime(in.readLong());
+        setStartDate(new Date(in.readInt(),
+                in.readInt(),
+                in.readInt(),
+                in.readInt(),
+                in.readInt()));
+        setEndDate(new Date(in.readInt(),
+                in.readInt(),
+                in.readInt(),
+                in.readInt(),
+                in.readInt()));
     }
 
     // constructor without location
     public Event(String name, String description, String creator_id,
-                 int type, long date, long startTime, long endTime) {
+                 int type, Date startDate, Date endDate) {
         this.name = name;
         this.description = description;
         this.creator_id = creator_id;
         this.type = type;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     // constructor with location
-    public Event(String name, String description, String creator_id,
-                 int type, long date, long startTime, long endTime, LatLng location) {
+    public Event(String name, String description, String creator_id, int type,
+                 Date startDate, Date endDate, LatLng location) {
         this.name = name;
         this.description = description;
         this.creator_id = creator_id;
         this.type = type;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.location = location;
     }
 
@@ -82,9 +93,23 @@ public class Event implements Parcelable {
         this.description = (String) eventMap.get("description");
         this.creator_id = (String) eventMap.get("creator_id");
         this.type = ((Integer) eventMap.get("type")).intValue();
-        this.date = ((Integer) eventMap.get("date")).longValue();
-        this.startTime = ((Integer) eventMap.get("startTime")).longValue();
-        this.endTime = ((Integer) eventMap.get("endTime")).longValue();
+        //this.startDate = makeDate((HashMap<String, Object>) eventMap.get("startDate"));
+        //this.endDate = makeDate((HashMap<String, Object>) eventMap.get("endDate"));
+        this.startDate = new Date((Long) eventMap.get("startDate"));
+        this.endDate = new Date((Long) eventMap.get("endDate"));
+        HashMap<String, Object> locMap = ((HashMap<String,Object>) eventMap.get("location"));
+        this.location = new LatLng((double) locMap.get("latitude"),
+                (double) locMap.get("longitude"));
+    }
+
+    // makes a Date object out of a hashmap
+    public Date makeDate(HashMap<String,Object> dateMap) {
+        return new Date(
+                ((Integer) dateMap.get("year")).intValue(),
+                ((Integer) dateMap.get("month")).intValue(),
+                ((Integer) dateMap.get("date")).intValue(),
+                ((Integer) dateMap.get("hrs")).intValue(),
+                ((Integer) dateMap.get("min")).intValue());
     }
 
     /**
@@ -129,17 +154,13 @@ public class Event implements Parcelable {
         this.popularity = popularity;
     }
 
-    public void setDate(long date) {
-        this.date = date;
+    public void setReports(int r) { this.reports = r; }
+
+    public void setStartDate(Date date) {
+        this.startDate = date;
     }
 
-    public void setStartTime(long time) {
-        this.startTime = time;
-    }
-
-    public void setEndTime(long time) {
-        this.endTime = time;
-    }
+    public void setEndDate(Date date) { this.endDate = date;}
 
     public String getName() {
         return name;
@@ -169,17 +190,35 @@ public class Event implements Parcelable {
         return popularity;
     }
 
-    public long getDate() {
-        return date;
+    public int getReports() { return reports; }
+
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public int getStartYear() { return startDate.getYear();}
+
+    public int getStartMonth() { return startDate.getMonth();}
+
+    public int getStartDay() { return startDate.getDay();}
+
+    public int getStartHour() { return startDate.getHours();}
+
+    public int getStartMinute() { return startDate.getMinutes();}
+
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public long getEndTime() {
-        return endTime;
-    }
+    public int getEndYear() { return endDate.getYear();}
+
+    public int getEndMonth() { return endDate.getMonth();}
+
+    public int getEndDay() { return endDate.getDay();}
+
+    public int getEndHour() { return endDate.getHours();}
+
+    public int getEndMinute() { return endDate.getMinutes();}
 
     /**
      * Packages the Event in a Parcel for the CreateEventAct -> LocSelectAct Intent.
@@ -193,9 +232,20 @@ public class Event implements Parcelable {
         out.writeString(getEvent_id());
         out.writeInt(getType());
         out.writeInt(getPopularity());
-        out.writeLong(getDate());
-        out.writeLong(getStartTime());
-        out.writeLong(getEndTime());
+        out.writeInt(getReports());
+
+        out.writeInt(getStartYear());
+        out.writeInt(getStartMonth());
+        out.writeInt(getStartDay());
+        out.writeInt(getStartHour());
+        out.writeInt(getStartMinute());
+
+        out.writeInt(getEndYear());
+        out.writeInt(getEndMonth());
+        out.writeInt(getEndDay());
+        out.writeInt(getEndHour());
+        out.writeInt(getEndMinute());
+
     }
 
     public int describeContents() {
