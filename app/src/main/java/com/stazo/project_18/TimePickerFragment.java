@@ -20,8 +20,7 @@ public class TimePickerFragment extends DialogFragment
     private String time;
     EditText text;
 
-    public TimePickerFragment(EditText text, String time) {
-        this.time = time;
+    public TimePickerFragment(EditText text) {
         this.text = text;
     }
 
@@ -41,9 +40,16 @@ public class TimePickerFragment extends DialogFragment
         String hour = "" + hourOfDay;
         String min = "" + minute;
 
+        if (minute < 10) {
+            min = "0" + minute;
+        }
+
         if (hourOfDay < 12) {
             if (hourOfDay == 0) {
                 hour = "12";
+            }
+            else if (hourOfDay < 10) {
+                hour = "0" + hourOfDay;
             }
             if (minute == 0) {
                 min = "00";
@@ -53,6 +59,9 @@ public class TimePickerFragment extends DialogFragment
         else {
             if (hourOfDay == 12) {
                 hour = "12";
+            }
+            else if (hourOfDay - 12 < 10){
+                hour = "0" + (hourOfDay - 12);
             }
             else {
                 hour = "" + (hourOfDay - 12);

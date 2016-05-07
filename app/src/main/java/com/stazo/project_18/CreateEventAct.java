@@ -2,6 +2,7 @@ package com.stazo.project_18;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +12,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
+
 import com.firebase.client.Firebase;
+import com.firebase.client.snapshot.BooleanNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,10 @@ public class CreateEventAct extends AppCompatActivity {
     EditText nameView, descView, startDateView, endDateView, startTimeView, endTimeView;
     // The Spinner to pick what type the event is
     Spinner typeSpinner;
+
+    DatePickerFragment startDateFrag, endDateFrag;
+    TimePickerFragment startTimeFrag, endTimeFrag;
+
     //User inputted values, upload these to Firebase
     String name, desc, startDate, endDate, startTime, endTime, type;
 
@@ -76,28 +84,40 @@ public class CreateEventAct extends AppCompatActivity {
         startDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog(startDateView, startDate);
+                startDateFrag = new DatePickerFragment(startDateView);
+                startDateFrag.show(getSupportFragmentManager(), "datePicker");
+
+                startDateView.setError(null);
             }
         });
 
         endDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog(endDateView, endDate);
+                endDateFrag = new DatePickerFragment(endDateView);
+                endDateFrag.show(getSupportFragmentManager(), "datePicker");
+
+                endDateView.setError(null);
             }
         });
 
         startTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePickerDialog(startTimeView, startTime);
+                startTimeFrag = new TimePickerFragment(startTimeView);
+                startTimeFrag.show(getSupportFragmentManager(), "timePicker");
+
+                startTimeView.setError(null);
             }
         });
 
         endTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePickerDialog(endTimeView, endTime);
+                endTimeFrag = new TimePickerFragment(endTimeView);
+                endTimeFrag.show(getSupportFragmentManager(), "timePicker");
+
+                endTimeView.setError(null);
             }
         });
     }
@@ -136,26 +156,6 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     /**
-     * Shows a DatePicker fragment and sets up what happens when user enters a date.
-     * @param text The EditText view that we want to change when a date is inputted
-     * @param date The date string to store the date the user inputted
-     */
-    public void showDatePickerDialog(EditText text, String date) {
-        DatePickerFragment newFragment = new DatePickerFragment(text, date);
-        newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    /**
-     * Shows a TimePicker fragment and sets up what happens after the user enters a time
-     * @param text The EditText we want to change to whatever time the user inputted
-     * @param time The time string to store the time the user inputted
-     */
-    public void showTimePickerDialog(EditText text, String time) {
-        DialogFragment newFragment = new TimePickerFragment(text, time);
-        newFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
-    /**
      * Parses the user input.
      */
     private void setUpInput() {
@@ -163,6 +163,10 @@ public class CreateEventAct extends AppCompatActivity {
         name = nameView.getText().toString();
         desc = descView.getText().toString();
         type = typeSpinner.getSelectedItem().toString();
+        startDate = startDateView.getText().toString();
+        endDate = endDateView.getText().toString();
+        startTime = startTimeView.getText().toString();
+        endTime = endTimeView.getText().toString();
     }
 
     /**
@@ -171,21 +175,56 @@ public class CreateEventAct extends AppCompatActivity {
      */
     private boolean checkInput() {
         boolean valid = true;
+        String blankView = "This field cannot be left blank";
 
         //Error checking
         if (name.isEmpty()) {
-            nameView.setError("This field cannot be blank");
+            nameView.setError(blankView);
             valid = false;
         }
 
         if (desc.isEmpty()) {
-            descView.setError("This field cannot be blank");
+            descView.setError(blankView);
             valid = false;
         }
 
         if (type.equals(typeList.get(0))) {
             pickText.setTextColor(errorColor);
             valid = false;
+        }
+
+        //Checks if the user inputted a date at all
+        if (startDateView.getText().toString().matches("")) {
+            startDateView.setError(blankView);
+            valid = false;
+        }
+        else {
+            startDateView.setError(null);
+        }
+
+        if (endDateView.getText().toString().matches("")) {
+            endDateView.setError(blankView);
+            valid = false;
+        }
+        else {
+            endDateView.setError(null);
+        }
+
+        //Checks if the user entered a time at all
+        if (startTimeView.getText().toString().matches("")) {
+            startTimeView.setError(blankView);
+            valid = false;
+        }
+        else {
+            startTimeView.setError(null);
+        }
+
+        if (endTimeView.getText().toString().matches("")) {
+            endTimeView.setError(blankView);
+            valid = false;
+        }
+        else {
+            endTimeView.setError(null);
         }
 
         if (valid) {
@@ -217,9 +256,15 @@ public class CreateEventAct extends AppCompatActivity {
         }
     } */
 
+    /**
+     * Called when the Create Event button is pressed.
+     * @param view The view we are currently in
+     */
     public void makeEvent(View view) {
+        Boolean valid;
+
         setUpInput();
-        checkInput();
+        valid = checkInput();
     }
 
     /**
