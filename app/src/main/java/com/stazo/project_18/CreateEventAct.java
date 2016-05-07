@@ -177,6 +177,8 @@ public class CreateEventAct extends AppCompatActivity {
     private boolean checkInput() {
         boolean valid = true;
         String blankView = "This field cannot be left blank";
+        String dateAfter = "The end date has to be after the start date";
+        String timeAfter = "The end time has to be after the start time";
 
         //Error checking
         if (name.isEmpty()) {
@@ -228,8 +230,31 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        if (valid) {
-            return valid;
+        if (!startDate.isEmpty() && !endDate.isEmpty()) {
+            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
+                    startDateFrag.getYear() > endDateFrag.getYear()) {
+                endDateView.setError(dateAfter);
+                valid = false;
+            } else if (startDateFrag.getDay() > endDateFrag.getDay()) {
+                endDateView.setError(dateAfter);
+                valid = false;
+            } else {
+                endDateView.setError(null);
+            }
+
+            if (!startTime.isEmpty() && !endTime.isEmpty() &&
+                    startDateFrag.getDay() == endDateFrag.getDay() &&
+                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
+                    startDateFrag.getYear() == endDateFrag.getYear()) {
+                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
+                    endTimeView.setError(timeAfter);
+                    valid = false;
+                }
+                else if (startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
+                    endTimeView.setError(timeAfter);
+                    valid = false;
+                }
+            }
         }
 
         return valid;
@@ -240,11 +265,10 @@ public class CreateEventAct extends AppCompatActivity {
      * @param view The view we are currently in
      */
     public void makeEvent(View view) {
-
         setUpInput();
+
         if (checkInput()) {
-            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(),
-                    0,
+            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(), 0,
                     new Date(
                     startDateFrag.getYear(),
                     startDateFrag.getMonth(),
