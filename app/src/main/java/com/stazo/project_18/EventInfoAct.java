@@ -24,8 +24,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -102,14 +104,7 @@ public class EventInfoAct extends AppCompatActivity {
         TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
         TextView eventTime = (TextView) findViewById(R.id.eventClock);
         long startHour = 0;
-        long endHour = 0;
         long startMinute = 0;
-        long endMinute = 0;
-        long eventDay = 0;
-        long eventMonth = 0;
-        long eventYear = 0;
-        long eventMinute = 0;
-        long eventHour = 0;
         //End Initialization
 
         ImageView eventIcon = (ImageView) findViewById(R.id.eventIcon);
@@ -134,30 +129,22 @@ public class EventInfoAct extends AppCompatActivity {
             case 6:
                 break;
         }
-
-        startHour = e.getStartTime()/100;
-        startMinute = (e.getStartTime() - (startHour*100));
-        endHour = e.getEndTime()/100;
-        endMinute = (e.getEndTime() - (endHour*100));
-
-        eventHour = endHour - startHour;
-        eventMinute = endMinute - startMinute;
-        if(eventMinute < 0){
-            eventHour--;
-            eventMinute = eventMinute + 60;
-        }
-
-        eventMonth = e.getDate()/1000000;
-        eventDay = e.getDate()/10000 - (eventMonth * 100);
-        eventYear = e.getDate() - ((eventMonth * 1000000)  + (eventDay * 10000));
-
-        eventDate.setText(eventMonth + "/" + eventDay + "/" + eventYear);
         // setting the icon
         eventIcon.setImageDrawable(d);
 
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
+        int eventHour = e.getEndHour() - e.getStartHour();
+        int eventMinute = e.getEndMinute() - e.getStartMinute();
+        if(eventMinute < 0){
+            eventHour--;
+            eventMinute += 60;
+        }
+
+        eventDate.setText(e.getStartMonth() + "/" + e.getStartDay() + "/" + e.getStartYear() + " - " +
+                e.getEndMonth() + "/" + e.getEndDay() + "/" + e.getEndYear());
+
         if(eventHour > 0){
             if(eventHour == 1){
                 eventLength.setText(eventHour + " hour and ");
@@ -176,22 +163,25 @@ public class EventInfoAct extends AppCompatActivity {
         long hours = e.getStartHour();
         long minutes = e.getStartMinute();
         String timePeriod = "AM";
-        if(startHour > 12){
+        if(hours > 12){
             timePeriod = "PM";
-            startHour = startHour - 12;
+            hours = hours - 12;
         }
         eventTime.setText(hours + ":" + minutes + " " + timePeriod);
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
-        currTime.getTime();
         TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);
-        if(eventDay - currTime.DAY_OF_MONTH > 0){
-            eventTimeTo.setText(eventDay - currTime.DAY_OF_MONTH + " d");
+        if (currTime.get(Calendar.MINUTE) > minutes) {
+            minutes = minutes + 60;
+            hours--;
+        }
+        if((hours - currTime.get(Calendar.HOUR) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
+            eventTimeTo.setText("Started!");
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
-                eventTimeTo.setText(((startHour + 12) - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+                eventTimeTo.setText((hours - currTime.get(Calendar.HOUR)) + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
-                eventTimeTo.setText((startHour - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+                eventTimeTo.setText((hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
             }
         }
     }
