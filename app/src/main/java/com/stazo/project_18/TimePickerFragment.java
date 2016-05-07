@@ -18,6 +18,7 @@ import java.util.Calendar;
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
     private String time;
+    private int hourInt, minInt;
     EditText text;
 
     public TimePickerFragment(EditText text) {
@@ -39,6 +40,8 @@ public class TimePickerFragment extends DialogFragment
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String hour = "" + hourOfDay;
         String min = "" + minute;
+        hourInt = hourOfDay;
+        minInt = minute;
 
         if (minute < 10) {
             min = "0" + minute;
@@ -74,4 +77,8 @@ public class TimePickerFragment extends DialogFragment
 
         text.setText(time);
     }
+
+    public int getHourInt() { return hourInt; }
+    public int getMinInt() { return minInt; }
+
 }

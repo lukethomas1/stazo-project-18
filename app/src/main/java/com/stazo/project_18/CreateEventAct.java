@@ -18,6 +18,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.snapshot.BooleanNode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -234,37 +235,31 @@ public class CreateEventAct extends AppCompatActivity {
         return valid;
     }
 
-    /* public void makeEvent(View view) {
-        boolean valid = true; //If the event is valid
-
-        setUpInput();
-
-        if (checkInput()) {
-            //Eliminate non digits
-
-            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(),
-                    0, dateInt, startTimeInt, endTimeInt);
-
-            // Location is cafe v by default, will add location selection later
-            event.setLocation(new LatLng(32.886030, -117.242590));
-
-            // Push the event to firebase
-            //event.pushToFirebase(((Project_18) getApplication()).getFB());
-
-            // Return to the Map screen now that we've finished
-            goToLocSelectAct();
-        }
-    } */
-
     /**
      * Called when the Create Event button is pressed.
      * @param view The view we are currently in
      */
     public void makeEvent(View view) {
-        Boolean valid;
 
         setUpInput();
-        valid = checkInput();
+        if (checkInput()) {
+            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(),
+                    0,
+                    new Date(
+                    startDateFrag.getYear(),
+                    startDateFrag.getMonth(),
+                    startDateFrag.getDay(),
+                    startTimeFrag.getHourInt(),
+                    startTimeFrag.getMinInt()),
+                    new Date(
+                    endDateFrag.getYear(),
+                    endDateFrag.getMonth(),
+                    endDateFrag.getDay(),
+                    endTimeFrag.getHourInt(),
+                    endTimeFrag.getMinInt())
+            );
+            goToLocSelectAct();
+        }
     }
 
     /**
