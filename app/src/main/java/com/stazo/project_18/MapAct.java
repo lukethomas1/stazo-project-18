@@ -13,8 +13,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.PermissionRequest;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,13 +45,33 @@ public class MapAct extends AppCompatActivity {
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_overview);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        //toolbar stuff
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Toast.makeText(getApplicationContext(),""+(getSupportActionBar()==null),Toast.LENGTH_LONG).show();
+        getSupportActionBar().setTitle("toolbar title");
+        getSupportActionBar().setSubtitle("subtitle");
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()){
+                    case R.id.game:
+                        Toast.makeText(getApplicationContext(),"clicked game icon!", Toast.LENGTH_SHORT).show();
+                        return true;
+                }
+
+                return false;
+            }
+        });
 
         // Initialize Firebase
         Firebase.setAndroidContext(this);
@@ -70,6 +93,13 @@ public class MapAct extends AppCompatActivity {
         //displayAllEvents();
     }
 
+    // Menu icons are inflated just as they were with actionbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
 
     public void goToCreateEvent(View view) {
         startActivity(new Intent(this, CreateEventAct.class));
