@@ -24,8 +24,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -95,13 +97,14 @@ public class EventInfoAct extends AppCompatActivity {
     // Justin TODO Update the textviews in the layout to show the correct info
     private void showInfo(Event e, User u) {
         //Initialize Local Variables
+        TextView eventDate = (TextView) findViewById(R.id.eventDate);
+        TextView eventName = (TextView) findViewById(R.id.eventName);
         TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
-        long startMinute = 0;
+        TextView eventTime = (TextView) findViewById(R.id.eventClock);
         long startHour = 0;
-        long eventMinute = 0;
-        long eventHour = 0;
+        long startMinute = 0;
         //End Initialization
 
         ImageView eventIcon = (ImageView) findViewById(R.id.eventIcon);
@@ -126,14 +129,22 @@ public class EventInfoAct extends AppCompatActivity {
             case 6:
                 break;
         }
-
         // setting the icon
         eventIcon.setImageDrawable(d);
 
         // setting the event info text fields
-        TextView eventName = (TextView) findViewById(R.id.eventName);
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
+        int eventHour = e.getEndHour() - e.getStartHour();
+        int eventMinute = e.getEndMinute() - e.getStartMinute();
+        if(eventMinute < 0){
+            eventHour--;
+            eventMinute += 60;
+        }
+
+        eventDate.setText(e.getStartMonth() + "/" + e.getStartDay() + "/" + e.getStartYear() + " - " +
+                e.getEndMonth() + "/" + e.getEndDay() + "/" + e.getEndYear());
+
         if(eventHour > 0){
             if(eventHour == 1){
                 eventLength.setText(eventHour + " hour and ");
@@ -147,27 +158,32 @@ public class EventInfoAct extends AppCompatActivity {
             eventLength.setText(eventLength.getText() + "" + eventMinute + " minutes");
         }
         eventCreator.setText("Created by: " + u.getName());
-        TextView eventTime = (TextView) findViewById(R.id.eventClock);
 
         //Conversion to turn a long (ex. 2014) into (8:14 PM)
         long hours = e.getStartHour();
         long minutes = e.getStartMinute();
         String timePeriod = "AM";
-        if(startHour > 12){
+        if(hours > 12){
             timePeriod = "PM";
-            startHour = startHour - 12;
+            hours = hours - 12;
         }
         eventTime.setText(hours + ":" + minutes + " " + timePeriod);
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
-        currTime.getTime();
         TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);
-        if(timePeriod.equalsIgnoreCase("PM")){
-            eventTimeTo.setText(((startHour + 12) - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
-        } else {
-            eventTimeTo.setText((startHour - currTime.HOUR) + " h " + (startMinute - currTime.MINUTE) + " m");
+        if (currTime.get(Calendar.MINUTE) > minutes) {
+            minutes = minutes + 60;
+            hours--;
         }
-        System.out.println(currTime.HOUR + ":" + currTime.MINUTE);
+        if((hours - currTime.get(Calendar.HOUR) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
+            eventTimeTo.setText("Started!");
+        } else {
+            if (timePeriod.equalsIgnoreCase("PM")) {
+                eventTimeTo.setText((hours - currTime.get(Calendar.HOUR)) + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
+            } else {
+                eventTimeTo.setText((hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
+            }
+        }
     }
     /*@Override
     public void onBackPressed(){
