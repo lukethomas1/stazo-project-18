@@ -3,16 +3,18 @@ package com.stazo.project_18;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.util.Calendar;
 
 /**
- * Created by Brian Chan on 5/5/2016.
+ * Author: Brian Chan
+ * Date: 5/5/2016
+ * Description: This class launches a DatePicker in a fragment for CreateEventAct.java for
+ * stazo-project-18.
  */
 @SuppressLint("ValidFragment")
 public class DatePickerFragment extends DialogFragment
