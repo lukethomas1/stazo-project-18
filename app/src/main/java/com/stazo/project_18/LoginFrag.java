@@ -164,7 +164,7 @@ public class LoginFrag extends Fragment {
                     setSharedPreferences();
 
                     // go to the Map screen
-                    goToMapAct();
+                    goToMainAct();
 
                     // remove listener
                     fb.child("Users").removeEventListener(this);
@@ -179,7 +179,7 @@ public class LoginFrag extends Fragment {
                     setSharedPreferences();
 
                     //go to the Map screen
-                    goToMapAct();
+                    goToMainAct();
 
                     // remove listener
                     fb.child("Users").removeEventListener(this);
@@ -200,8 +200,8 @@ public class LoginFrag extends Fragment {
         editor.apply();
     }
 
-    private void goToMapAct(){
-        startActivity(new Intent(getActivity(), MapAct.class));
+    private void goToMainAct(){
+        startActivity(new Intent(getActivity(), MainAct.class));
     }
 
     // creates a User and pushes it to Firebase
