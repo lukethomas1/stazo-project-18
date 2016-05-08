@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.MapFragment;
 
@@ -40,6 +42,19 @@ public class MainAct extends AppCompatActivity{
         //toolbar stuff first because it needs to be on top?
         //or maybe it's done in .xml
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()){
+                    case R.id.game:
+                        Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
+                        return true;
+                }
+
+                return false;
+            }
+        });
         //add shit to toolbar.. i think?
         setSupportActionBar(toolbar);
 
