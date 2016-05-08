@@ -1,121 +1,133 @@
 package com.stazo.project_18;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.PermissionRequest;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-
+import android.view.ViewGroup;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.security.acl.Permission;
 import java.util.HashMap;
 
-public class MapAct extends AppCompatActivity {
+/**
+ * Created by ericzhang on 5/7/16.
+ */
+public class MapFrag extends Fragment {
 
     public static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
 
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
-    private Toolbar toolbar;
+    private MapView mapView;
+    private MapFragment mapFrag;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_overview);
-
-        //toolbar stuff
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        //Toast.makeText(getApplicationContext(),""+(getSupportActionBar()==null),Toast.LENGTH_LONG).show();
-        getSupportActionBar().setTitle("toolbar title");
-        getSupportActionBar().setSubtitle("subtitle");
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-
-                switch (menuItem.getItemId()){
-                    case R.id.game:
-                        Toast.makeText(getApplicationContext(),"clicked game icon!", Toast.LENGTH_SHORT).show();
-                        return true;
-                }
-
-                return false;
-            }
-        });
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.map_overview, container, false);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         // Initialize Firebase
-        Firebase.setAndroidContext(this);
-
-        fb = ((Project_18) getApplication()).getFB();
-
-        // Initialize the map_overview
-        MapFragment mapFrag =
-                (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-
+        Firebase.setAndroidContext(this.getActivity());
+        fb = ((Project_18) this.getActivity().getApplication()).getFB();
         mapHandler = new MapHandler();
 
-        mapFrag.getMapAsync(mapHandler);
+        // Initialize the map_overview
+//        mapFrag = (MapFragment) this.getActivity().getFragmentManager().findFragmentById(R.id.map);
+        mapView = (MapView) v.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(mapHandler);
+
+
+
+//        try {
+//            MapsInitializer.initialize(getActivity());
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            System.out.println("Address Map, Could not initialize google play");
+//        }
+//
+//        mapView = (MapView) v.findViewById(R.id.map);
+//        mapView.onCreate(savedInstanceState);
+//        // Gets to GoogleMap from the MapView and does initialization stuff
+//        if(mapView!=null)
+//        {
+//            mapHandler = new MapHandler();
+//            mapView.getMapAsync(mapHandler);
+//            map.getUiSettings().setMyLocationButtonEnabled(false);
+//        }
+
+
         /*placingEvent = new Event();
 
         placingEvent.setName("Roaring Revelle");
         placingEvent.setDescription("This event takes place off campus.\n" +
                                     "It is a Gatsby themed party, so come well-dressed!");*/
         //displayAllEvents();
+        return v;
     }
 
-    // Menu icons are inflated just as they were with actionbar
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        return true;
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
-    public void goToCreateEvent(View view) {
-        startActivity(new Intent(this, CreateEventAct.class));
-    }
+//    public void goToCreateEvent(View view) {
+//        startActivity(new Intent(this.getActivity(), CreateEventAct.class));
+//    }
 
     private void goToEventInfo(Marker marker) {
-        Intent intent = new Intent(this, EventInfoAct.class);
+//        Intent intent = new Intent(this.getActivity(), EventInfoAct.class);
 
         // Get event's database id
         String event_id = mapHandler.idLookupHM.get(marker.getId());
 
-        // Store the event ID as an extra
-        intent.putExtra("event_id", event_id);
-
-        startActivity(intent);
+//        // Store the event ID as an extra
+//        intent.putExtra("event_id", event_id);
+//
+//        startActivity(intent);
+        ((MainAct)this.getActivity()).goToEventInfo(event_id);
     }
+
+    /**
+     * Map Handler stuff
+     */
 
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback,
             ActivityCompat.OnRequestPermissionsResultCallback
