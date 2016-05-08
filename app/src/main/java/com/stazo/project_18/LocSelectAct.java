@@ -53,7 +53,7 @@ public class LocSelectAct extends FragmentActivity
         float tilt = 0;
         float bearing = 0;
 
-        CameraPosition camPos = new CameraPosition(MapAct.REVELLE, zoom, tilt, bearing);
+        CameraPosition camPos = new CameraPosition(MapFrag.REVELLE, zoom, tilt, bearing);
 
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
     }

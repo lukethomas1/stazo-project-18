@@ -34,7 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 
 /**
- * Created by ericzhang on 5/7/16.
+ * Fragment version of MapAct, also uses MapView instead of MapFragment from Google API
  */
 public class MapFrag extends Fragment {
 
