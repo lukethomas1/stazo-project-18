@@ -2,27 +2,26 @@ package com.stazo.project_18;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.support.v4.app.DialogFragment;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
-import com.firebase.client.snapshot.BooleanNode;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * @author Brian Chan
+ * Author: Brian Chan
+ * Date: 4/25/2016
+ * Description: This class parses the user input into an Event object to create a new event for
+ * stazo-project-18.
  */
 public class CreateEventAct extends AppCompatActivity {
     private Event event = new Event(); //Create a new event object
@@ -36,13 +35,19 @@ public class CreateEventAct extends AppCompatActivity {
     EditText nameView, descView, startDateView, endDateView, startTimeView, endTimeView;
     // The Spinner to pick what type the event is
     Spinner typeSpinner;
-
+    //Fragments for setting the dates
     DatePickerFragment startDateFrag, endDateFrag;
+    //Fragments for setting the times
     TimePickerFragment startTimeFrag, endTimeFrag;
-
-    //User inputted values, upload these to Firebase
+    //Parsed user inputted values, upload these to Firebase
     String name, desc, startDate, endDate, startTime, endTime, type;
 
+    /**
+     * Called whenever this layout is created. This should set up the layout so that it is ready
+     * to receive user input and to create a new event.
+     * @param savedInstanceState Reference to a Bundle object that this activity can use to restore
+     *                           itself in the future if needed.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +129,7 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     /**
-     * Changes all of the TextViews to the color black.
+     * Changes all of the TextViews to the default color black.
      */
     private void setUpTextColors() {
         nameText = (TextView) findViewById(R.id.NameText);
@@ -145,7 +150,7 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     /**
-     * Grabs all of the EditText Views for future use.
+     * Grabs all of the EditText Views so they can be referenced in the future.
      */
     private void grabEditTextViews() {
         nameView = (EditText) findViewById(R.id.EventName);
@@ -157,7 +162,7 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     /**
-     * Parses the user input.
+     * Parses the user input into strings.
      */
     private void setUpInput() {
         //Grabs user input
@@ -171,7 +176,7 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     /**
-     * Checks if the user entered valid input.
+     * Checks if the user entered valid input. setUpInput MUST be called before checkInput is called
      * @return True/False depending on if we have valid input
      */
     private boolean checkInput() {
@@ -180,7 +185,7 @@ public class CreateEventAct extends AppCompatActivity {
         String dateAfter = "The end date has to be after the start date";
         String timeAfter = "The end time has to be after the start time";
 
-        //Error checking
+        //Checks that these fields are not left empty
         if (name.isEmpty()) {
             nameView.setError(blankView);
             valid = false;
@@ -230,33 +235,39 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
+        //Checks if date/time that was entered is valid
         if (!startDate.isEmpty() && !endDate.isEmpty()) {
+            //Checks if the end month or year is behind the start month or year
             if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
                     startDateFrag.getYear() > endDateFrag.getYear()) {
                 endDateView.setError(dateAfter);
                 valid = false;
-            } else if (startDateFrag.getDay() > endDateFrag.getDay()) {
+            //Checks that start day isn't after the end day if they're in the same month
+            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
+                    startDateFrag.getDay() > endDateFrag.getDay()) {
                 endDateView.setError(dateAfter);
                 valid = false;
-            } else {
-                endDateView.setError(null);
             }
 
+            //Check for if start time and end time are on the same day
             if (!startTime.isEmpty() && !endTime.isEmpty() &&
                     startDateFrag.getDay() == endDateFrag.getDay() &&
                     startDateFrag.getMonth() == endDateFrag.getMonth() &&
                     startDateFrag.getYear() == endDateFrag.getYear()) {
+                //Check that start hour isn't after end hour if on the same day
                 if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
                     endTimeView.setError(timeAfter);
                     valid = false;
-                }
-                else if (startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
+                //Check that start minute isn't after end minute in the same hour and day
+                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
+                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
                     endTimeView.setError(timeAfter);
                     valid = false;
                 }
             }
         }
 
+        //Return validity of user input
         return valid;
     }
 
@@ -265,6 +276,7 @@ public class CreateEventAct extends AppCompatActivity {
      * @param view The view we are currently in
      */
     public void makeEvent(View view) {
+        //Sets up user input into respective strings
         setUpInput();
 
         if (checkInput()) {
@@ -282,6 +294,7 @@ public class CreateEventAct extends AppCompatActivity {
                     endTimeFrag.getHourInt(),
                     endTimeFrag.getMinInt())
             );
+
             goToLocSelectAct();
         }
     }
