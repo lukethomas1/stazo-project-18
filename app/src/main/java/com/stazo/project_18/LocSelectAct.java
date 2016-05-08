@@ -101,7 +101,7 @@ public class LocSelectAct extends FragmentActivity
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 
             // Go to the map screen
-            Intent intent = new Intent(this, MapAct.class);
+            Intent intent = new Intent(this, MainAct.class);
             startActivity(intent);
         }
     }

@@ -59,7 +59,7 @@ public class InitialAct extends AppCompatActivity {
                     fb.child("Users").removeEventListener(this);
 
                     // go to the Map screen
-                    goToMapAct();
+                    goToMainAct();
                 }
 
                 // if the user doesn't exist, goToLoginAct
@@ -78,8 +78,8 @@ public class InitialAct extends AppCompatActivity {
         });
     }
 
-    private void goToMapAct(){
-        startActivity(new Intent(this, MapAct.class));
+    private void goToMainAct(){
+        startActivity(new Intent(this, MainAct.class));
     }
     private void goToLoginAct(){
         startActivity(new Intent(this, LoginAct.class));
