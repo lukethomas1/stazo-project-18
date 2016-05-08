@@ -16,13 +16,17 @@
         app:backgroundTint="#49D0FC"
         android:onClick="goToCreateEvent"/>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:id="@+id/map"
-        android:layout_centerInParent="true"
-        android:layout_height="match_parent"
-        tools:layout="@layout/map_overview"
-        android:layout_width="match_parent" />
+    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:name="com.google.android.gms.maps.MapFragment"-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:layout="@layout/map_overview"-->
+        <!--android:layout_width="match_parent" />-->
 
+    <com.google.android.gms.maps.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map" />
 
 </RelativeLayout>
