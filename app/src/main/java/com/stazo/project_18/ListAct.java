@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,13 +35,12 @@ public class ListAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        Firebase.setAndroidContext(this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fb = ((Project_18) getApplication()).getFB();
 
+        // Pull the events from firebase
         fb.child("Events").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -54,14 +54,15 @@ public class ListAct extends AppCompatActivity {
                                     new GenericTypeIndicator<HashMap<String, Object>>() {
                                     }));
 
-                            // display event
+                            // Add event to arraylist
                             eventList.add(e);
                         }
 
+                        // Get the text in the activity
                         loadingText = (TextView)findViewById(R.id.loadingText);
+
                         // Set loading text to "No events" if there were no events
                         if(eventList.isEmpty()) {
-
                             loadingText.setText("No Events");
                         }
 
@@ -72,6 +73,7 @@ public class ListAct extends AppCompatActivity {
 
                         // Display all the events the were pulled from Firebase
                         displayEventList();
+
                         // remove this listener
                         fb.child("Events").removeEventListener(this);
                     }
@@ -80,42 +82,9 @@ public class ListAct extends AppCompatActivity {
                     public void onCancelled(FirebaseError firebaseError) {
                     }
                 });
-
-        // This is where the events will be loaded into the arraylist from firebase
-
-
-        /*Event tester = new Event("FBGM",
-                "The goal of this event is to disregard women and acquire riches." +
-                        "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 15, 2034, 2034);
-        Event tester1 = new Event("TEST2",
-                "The goal of this event actively shame the expression of free speech" +
-                        "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 15, 2034, 2034);
-        Event tester2 = new Event("TEST3",
-                "The goal of this event actively shame the expression of free speech" +
-                        "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 15, 2034, 2034);
-        Event tester3 = new Event("TEST4",
-                "The goal of this event actively shame the expression of free speech" +
-                        "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 15, 2034, 2034);
-        Event tester4 = new Event("TEST5",
-                "The goal of this event actively shame the expression of free speech" +
-                        "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, 15, 2034, 2034);
-
-        eventList.add(tester);
-        eventList.add(tester1);
-        eventList.add(tester2);
-        eventList.add(tester3);
-        eventList.add(tester4);*/
-
-        // This is where the events will be displayed
-
-
     }
 
+    // Creates buttons for each event in arraylist and adds them to the activity
     private void displayEventList() {
         LinearLayout listLayout = (LinearLayout)findViewById(R.id.nestedLL);
         LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams

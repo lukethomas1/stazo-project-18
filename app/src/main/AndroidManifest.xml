@@ -24,7 +24,11 @@
             android:name=".InitialAct"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".CreateEventAct"/>
@@ -68,14 +72,9 @@
             android:name=".ListAct"
             android:label="@string/title_activity_list"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
-        //<activity android:name=".InitialAct"></activity>
+        <activity android:name=".InitialAct"></activity>
 
     </application>
 
