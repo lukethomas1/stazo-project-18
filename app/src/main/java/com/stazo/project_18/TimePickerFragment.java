@@ -12,7 +12,10 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 /**
- * Created by Brian Chan on 5/5/2016.
+ * Author: Brian Chan
+ * Date: 5/6/2016
+ * Description: This class launches a TimePicker in a fragment for CreateEventAct.java for
+ * stazo-project-18.
  */
 @SuppressLint("ValidFragment")
 public class TimePickerFragment extends DialogFragment

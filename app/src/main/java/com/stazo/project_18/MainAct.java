@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,6 +11,11 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.MapFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,19 @@ public class MainAct extends AppCompatActivity{
         //toolbar stuff first because it needs to be on top?
         //or maybe it's done in .xml
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()) {
+                    case R.id.game:
+                        Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
+                        return true;
+                }
+
+                return false;
+            }
+        });
         //add shit to toolbar.. i think?
         setSupportActionBar(toolbar);
 
@@ -50,15 +69,23 @@ public class MainAct extends AppCompatActivity{
         tabLayout.setupWithViewPager(viewPager);
 
     }
+    public void goToCreateEvent(View view) {
+        startActivity(new Intent(this, CreateEventAct.class));
+    }
 
+    public void goToEventInfo(String event_id) {
+        Intent intent = new Intent(this, EventInfoAct.class);
+        intent.putExtra("event_id", event_id);
+        startActivity(intent);
+    }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new TestFrag1(), "ERIC");
-        adapter.addFragment(new TestFrag2(), "SO SWAG");
-        adapter.addFragment(new TestFrag1(), "I");
-        adapter.addFragment(new TestFrag2(), "AGREE");
+        adapter.addFragment(new MapFrag(), "ERIC");
+        adapter.addFragment(new ListAct(), "SO SWAG");
+        adapter.addFragment(new TestFrag1(), "I AGREE");
+
 
 
         viewPager.setAdapter(adapter);
