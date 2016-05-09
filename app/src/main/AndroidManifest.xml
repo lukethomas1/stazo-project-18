@@ -37,7 +37,7 @@
             android:name=".MapAct"
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+
         <activity
             android:name=".LoginAct"
             android:label="@string/title_activity_login"
