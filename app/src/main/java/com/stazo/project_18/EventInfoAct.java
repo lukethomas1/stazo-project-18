@@ -58,7 +58,8 @@ public class EventInfoAct extends AppCompatActivity {
         String event_id = callingIntent.getStringExtra("event_id");
 
         // Display event info
-        //grabEventInfo(event_id);
+        System.out.println("EVENT ID: " + event_id);
+        grabEventInfo(event_id);
     }
 
     // Pulls event info and delegates to showInfo to display the correct info

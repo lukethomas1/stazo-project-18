@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by isaacwang on 4/25/16.
@@ -93,13 +94,14 @@ public class Event implements Parcelable {
         this.description = (String) eventMap.get("description");
         this.creator_id = (String) eventMap.get("creator_id");
         this.type = ((Integer) eventMap.get("type")).intValue();
-        //this.startDate = makeDate((HashMap<String, Object>) eventMap.get("startDate"));
-        //this.endDate = makeDate((HashMap<String, Object>) eventMap.get("endDate"));
+        this.popularity = ((Integer) eventMap.get("popularity")).intValue();
+        this.reports = ((Integer) eventMap.get("reports")).intValue();
         this.startDate = new Date((Long) eventMap.get("startDate"));
         this.endDate = new Date((Long) eventMap.get("endDate"));
         HashMap<String, Object> locMap = ((HashMap<String,Object>) eventMap.get("location"));
         this.location = new LatLng((double) locMap.get("latitude"),
                 (double) locMap.get("longitude"));
+        this.event_id = (String) eventMap.get("event_id");
     }
 
     // makes a Date object out of a hashmap
@@ -250,5 +252,15 @@ public class Event implements Parcelable {
 
     public int describeContents() {
         return 0;
+    }
+
+    public void generateID() {
+        Random rand = new Random();
+        for (int i = 0; i < 10; i++) {
+            //add 10 random chars onto yoo
+            event_id = event_id.concat("" + (char) (48 + rand.nextInt(47)));
+        }
+        System.out.println("GENERATING: " + this.event_id);
+
     }
 }
