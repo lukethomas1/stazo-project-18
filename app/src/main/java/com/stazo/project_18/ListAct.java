@@ -2,6 +2,7 @@ package com.stazo.project_18;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -93,7 +94,32 @@ public class ListAct extends AppCompatActivity {
         for(Event evt : eventList) {
             Button evtButton = new Button(this);
             evtButton.setText(evt.getName());
+
+            evtButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    buttonPressed(v);
+                }
+            });
+
             listLayout.addView(evtButton, listParams);
         }
+    }
+
+    public void buttonPressed(View view) {
+        // Cast view to button
+        Button button = (Button) view;
+        // Initialize intent
+        Intent intent = new Intent(this, EventInfoAct.class);
+
+        // Find which event it is
+        for(Event evt : eventList) {
+            if(button.getText() == evt.getName()) {
+                // Add extra of that event id
+                intent.putExtra("event_id", evt.getEvent_id());
+            }
+        }
+
+        // Start EventInfo activity with event id attached
+        startActivity(intent);
     }
 }
