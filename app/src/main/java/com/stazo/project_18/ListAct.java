@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,21 +26,22 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ListAct extends AppCompatActivity {
+public class ListAct extends android.support.v4.app.Fragment {
 
     private Firebase fb;
     ArrayList<Event> eventList = new ArrayList<Event>();
     private TextView loadingText;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        View v = inflater.inflate(R.layout.activity_list, container, false);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
-        fb = ((Project_18) getApplication()).getFB();
+        fb = ((Project_18) this.getActivity().getApplication()).getFB();
 
         // Pull the events from firebase
         fb.child("Events").addListenerForSingleValueEvent(
@@ -60,7 +62,7 @@ public class ListAct extends AppCompatActivity {
                         }
 
                         // Get the text in the activity
-                        loadingText = (TextView)findViewById(R.id.loadingText);
+                        loadingText = (TextView)getActivity().findViewById(R.id.loadingText);
 
                         // Set loading text to "No events" if there were no events
                         if(eventList.isEmpty()) {
@@ -83,16 +85,17 @@ public class ListAct extends AppCompatActivity {
                     public void onCancelled(FirebaseError firebaseError) {
                     }
                 });
+        return v;
     }
 
     // Creates buttons for each event in arraylist and adds them to the activity
     private void displayEventList() {
-        LinearLayout listLayout = (LinearLayout)findViewById(R.id.nestedLL);
+        LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
         LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 
         for(Event evt : eventList) {
-            Button evtButton = new Button(this);
+            Button evtButton = new Button(this.getActivity());
             evtButton.setText(evt.getName());
 
             evtButton.setOnClickListener(new View.OnClickListener() {

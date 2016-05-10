@@ -33,11 +33,11 @@
 
         <activity android:name=".CreateEventAct"/>
 
-        <activity
-            android:name=".MapAct"
-            android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+        <!--<activity-->
+            <!--android:name=".MapAct"-->
+            <!--android:label="@string/title_activity_map"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" >-->
+        <!--</activity>-->
         <!--
             activity
             android:name=".EventInfoAct"
@@ -68,13 +68,13 @@
             android:value="@string/facebook_app_id" />
 
 
-        <activity
-            android:name=".ListAct"
-            android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <!--<activity-->
+            <!--android:name=".ListAct"-->
+            <!--android:label="@string/title_activity_list"-->
+            <!--android:theme="@style/AppTheme.NoActionBar">-->
+        <!--</activity>-->
 
-        <activity android:name=".InitialAct"></activity>
+        <!--<activity android:name=".InitialAct"></activity>-->
 
     </application>
 

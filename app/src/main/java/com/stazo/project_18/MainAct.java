@@ -46,7 +46,7 @@ public class MainAct extends AppCompatActivity{
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.game:
                         Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
                         return true;
@@ -83,7 +83,7 @@ public class MainAct extends AppCompatActivity{
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         //-----> REPLACE FRAGMENTS HERE <---------------
         adapter.addFragment(new MapFrag(), "ERIC");
-        adapter.addFragment(new TestFrag2(), "SO SWAG");
+        adapter.addFragment(new ListAct(), "SO SWAG");
         adapter.addFragment(new TestFrag1(), "I AGREE");
 
 
