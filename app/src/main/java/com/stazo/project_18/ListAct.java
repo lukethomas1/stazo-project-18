@@ -111,18 +111,17 @@ public class ListAct extends android.support.v4.app.Fragment {
     public void buttonPressed(View view) {
         // Cast view to button
         Button button = (Button) view;
-        // Initialize intent
-        Intent intent = new Intent(this, EventInfoAct.class);
+        String id = "default id for list";
 
         // Find which event it is
         for(Event evt : eventList) {
             if(button.getText() == evt.getName()) {
-                // Add extra of that event id
-                intent.putExtra("event_id", evt.getEvent_id());
+                // Get event id
+                id = evt.getEvent_id();
             }
         }
 
         // Start EventInfo activity with event id attached
-        startActivity(intent);
+        ((MainAct)this.getActivity()).goToEventInfo(id);
     }
 }
