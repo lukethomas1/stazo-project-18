@@ -32,7 +32,7 @@
         </activity>
 
         <activity android:name=".CreateEventAct"/>
-        
+
         <!--<activity-->
             <!--android:name=".MapAct"-->
             <!--android:label="@string/title_activity_map"-->
