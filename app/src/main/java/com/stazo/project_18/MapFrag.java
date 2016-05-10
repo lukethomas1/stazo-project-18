@@ -122,6 +122,7 @@ public class MapFrag extends Fragment {
 //        intent.putExtra("event_id", event_id);
 //
 //        startActivity(intent);
+        System.out.println("PUTTING: " + event_id);
         ((MainAct)this.getActivity()).goToEventInfo(event_id);
     }
 
@@ -215,6 +216,9 @@ public class MapFrag extends Fragment {
 
             // Put the marker in a HashMap to look up IDs later
             idLookupHM.put(marker.getId(), e.getEvent_id());
+            System.out.println("Marker: " + marker.getId() + " Event ID: " + e.getEvent_id());
+            System.out.println("Marker: " + marker.getId() + " Name: " + e.getName());
+
         }
     }
 }

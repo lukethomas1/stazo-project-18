@@ -77,7 +77,8 @@ public class LocSelectAct extends FragmentActivity
         eventToInit.setLocation(point);
 
         // Initialize the event's id
-        eventToInit.setEvent_id(eventMarker.getId());
+//        eventToInit.setEvent_id(eventMarker.getId());
+        eventToInit.generateID();
     }
 
     public void goToMap(View view) {
@@ -105,4 +106,5 @@ public class LocSelectAct extends FragmentActivity
             startActivity(intent);
         }
     }
+
 }
