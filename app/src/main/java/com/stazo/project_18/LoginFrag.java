@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -77,7 +79,7 @@ public class LoginFrag extends Fragment {
                 // try logging in with the account
                 tryAccount();
             }
-
+            Toast.makeText(getActivity().getApplicationContext(), "Logged in", Toast.LENGTH_SHORT).show();
             Log.d("FB SDK", "Name: " + userName);
             Log.d("FB SDK", "UserId: " + userId);
 
@@ -106,7 +108,6 @@ public class LoginFrag extends Fragment {
 
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         mCallbackManager = CallbackManager.Factory.create();
-        Log.d("FB SDK", "onCreate Completed");
 
         fb = ((Project_18)getActivity().getApplication()).getFB();
 
@@ -115,7 +116,6 @@ public class LoginFrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("FB SDK", "onCreateView Completed");
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -126,7 +126,6 @@ public class LoginFrag extends Fragment {
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setFragment(this); // passes reference to current fragment
         loginButton.registerCallback(mCallbackManager, mCallback);
-        Log.d("FB SDK", "onViewCreate Completed");
 
         setupTextDetails(view);
     }
@@ -135,7 +134,6 @@ public class LoginFrag extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        Log.d("FB SDK", "onActivityResult Completed");
     }
 
     private void setupTextDetails(View view) {
@@ -197,10 +195,12 @@ public class LoginFrag extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId", userId);
+        editor.putBoolean("isLoggedIn", true);
         editor.apply();
     }
-
+    // temporarily overriding to test logout act
     private void goToMapAct(){
+        Log.d("FB SDK", "LoginFrag: Going to Map Act");
         startActivity(new Intent(getActivity(), MapAct.class));
     }
 
