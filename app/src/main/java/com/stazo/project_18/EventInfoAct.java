@@ -178,11 +178,26 @@ public class EventInfoAct extends AppCompatActivity {
         }
         if((hours - currTime.get(Calendar.HOUR) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
             eventTimeTo.setText("Started!");
+            long pastHour = currTime.get(Calendar.HOUR) - hours - eventHour;
+            long pastMinute = currTime.get(Calendar.MINUTE) - minutes - eventMinute;
+            if(pastMinute < 0){
+                pastMinute += 60;
+                pastHour--;
+            }
+            if(pastHour > 1){
+                eventTimeTo.setText("COMPLETED");
+            } else {
+                if(pastHour == 1){
+                    eventTimeTo.setText("Finished 1 h ago");
+                } else {
+                    eventTimeTo.setText("Finished " + pastMinute + " m ago");
+                }
+            }
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
-                eventTimeTo.setText((hours - currTime.get(Calendar.HOUR)) + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
+                eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR)) + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
-                eventTimeTo.setText((hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
+                eventTimeTo.setText("In: " + (hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
             }
         }
     }
