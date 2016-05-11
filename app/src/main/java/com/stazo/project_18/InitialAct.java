@@ -102,7 +102,7 @@ public class InitialAct extends AppCompatActivity {
                     fb.child("Users").removeEventListener(this);
 
                     // go to the Map screen
-                    goToMapAct();
+                    goToMainAct();
                 }
 
                 // if the user doesn't exist, goToLoginAct
@@ -121,10 +121,10 @@ public class InitialAct extends AppCompatActivity {
         });
     }
 
-    // Temporarily Overriding to test Logout
-    private void goToMapAct(){
+
+    private void goToMainAct(){
         Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MapAct.class));
+        startActivity(new Intent(this, MainAct.class));
     }
     private void goToLoginAct(){
         startActivity(new Intent(this, LoginAct.class));

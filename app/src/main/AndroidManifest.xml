@@ -30,24 +30,26 @@
             </intent-filter>
         </activity>
 
-        <!-- <activity android:name=".CreateEventAct" /> -->
 
-        <activity
-            android:name=".MapAct"
-            android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CreateEventAct"/>
+
+        <!--<activity-->
+            <!--android:name=".MapAct"-->
+            <!--android:label="@string/title_activity_map"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" >-->
+        <!--</activity>-->
         <!--
             activity
             android:name=".EventInfoAct"
             android:label="@string/title_activity_event_info"
             android:theme="@style/AppTheme.NoActionBar" /
         -->
+        <activity android:name=".MainAct" />
         <activity
             android:name=".LoginAct"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".EventInfoAct" />
-        <activity android:name=".CreateEventAct"/>
 
         <!-- for FB Login -->
         <activity
@@ -65,18 +67,20 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <!--
-        <activity
-            android:name=".ListAct"
-            android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".InitialAct"></activity>
-        -->
-        onBar"/>
+
         <activity
             android:name=".LogoutAct"
             android:label="@string/title_activity_logout"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <!--<activity-->
+            <!--android:name=".ListAct"-->
+            <!--android:label="@string/title_activity_list"-->
+            <!--android:theme="@style/AppTheme.NoActionBar">-->
+        <!--</activity>-->
+
+        <!--<activity android:name=".InitialAct"></activity>-->
+
     </application>
 
 </manifest>

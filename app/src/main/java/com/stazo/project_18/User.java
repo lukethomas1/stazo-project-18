@@ -39,7 +39,7 @@ public class User {
     public User(HashMap<String, Object> userMap) {
         this.name = (String) userMap.get("name");
         System.out.println(name + '\n');
-        this.ID = (String) userMap.get("ID");
+        this.ID = (String) userMap.get("id");
         // TODO add myEvents initialization
     }
 

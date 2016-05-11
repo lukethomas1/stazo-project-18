@@ -5,24 +5,42 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
+    <LinearLayout
         android:layout_height="wrap_content"
-        android:src="@drawable/plus_icon"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        app:backgroundTint="#49D0FC"
-        android:onClick="goToCreateEvent"/>
+        android:layout_width="match_parent"
+        android:orientation="vertical"/>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:id="@+id/map"
-        android:layout_centerInParent="true"
-        android:layout_height="match_parent"
-        tools:layout="@layout/map_overview"
-        android:layout_width="match_parent" />
+        <!-- pulling color from COLOR -->
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
 
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/plus_icon"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            app:backgroundTint="#49D0FC"
+            android:onClick="goToCreateEvent"/>
+
+    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:name="com.google.android.gms.maps.MapFragment"-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:layout="@layout/map_overview"-->
+        <!--android:layout_width="match_parent" />-->
+
+        <com.google.android.gms.maps.MapView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/map" />
 
 </RelativeLayout>

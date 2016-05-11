@@ -53,7 +53,7 @@ public class LocSelectAct extends FragmentActivity
         float tilt = 0;
         float bearing = 0;
 
-        CameraPosition camPos = new CameraPosition(MapAct.REVELLE, zoom, tilt, bearing);
+        CameraPosition camPos = new CameraPosition(MapFrag.REVELLE, zoom, tilt, bearing);
 
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
     }
@@ -77,7 +77,8 @@ public class LocSelectAct extends FragmentActivity
         eventToInit.setLocation(point);
 
         // Initialize the event's id
-        eventToInit.setEvent_id(eventMarker.getId());
+//        eventToInit.setEvent_id(eventMarker.getId());
+        eventToInit.generateID();
     }
 
     public void goToMap(View view) {
@@ -101,8 +102,9 @@ public class LocSelectAct extends FragmentActivity
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 
             // Go to the map screen
-            Intent intent = new Intent(this, MapAct.class);
+            Intent intent = new Intent(this, MainAct.class);
             startActivity(intent);
         }
     }
+
 }

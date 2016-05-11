@@ -162,7 +162,7 @@ public class LoginFrag extends Fragment {
                     setSharedPreferences();
 
                     // go to the Map screen
-                    goToMapAct();
+                    goToMainAct();
 
                     // remove listener
                     fb.child("Users").removeEventListener(this);
@@ -177,7 +177,7 @@ public class LoginFrag extends Fragment {
                     setSharedPreferences();
 
                     //go to the Map screen
-                    goToMapAct();
+                    goToMainAct();
 
                     // remove listener
                     fb.child("Users").removeEventListener(this);
@@ -198,10 +198,9 @@ public class LoginFrag extends Fragment {
         editor.putBoolean("isLoggedIn", true);
         editor.apply();
     }
-    // temporarily overriding to test logout act
-    private void goToMapAct(){
-        Log.d("FB SDK", "LoginFrag: Going to Map Act");
-        startActivity(new Intent(getActivity(), MapAct.class));
+
+    private void goToMainAct(){
+        startActivity(new Intent(getActivity(), MainAct.class));
     }
 
     // creates a User and pushes it to Firebase

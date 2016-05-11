@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.stazo.project_18.toolbar">
+    <item
+        android:id="@+id/game"
+        android:icon="@drawable/gameicon"
+        app:showAsAction="ifRoom"
+        android:title="game">
+    </item>
+    <item
+        android:id="@+id/food"
+        android:icon="@drawable/foodicon"
+        app:showAsAction="ifRoom|withText"
+        android:title="food">
+    </item>
+</menu>
