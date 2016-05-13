@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ import java.util.List;
  * Fragments are different than FragmentActivities btw! Must use onCreateView and return a view for
  * it to be displayed (as opposed to onCreate and setContentView) as it lives inside the main activity
  */
-public class MainAct extends AppCompatActivity{
+public class MainAct extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -41,7 +42,29 @@ public class MainAct extends AppCompatActivity{
 
         //toolbar stuff first because it needs to be on top?
         //or maybe it's done in .xml
+        //moved toolbar to separate method
+        setToolbar();
+
+
+        //tab stuff    http://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
+
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager); // <- add fragments in setup method
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+    }
+
+    private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setTitle("title");
+        getSupportActionBar().setSubtitle("subtitle");
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -55,20 +78,17 @@ public class MainAct extends AppCompatActivity{
                 return false;
             }
         });
-        //add shit to toolbar.. i think?
-        setSupportActionBar(toolbar);
-
-
-        //tab stuff    http://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager); // <- add fragments in setup method
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
     }
+
+
+    // Menu icons are inflated just as they were with actionbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
+
     public void goToCreateEvent(View view) {
         startActivity(new Intent(this, CreateEventAct.class));
     }
