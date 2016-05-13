@@ -34,7 +34,7 @@ import java.util.List;
 public class MainAct extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,13 +58,15 @@ public class MainAct extends AppCompatActivity {
     }
 
     private void setToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setTitle("title");
         getSupportActionBar().setSubtitle("subtitle");
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //menu button actions
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -78,6 +80,14 @@ public class MainAct extends AppCompatActivity {
                 return false;
             }
         });
+
+        //back button action
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                onBackPressed();
+            }
+        });
     }
 
 
@@ -85,7 +95,7 @@ public class MainAct extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
