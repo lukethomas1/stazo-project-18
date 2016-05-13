@@ -162,9 +162,9 @@ public class EventInfoAct extends AppCompatActivity {
             minutes = minutes + 60;
             hours--;
         }
-        if((hours - currTime.get(Calendar.HOUR) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
+        if((hours - currTime.get(Calendar.HOUR_OF_DAY) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
             eventTimeTo.setText("Started!");
-            long pastHour = currTime.get(Calendar.HOUR) - hours - eventHour;
+            long pastHour = currTime.get(Calendar.HOUR_OF_DAY) - hours - eventHour;
             long pastMinute = currTime.get(Calendar.MINUTE) - minutes - eventMinute;
             if(pastMinute < 0){
                 pastMinute += 60;
@@ -181,9 +181,11 @@ public class EventInfoAct extends AppCompatActivity {
             }
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
-                eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR)) + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
+                eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
+                        + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
-                eventTimeTo.setText("In: " + (hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
+                eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
+                        + (minutes - currTime.MINUTE) + " m");
             }
         }
     }
