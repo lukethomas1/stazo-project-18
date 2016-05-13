@@ -10,15 +10,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"/>
 
-        <!-- pulling color from COLOR -->
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            android:background="@color/colorPrimary"
-            android:elevation="4dp"/>
-
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

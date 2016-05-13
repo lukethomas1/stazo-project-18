@@ -120,7 +120,6 @@ public class ListAct extends android.support.v4.app.Fragment {
                 id = evt.getEvent_id();
             }
         }
-
         // Start EventInfo activity with event id attached
         ((MainAct)this.getActivity()).goToEventInfo(id);
     }
