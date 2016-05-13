@@ -1,15 +1,13 @@
 package com.stazo.project_18;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-
-import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.MapFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,8 +121,6 @@ public class MainAct extends AppCompatActivity {
         adapter.addFragment(new MapFrag(), "ERIC");
         adapter.addFragment(new ListAct(), "SO SWAG");
         adapter.addFragment(new TestFrag1(), "I AGREE");
-
-
 
         viewPager.setAdapter(adapter);
     }
