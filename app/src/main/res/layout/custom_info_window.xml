@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Title"
+        android:id="@+id/eventTitleTV"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:paddingBottom="5sp"
+        android:paddingLeft="5sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:maxWidth="200sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Description"
+        android:id="@+id/eventDescTV"
+        android:textColor="#000000"
+        android:paddingLeft="5sp"
+        android:textSize="14sp"
+        android:maxLines="3"
+        android:maxWidth="200sp"
+        android:ellipsize="end"/>
+
+</LinearLayout>
