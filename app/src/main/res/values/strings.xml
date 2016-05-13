@@ -123,4 +123,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_logout">LogoutAct</string>
+    <string name="title_activity_test_drawer">testDrawer</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
