@@ -2,6 +2,7 @@ package com.stazo.project_18;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -264,6 +266,7 @@ public class MapFrag extends Fragment {
             markerOpts.position(e.getLocation());
             // Set the color of the marker
             markerOpts.icon(BitmapDescriptorFactory.defaultMarker(Event.typeColors[e.getType()]));
+
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);

@@ -20,10 +20,9 @@ import java.util.List;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
-    private List<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
-    private List<String> _listIds;
+    private List<String> _listDataHeader; // Header Titles
+    private HashMap<String, List<String>> _listDataChild; // Child text
+    private List<String> _listIds; // Holds the event ids
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData,
@@ -54,11 +53,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
+            convertView = infalInflater.inflate(R.layout.list_activity_event_details, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
+        TextView txtListChild = (TextView) convertView.findViewById(R.id.eventDetailsList);
 
         txtListChild.setTypeface(null, Typeface.ITALIC);
         txtListChild.setTextColor(Color.GRAY);
@@ -96,13 +94,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = infalInflater.inflate(R.layout.list_activity_event_name, null);
         }
 
-        TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.lblListHeader);
+        TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
 
         lblListHeader.setTextColor(Color.DKGRAY);
+
         lblListHeader.setText(headerTitle);
 
         return convertView;
@@ -110,7 +108,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
