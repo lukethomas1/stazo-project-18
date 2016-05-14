@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.SearchView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -128,9 +129,9 @@ public class MainAct extends AppCompatActivity
                     // do search here
                     Log.d("MyTag", newText);
                     Log.d("MyTag", "letsgo");
-                    MapFrag frag = (MapFrag) adapter.getItem(0);
-                    frag.filterRelevantEvents(newText);
-                            //displayRelevantEvents(((Project_18) getApplication()).findRelevantEvents(newText));
+                    // filter MapFrag
+                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents(newText);
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList(newText);
                     return true;
                 }
 
@@ -139,6 +140,9 @@ public class MainAct extends AppCompatActivity
                     // do search here
                     Log.d("MyTag", query);
                     Log.d("MyTag", "yooo");
+
+                    // hide keyboard
+                    searchView.clearFocus();
                     return true;
                 }
             };

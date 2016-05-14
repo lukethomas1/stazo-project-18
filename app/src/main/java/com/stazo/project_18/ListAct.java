@@ -108,6 +108,44 @@ public class ListAct extends android.support.v4.app.Fragment {
         }
     }
 
+    public void displayFilteredEventList(String search) {
+        LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
+
+        // clear all the views
+        listLayout.removeAllViews();
+
+        LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
+                (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+
+        filterEventList(search);
+
+        for(Event evt : eventList) {
+            Button evtButton = new Button(this.getActivity());
+            evtButton.setText(evt.getName());
+
+            evtButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    buttonPressed(v);
+                }
+            });
+
+            listLayout.addView(evtButton, listParams);
+        }
+    }
+    private void filterEventList(String search) {
+        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
+    }
+    /*public void unfilterEvents() {
+        // reset the pulledEvents
+        this.eventList = ((Project_18) getActivity().getApplication()).getPulledEvents();
+
+        // clean layout
+        ((LinearLayout)getActivity().findViewById(R.id.nestedLL)).removeAllViews();
+
+        // redisplay Event
+        displayEventList();
+    }*/
+
     public void buttonPressed(View view) {
         // Cast view to button
         Button button = (Button) view;

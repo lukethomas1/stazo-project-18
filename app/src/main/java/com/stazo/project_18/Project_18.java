@@ -22,20 +22,41 @@ public class Project_18 extends Application {
 
     // stores a pulled event locally (pulledEvents)
     public void addPulledEvent(Event e) {pulledEvents.add(e);}
+    public ArrayList<Event> getPulledEvents (){return pulledEvents;}
 
     // returns list of event_ids in order of relevance
-    public ArrayList<String> findRelevantEvents (String search) {
-        ArrayList<String> relatedEvents = new ArrayList<String>();
+    public ArrayList<String> findRelevantEventIds (String search) {
+        ArrayList<String> relatedEventIds = new ArrayList<String>();
         for (Event e: pulledEvents) {
             int relevance = e.findRelevance(search);
             switch (relevance) {
                 case 2:
                     // add to start
-                    relatedEvents.add(0, e.getEvent_id());
+                    relatedEventIds.add(0, e.getEvent_id());
                     break;
                 case 1:
                     // add to end
-                    relatedEvents.add(e.getEvent_id());
+                    relatedEventIds.add(e.getEvent_id());
+                    break;
+                default:
+                    break;
+            }
+        }
+        return relatedEventIds;
+    }
+
+    public ArrayList<Event> findRelevantEvents (String search) {
+        ArrayList<Event> relatedEvents = new ArrayList<Event>();
+        for (Event e: pulledEvents) {
+            int relevance = e.findRelevance(search);
+            switch (relevance) {
+                case 2:
+                    // add to start
+                    relatedEvents.add(0, e);
+                    break;
+                case 1:
+                    // add to end
+                    relatedEvents.add(e);
                     break;
                 default:
                     break;

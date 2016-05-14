@@ -282,10 +282,10 @@ public class Event implements Parcelable {
 
     // determines how relevant this event is to a query (2,1,0)
     public int findRelevance(String search) {
-        if (name.contains(search)) {
+        if (name.toLowerCase().contains(search.toLowerCase())) {
             return 2;
         }
-        if (description.contains(search)) {
+        if (description.toLowerCase().contains(search.toLowerCase())) {
             return 1;
         }
         return 0;

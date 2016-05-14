@@ -94,7 +94,7 @@ public class MapFrag extends Fragment {
     public void filterRelevantEvents(String search) {
         Log.d("MyTag", "yo wee filteringgg");
         ArrayList<String> relevantEventIds =
-                ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
+                ((Project_18) getActivity().getApplication()).findRelevantEventIds(search);
         mapHandler.displayRelevantEvents(relevantEventIds);
     }
 
