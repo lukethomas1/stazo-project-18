@@ -4,14 +4,17 @@ package com.stazo.project_18;
  * Created by ericzhang on 5/14/16.
  */
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,7 +59,10 @@ public class EventInfoFrag extends Fragment {
         // Display event info
         System.out.println("EVENT ID: " + event_id);
         grabEventInfo(event_id);
-        v.setVisibility(View.INVISIBLE);
+        WindowManager.LayoutParams lp = this.getActivity().getWindow().getAttributes();
+        lp.dimAmount=0.0f;
+        this.getActivity().getWindow().setAttributes(lp);
+        this.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         return v;
     }
 
@@ -204,6 +210,7 @@ public class EventInfoFrag extends Fragment {
                         + (minutes - currTime.MINUTE) + " m");
             }
         }
+        v.setVisibility(View.VISIBLE);
     }
 
 }

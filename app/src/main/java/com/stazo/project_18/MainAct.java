@@ -269,18 +269,24 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToEventInfo(String event_id) {
-        Intent intent = new Intent(this, EventInfoAct.class);
-        intent.putExtra("event_id", event_id);
-        startActivity(intent);
+//        Intent intent = new Intent(this, EventInfoAct.class);
+//        intent.putExtra("event_id", event_id);
+//        startActivity(intent);
 
         // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
-//        EventInfoFrag eventInfoFrag = new EventInfoFrag();
-//        eventInfoFrag.setEventID(event_id);
-//        android.support.v4.app.FragmentTransaction transaction =
-//                this.getSupportFragmentManager().beginTransaction();
+        EventInfoFrag eventInfoFrag = new EventInfoFrag();
+        eventInfoFrag.setEventID(event_id);
+        android.support.v4.app.FragmentTransaction transaction =
+                this.getSupportFragmentManager().beginTransaction();
 //        transaction.replace
 //                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
 //        transaction.commit();
+        this.getWindow().setDimAmount((float) 0.8);
+
+        transaction
+                .add(R.id.show_eventInfo, eventInfoFrag)
+                .addToBackStack("EventInfoFrag")
+                .commit();
 
     }
 
@@ -324,14 +330,14 @@ public class MainAct extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        System.out.println("test");
-//        if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
-//            getSupportFragmentManager().popBackStack();
-//            System.out.println("dank");
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
+    @Override
+    public void onBackPressed() {
+        System.out.println("test");
+        if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
+            getSupportFragmentManager().popBackStackImmediate();
+            System.out.println("dank");
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
