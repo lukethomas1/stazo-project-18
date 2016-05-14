@@ -5,7 +5,7 @@
     android:layout_marginTop="125dp"
     android:layout_marginLeft="30dp"
     android:layout_marginRight="30dp"
-    android:layout_height="430dp"
+    android:layout_height="420dp"
     android:weightSum="1"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
