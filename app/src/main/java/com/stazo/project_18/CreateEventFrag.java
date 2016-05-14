@@ -1,11 +1,10 @@
 package com.stazo.project_18;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,29 +18,16 @@ import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CreateEventFrag.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CreateEventFrag#} factory method to
- * create an instance of this fragment.
+ * Author: Brian Chan
+ * Date: 4/25/2016
+ * Description: This class parses the user input into an Event object to create a new event for
+ * stazo-project-18.
  */
 public class CreateEventFrag extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
     private Event event = new Event(); //Create a new event object
     private List<String> typeList; //Array of the types of events
     int normColor = Color.BLACK; //Color of default text
@@ -59,32 +45,41 @@ public class CreateEventFrag extends Fragment {
     TimePickerFragment startTimeFrag, endTimeFrag;
     //Parsed user inputted values, upload these to Firebase
     String name, desc, startDate, endDate, startTime, endTime, type;
+    // To hold start date/time and end date/time
+    GregorianCalendar startCal, endCal;
+    int typeNum = -1;
 
-    public CreateEventFrag() {
-        // Required empty public constructor
-    }
+    private View v;
 
+    /**
+     * Called whenever this layout is created. This should set up the layout so that it is ready
+     * to receive user input and to create a new event.
+     * @param savedInstanceState Reference to a Bundle object that this activity can use to restore
+     *                           itself in the future if needed.
+     */
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        System.out.println("Eric swag");
         // comment out later, needed for testing
-        Firebase.setAndroidContext(getContext());
+        Firebase.setAndroidContext(this.getActivity());
 
         setUpTextColors();
 
         grabEditTextViews();
 
         //Sets up the Spinner for selecting an Event Type
-        typeSpinner = (Spinner) getView().findViewById(R.id.EventType);
+        typeSpinner = (Spinner) this.getActivity().findViewById(R.id.EventType);
+
         //Add values here to populate the spinner
         typeList = new ArrayList<>();
         typeList.add("Change Me!");
-        typeList.add("Party");
-        typeList.add("Sports");
-        typeList.add("Food");
-        typeList.add("Fundraiser");
-        typeList.add("Other");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+        for(int i = 0; i < Event.types.length; i++) {
+            typeList.add(Event.types[i]);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(),
                 android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(adapter);
@@ -105,7 +100,7 @@ public class CreateEventFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 startDateFrag = new DatePickerFragment(startDateView);
-                startDateFrag.show(getFragmentManager(), "datePicker");
+                startDateFrag.show(getActivity().getSupportFragmentManager(), "datePicker");
 
                 startDateView.setError(null);
             }
@@ -115,7 +110,7 @@ public class CreateEventFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 endDateFrag = new DatePickerFragment(endDateView);
-                endDateFrag.show(getFragmentManager(), "datePicker");
+                endDateFrag.show(getActivity().getSupportFragmentManager(), "datePicker");
 
                 endDateView.setError(null);
             }
@@ -125,7 +120,7 @@ public class CreateEventFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 startTimeFrag = new TimePickerFragment(startTimeView);
-                startTimeFrag.show(getFragmentManager(), "timePicker");
+                startTimeFrag.show(getActivity().getSupportFragmentManager(), "timePicker");
 
                 startTimeView.setError(null);
             }
@@ -135,27 +130,26 @@ public class CreateEventFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 endTimeFrag = new TimePickerFragment(endTimeView);
-                endTimeFrag.show(getFragmentManager(), "timePicker");
+                endTimeFrag.show(getActivity().getSupportFragmentManager(), "timePicker");
 
                 endTimeView.setError(null);
             }
         });
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_event, container, false);
+        return v;
     }
 
     /**
      * Changes all of the TextViews to the default color black.
      */
     private void setUpTextColors() {
-        nameText = (TextView) getView().findViewById(R.id.NameText);
-        descText = (TextView) getView().findViewById(R.id.DescText);
-        pickText = (TextView) getView().findViewById(R.id.PickText);
-        startDateText = (TextView) getView().findViewById(R.id.StartDateText);
-        endDateText = (TextView) getView().findViewById(R.id.EndDateText);
-        startText = (TextView) getView().findViewById(R.id.StartText);
-        endText = (TextView) getView().findViewById(R.id.EndText);
+        nameText = (TextView) this.getActivity().findViewById(R.id.NameText);
+        descText = (TextView) this.getActivity().findViewById(R.id.DescText);
+        pickText = (TextView) this.getActivity().findViewById(R.id.PickText);
+        startDateText = (TextView) this.getActivity().findViewById(R.id.StartDateText);
+        endDateText = (TextView) this.getActivity().findViewById(R.id.EndDateText);
+        startText = (TextView) this.getActivity().findViewById(R.id.StartText);
+        endText = (TextView) this.getActivity().findViewById(R.id.EndText);
 
         nameText.setTextColor(normColor);
         descText.setTextColor(normColor);
@@ -170,12 +164,12 @@ public class CreateEventFrag extends Fragment {
      * Grabs all of the EditText Views so they can be referenced in the future.
      */
     private void grabEditTextViews() {
-        nameView = (EditText) getView().findViewById(R.id.EventName);
-        descView = (EditText) getView().findViewById(R.id.EventDesc);
-        startDateView = (EditText) getView().findViewById(R.id.StartDate);
-        endDateView = (EditText) getView().findViewById(R.id.EndDate);
-        startTimeView = (EditText) getView().findViewById(R.id.StartTime);
-        endTimeView = (EditText) getView().findViewById(R.id.EndTime);
+        nameView = (EditText) this.getActivity().findViewById(R.id.EventName);
+        descView = (EditText) this.getActivity().findViewById(R.id.EventDesc);
+        startDateView = (EditText) this.getActivity().findViewById(R.id.StartDate);
+        endDateView = (EditText) this.getActivity().findViewById(R.id.EndDate);
+        startTimeView = (EditText) this.getActivity().findViewById(R.id.StartTime);
+        endTimeView = (EditText) this.getActivity().findViewById(R.id.EndTime);
     }
 
     /**
@@ -186,6 +180,14 @@ public class CreateEventFrag extends Fragment {
         name = nameView.getText().toString();
         desc = descView.getText().toString();
         type = typeSpinner.getSelectedItem().toString();
+
+        // Get the index of the type in the Event.types array
+        for(int i = 0; i < Event.types.length; i++) {
+            if(type.equals(Event.types[i])) {
+                typeNum = i;
+            }
+        }
+
         startDate = startDateView.getText().toString();
         endDate = endDateView.getText().toString();
         startTime = startTimeView.getText().toString();
@@ -213,7 +215,7 @@ public class CreateEventFrag extends Fragment {
             valid = false;
         }
 
-        if (type.equals(typeList.get(0))) {
+        if (typeNum == -1) {
             pickText.setTextColor(errorColor);
             valid = false;
         }
@@ -252,37 +254,57 @@ public class CreateEventFrag extends Fragment {
             endTimeView.setError(null);
         }
 
-        //Checks if date/time that was entered is valid
-        if (!startDate.isEmpty() && !endDate.isEmpty()) {
-            //Checks if the end month or year is behind the start month or year
-            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
-                    startDateFrag.getYear() > endDateFrag.getYear()) {
-                endDateView.setError(dateAfter);
-                valid = false;
-                //Checks that start day isn't after the end day if they're in the same month
-            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
-                    startDateFrag.getDay() > endDateFrag.getDay()) {
-                endDateView.setError(dateAfter);
-                valid = false;
-            }
+        startCal = new GregorianCalendar(startDateFrag.getYear(),
+                startDateFrag.getMonth(),
+                startDateFrag.getDay(),
+                startTimeFrag.getHourInt(),
+                startTimeFrag.getMinInt());
+        endCal = new GregorianCalendar(endDateFrag.getYear(),
+                endDateFrag.getMonth(),
+                endDateFrag.getDay(),
+                endTimeFrag.getHourInt(),
+                endTimeFrag.getMinInt());
 
-            //Check for if start time and end time are on the same day
-            if (!startTime.isEmpty() && !endTime.isEmpty() &&
-                    startDateFrag.getDay() == endDateFrag.getDay() &&
-                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
-                    startDateFrag.getYear() == endDateFrag.getYear()) {
-                //Check that start hour isn't after end hour if on the same day
-                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
-                    endTimeView.setError(timeAfter);
-                    valid = false;
-                    //Check that start minute isn't after end minute in the same hour and day
-                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
-                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
-                    endTimeView.setError(timeAfter);
-                    valid = false;
-                }
-            }
+        valid = true;
+        // Check if end date/time is after start date/time
+        if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
+            valid = false;
         }
+
+//        //Checks if date/time that was entered is valid
+//        if (!startDate.isEmpty() && !endDate.isEmpty()) {
+//            //Checks if the end month or year is behind the start month or year
+//            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
+//                    startDateFrag.getYear() > endDateFrag.getYear()) {
+//                endDateView.setError(dateAfter);
+//                valid = false;
+//            //Checks that start day isn't after the end day if they're in the same month
+//            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
+//                    startDateFrag.getDay() > endDateFrag.getDay()) {
+//                endDateView.setError(dateAfter);
+//                valid = false;
+//            }
+//
+//            //Check for if start time and end time are on the same day
+//            if (!startTime.isEmpty() && !endTime.isEmpty() &&
+//                    startDateFrag.getDay() == endDateFrag.getDay() &&
+//                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
+//                    startDateFrag.getYear() == endDateFrag.getYear()) {
+//                //Check that start hour isn't after end hour if on the same day
+//                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
+//                    endTimeView.setError(timeAfter);
+//                    valid = false;
+//                //Check that start minute isn't after end minute in the same hour and day
+//                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
+//                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
+//                    endTimeView.setError(timeAfter);
+//                    valid = false;
+//                }
+//            }
+//        }
+
+        System.out.println("startTime: " + startCal.getTime());
+        System.out.println("endTime: " + endCal.getTime());
 
         //Return validity of user input
         return valid;
@@ -297,21 +319,9 @@ public class CreateEventFrag extends Fragment {
         setUpInput();
 
         if (checkInput()) {
-            event = new Event(name, desc, ((Project_18) getActivity().getApplication()).getMe()
-                    .getID(), 0,
-                    new Date(
-                            startDateFrag.getYear(),
-                            startDateFrag.getMonth(),
-                            startDateFrag.getDay(),
-                            startTimeFrag.getHourInt(),
-                            startTimeFrag.getMinInt()),
-                    new Date(
-                            endDateFrag.getYear(),
-                            endDateFrag.getMonth(),
-                            endDateFrag.getDay(),
-                            endTimeFrag.getHourInt(),
-                            endTimeFrag.getMinInt())
-            );
+            event = new Event(name, desc, ((Project_18) this.getActivity().getApplication()).getMe().getID(), typeNum,
+                    startCal,
+                    endCal);
 
             goToLocSelectAct();
         }
@@ -321,6 +331,9 @@ public class CreateEventFrag extends Fragment {
      * Navigate to the map activity.
      */
     private void goToLocSelectAct() {
+<<<<<<< HEAD
+        startActivity(new Intent(this.getActivity(), LocSelectAct.class).putExtra("eventToInit", event));
+=======
         startActivity(new Intent(getActivity(), LocSelectAct.class).putExtra("eventToInit", event));
     }
 
@@ -331,22 +344,22 @@ public class CreateEventFrag extends Fragment {
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+//    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mListener = null;
+//    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -361,5 +374,6 @@ public class CreateEventFrag extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+>>>>>>> c4cb31c07b3c191db9dded7c9bec4054b603d7e1
     }
 }

@@ -103,6 +103,8 @@ public class LocSelectAct extends FragmentActivity
         }
 
         else {
+            System.out.println("Start: " + eventToInit.getStartDate().getTime());
+            System.out.println("End: " + eventToInit.getEndDate().getTime());
             // Push the event to the database
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 

@@ -15,6 +15,7 @@ import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -41,6 +42,8 @@ public class CreateEventAct extends AppCompatActivity {
     TimePickerFragment startTimeFrag, endTimeFrag;
     //Parsed user inputted values, upload these to Firebase
     String name, desc, startDate, endDate, startTime, endTime, type;
+    // To hold start date/time and end date/time
+    GregorianCalendar startCal, endCal;
     int typeNum = -1;
 
     /**
@@ -63,12 +66,14 @@ public class CreateEventAct extends AppCompatActivity {
 
         //Sets up the Spinner for selecting an Event Type
         typeSpinner = (Spinner) findViewById(R.id.EventType);
+
         //Add values here to populate the spinner
         typeList = new ArrayList<>();
         typeList.add("Change Me!");
         for(int i = 0; i < Event.types.length; i++) {
             typeList.add(Event.types[i]);
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -242,37 +247,57 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        //Checks if date/time that was entered is valid
-        if (!startDate.isEmpty() && !endDate.isEmpty()) {
-            //Checks if the end month or year is behind the start month or year
-            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
-                    startDateFrag.getYear() > endDateFrag.getYear()) {
-                endDateView.setError(dateAfter);
-                valid = false;
-            //Checks that start day isn't after the end day if they're in the same month
-            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
-                    startDateFrag.getDay() > endDateFrag.getDay()) {
-                endDateView.setError(dateAfter);
-                valid = false;
-            }
+        startCal = new GregorianCalendar(startDateFrag.getYear(),
+                startDateFrag.getMonth(),
+                startDateFrag.getDay(),
+                startTimeFrag.getHourInt(),
+                startTimeFrag.getMinInt());
+        endCal = new GregorianCalendar(endDateFrag.getYear(),
+                endDateFrag.getMonth(),
+                endDateFrag.getDay(),
+                endTimeFrag.getHourInt(),
+                endTimeFrag.getMinInt());
 
-            //Check for if start time and end time are on the same day
-            if (!startTime.isEmpty() && !endTime.isEmpty() &&
-                    startDateFrag.getDay() == endDateFrag.getDay() &&
-                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
-                    startDateFrag.getYear() == endDateFrag.getYear()) {
-                //Check that start hour isn't after end hour if on the same day
-                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
-                    endTimeView.setError(timeAfter);
-                    valid = false;
-                //Check that start minute isn't after end minute in the same hour and day
-                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
-                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
-                    endTimeView.setError(timeAfter);
-                    valid = false;
-                }
-            }
+        valid = true;
+        // Check if end date/time is after start date/time
+        if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
+            valid = false;
         }
+
+//        //Checks if date/time that was entered is valid
+//        if (!startDate.isEmpty() && !endDate.isEmpty()) {
+//            //Checks if the end month or year is behind the start month or year
+//            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
+//                    startDateFrag.getYear() > endDateFrag.getYear()) {
+//                endDateView.setError(dateAfter);
+//                valid = false;
+//            //Checks that start day isn't after the end day if they're in the same month
+//            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
+//                    startDateFrag.getDay() > endDateFrag.getDay()) {
+//                endDateView.setError(dateAfter);
+//                valid = false;
+//            }
+//
+//            //Check for if start time and end time are on the same day
+//            if (!startTime.isEmpty() && !endTime.isEmpty() &&
+//                    startDateFrag.getDay() == endDateFrag.getDay() &&
+//                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
+//                    startDateFrag.getYear() == endDateFrag.getYear()) {
+//                //Check that start hour isn't after end hour if on the same day
+//                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
+//                    endTimeView.setError(timeAfter);
+//                    valid = false;
+//                //Check that start minute isn't after end minute in the same hour and day
+//                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
+//                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
+//                    endTimeView.setError(timeAfter);
+//                    valid = false;
+//                }
+//            }
+//        }
+
+        System.out.println("startTime: " + startCal.getTime());
+        System.out.println("endTime: " + endCal.getTime());
 
         //Return validity of user input
         return valid;
@@ -288,19 +313,8 @@ public class CreateEventAct extends AppCompatActivity {
 
         if (checkInput()) {
             event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(), typeNum,
-                    new Date(
-                    startDateFrag.getYear(),
-                    startDateFrag.getMonth(),
-                    startDateFrag.getDay(),
-                    startTimeFrag.getHourInt(),
-                    startTimeFrag.getMinInt()),
-                    new Date(
-                    endDateFrag.getYear(),
-                    endDateFrag.getMonth(),
-                    endDateFrag.getDay(),
-                    endTimeFrag.getHourInt(),
-                    endTimeFrag.getMinInt())
-            );
+                    startCal,
+                    endCal);
 
             goToLocSelectAct();
         }

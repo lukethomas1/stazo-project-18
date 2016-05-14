@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -39,8 +40,10 @@ public class Event implements Parcelable {
     private int type;
     private int popularity = 0;
     private int reports = 0;
-    private Date startDate;
-    private Date endDate;
+
+    private GregorianCalendar startDate;
+    private GregorianCalendar endDate;
+
     private LatLng location;
     // 7 types, indexes 0-6
     public static String types[] = {"Food", "Sports", "Performance", "Academic", "Social", "Gaming", "Other"};
@@ -77,12 +80,12 @@ public class Event implements Parcelable {
         setEvent_id(in.readString());
         setType(in.readInt());
         setPopularity(in.readInt());
-        setStartDate(new Date(in.readInt(),
+        setStartDate(new GregorianCalendar(in.readInt(),
                 in.readInt(),
                 in.readInt(),
                 in.readInt(),
                 in.readInt()));
-        setEndDate(new Date(in.readInt(),
+        setEndDate(new GregorianCalendar(in.readInt(),
                 in.readInt(),
                 in.readInt(),
                 in.readInt(),
@@ -91,7 +94,7 @@ public class Event implements Parcelable {
 
     // constructor without location
     public Event(String name, String description, String creator_id,
-                 int type, Date startDate, Date endDate) {
+                 int type, GregorianCalendar startDate, GregorianCalendar endDate) {
         this.name = name;
         this.description = description;
         this.creator_id = creator_id;
@@ -102,7 +105,7 @@ public class Event implements Parcelable {
 
     // constructor with location
     public Event(String name, String description, String creator_id, int type,
-                 Date startDate, Date endDate, LatLng location) {
+                 GregorianCalendar startDate, GregorianCalendar endDate, LatLng location) {
         this.name = name;
         this.description = description;
         this.creator_id = creator_id;
@@ -120,8 +123,20 @@ public class Event implements Parcelable {
         this.type = ((Integer) eventMap.get("type")).intValue();
         this.popularity = ((Integer) eventMap.get("popularity")).intValue();
         this.reports = ((Integer) eventMap.get("reports")).intValue();
-        this.startDate = new Date((Long) eventMap.get("startDate"));
-        this.endDate = new Date((Long) eventMap.get("endDate"));
+
+        Date sDate = new Date((Long) eventMap.get("startDate"));
+        Date eDate = new Date((Long) eventMap.get("endDate"));
+        this.startDate = new GregorianCalendar(sDate.getYear(),
+                                               sDate.getMonth(),
+                                               sDate.getDay(),
+                                               sDate.getHours(),
+                                               sDate.getMinutes());
+        this.endDate = new GregorianCalendar(eDate.getYear(),
+                                             eDate.getMonth(),
+                                             eDate.getDay(),
+                                             eDate.getHours(),
+                                             eDate.getMinutes());
+
         HashMap<String, Object> locMap = ((HashMap<String,Object>) eventMap.get("location"));
         this.location = new LatLng((double) locMap.get("latitude"),
                 (double) locMap.get("longitude"));
@@ -185,11 +200,11 @@ public class Event implements Parcelable {
 
     public void setReports(int r) { this.reports = r; }
 
-    public void setStartDate(Date date) {
+    public void setStartDate(GregorianCalendar date) {
         this.startDate = date;
     }
 
-    public void setEndDate(Date date) { this.endDate = date;}
+    public void setEndDate(GregorianCalendar date) { this.endDate = date;}
 
     public String getName() {
         return name;
@@ -221,33 +236,33 @@ public class Event implements Parcelable {
 
     public int getReports() { return reports; }
 
-    public Date getStartDate() {
+    public GregorianCalendar getStartDate() {
         return startDate;
     }
 
-    public int getStartYear() { return startDate.getYear();}
+    public int getStartYear() { return startDate.getTime().getYear();}
 
-    public int getStartMonth() { return startDate.getMonth();}
+    public int getStartMonth() { return startDate.getTime().getMonth();}
 
-    public int getStartDay() { return startDate.getDay();}
+    public int getStartDay() { return startDate.getTime().getDay();}
 
-    public int getStartHour() { return startDate.getHours();}
+    public int getStartHour() { return startDate.getTime().getHours();}
 
-    public int getStartMinute() { return startDate.getMinutes();}
+    public int getStartMinute() { return startDate.getTime().getMinutes();}
 
-    public Date getEndDate() {
+    public GregorianCalendar getEndDate() {
         return endDate;
     }
 
-    public int getEndYear() { return endDate.getYear();}
+    public int getEndYear() { return endDate.getTime().getYear();}
 
-    public int getEndMonth() { return endDate.getMonth();}
+    public int getEndMonth() { return endDate.getTime().getMonth();}
 
-    public int getEndDay() { return endDate.getDay();}
+    public int getEndDay() { return endDate.getTime().getDay();}
 
-    public int getEndHour() { return endDate.getHours();}
+    public int getEndHour() { return endDate.getTime().getHours();}
 
-    public int getEndMinute() { return endDate.getMinutes();}
+    public int getEndMinute() { return endDate.getTime().getMinutes();}
 
     /**
      * Packages the Event in a Parcel for the CreateEventAct -> LocSelectAct Intent.
