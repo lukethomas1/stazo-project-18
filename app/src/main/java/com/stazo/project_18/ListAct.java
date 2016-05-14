@@ -125,4 +125,42 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         expListView.setAdapter(listAdapter);
     }
+
+
+    public void displayFilteredEventList(String search) {
+        //LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
+
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+        listIds = new ArrayList<>();
+
+        // clear all the views
+        //listLayout.removeAllViews();
+
+        //LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
+         //       (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+
+        filterEventList(search);
+
+        int i = 0;
+        for(Event evt : eventList) {
+            listIds.add(evt.getEvent_id());
+
+            listDataHeader.add(evt.getName());
+
+            List<String> evtDesc = new ArrayList<>();
+
+            evtDesc.add(evt.getDescription());
+
+            listDataChild.put(listDataHeader.get(i), evtDesc);
+
+            i++;
+        }
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
+                listIds);
+        expListView.setAdapter(listAdapter);
+    }
+    private void filterEventList(String search) {
+        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
+    }
 }

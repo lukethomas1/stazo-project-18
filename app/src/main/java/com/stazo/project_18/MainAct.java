@@ -1,5 +1,7 @@
 package com.stazo.project_18;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,7 +14,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +40,12 @@ public class MainAct extends AppCompatActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Toolbar toolbar;
+    private ViewPagerAdapter adapter;
+
+    // Search stuff
+    private SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +107,41 @@ public class MainAct extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+        // Search stuff
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    // do search here
+                    Log.d("MyTag", newText);
+                    Log.d("MyTag", "letsgo");
+                    // filter MapFrag
+                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents(newText);
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList(newText);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    // do search here
+                    Log.d("MyTag", query);
+                    Log.d("MyTag", "yooo");
+
+                    // hide keyboard
+                    searchView.clearFocus();
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
+        super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -147,7 +192,8 @@ public class MainAct extends AppCompatActivity
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
         //-----> REPLACE FRAGMENTS HERE <---------------
         adapter.addFragment(new MapFrag(), "Map");
         adapter.addFragment(new ListAct(), "Event List View");
