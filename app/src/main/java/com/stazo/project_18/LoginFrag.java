@@ -51,6 +51,8 @@ public class LoginFrag extends Fragment {
 
         @Override
         public void onSuccess(LoginResult loginResult) {
+            // go to the Map screen
+            goToMainAct();
 
             if(Profile.getCurrentProfile() == null) {
                 mProfileTracker = new ProfileTracker() {
@@ -61,7 +63,7 @@ public class LoginFrag extends Fragment {
                         mProfileTracker.stopTracking();
                         userName = profile.getName();
                         userId = profile.getId();
-                        mTextDetails.setText("Welcome\n" + userName);
+                        //mTextDetails.setText("Welcome\n" + userName);
 
                         // try logging in with the account
                         tryAccount();
@@ -74,7 +76,7 @@ public class LoginFrag extends Fragment {
                 accessToken = loginResult.getAccessToken();
                 userName = profile.getName();
                 userId = profile.getId();
-                mTextDetails.setText("Welcome\n" + userName);
+                //mTextDetails.setText("Welcome\n" + userName);
 
                 // try logging in with the account
                 tryAccount();
@@ -88,12 +90,14 @@ public class LoginFrag extends Fragment {
         @Override
         public void onCancel() {
             Log.d("FB SDK", "Facebook Login Cancelled");
+            Toast.makeText(getActivity().getApplicationContext(), "Login Cancelled", Toast.LENGTH_SHORT).show();
 
         }
 
         @Override
         public void onError(FacebookException error) {
             Log.d("FB SDK", "Facebook Login Error");
+            Toast.makeText(getActivity().getApplicationContext(), "Login Error: Try again later", Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -201,6 +205,7 @@ public class LoginFrag extends Fragment {
 
     private void goToMainAct(){
         startActivity(new Intent(getActivity(), MainAct.class));
+        getActivity().finish();
     }
 
     // creates a User and pushes it to Firebase

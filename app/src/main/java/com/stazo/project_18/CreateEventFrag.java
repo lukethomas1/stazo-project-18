@@ -58,9 +58,10 @@ public class CreateEventFrag extends Fragment {
      *                           itself in the future if needed.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.event_info, container, false);
 
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        System.out.println("Eric swag");
         // comment out later, needed for testing
         Firebase.setAndroidContext(this.getActivity());
 
@@ -330,6 +331,49 @@ public class CreateEventFrag extends Fragment {
      * Navigate to the map activity.
      */
     private void goToLocSelectAct() {
+<<<<<<< HEAD
         startActivity(new Intent(this.getActivity(), LocSelectAct.class).putExtra("eventToInit", event));
+=======
+        startActivity(new Intent(getActivity(), LocSelectAct.class).putExtra("eventToInit", event));
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+//    }
+
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mListener = null;
+//    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+>>>>>>> c4cb31c07b3c191db9dded7c9bec4054b603d7e1
     }
 }
