@@ -148,6 +148,27 @@ public class MainAct extends AppCompatActivity
         return true;
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check or uncheck the box depending on its previous state
+        item.setChecked(!item.isChecked());
+
+        // Get the index of the type in the Event.types array
+        for(int i = 0; i < Event.types.length; i++) {
+            if(item.getTitle().equals(Event.types[i])) {
+                // If it is already filtered, unfilter it
+                if(Project_18.filteredCategories.contains(i)) {
+                    Project_18.filteredCategories.remove(i);
+                }
+
+                // Otherwise filter it
+                else {
+                    Project_18.filteredCategories.add(i);
+                }
+            }
+        }
+        return false;
+    }
+
     private void setDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

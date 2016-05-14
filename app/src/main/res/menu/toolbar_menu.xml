@@ -19,21 +19,23 @@
         android:orderInCategory="2"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/settings"
-        android:title="@string/settings"
-        android:orderInCategory="1">
-        app:showAsAction="never"
-    </item>
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/settings"
+            android:title="@string/settings"
+            android:orderInCategory="1">
+            app:showAsAction="never"
+        </item>
 
-    <item android:id="@+id/option1"
-        android:title="option1"
-        android:orderInCategory="2"
-        app:showAsAction="never"/>
+        <item android:id="@+id/option1"
+            android:title="option1"
+            android:orderInCategory="2"
+            app:showAsAction="never"/>
 
-    <item android:id="@+id/option2"
-        android:title="option2"
-        android:orderInCategory="3"
-        app:showAsAction="never"/>
+        <item android:id="@+id/option2"
+            android:title="option2"
+            android:orderInCategory="3"
+            app:showAsAction="never"/>
+    </group>
 
 
 
