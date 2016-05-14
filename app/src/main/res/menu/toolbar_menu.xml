@@ -20,21 +20,46 @@
         app:showAsAction="always"/>
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/settings"
-            android:title="@string/settings"
+        <item android:id="@+id/all"
+            android:title="@string/all"
+            android:orderInCategory="1">
+            app:showAsAction="never"
+        </item>
+        <item android:id="@+id/food"
+            android:title="@string/food"
             android:orderInCategory="1">
             app:showAsAction="never"
         </item>
 
-        <item android:id="@+id/option1"
-            android:title="option1"
+        <item android:id="@+id/sports"
+            android:title="@string/sports"
             android:orderInCategory="2"
             app:showAsAction="never"/>
 
-        <item android:id="@+id/option2"
-            android:title="option2"
+        <item android:id="@+id/performance"
+            android:title="@string/performance"
             android:orderInCategory="3"
             app:showAsAction="never"/>
+        <item android:id="@+id/academic"
+            android:title="@string/academic"
+            android:orderInCategory="1">
+            app:showAsAction="never"
+        </item>
+        <item android:id="@+id/social"
+            android:title="@string/social"
+            android:orderInCategory="1">
+            app:showAsAction="never"
+        </item>
+        <item android:id="@+id/gaming"
+            android:title="@string/gaming"
+            android:orderInCategory="1">
+            app:showAsAction="never"
+        </item>
+        <item android:id="@+id/other"
+            android:title="@string/other"
+            android:orderInCategory="1">
+            app:showAsAction="never"
+        </item>
     </group>
 
 
