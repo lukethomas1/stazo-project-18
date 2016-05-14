@@ -4,28 +4,22 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-
-import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -79,8 +73,8 @@ public class MainAct extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle("title");
-        getSupportActionBar().setSubtitle("subtitle");
+        getSupportActionBar().setTitle("Campass");
+        getSupportActionBar().setSubtitle("By: Stazo");
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -130,9 +124,9 @@ public class MainAct extends AppCompatActivity
                     // do search here
                     Log.d("MyTag", newText);
                     Log.d("MyTag", "letsgo");
-                    MapFrag frag = (MapFrag) adapter.getItem(0);
-                    frag.filterRelevantEvents(newText);
-                            //displayRelevantEvents(((Project_18) getApplication()).findRelevantEvents(newText));
+                    // filter MapFrag
+                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents(newText);
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList(newText);
                     return true;
                 }
 
@@ -141,6 +135,9 @@ public class MainAct extends AppCompatActivity
                     // do search here
                     Log.d("MyTag", query);
                     Log.d("MyTag", "yooo");
+
+                    // hide keyboard
+                    searchView.clearFocus();
                     return true;
                 }
             };
@@ -232,9 +229,9 @@ public class MainAct extends AppCompatActivity
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), "ERIC");
-        adapter.addFragment(new ListAct(), "SO SWAG");
-        adapter.addFragment(new TestFrag1(), "I AGREE");
+        adapter.addFragment(new MapFrag(), "Map");
+        adapter.addFragment(new ListAct(), "Event List View");
+        adapter.addFragment(new TestFrag1(), "What is this?");
 
         viewPager.setAdapter(adapter);
     }

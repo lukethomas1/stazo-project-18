@@ -1,18 +1,10 @@
 package com.stazo.project_18;
 
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -21,10 +13,9 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ListAct extends android.support.v4.app.Fragment {
 
@@ -32,12 +23,17 @@ public class ListAct extends android.support.v4.app.Fragment {
     ArrayList<Event> eventList = new ArrayList<Event>();
     private TextView loadingText;
 
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
+    List<String> listIds;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
-
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -59,6 +55,7 @@ public class ListAct extends android.support.v4.app.Fragment {
 
                             // Add event to arraylist
                             eventList.add(e);
+
                         }
 
                         // Get the text in the activity
@@ -88,39 +85,82 @@ public class ListAct extends android.support.v4.app.Fragment {
         return v;
     }
 
-    // Creates buttons for each event in arraylist and adds them to the activity
+    // Creates ListViews for each event in arraylist and adds them to the activity
     private void displayEventList() {
-        LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
-        LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
-                (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+        //Grabs the ListView
+        expListView = (ExpandableListView)getActivity().findViewById(R.id.lvExp);
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+        listIds = new ArrayList<>();
 
+        int i = 0;
         for(Event evt : eventList) {
-            Button evtButton = new Button(this.getActivity());
-            evtButton.setText(evt.getName());
+            listIds.add(evt.getEvent_id());
 
-            evtButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    buttonPressed(v);
-                }
-            });
+            listDataHeader.add(evt.getName());
 
-            listLayout.addView(evtButton, listParams);
+            List<String> evtDesc = new ArrayList<>();
+
+            evtDesc.add(evt.getDescription());
+
+            listDataChild.put(listDataHeader.get(i), evtDesc);
+
+            i++;
         }
+
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
+                listIds);
+
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
+                                        int childPosition, long id) {
+                String eventId = listAdapter.getEventId(groupPosition);
+
+                ((MainAct)getActivity()).goToEventInfo(eventId);
+
+                return true;
+            }
+        });
+
+        expListView.setAdapter(listAdapter);
     }
 
-    public void buttonPressed(View view) {
-        // Cast view to button
-        Button button = (Button) view;
-        String id = "default id for list";
 
-        // Find which event it is
+    public void displayFilteredEventList(String search) {
+        //LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
+
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+        listIds = new ArrayList<>();
+
+        // clear all the views
+        //listLayout.removeAllViews();
+
+        //LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
+         //       (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+
+        filterEventList(search);
+
+        int i = 0;
         for(Event evt : eventList) {
-            if(button.getText() == evt.getName()) {
-                // Get event id
-                id = evt.getEvent_id();
-            }
+            listIds.add(evt.getEvent_id());
+
+            listDataHeader.add(evt.getName());
+
+            List<String> evtDesc = new ArrayList<>();
+
+            evtDesc.add(evt.getDescription());
+
+            listDataChild.put(listDataHeader.get(i), evtDesc);
+
+            i++;
         }
-        // Start EventInfo activity with event id attached
-        ((MainAct)this.getActivity()).goToEventInfo(id);
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
+                listIds);
+        expListView.setAdapter(listAdapter);
+    }
+    private void filterEventList(String search) {
+        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
     }
 }
