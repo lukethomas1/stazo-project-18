@@ -7,7 +7,7 @@
     <item
         android:id="@+id/game"
         android:icon="@drawable/gameicon"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:title="game"
         android:orderInCategory="1">
     </item>
@@ -17,7 +17,7 @@
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:orderInCategory="2"
-        app:showAsAction="ifRoom|collapseActionView"/>
+        app:showAsAction="always"/>
 
     <item android:id="@+id/settings"
         android:title="@string/settings"

@@ -1,14 +1,12 @@
 package com.stazo.project_18;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +17,9 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -102,9 +96,7 @@ public class MapFrag extends Fragment {
             ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter
     {
         private HashMap<String, String> idLookupHM = new HashMap<>();
-        private View infoWindowContents;
-
-        public MapHandler() {}
+        private View infoWindow;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -115,21 +107,28 @@ public class MapFrag extends Fragment {
             } else {
                 // Show rationale and request permission.
             }
+
+            System.out.println( "Entered MapHandler's onCreate method." );
+            System.err.println( "Entered MapHandler's onCreate method." );
         }
 
         @Override
         public View getInfoWindow(Marker marker) {
-            return null;
+
+
+            return null; // Call getInfoContents
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            render(marker, infoWindowContents);
+            render(marker, infoWindow);
 
-            return infoWindowContents;
+            return infoWindow;
         }
 
         private void render(Marker marker, View inflatedLayout) {
+
+            // Set title and event description
             TextView titleTV = (TextView) inflatedLayout.findViewById(R.id.eventTitleTV);
             TextView descTV = (TextView) inflatedLayout.findViewById(R.id.eventDescTV);
 
@@ -149,17 +148,14 @@ public class MapFrag extends Fragment {
                 public boolean onMarkerClick(Marker marker) {
                     //goToEventInfo(marker);
 
-                    return false; // Do not perform default behavior: displaying InfoWindow
+                    return false; // Perform default behavior: displaying InfoWindow
                 }
             });
 
             // Inflate custom info window layout
             LayoutInflater inflater = LayoutInflater.from(getContext());
 
-            System.err.println("Inflater is"
-                    + (inflater == null ? "" : " not") + " null.\n\n\n");
-
-            infoWindowContents = inflater.inflate(R.layout.custom_info_contents, null);
+            infoWindow = inflater.inflate(R.layout.custom_info_window, null);
 
             // Initialize custom info window
             map.setInfoWindowAdapter(this);
