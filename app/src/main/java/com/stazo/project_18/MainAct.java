@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -272,6 +272,16 @@ public class MainAct extends AppCompatActivity
         Intent intent = new Intent(this, EventInfoAct.class);
         intent.putExtra("event_id", event_id);
         startActivity(intent);
+
+        // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
+//        EventInfoFrag eventInfoFrag = new EventInfoFrag();
+//        eventInfoFrag.setEventID(event_id);
+//        android.support.v4.app.FragmentTransaction transaction =
+//                this.getSupportFragmentManager().beginTransaction();
+//        transaction.replace
+//                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
+//        transaction.commit();
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -313,4 +323,15 @@ public class MainAct extends AppCompatActivity
             return mFragmentTitleList.get(position);
         }
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        System.out.println("test");
+//        if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
+//            getSupportFragmentManager().popBackStack();
+//            System.out.println("dank");
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 }

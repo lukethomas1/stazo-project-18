@@ -6,7 +6,8 @@
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="0dp"
-    android:paddingBottom="20dp">
+    android:paddingBottom="20dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -15,6 +16,7 @@
 
         <ImageView
             android:layout_width="0dp"
+
             android:layout_height="match_parent"
             android:id="@+id/eventIcon"
             android:src="@drawable/gameicon"
