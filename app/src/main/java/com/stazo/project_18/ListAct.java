@@ -37,7 +37,6 @@ public class ListAct extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
-
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -59,6 +58,7 @@ public class ListAct extends android.support.v4.app.Fragment {
 
                             // Add event to arraylist
                             eventList.add(e);
+
                         }
 
                         // Get the text in the activity
@@ -91,6 +91,7 @@ public class ListAct extends android.support.v4.app.Fragment {
     // Creates buttons for each event in arraylist and adds them to the activity
     private void displayEventList() {
         LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
+
         LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 
@@ -133,7 +134,7 @@ public class ListAct extends android.support.v4.app.Fragment {
         }
     }
     private void filterEventList(String search) {
-        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
+            this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
     }
     /*public void unfilterEvents() {
         // reset the pulledEvents

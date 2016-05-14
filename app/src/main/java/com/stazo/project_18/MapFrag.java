@@ -204,9 +204,9 @@ public class MapFrag extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
+                            ((Project_18) getActivity().getApplication()).clearPulledEvents();
                             // For every event in fb.child("Events"), create event and displayEvent
                             for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-
                                 // get the info, storage?
                                 Event e = new Event(eventSnapshot.getValue(
                                         new GenericTypeIndicator<HashMap<String, Object>>() {
