@@ -26,8 +26,10 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorSecondary"
             app:tabTextAppearance="@style/TabTextAppearance"
-            android:background="@color/colorSecondary"/>
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill"/>
             <!--android:tabMode="fixed"-->
     </android.support.design.widget.AppBarLayout>
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
-import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -155,8 +153,9 @@ public class LoginFrag extends Fragment {
 
                     // pull data
                     userName = ((String) dataSnapshot.child(userId).child("name").getValue());
-                    myEvents = ((ArrayList<String>)
+                    /*myEvents = ((ArrayList<String>)
                             dataSnapshot.child(userId).child("myEvents").getValue());
+                            */
                     User me = new User(userId, userName, myEvents);
 
                     // save the user to the application
