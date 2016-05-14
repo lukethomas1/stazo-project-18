@@ -72,7 +72,7 @@ public class MainAct extends AppCompatActivity
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setTitle("Campass");
-        getSupportActionBar().setSubtitle("By: Stazo");
+        //getSupportActionBar().setSubtitle("By: Stazo");
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -196,8 +196,8 @@ public class MainAct extends AppCompatActivity
 
         //-----> REPLACE FRAGMENTS HERE <---------------
         adapter.addFragment(new MapFrag(), "Map");
-        adapter.addFragment(new ListAct(), "Event List View");
-        adapter.addFragment(new TestFrag1(), "What is this?");
+        adapter.addFragment(new ListAct(), "List");
+        //adapter.addFragment(new TestFrag1(), "What is this?");
 
         viewPager.setAdapter(adapter);
     }
