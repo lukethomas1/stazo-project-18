@@ -152,7 +152,7 @@ public class LoginFrag extends Fragment {
                     // pull data
                     userName = ((String) dataSnapshot.child(userId).child("name").getValue());
                     myEvents = ((ArrayList<String>)
-                            dataSnapshot.child(userId).child("my_events").getValue());
+                            dataSnapshot.child(userId).child("myEvents").getValue());
                     User me = new User(userId, userName, myEvents);
 
                     // save the user to the application
