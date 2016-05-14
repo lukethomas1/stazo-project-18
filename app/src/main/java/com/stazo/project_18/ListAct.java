@@ -34,7 +34,6 @@ public class ListAct extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
-
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -56,6 +55,7 @@ public class ListAct extends android.support.v4.app.Fragment {
 
                             // Add event to arraylist
                             eventList.add(e);
+
                         }
 
                         // Get the text in the activity

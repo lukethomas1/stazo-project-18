@@ -21,8 +21,13 @@ public class Project_18 extends Application {
     public void setMe(User user) { me = user; }
 
     // stores a pulled event locally (pulledEvents)
-    public void addPulledEvent(Event e) {pulledEvents.add(e);}
+    public void addPulledEvent(Event e) {
+        if (!pulledEvents.contains(e)) {
+            pulledEvents.add(e);
+        }
+    }
     public ArrayList<Event> getPulledEvents (){return pulledEvents;}
+    public void clearPulledEvents() {pulledEvents = new ArrayList<Event>();}
 
     // returns list of event_ids in order of relevance
     public ArrayList<String> findRelevantEventIds (String search) {
