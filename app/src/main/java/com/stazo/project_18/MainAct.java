@@ -81,6 +81,10 @@ public class MainAct extends AppCompatActivity
                     case R.id.game:
                         Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
                         return true;
+
+                    case R.id.logout:
+                        goToLogoutAct();
+                        return true;
                 }
 
                 return false;
@@ -190,4 +194,9 @@ public class MainAct extends AppCompatActivity
             return mFragmentTitleList.get(position);
         }
     }
+
+    private void goToLogoutAct(){
+        startActivity(new Intent(this, LogoutAct.class));
+    }
+
 }
