@@ -81,15 +81,43 @@ public class MainAct extends AppCompatActivity
         //menu button actions
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
+            public boolean onMenuItemClick(MenuItem item) {
 
-                switch (menuItem.getItemId()) {
+                switch (item.getItemId()) {
                     case R.id.game:
                         Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
                         return true;
                 }
 
-                return false;
+                // Check or uncheck the box depending on its previous state
+                item.setChecked(!item.isChecked());
+
+                // Get the index of the type in the Event.types array
+                for(int i = 0; i < Event.types.length; i++) {
+                    // Create Integer object to add to ArrayList
+                    Integer category = new Integer(i);
+
+                    if(item.getTitle().equals(Event.types[i])) {
+                        // If it is already filtered, unfilter it
+                        if(Project_18.filteredCategories.contains(i)) {
+                            Project_18.filteredCategories.remove(category);
+
+                            // If filters are empty re-add "All" filter
+                            if(Project_18.filteredCategories.isEmpty()) {
+                                Integer allCategory = new Integer(-1);
+                                Project_18.filteredCategories.add(allCategory);
+                            }
+                        }
+
+                        // Otherwise filter it
+                        else {
+                            Integer allCategory = new Integer(-1);
+                            Project_18.filteredCategories.add(category);
+                            Project_18.filteredCategories.remove(allCategory);
+                        }
+                    }
+                }
+                return true;
             }
         });
 
@@ -147,37 +175,9 @@ public class MainAct extends AppCompatActivity
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Check or uncheck the box depending on its previous state
-        item.setChecked(!item.isChecked());
-
-        // Get the index of the type in the Event.types array
-        for(int i = 0; i < Event.types.length; i++) {
-            // Create Integer object to add to ArrayList
-            Integer category = new Integer(i);
-
-            if(item.getTitle().equals(Event.types[i])) {
-                // If it is already filtered, unfilter it
-                if(Project_18.filteredCategories.contains(i)) {
-                    Project_18.filteredCategories.remove(category);
-
-                    // If filters are empty re-add "All" filter
-                    if(Project_18.filteredCategories.isEmpty()) {
-                        Integer allCategory = new Integer(-1);
-                        Project_18.filteredCategories.add(allCategory);
-                    }
-                }
-
-                // Otherwise filter it
-                else {
-                    Integer allCategory = new Integer(-1);
-                    Project_18.filteredCategories.add(category);
-                    Project_18.filteredCategories.remove(allCategory);
-                }
-            }
-        }
-        return false;
-    }
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//    }
 
     private void setDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
