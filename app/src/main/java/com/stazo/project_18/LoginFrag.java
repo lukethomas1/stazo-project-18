@@ -201,6 +201,7 @@ public class LoginFrag extends Fragment {
 
     private void goToMainAct(){
         startActivity(new Intent(getActivity(), MainAct.class));
+        getActivity().finish();
     }
 
     // creates a User and pushes it to Firebase
