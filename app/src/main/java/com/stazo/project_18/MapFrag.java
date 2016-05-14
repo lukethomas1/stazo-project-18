@@ -2,6 +2,9 @@ package com.stazo.project_18;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -265,6 +268,14 @@ public class MapFrag extends Fragment {
             markerOpts.snippet(e.getDescription());
             markerOpts.position(e.getLocation());
             // Set the color of the marker
+            /*int height = 100;
+            int width = 100;
+            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.mipmap.marker);
+            Bitmap b=bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+            Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+            // Scale it to 50 x 50
+            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));*/
             markerOpts.icon(BitmapDescriptorFactory.defaultMarker(Event.typeColors[e.getType()]));
 
 
