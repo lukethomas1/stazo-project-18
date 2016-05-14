@@ -280,6 +280,17 @@ public class Event implements Parcelable {
         System.out.println("GENERATING: " + this.event_id);
     }
 
+    // determines how relevant this event is to a query (2,1,0)
+    public int findRelevance(String search) {
+        if (name.contains(search)) {
+            return 2;
+        }
+        if (description.contains(search)) {
+            return 1;
+        }
+        return 0;
+    }
+
     /*class ReportEventTask extends AsyncTask<String, Void, String> {
         private Exception exception;
 
