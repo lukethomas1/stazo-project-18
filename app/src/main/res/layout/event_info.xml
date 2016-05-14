@@ -7,7 +7,8 @@
     android:paddingRight="20dp"
     android:paddingTop="0dp"
     android:paddingBottom="20dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:id="@+id/event_info_ll">
 
     <LinearLayout
         android:orientation="horizontal"

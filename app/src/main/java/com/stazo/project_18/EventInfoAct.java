@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,11 +21,13 @@ import java.util.HashMap;
 public class EventInfoAct extends AppCompatActivity {
 
     Firebase fb;
-
+    private View v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info);
+        v = findViewById(R.id.event_info_ll);
+        v.setVisibility(View.INVISIBLE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -188,6 +191,7 @@ public class EventInfoAct extends AppCompatActivity {
                         + (minutes - currTime.MINUTE) + " m");
             }
         }
+        v.setVisibility(View.VISIBLE);
     }
     /*@Override
     public void onBackPressed(){

@@ -28,10 +28,12 @@ public class EventInfoFrag extends Fragment {
 
     Firebase fb;
     private String passedEventID;
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.event_info, container, false);
+        v = inflater.inflate(R.layout.event_info, container, false);
+        v.setVisibility(View.INVISIBLE);
         Toolbar toolbar = (Toolbar) this.getActivity().findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
@@ -54,6 +56,7 @@ public class EventInfoFrag extends Fragment {
         // Display event info
         System.out.println("EVENT ID: " + event_id);
         grabEventInfo(event_id);
+        v.setVisibility(View.INVISIBLE);
         return v;
     }
 
