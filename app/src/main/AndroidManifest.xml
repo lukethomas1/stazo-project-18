@@ -80,6 +80,7 @@
 
         <!-- <activity android:name=".InitialAct"></activity> -->
 
+        <activity android:name=".MyCreatedEvents"></activity>
     </application>
 
 </manifest>

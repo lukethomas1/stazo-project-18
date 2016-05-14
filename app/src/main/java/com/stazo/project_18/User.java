@@ -2,6 +2,7 @@ package com.stazo.project_18;
 
 import com.firebase.client.Firebase;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,7 +26,7 @@ public class User {
     public User(String user_id, String name) {
         this.ID = user_id;
         this.name = name;
-        myEvents = new ArrayList<String>();
+        this.myEvents = new ArrayList<String>();
     }
 
     // for existing users
@@ -40,7 +41,11 @@ public class User {
         this.name = (String) userMap.get("name");
         System.out.println(name + '\n');
         this.ID = (String) userMap.get("id");
-        // TODO add myEvents initialization
+        // remove this after all users have myEvents reference in firebase
+        if (userMap.containsKey("myEvents")) {
+            this.myEvents = (ArrayList<String>) userMap.get("myEvents");
+            // TODO add myEvents initialization
+        }
     }
 
     /**
@@ -64,6 +69,9 @@ public class User {
         return this.myEvents;
     }
 
+
+
+    public void setMyEvents(ArrayList<String> events) { myEvents = events; }
 
     public void setID(String user_id) {
         this.ID = user_id;

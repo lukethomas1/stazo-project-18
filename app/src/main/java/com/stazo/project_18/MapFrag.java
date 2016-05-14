@@ -2,11 +2,13 @@ package com.stazo.project_18;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Fragment version of MapAct, also uses MapView instead of MapFragment from Google API
@@ -88,6 +94,13 @@ public class MapFrag extends Fragment {
         ((MainAct)this.getActivity()).goToEventInfo(event_id);
     }
 
+    public void filterRelevantEvents(String search) {
+        Log.d("MyTag", "yo wee filteringgg");
+        ArrayList<String> relevantEventIds =
+                ((Project_18) getActivity().getApplication()).findRelevantEventIds(search);
+        mapHandler.displayRelevantEvents(relevantEventIds);
+    }
+
     /**
      * Map Handler
      */
@@ -95,7 +108,12 @@ public class MapFrag extends Fragment {
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback,
             ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter
     {
+        // Hashmap from marker id to event id (for displaying event info)
         private HashMap<String, String> idLookupHM = new HashMap<>();
+
+        // Hashmap from event id to marker (for hiding markers);
+        private HashMap<String, Marker> markerLookupHM = new HashMap<>();
+
         private View infoWindow;
 
         @Override
@@ -189,13 +207,16 @@ public class MapFrag extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
+                            ((Project_18) getActivity().getApplication()).clearPulledEvents();
                             // For every event in fb.child("Events"), create event and displayEvent
                             for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-
                                 // get the info, storage?
                                 Event e = new Event(eventSnapshot.getValue(
                                         new GenericTypeIndicator<HashMap<String, Object>>() {
                                         }));
+
+                                // add the event to the local ArrayList
+                                ((Project_18) getActivity().getApplication()).addPulledEvent(e);
 
                                 // display event
                                 displayEvent(e);
@@ -211,6 +232,30 @@ public class MapFrag extends Fragment {
                     });
         }
 
+        // Hide irrelevant events, show relevant events
+        public void displayRelevantEvents(ArrayList<String> relevantEventIds) {
+            //Iterator it = markerLookupHM.entrySet().iterator();
+
+            // iterate through map of event_ids to markers
+            for (String key: markerLookupHM.keySet()) {
+                //HashMap.Entry pair = (HashMap.Entry)it.next();
+                //System.out.println(pair.getKey() + " = " + pair.getValue());
+                // if the event_id of a marker is not contained in relevantEventIds
+                if (relevantEventIds.contains(key)) {
+                    // hide the marker
+                    Log.d("MyTag", "Relevant: " + key.toString());
+                    markerLookupHM.get(key).setVisible(true);
+                }
+                // if it is relevant, make it visible
+                else {
+                    Log.d("MyTag", "Irrelevant: " + key.toString());
+                    markerLookupHM.get(key).setVisible(false);
+                }
+                //it.remove(); // avoids a ConcurrentModificationException
+            }
+        }
+
+
         // Displays a single event
         private void displayEvent(Event e) {
             // Set the marker's parameters
@@ -219,12 +264,18 @@ public class MapFrag extends Fragment {
             markerOpts.title(e.getName());
             markerOpts.snippet(e.getDescription());
             markerOpts.position(e.getLocation());
+            // Set the color of the marker
+            markerOpts.icon(BitmapDescriptorFactory.defaultMarker(Event.typeColors[e.getType()]));
+
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);
 
             // Put the marker in a HashMap to look up IDs later
             idLookupHM.put(marker.getId(), e.getEvent_id());
+
+            // Put the marker in a HashMap to hide markers later
+            markerLookupHM.put(e.getEvent_id(), marker);
         }
     }
 }
