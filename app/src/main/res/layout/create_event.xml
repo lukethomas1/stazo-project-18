@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Event Name:"
-                android:id="@+id/NameText" />
+                android:id="@+id/NameText"/>
 
             <EditText
                 android:layout_width="match_parent"

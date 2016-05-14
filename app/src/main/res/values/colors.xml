@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorSecondary">#01579B</color>
     <color name="colorAccent">#F44336</color>
+    <color name="lightBlue">#f0f8ff</color>
+    <color name="skyBlue">#c6e2ff</color>
     <color name="white">#FFFFFF</color>
 </resources>
