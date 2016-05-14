@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.stazo.project_18.toolbar">
 
-    <item
+    <!--<item
         android:id="@+id/game"
         android:icon="@drawable/gameicon"
         app:showAsAction="always"
         android:title="game"
         android:orderInCategory="1">
-    </item>
+    </item> -->
 
     <item android:id="@+id/action_search"
         android:icon="@drawable/ic_search_black_24dp"

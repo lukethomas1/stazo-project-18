@@ -75,7 +75,7 @@ public class MainAct extends AppCompatActivity
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setTitle("Campass");
         //getSupportActionBar().setSubtitle("By: Stazo");
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //menu button actions
@@ -83,11 +83,11 @@ public class MainAct extends AppCompatActivity
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                switch (menuItem.getItemId()) {
+                /*switch (menuItem.getItemId()) {
                     case R.id.game:
                         Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
                         return true;
-                }
+                }*/
 
                 return false;
             }
