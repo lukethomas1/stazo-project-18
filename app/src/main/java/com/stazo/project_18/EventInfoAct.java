@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -157,7 +158,11 @@ public class EventInfoAct extends AppCompatActivity {
             timePeriod = "PM";
             hours = hours - 12;
         }
-        eventTime.setText(hours + ":" + minutes + " " + timePeriod);
+        if(minutes < 10){
+            eventTime.setText(hours + ":0" + minutes + " " + timePeriod);
+        } else {
+            eventTime.setText(hours + ":" + minutes + " " + timePeriod);
+        }
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
         TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);
@@ -165,6 +170,7 @@ public class EventInfoAct extends AppCompatActivity {
             minutes = minutes + 60;
             hours--;
         }
+        eventTimeTo.setTextColor(Color.BLACK);
         if((hours - currTime.get(Calendar.HOUR_OF_DAY) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
             eventTimeTo.setText("Started!");
             long pastHour = currTime.get(Calendar.HOUR_OF_DAY) - hours - eventHour;
@@ -184,9 +190,15 @@ public class EventInfoAct extends AppCompatActivity {
             }
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
+                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
+                    eventTimeTo.setTextColor(Color.GREEN);
+                }
                 eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
                         + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
+                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
+                    eventTimeTo.setTextColor(Color.GREEN);
+                }
                 eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
                         + (minutes - currTime.MINUTE) + " m");
             }

@@ -4,6 +4,7 @@ package com.stazo.project_18;
  * Created by ericzhang on 5/14/16.
  */
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -134,7 +135,6 @@ public class EventInfoFrag extends Fragment {
         }
         // setting the icon
         eventIcon.setImageDrawable(d);
-
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
@@ -170,7 +170,11 @@ public class EventInfoFrag extends Fragment {
             timePeriod = "PM";
             hours = hours - 12;
         }
-        eventTime.setText(hours + ":" + minutes + " " + timePeriod);
+        if(minutes < 10){
+            eventTime.setText(hours + ":0" + minutes + " " + timePeriod);
+        } else {
+            eventTime.setText(hours + ":" + minutes + " " + timePeriod);
+        }
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
         TextView eventTimeTo = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
@@ -197,9 +201,15 @@ public class EventInfoFrag extends Fragment {
             }
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
+                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
+                    eventTimeTo.setTextColor(Color.RED);
+                }
                 eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
                         + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
+                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
+                    eventTimeTo.setTextColor(Color.RED);
+                }
                 eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
                         + (minutes - currTime.MINUTE) + " m");
             }
