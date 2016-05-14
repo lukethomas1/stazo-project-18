@@ -8,7 +8,12 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.FacebookSdk;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -24,17 +29,55 @@ public class InitialAct extends AppCompatActivity {
     ArrayList<String> myEvents = new ArrayList<String>();
     Firebase fb;
     SharedPreferences sharedPreferences;
+    AccessTokenTracker accessTokenTracker;
+    AccessToken accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext()); // Needed anytime FB SDK is used
         setContentView(R.layout.initial);
 
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("userId", "0"); // "0" default value
         Firebase.setAndroidContext(this);
         fb = ((Project_18) getApplication()).getFB();
-        tryAccount();
+
+        // if the user logs in for the first time
+        if(sharedPreferences.getBoolean("isLoggedIn", false)) { // check if they have logged in before
+            // tracks if the AccessToken has changed and sees if it is still valid
+            accessToken = AccessToken.getCurrentAccessToken();
+            updateWithToken(accessToken);
+            /*accessTokenTracker = new AccessTokenTracker() {
+                @Override
+                // Will only be called if there is a change in the current AccessTokens
+                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
+
+                    Log.d("FB SDK", "InitialAct: oldAccessToken: " + oldAccessToken);
+                    Log.d("FB SDK", "InitialAct: newAccessToken: " + newAccessToken);
+
+                }
+            };
+            */
+        }
+        else { // first time logging in
+            Log.d("FB SDK", "InitialAct: First Time Logging In");
+            goToLoginAct();
+        }
+    }
+
+    // Checks if the AccessToken is null and runs the appropriate method
+    private void updateWithToken(AccessToken currentAccessToken) {
+        Log.d("FB SDK", "Initial Act: Checking the accessTokens");
+        if (currentAccessToken != null) {
+            Log.d("FB SDK", "InitialAct: AccessToken is not null");
+            tryAccount(); // check sharedPrefs to see if user is logged in
+        }
+        else {
+            Log.d("FB SDK", "InitialAct: AccessToken is null");
+            goToLoginAct(); // else go to loginAct
+        }
+        //accessTokenTracker.stopTracking();
     }
 
     // tries to login with the current user_id
@@ -78,7 +121,9 @@ public class InitialAct extends AppCompatActivity {
         });
     }
 
+
     private void goToMainAct(){
+        Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainAct.class));
     }
     private void goToLoginAct(){

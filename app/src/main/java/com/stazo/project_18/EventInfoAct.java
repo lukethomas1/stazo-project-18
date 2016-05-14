@@ -3,33 +3,19 @@ package com.stazo.project_18;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class EventInfoAct extends AppCompatActivity {
 
@@ -176,13 +162,30 @@ public class EventInfoAct extends AppCompatActivity {
             minutes = minutes + 60;
             hours--;
         }
-        if((hours - currTime.get(Calendar.HOUR) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
+        if((hours - currTime.get(Calendar.HOUR_OF_DAY) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
             eventTimeTo.setText("Started!");
+            long pastHour = currTime.get(Calendar.HOUR_OF_DAY) - hours - eventHour;
+            long pastMinute = currTime.get(Calendar.MINUTE) - minutes - eventMinute;
+            if(pastMinute < 0){
+                pastMinute += 60;
+                pastHour--;
+            }
+            if(pastHour > 1){
+                eventTimeTo.setText("COMPLETED");
+            } else {
+                if(pastHour == 1){
+                    eventTimeTo.setText("Finished 1 h ago");
+                } else {
+                    eventTimeTo.setText("Finished " + pastMinute + " m ago");
+                }
+            }
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
-                eventTimeTo.setText((hours - currTime.get(Calendar.HOUR)) + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
+                eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
+                        + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
-                eventTimeTo.setText((hours - currTime.HOUR) + " h " + (minutes - currTime.MINUTE) + " m");
+                eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
+                        + (minutes - currTime.MINUTE) + " m");
             }
         }
     }

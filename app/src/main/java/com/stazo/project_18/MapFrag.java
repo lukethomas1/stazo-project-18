@@ -1,30 +1,25 @@
 package com.stazo.project_18;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,7 +39,6 @@ public class MapFrag extends Fragment {
     private GoogleMap map;
     private MapHandler mapHandler;
     private MapView mapView;
-    private MapFragment mapFrag;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,36 +53,10 @@ public class MapFrag extends Fragment {
         mapHandler = new MapHandler();
 
         // Initialize the map_overview
-//        mapFrag = (MapFragment) this.getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapView = (MapView) v.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapHandler);
 
-
-
-//        try {
-//            MapsInitializer.initialize(getActivity());
-//        } catch (GooglePlayServicesNotAvailableException e) {
-//            System.out.println("Address Map, Could not initialize google play");
-//        }
-//
-//        mapView = (MapView) v.findViewById(R.id.map);
-//        mapView.onCreate(savedInstanceState);
-//        // Gets to GoogleMap from the MapView and does initialization stuff
-//        if(mapView!=null)
-//        {
-//            mapHandler = new MapHandler();
-//            mapView.getMapAsync(mapHandler);
-//            map.getUiSettings().setMyLocationButtonEnabled(false);
-//        }
-
-
-        /*placingEvent = new Event();
-
-        placingEvent.setName("Roaring Revelle");
-        placingEvent.setDescription("This event takes place off campus.\n" +
-                                    "It is a Gatsby themed party, so come well-dressed!");*/
-        //displayAllEvents();
         return v;
     }
 
@@ -113,27 +81,22 @@ public class MapFrag extends Fragment {
 //    }
 
     private void goToEventInfo(Marker marker) {
-//        Intent intent = new Intent(this.getActivity(), EventInfoAct.class);
-
         // Get event's database id
-        String event_id = mapHandler.idLookupHM.get(marker.getId());
+        String event_id = mapHandler.getEventIDFromMarker(marker);
 
-//        // Store the event ID as an extra
-//        intent.putExtra("event_id", event_id);
-//
-//        startActivity(intent);
-        System.out.println("PUTTING: " + event_id);
+        // Delegate Activity switching to encapsulating activity
         ((MainAct)this.getActivity()).goToEventInfo(event_id);
     }
 
     /**
-     * Map Handler stuff
+     * Map Handler
      */
 
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback,
-            ActivityCompat.OnRequestPermissionsResultCallback
+            ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter
     {
         private HashMap<String, String> idLookupHM = new HashMap<>();
+        private View infoWindow;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -144,6 +107,37 @@ public class MapFrag extends Fragment {
             } else {
                 // Show rationale and request permission.
             }
+
+            System.out.println( "Entered MapHandler's onCreate method." );
+            System.err.println( "Entered MapHandler's onCreate method." );
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+
+
+            return null; // Call getInfoContents
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            render(marker, infoWindow);
+
+            return infoWindow;
+        }
+
+        private void render(Marker marker, View inflatedLayout) {
+
+            // Set title and event description
+            TextView titleTV = (TextView) inflatedLayout.findViewById(R.id.eventTitleTV);
+            TextView descTV = (TextView) inflatedLayout.findViewById(R.id.eventDescTV);
+
+            titleTV.setText(marker.getTitle());
+            descTV.setText(marker.getSnippet());
+        }
+
+        public String getEventIDFromMarker(Marker marker) {
+            return idLookupHM.get(marker.getId());
         }
 
         public void onMapReady(GoogleMap googleMap) {
@@ -152,11 +146,26 @@ public class MapFrag extends Fragment {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    goToEventInfo(marker);
+                    //goToEventInfo(marker);
 
-                    return true; // Do not perform default behavior: displaying InfoWindow
+                    return false; // Perform default behavior: displaying InfoWindow
                 }
             });
+
+            // Inflate custom info window layout
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+
+            infoWindow = inflater.inflate(R.layout.custom_info_window, null);
+
+            // Initialize custom info window
+            map.setInfoWindowAdapter(this);
+            map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    goToEventInfo(marker);
+                }
+            });
+
             displayAllEvents();
 
             // Initial Camera Position
@@ -216,9 +225,6 @@ public class MapFrag extends Fragment {
 
             // Put the marker in a HashMap to look up IDs later
             idLookupHM.put(marker.getId(), e.getEvent_id());
-            System.out.println("Marker: " + marker.getId() + " Event ID: " + e.getEvent_id());
-            System.out.println("Marker: " + marker.getId() + " Name: " + e.getName());
-
         }
     }
 }
