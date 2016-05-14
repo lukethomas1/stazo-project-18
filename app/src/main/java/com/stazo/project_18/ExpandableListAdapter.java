@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
 
+        txtListChild.setTypeface(null, Typeface.ITALIC);
+        txtListChild.setTextColor(Color.GRAY);
+
         txtListChild.setText(childText);
 
         return convertView;
@@ -97,7 +101,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        lblListHeader.setTypeface(null, Typeface.BOLD);
+
+        lblListHeader.setTextColor(Color.DKGRAY);
         lblListHeader.setText(headerTitle);
 
         return convertView;
