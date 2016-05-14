@@ -163,7 +163,6 @@ public class MainAct extends AppCompatActivity
                         ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
                         ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
                     }
->>>>>>> 4bdaf109647cbbdbe34e2a5c86b9d6a7f2720df0
                 }
 
                 Log.d("myTag", Project_18.filteredCategories.toString());
@@ -331,12 +330,6 @@ public class MainAct extends AppCompatActivity
         }
     }
 
-<<<<<<< HEAD
-    private void goToLogoutAct(){
-        startActivity(new Intent(this, LogoutAct.class));
-    }
-
-=======
     @Override
     public void onBackPressed() {
         System.out.println("test");
@@ -347,5 +340,4 @@ public class MainAct extends AppCompatActivity
             super.onBackPressed();
         }
     }
->>>>>>> 4bdaf109647cbbdbe34e2a5c86b9d6a7f2720df0
 }
