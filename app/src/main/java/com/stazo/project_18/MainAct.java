@@ -55,6 +55,12 @@ public class MainAct extends AppCompatActivity
         //or maybe it's done in .xml
         //moved toolbar to separate method
         setToolbar();
+
+        //initialize all to be in filtered
+        for (int index = 0; index < Event.types.length; index++) {
+            Project_18.filteredCategories.add(new Integer(index));
+        }
+
         setDrawer();
 
         //tab stuff    http://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
@@ -66,7 +72,7 @@ public class MainAct extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
 
         // Default to "All" categories
-        Project_18.filteredCategories.add(-1);
+        //Project_18.filteredCategories.add(-1);
     }
 
     private void setToolbar() {
@@ -88,35 +94,70 @@ public class MainAct extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
                         return true;
                 }*/
-
-                // Check or uncheck the box depending on its previous state
-                item.setChecked(!item.isChecked());
+                int i;
 
                 // Get the index of the type in the Event.types array
-                for(int i = 0; i < Event.types.length; i++) {
+                for(i = 0; i < Event.types.length; i++) {
                     // Create Integer object to add to ArrayList
                     Integer category = new Integer(i);
 
-                    if(item.getTitle().equals(Event.types[i])) {
-                        // If it is already filtered, unfilter it
-                        if(Project_18.filteredCategories.contains(i)) {
-                            Project_18.filteredCategories.remove(category);
+                    // If it is an existing type
+                    if (item.getTitle().equals(Event.types[i])) {
 
-                            // If filters are empty re-add "All" filter
-                            if(Project_18.filteredCategories.isEmpty()) {
-                                Integer allCategory = new Integer(-1);
-                                Project_18.filteredCategories.add(allCategory);
+                        // Toggle Check
+                        item.setChecked(!item.isChecked());
+
+                        // If it is checked, add it
+                        if (item.isChecked()) {
+
+                            // If all is currently checked...
+                            if (toolbar.getMenu().findItem(R.id.all).isChecked()) {
+
+                                // uncheck all
+                                toolbar.getMenu().findItem(R.id.all).setChecked(false);
+
+                                // clear filteredCategories
+                                Project_18.filteredCategories.clear();
                             }
+
+                            // Add this category
+                            Project_18.filteredCategories.add(category);
                         }
 
-                        // Otherwise filter it
+                        // If it isn't checked anymore, remove it
                         else {
-                            Integer allCategory = new Integer(-1);
-                            Project_18.filteredCategories.add(category);
-                            Project_18.filteredCategories.remove(allCategory);
+                            Project_18.filteredCategories.remove(category);
                         }
+
+                        // We're done checking
+                        Log.d("myTag", Project_18.filteredCategories.toString());
+                        return true;
                     }
                 }
+
+                // If we iterated fully, then all was clicked
+                if (i == Event.types.length) {
+
+                    // If all wasn't checked, check all. NOTE: You cannot uncheck all
+                    if (!item.isChecked()) {
+
+                        // uncheck all the other categories
+                        toolbar.getMenu().findItem(R.id.food).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.sports).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.performance).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.academic).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.social).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.gaming).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.other).setChecked(false);
+                        Project_18.filteredCategories.clear();
+                        for (int index = 0; index < Event.types.length; index++) {
+                            Project_18.filteredCategories.add(new Integer(index));
+                        }
+                        item.setChecked(true);
+                    }
+                }
+
+                Log.d("myTag", Project_18.filteredCategories.toString());
                 return true;
             }
         });
