@@ -44,14 +44,14 @@ public class Event implements Parcelable {
     private LatLng location;
     // 7 types, indexes 0-6
     public static String types[] = {"Food", "Sports", "Performance", "Academic", "Social", "Gaming", "Other"};
-    // Parallel array to types array, colors of the categories
-    public static float typeColors[] = {BitmapDescriptorFactory.HUE_RED,
-                                        BitmapDescriptorFactory.HUE_BLUE,
-                                        BitmapDescriptorFactory.HUE_GREEN,
-                                        BitmapDescriptorFactory.HUE_ORANGE,
-                                        BitmapDescriptorFactory.HUE_MAGENTA,
-                                        BitmapDescriptorFactory.HUE_ROSE,
-                                        BitmapDescriptorFactory.HUE_CYAN};
+    // Parallel array to types array, colors of the categories (courtesy of Sherry)
+    public static float typeColors[] = {10,     // Red
+                                        200,    // Blue
+                                        80,     // Green
+                                        30,     // Orange
+                                        55,     // Yellow
+                                        280,    // Purple
+                                        230};   // Darker Blue
 
     // Extracts the Event from a Parcel for CreateEventAct -> LocSelectAct
     public static final Parcelable.Creator<Event> CREATOR
