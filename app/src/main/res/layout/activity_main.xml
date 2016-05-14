@@ -51,6 +51,10 @@
         android:id="@+id/show_eventInfo"
         android:layout_width="match_parent"
         android:layout_height="100dp">
-
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/show_createEvent"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
     </FrameLayout>
 </android.support.v4.widget.DrawerLayout>

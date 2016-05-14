@@ -60,10 +60,7 @@ public class EventInfoFrag extends Fragment {
         // Display event info
         System.out.println("EVENT ID: " + event_id);
         grabEventInfo(event_id);
-        WindowManager.LayoutParams lp = this.getActivity().getWindow().getAttributes();
-        lp.dimAmount=0.0f;
-        this.getActivity().getWindow().setAttributes(lp);
-        this.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+
         return v;
     }
 
