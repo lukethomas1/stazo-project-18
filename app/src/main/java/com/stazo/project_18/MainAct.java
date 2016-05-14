@@ -131,6 +131,10 @@ public class MainAct extends AppCompatActivity
 
                         // We're done checking
                         Log.d("myTag", Project_18.filteredCategories.toString());
+
+                        // Update filtering
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
                         return true;
                     }
                 }
@@ -154,6 +158,10 @@ public class MainAct extends AppCompatActivity
                             Project_18.filteredCategories.add(new Integer(index));
                         }
                         item.setChecked(true);
+
+                        // Update filtering
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
                     }
                 }
 
