@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -261,6 +262,7 @@ public class MapFrag extends Fragment {
             markerOpts.title(e.getName());
             markerOpts.snippet(e.getDescription());
             markerOpts.position(e.getLocation());
+            markerOpts.icon(BitmapDescriptorFactory.defaultMarker(Event.typeColors[e.getType()]));
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);
