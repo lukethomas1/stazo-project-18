@@ -34,8 +34,6 @@ public class ListAct extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
 
@@ -79,8 +77,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
+                    public void onCancelled(FirebaseError firebaseError) { }
                 });
         return v;
     }
@@ -88,24 +85,21 @@ public class ListAct extends android.support.v4.app.Fragment {
     // Creates ListViews for each event in arraylist and adds them to the activity
     private void displayEventList() {
         //Grabs the ListView
-        expListView = (ExpandableListView)getActivity().findViewById(R.id.lvExp);
+        expListView = (ExpandableListView)getActivity().findViewById(R.id.eventList);
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
         listIds = new ArrayList<>();
 
-        int i = 0;
-        for(Event evt : eventList) {
-            listIds.add(evt.getEvent_id());
+        for(int i = 0; i < eventList.size(); i++) {
+            Event evt = eventList.get(i);
 
+            listIds.add(evt.getEvent_id());
             listDataHeader.add(evt.getName());
 
             List<String> evtDesc = new ArrayList<>();
-
             evtDesc.add(evt.getDescription());
 
             listDataChild.put(listDataHeader.get(i), evtDesc);
-
-            i++;
         }
 
         listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
@@ -128,36 +122,28 @@ public class ListAct extends android.support.v4.app.Fragment {
 
 
     public void displayFilteredEventList(String search) {
-        //LinearLayout listLayout = (LinearLayout)getActivity().findViewById(R.id.nestedLL);
 
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
         listIds = new ArrayList<>();
 
-        // clear all the views
-        //listLayout.removeAllViews();
-
-        //LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams
-         //       (ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
-
         filterEventList(search);
 
-        int i = 0;
-        for(Event evt : eventList) {
-            listIds.add(evt.getEvent_id());
+        for(int i = 0; i < eventList.size(); i++) {
+            Event evt = eventList.get(i);
 
+            listIds.add(evt.getEvent_id());
             listDataHeader.add(evt.getName());
 
             List<String> evtDesc = new ArrayList<>();
-
             evtDesc.add(evt.getDescription());
 
             listDataChild.put(listDataHeader.get(i), evtDesc);
-
-            i++;
         }
+
         listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
                 listIds);
+
         expListView.setAdapter(listAdapter);
     }
     private void filterEventList(String search) {
