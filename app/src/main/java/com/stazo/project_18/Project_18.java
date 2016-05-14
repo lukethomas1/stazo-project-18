@@ -16,6 +16,8 @@ public class Project_18 extends Application {
     public static User me;
     public static ArrayList<Event> pulledEvents = new ArrayList<Event>(); // list of all the events pulled
 
+    public static ArrayList<Integer> filteredCategories = new ArrayList<>();
+
     public Firebase getFB() { return new Firebase(fb);}
     public User getMe() { return me; }
     public void setMe(User user) { me = user; }

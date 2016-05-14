@@ -65,6 +65,8 @@ public class MainAct extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        // Default to "All" categories
+        Project_18.filteredCategories.add(-1);
     }
 
     private void setToolbar() {
@@ -143,6 +145,38 @@ public class MainAct extends AppCompatActivity
         }
         super.onCreateOptionsMenu(menu);
         return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check or uncheck the box depending on its previous state
+        item.setChecked(!item.isChecked());
+
+        // Get the index of the type in the Event.types array
+        for(int i = 0; i < Event.types.length; i++) {
+            // Create Integer object to add to ArrayList
+            Integer category = new Integer(i);
+
+            if(item.getTitle().equals(Event.types[i])) {
+                // If it is already filtered, unfilter it
+                if(Project_18.filteredCategories.contains(i)) {
+                    Project_18.filteredCategories.remove(category);
+
+                    // If filters are empty re-add "All" filter
+                    if(Project_18.filteredCategories.isEmpty()) {
+                        Integer allCategory = new Integer(-1);
+                        Project_18.filteredCategories.add(allCategory);
+                    }
+                }
+
+                // Otherwise filter it
+                else {
+                    Integer allCategory = new Integer(-1);
+                    Project_18.filteredCategories.add(category);
+                    Project_18.filteredCategories.remove(allCategory);
+                }
+            }
+        }
+        return false;
     }
 
     private void setDrawer() {

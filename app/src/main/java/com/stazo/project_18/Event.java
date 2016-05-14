@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.shaded.apache.http.HttpResponse;
@@ -41,6 +42,16 @@ public class Event implements Parcelable {
     private Date startDate;
     private Date endDate;
     private LatLng location;
+    // 7 types, indexes 0-6
+    public static String types[] = {"Food", "Sports", "Performance", "Academic", "Social", "Gaming", "Other"};
+    // Parallel array to types array, colors of the categories
+    public static float typeColors[] = {BitmapDescriptorFactory.HUE_RED,
+                                        BitmapDescriptorFactory.HUE_BLUE,
+                                        BitmapDescriptorFactory.HUE_GREEN,
+                                        BitmapDescriptorFactory.HUE_ORANGE,
+                                        BitmapDescriptorFactory.HUE_MAGENTA,
+                                        BitmapDescriptorFactory.HUE_ROSE,
+                                        BitmapDescriptorFactory.HUE_CYAN};
 
     // Extracts the Event from a Parcel for CreateEventAct -> LocSelectAct
     public static final Parcelable.Creator<Event> CREATOR
@@ -274,7 +285,7 @@ public class Event implements Parcelable {
         Random rand = new Random();
         for (int i = 0; i < 10; i++) {
             //add 10 random chars onto yoo
-            String add = "" + (char) (48 + rand.nextInt(47));
+            String add = "" + (char) (48 + rand.nextInt(42));
             event_id = event_id.concat("" + add);
         }
         System.out.println("GENERATING: " + this.event_id);

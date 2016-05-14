@@ -41,6 +41,7 @@ public class CreateEventAct extends AppCompatActivity {
     TimePickerFragment startTimeFrag, endTimeFrag;
     //Parsed user inputted values, upload these to Firebase
     String name, desc, startDate, endDate, startTime, endTime, type;
+    int typeNum = -1;
 
     /**
      * Called whenever this layout is created. This should set up the layout so that it is ready
@@ -65,11 +66,9 @@ public class CreateEventAct extends AppCompatActivity {
         //Add values here to populate the spinner
         typeList = new ArrayList<>();
         typeList.add("Change Me!");
-        typeList.add("Party");
-        typeList.add("Sports");
-        typeList.add("Food");
-        typeList.add("Fundraiser");
-        typeList.add("Other");
+        for(int i = 0; i < Event.types.length; i++) {
+            typeList.add(Event.types[i]);
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -169,6 +168,14 @@ public class CreateEventAct extends AppCompatActivity {
         name = nameView.getText().toString();
         desc = descView.getText().toString();
         type = typeSpinner.getSelectedItem().toString();
+
+        // Get the index of the type in the Event.types array
+        for(int i = 0; i < Event.types.length; i++) {
+            if(type.equals(Event.types[i])) {
+                typeNum = i;
+            }
+        }
+
         startDate = startDateView.getText().toString();
         endDate = endDateView.getText().toString();
         startTime = startTimeView.getText().toString();
@@ -196,7 +203,7 @@ public class CreateEventAct extends AppCompatActivity {
             valid = false;
         }
 
-        if (type.equals(typeList.get(0))) {
+        if (typeNum == -1) {
             pickText.setTextColor(errorColor);
             valid = false;
         }
@@ -280,7 +287,7 @@ public class CreateEventAct extends AppCompatActivity {
         setUpInput();
 
         if (checkInput()) {
-            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(), 0,
+            event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(), typeNum,
                     new Date(
                     startDateFrag.getYear(),
                     startDateFrag.getMonth(),
