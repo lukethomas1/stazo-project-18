@@ -42,8 +42,8 @@ import java.util.Iterator;
  */
 public class MapFrag extends Fragment {
 
-    public static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
-
+    //public static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
+    public static final LatLng REVELLE = new LatLng(32.879759, -117.237824);
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
