@@ -44,6 +44,7 @@ public class Event implements Parcelable {
     private LatLng location;
     // 7 types, indexes 0-6
     public static String types[] = {"Food", "Sports", "Performance", "Academic", "Social", "Gaming", "Other"};
+    // Parallel array to types array, colors of the categories
     public static float typeColors[] = {BitmapDescriptorFactory.HUE_RED,
                                         BitmapDescriptorFactory.HUE_BLUE,
                                         BitmapDescriptorFactory.HUE_GREEN,

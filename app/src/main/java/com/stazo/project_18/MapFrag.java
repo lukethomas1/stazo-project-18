@@ -262,6 +262,7 @@ public class MapFrag extends Fragment {
             markerOpts.title(e.getName());
             markerOpts.snippet(e.getDescription());
             markerOpts.position(e.getLocation());
+            // Set the color of the marker
             markerOpts.icon(BitmapDescriptorFactory.defaultMarker(Event.typeColors[e.getType()]));
 
             // Add the marker to the map

@@ -66,6 +66,7 @@ public class LocSelectAct extends FragmentActivity
         MarkerOptions markerOpts = new MarkerOptions();
         markerOpts.position(point);
         markerOpts.draggable(true);
+        // Set the color of the marker
         markerOpts.icon(
                 BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
 
