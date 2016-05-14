@@ -1,12 +1,21 @@
 package com.stazo.project_18;
 
+/**
+ * Created by ericzhang on 5/14/16.
+ */
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,18 +28,18 @@ import com.firebase.client.ValueEventListener;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class EventInfoAct extends AppCompatActivity {
+public class EventInfoFrag extends Fragment {
 
     Firebase fb;
+    private String passedEventID;
     private View v;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_info);
-        v = findViewById(R.id.event_info_ll);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.event_info, container, false);
         v.setVisibility(View.INVISIBLE);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) this.getActivity().findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         /*Event tester = new Event("FBGM",
                 "The goal of this event is to disregard women and acquire capital." +
@@ -39,17 +48,27 @@ public class EventInfoAct extends AppCompatActivity {
         //showInfo(tester);
 
 
-        fb = ((Project_18) getApplication()).getFB();
+        fb = ((Project_18) this.getActivity().getApplication()).getFB();
 
         // Get the Intent that led to this Activity
-        Intent callingIntent = getIntent();
+        //Intent callingIntent = getIntent();
 
         // Get the event_id to display
-        String event_id = callingIntent.getStringExtra("event_id");
+        //String event_id = callingIntent.getStringExtra("event_id");
+        String event_id = this.passedEventID;
 
         // Display event info
         System.out.println("EVENT ID: " + event_id);
         grabEventInfo(event_id);
+        WindowManager.LayoutParams lp = this.getActivity().getWindow().getAttributes();
+        lp.dimAmount=0.0f;
+        this.getActivity().getWindow().setAttributes(lp);
+        this.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+        return v;
+    }
+
+    public void setEventID(String passedEventID) {
+        this.passedEventID = passedEventID;
     }
 
     // Pulls event info and delegates to showInfo to display the correct info
@@ -69,7 +88,7 @@ public class EventInfoAct extends AppCompatActivity {
                         User u = new User((HashMap<String, Object>) dataSnapshot.child("Users").
                                 child(e.getCreator_id()).getValue());
 
-                        System.out.println(((Project_18) getApplication()).getMe().getName());
+                        System.out.println(((Project_18) getActivity().getApplication()).getMe().getName());
 
                         // display event
                         showInfo(e, u);
@@ -88,17 +107,17 @@ public class EventInfoAct extends AppCompatActivity {
     // Justin TODO Update the textviews in the layout to show the correct info
     private void showInfo(Event e, User u) {
         //Initialize Local Variables
-        TextView eventDate = (TextView) findViewById(R.id.eventDate);
-        TextView eventName = (TextView) findViewById(R.id.eventName);
-        TextView eventDescription = (TextView) findViewById(R.id.eventDesc);
-        TextView eventLength = (TextView) findViewById(R.id.eventLength);
-        TextView eventCreator = (TextView) findViewById(R.id.eventCreator);
-        TextView eventTime = (TextView) findViewById(R.id.eventClock);
+        TextView eventDate = (TextView) this.getActivity().findViewById(R.id.eventDate);
+        TextView eventName = (TextView) this.getActivity().findViewById(R.id.eventName);
+        TextView eventDescription = (TextView) this.getActivity().findViewById(R.id.eventDesc);
+        TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
+        TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
+        TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventClock);
         long startHour = 0;
         long startMinute = 0;
         //End Initialization
 
-        ImageView eventIcon = (ImageView) findViewById(R.id.eventIcon);
+        ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
         int findType = e.getType();
         Drawable d = getResources().getDrawable(R.drawable.gameicon);
 
@@ -122,7 +141,6 @@ public class EventInfoAct extends AppCompatActivity {
         }
         // setting the icon
         eventIcon.setImageDrawable(d);
-
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
@@ -165,12 +183,11 @@ public class EventInfoAct extends AppCompatActivity {
         }
         //A bit of math to find the time till event.
         Calendar currTime = Calendar.getInstance();
-        TextView eventTimeTo = (TextView) findViewById(R.id.eventTimeTo);
+        TextView eventTimeTo = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
         if (currTime.get(Calendar.MINUTE) > minutes) {
             minutes = minutes + 60;
             hours--;
         }
-        eventTimeTo.setTextColor(Color.BLACK);
         if((hours - currTime.get(Calendar.HOUR_OF_DAY) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
             eventTimeTo.setText("Started!");
             long pastHour = currTime.get(Calendar.HOUR_OF_DAY) - hours - eventHour;
@@ -191,13 +208,13 @@ public class EventInfoAct extends AppCompatActivity {
         } else {
             if (timePeriod.equalsIgnoreCase("PM")) {
                 if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
-                    eventTimeTo.setTextColor(Color.GREEN);
+                    eventTimeTo.setTextColor(Color.RED);
                 }
                 eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
                         + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
             } else {
                 if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
-                    eventTimeTo.setTextColor(Color.GREEN);
+                    eventTimeTo.setTextColor(Color.RED);
                 }
                 eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
                         + (minutes - currTime.MINUTE) + " m");
@@ -205,8 +222,5 @@ public class EventInfoAct extends AppCompatActivity {
         }
         v.setVisibility(View.VISIBLE);
     }
-    /*@Override
-    public void onBackPressed(){
 
-    }*/
 }

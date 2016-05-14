@@ -1,28 +1,26 @@
 package com.stazo.project_18;
 
+import android.app.FragmentTransaction;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-
-import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +40,12 @@ public class MainAct extends AppCompatActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Toolbar toolbar;
+    private ViewPagerAdapter adapter;
+
+    // Search stuff
+    private SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,12 @@ public class MainAct extends AppCompatActivity
         //or maybe it's done in .xml
         //moved toolbar to separate method
         setToolbar();
+
+        //initialize all to be in filtered
+        for (int index = 0; index < Event.types.length; index++) {
+            Project_18.filteredCategories.add(new Integer(index));
+        }
+
         setDrawer();
 
         //tab stuff    http://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
@@ -61,33 +71,103 @@ public class MainAct extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        // Default to "All" categories
+        //Project_18.filteredCategories.add(-1);
     }
 
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle("title");
-        getSupportActionBar().setSubtitle("subtitle");
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setTitle("Campass");
+        //getSupportActionBar().setSubtitle("By: Stazo");
+        //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //menu button actions
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
+            public boolean onMenuItemClick(MenuItem item) {
 
-                switch (menuItem.getItemId()) {
+                /*switch (item.getItemId()) {
                     case R.id.game:
                         Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
                         return true;
+                }*/
+                int i;
 
-                    case R.id.logout:
-                        goToLogoutAct();
+                // Get the index of the type in the Event.types array
+                for(i = 0; i < Event.types.length; i++) {
+                    // Create Integer object to add to ArrayList
+                    Integer category = new Integer(i);
+
+                    // If it is an existing type
+                    if (item.getTitle().equals(Event.types[i])) {
+
+                        // Toggle Check
+                        item.setChecked(!item.isChecked());
+
+                        // If it is checked, add it
+                        if (item.isChecked()) {
+
+                            // If all is currently checked...
+                            if (toolbar.getMenu().findItem(R.id.all).isChecked()) {
+
+                                // uncheck all
+                                toolbar.getMenu().findItem(R.id.all).setChecked(false);
+
+                                // clear filteredCategories
+                                Project_18.filteredCategories.clear();
+                            }
+
+                            // Add this category
+                            Project_18.filteredCategories.add(category);
+                        }
+
+                        // If it isn't checked anymore, remove it
+                        else {
+                            Project_18.filteredCategories.remove(category);
+                        }
+
+                        // We're done checking
+                        Log.d("myTag", Project_18.filteredCategories.toString());
+
+                        // Update filtering
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
                         return true;
+                    }
                 }
 
-                return false;
+                // If we iterated fully, then all was clicked
+                if (i == Event.types.length) {
+
+                    // If all wasn't checked, check all. NOTE: You cannot uncheck all
+                    if (!item.isChecked()) {
+
+                        // uncheck all the other categories
+                        toolbar.getMenu().findItem(R.id.food).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.sports).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.performance).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.academic).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.social).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.gaming).setChecked(false);
+                        toolbar.getMenu().findItem(R.id.other).setChecked(false);
+                        Project_18.filteredCategories.clear();
+                        for (int index = 0; index < Event.types.length; index++) {
+                            Project_18.filteredCategories.add(new Integer(index));
+                        }
+                        item.setChecked(true);
+
+                        // Update filtering
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
+                    }
+>>>>>>> 4bdaf109647cbbdbe34e2a5c86b9d6a7f2720df0
+                }
+
+                Log.d("myTag", Project_18.filteredCategories.toString());
+                return true;
             }
         });
 
@@ -107,8 +187,47 @@ public class MainAct extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+        // Search stuff
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    // do search here
+                    Log.d("MyTag", newText);
+                    Log.d("MyTag", "letsgo");
+                    // filter MapFrag
+                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents(newText);
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList(newText);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    // do search here
+                    Log.d("MyTag", query);
+                    Log.d("MyTag", "yooo");
+
+                    // hide keyboard
+                    searchView.clearFocus();
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
+        super.onCreateOptionsMenu(menu);
         return true;
     }
+
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//    }
 
     private void setDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
@@ -151,17 +270,34 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToEventInfo(String event_id) {
-        Intent intent = new Intent(this, EventInfoAct.class);
-        intent.putExtra("event_id", event_id);
-        startActivity(intent);
+//        Intent intent = new Intent(this, EventInfoAct.class);
+//        intent.putExtra("event_id", event_id);
+//        startActivity(intent);
+
+        // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
+        EventInfoFrag eventInfoFrag = new EventInfoFrag();
+        eventInfoFrag.setEventID(event_id);
+        android.support.v4.app.FragmentTransaction transaction =
+                this.getSupportFragmentManager().beginTransaction();
+//        transaction.replace
+//                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
+//        transaction.commit();
+        this.getWindow().setDimAmount((float) 0.8);
+
+        transaction
+                .add(R.id.show_eventInfo, eventInfoFrag)
+                .addToBackStack("EventInfoFrag")
+                .commit();
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), "ERIC");
-        adapter.addFragment(new ListAct(), "SO SWAG");
-        adapter.addFragment(new TestFrag1(), "I AGREE");
+        adapter.addFragment(new MapFrag(), "Map");
+        adapter.addFragment(new ListAct(), "List");
+        //adapter.addFragment(new TestFrag1(), "What is this?");
 
         viewPager.setAdapter(adapter);
     }
@@ -195,8 +331,21 @@ public class MainAct extends AppCompatActivity
         }
     }
 
+<<<<<<< HEAD
     private void goToLogoutAct(){
         startActivity(new Intent(this, LogoutAct.class));
     }
 
+=======
+    @Override
+    public void onBackPressed() {
+        System.out.println("test");
+        if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
+            getSupportFragmentManager().popBackStackImmediate();
+            System.out.println("dank");
+        } else {
+            super.onBackPressed();
+        }
+    }
+>>>>>>> 4bdaf109647cbbdbe34e2a5c86b9d6a7f2720df0
 }

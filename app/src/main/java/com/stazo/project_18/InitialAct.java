@@ -125,9 +125,12 @@ public class InitialAct extends AppCompatActivity {
     private void goToMainAct(){
         Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainAct.class));
+        finish();
     }
     private void goToLoginAct(){
+
         startActivity(new Intent(this, LoginAct.class));
+        finish();
     }
 
 

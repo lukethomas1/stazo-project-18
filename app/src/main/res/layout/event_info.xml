@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_marginTop="125dp"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:layout_height="420dp"
     android:weightSum="1"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="0dp"
-    android:paddingBottom="20dp">
+    android:paddingBottom="20dp"
+    android:background="@color/white"
+    android:id="@+id/event_info_ll">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -15,6 +21,7 @@
 
         <ImageView
             android:layout_width="0dp"
+
             android:layout_height="match_parent"
             android:id="@+id/eventIcon"
             android:src="@drawable/gameicon"
