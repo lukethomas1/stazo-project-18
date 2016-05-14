@@ -258,7 +258,7 @@ public class Event implements Parcelable {
         Random rand = new Random();
         for (int i = 0; i < 10; i++) {
             //add 10 random chars onto yoo
-            String add = "" + (char) (48 + rand.nextInt(47));
+            String add = "" + (char) (65 + rand.nextInt(26));
             event_id = event_id.concat("" + add);
         }
         System.out.println("GENERATING: " + this.event_id);
