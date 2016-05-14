@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
@@ -9,9 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.shaded.apache.http.HttpResponse;
+import org.shaded.apache.http.NameValuePair;
+import org.shaded.apache.http.client.ClientProtocolException;
+import org.shaded.apache.http.client.HttpClient;
+import org.shaded.apache.http.client.entity.UrlEncodedFormEntity;
+import org.shaded.apache.http.client.methods.HttpPost;
+import org.shaded.apache.http.impl.client.DefaultHttpClient;
+import org.shaded.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -125,6 +138,9 @@ public class Event implements Parcelable {
 
         // Add event_id to the creator's list of events (myEvents)
         fb.child("Users").child(creator_id).child("myEvents").push().setValue(event_id);
+
+        //new ReportEventTask().execute("yo");
+
     }
 
     //Getters and setters
@@ -262,6 +278,34 @@ public class Event implements Parcelable {
             event_id = event_id.concat("" + add);
         }
         System.out.println("GENERATING: " + this.event_id);
-
     }
+
+    /*class ReportEventTask extends AsyncTask<String, Void, String> {
+        private Exception exception;
+
+        protected String doInBackground(String... urls) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("https://dry-wave-59635.herokuapp.com/");
+
+            try {
+                // Add your data
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("event_id", event_id));
+                nameValuePairs.add(new BasicNameValuePair("user_id", creator_id));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                HttpResponse response = httpclient.execute(httppost);
+                return("nicuru");
+            } catch (ClientProtocolException e) {
+                // TODO Auto-generated catch block
+                return("clientProtocalException");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                return("ioexception");
+            }
+        }
+        protected void onPostExecute(String yeet) {
+
+        }
+    }*/
 }
