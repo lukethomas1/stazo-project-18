@@ -2,20 +2,14 @@ package com.stazo.project_18;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-
-import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -67,8 +61,8 @@ public class MainAct extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle("title");
-        getSupportActionBar().setSubtitle("subtitle");
+        getSupportActionBar().setTitle("Campass");
+        getSupportActionBar().setSubtitle("By: Stazo");
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -155,9 +149,9 @@ public class MainAct extends AppCompatActivity
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), "ERIC");
-        adapter.addFragment(new ListAct(), "SO SWAG");
-        adapter.addFragment(new TestFrag1(), "I AGREE");
+        adapter.addFragment(new MapFrag(), "Map");
+        adapter.addFragment(new ListAct(), "Event List View");
+        adapter.addFragment(new TestFrag1(), "What is this?");
 
         viewPager.setAdapter(adapter);
     }
