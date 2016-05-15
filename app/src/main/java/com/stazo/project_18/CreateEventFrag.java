@@ -2,6 +2,7 @@ package com.stazo.project_18;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -331,9 +332,6 @@ public class CreateEventFrag extends Fragment {
      * Navigate to the map activity.
      */
     private void goToLocSelectAct() {
-<<<<<<< HEAD
-        startActivity(new Intent(this.getActivity(), LocSelectAct.class).putExtra("eventToInit", event));
-=======
         startActivity(new Intent(getActivity(), LocSelectAct.class).putExtra("eventToInit", event));
     }
 
@@ -374,6 +372,5 @@ public class CreateEventFrag extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
->>>>>>> c4cb31c07b3c191db9dded7c9bec4054b603d7e1
     }
 }
