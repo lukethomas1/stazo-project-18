@@ -203,7 +203,7 @@ public class EventInfoFrag extends Fragment {
             }
         }
         else {
-            eventTime.setText(timeTillHour + ":" + timeTillMinute + " left until start of event");
+            eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
         }
 
 //        if(minutes < 10){

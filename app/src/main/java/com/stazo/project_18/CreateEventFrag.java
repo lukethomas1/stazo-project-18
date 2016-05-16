@@ -190,7 +190,6 @@
 //                typeNum = i;
 //            }
 //        }
-<<<<<<< HEAD
 //
 //        startDate = startDateView.getText().toString();
 //        endDate = endDateView.getText().toString();
