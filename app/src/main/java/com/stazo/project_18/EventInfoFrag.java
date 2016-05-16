@@ -126,13 +126,13 @@ public class EventInfoFrag extends Fragment {
         // determining the icon
         switch(findType) {
             case 1:
-                d = getResources().getDrawable(R.drawable.sportsicon);
+                d = getResources().getDrawable(R.drawable.ic1);
                 break;
             case 2:
-                d = getResources().getDrawable(R.drawable.foodicon);
+                d = getResources().getDrawable(R.drawable.ic2);
                 break;
             case 3:
-                d = getResources().getDrawable(R.drawable.dollaricon);
+                d = getResources().getDrawable(R.drawable.ic3);
                 break;
             case 4:
                 break;
