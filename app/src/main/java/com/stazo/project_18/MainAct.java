@@ -284,18 +284,18 @@ public class MainAct extends AppCompatActivity
         eventInfoFrag.setEventID(event_id);
         android.support.v4.app.FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
-//        transaction.replace
-//                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
-//        transaction.commit();
-        this.getWindow().setDimAmount((float) 0.8);
-        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-        lp.dimAmount=0.0f;
-        this.getWindow().setAttributes(lp);
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-        transaction
-                .add(R.id.show_eventInfo, eventInfoFrag)
-                .addToBackStack("EventInfoFrag")
-                .commit();
+        transaction.replace
+                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
+        transaction.commit();
+//        this.getWindow().setDimAmount((float) 0.8);
+//        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
+//        lp.dimAmount=0.0f;
+//        this.getWindow().setAttributes(lp);
+//        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+//        transaction
+//                .add(R.id.show_eventInfo, eventInfoFrag)
+//                .addToBackStack("EventInfoFrag")
+//                .commit();
 
     }
 
