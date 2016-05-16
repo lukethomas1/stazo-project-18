@@ -121,13 +121,13 @@ public class ListAct extends android.support.v4.app.Fragment {
     }
 
 
-    public void displayFilteredEventList(String search) {
+    public void displayFilteredEventList() {
 
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
         listIds = new ArrayList<>();
 
-        filterEventList(search);
+        filterEventList();
 
         for(int i = 0; i < eventList.size(); i++) {
             Event evt = eventList.get(i);
@@ -146,7 +146,8 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         expListView.setAdapter(listAdapter);
     }
-    private void filterEventList(String search) {
-        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(search);
+    private void filterEventList() {
+        // true = don't worry about time
+        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(true);
     }
 }

@@ -7,7 +7,11 @@ import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -302,6 +306,8 @@ public class Event implements Parcelable {
         }
         return 0;
     }
+
+
 
     /*class ReportEventTask extends AsyncTask<String, Void, String> {
         private Exception exception;

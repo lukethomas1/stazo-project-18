@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class MainAct extends AppCompatActivity
     // Search stuff
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +81,7 @@ public class MainAct extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle("Campass");
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         //getSupportActionBar().setSubtitle("By: Stazo");
         //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -133,8 +135,8 @@ public class MainAct extends AppCompatActivity
                         Log.d("myTag", Project_18.filteredCategories.toString());
 
                         // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
                         return true;
                     }
                 }
@@ -160,8 +162,8 @@ public class MainAct extends AppCompatActivity
                         item.setChecked(true);
 
                         // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
                     }
                 }
 
@@ -201,9 +203,10 @@ public class MainAct extends AppCompatActivity
                     // do search here
                     Log.d("MyTag", newText);
                     Log.d("MyTag", "letsgo");
+                    ((Project_18) getApplication()).setRelevantText(newText);
                     // filter MapFrag
-                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents(newText);
-                    ((ListAct) adapter.getItem(1)).displayFilteredEventList(newText);
+                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList();
                     return true;
                 }
 

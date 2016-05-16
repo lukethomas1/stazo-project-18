@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -34,8 +35,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Fragment version of MapAct, also uses MapView instead of MapFragment from Google API
@@ -48,6 +51,10 @@ public class MapFrag extends Fragment {
     private GoogleMap map;
     private MapHandler mapHandler;
     private MapView mapView;
+
+    // Time seekbar
+    private SeekBar seekbar;
+    private TextView timeTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +74,57 @@ public class MapFrag extends Fragment {
         mapView.getMapAsync(mapHandler);
 
         return v;
+    }
+
+    // Seekbar handling
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        seekbar = (SeekBar) getView().findViewById(R.id.timeSeekBar);
+        timeTextView = (TextView) getView().findViewById(R.id.timeTextView);
+        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ((Project_18) getActivity().getApplication()).setRelevantTime(progress);
+
+                // set the text time
+                long rTime = ((Project_18) getActivity().getApplication()).getRelevantTime();
+                String period = "AM";
+                String time = "";
+                long hours = TimeUnit.MILLISECONDS.toHours(rTime) % 24;
+                if (progress == 0) {
+                    timeTextView.setText("Now");
+                }
+                else {
+                    if (hours >= 12 && hours < 24) {
+                        period = "PM";
+                    }
+                    if (hours > 12) {
+                        hours -= 12;
+                    }
+                    if (hours <= 0) {
+                        hours += 12;
+                    }
+                    time = (String.format("%2d:%02d",
+                            hours,
+                            (TimeUnit.MILLISECONDS.toMinutes(rTime)%60)
+                    ));
+                    time += period;
+                    timeTextView.setText(time);
+                }
+
+                // filter out the irrelevant events
+                filterRelevantEvents();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                timeTextView.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                timeTextView.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
@@ -97,10 +155,10 @@ public class MapFrag extends Fragment {
         ((MainAct)this.getActivity()).goToEventInfo(event_id);
     }
 
-    public void filterRelevantEvents(String search) {
+    public void filterRelevantEvents() {
         Log.d("MyTag", "yo wee filteringgg");
         ArrayList<String> relevantEventIds =
-                ((Project_18) getActivity().getApplication()).findRelevantEventIds(search);
+                ((Project_18) getActivity().getApplication()).findRelevantEventIds();
         mapHandler.displayRelevantEvents(relevantEventIds);
     }
 
@@ -197,6 +255,11 @@ public class MapFrag extends Fragment {
             CameraPosition camPos = new CameraPosition(REVELLE, zoom, tilt, bearing);
 
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
+            // bring the bar to the front
+            seekbar.bringToFront();
+            timeTextView.bringToFront();
+
         }
 
         // Display all the events
