@@ -38,6 +38,8 @@ public class LocSelectAct extends FragmentActivity
 
         // Get the event to initialize
         eventToInit = (Event) callingIntent.getParcelableExtra("eventToInit");
+        System.out.println("Start time: " + eventToInit.getStartTime());
+        System.out.println("End time: " + eventToInit.getEndTime());
 
         // Initialize the map_overview
         MapFragment mapFrag =
@@ -103,6 +105,11 @@ public class LocSelectAct extends FragmentActivity
         }
 
         else {
+//            System.out.println("Start: " + eventToInit.getStartDate().getTime());
+//            System.out.println("End: " + eventToInit.getEndDate().getTime());
+            System.out.println("startTimeToBePushed: " + eventToInit.getStartTime());
+            System.out.println("endTimeToBePushed: " + eventToInit.getEndTime());
+
             // Push the event to the database
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 
