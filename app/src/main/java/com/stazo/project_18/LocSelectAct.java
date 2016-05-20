@@ -85,7 +85,7 @@ public class LocSelectAct extends FragmentActivity
 
         // Initialize the event's id
 //        eventToInit.setEvent_id(eventMarker.getId());
-        eventToInit.generateID();
+        //eventToInit.generateID();
     }
 
     public void goToMap(View view) {

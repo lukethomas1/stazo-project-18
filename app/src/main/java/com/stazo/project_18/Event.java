@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -52,6 +53,7 @@ public class Event implements Parcelable {
     private String test;
 
     private LatLng location;
+    private ArrayList<String> attendees = new ArrayList<String>();
     // 7 types, indexes 0-6
     public static String types[] = {"Food", "Sports", "Performance", "Academic", "Social", "Gaming", "Other"};
     // Parallel array to types array, colors of the categories (courtesy of Sherry)
@@ -91,7 +93,6 @@ public class Event implements Parcelable {
         setStartTime(in.readLong());
         setEndTime(in.readLong());
         setTest(in.readString());
-
     }
 
     // constructor without location
@@ -146,6 +147,7 @@ public class Event implements Parcelable {
         this.event_id = (String) eventMap.get("event_id");
         this.startTime = ((Long) eventMap.get("startTime")).longValue();
         this.endTime = ((Long) eventMap.get("endTime")).longValue();
+        this.attendees = (ArrayList<String>) eventMap.get("attendees");
     }
 
     // makes a Date object out of a hashmap
@@ -158,11 +160,24 @@ public class Event implements Parcelable {
                 ((Integer) dateMap.get("min")).intValue());
     }
 
+    public ArrayList<String> getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(ArrayList<String> attendees) {
+        this.attendees = attendees;
+    }
+
     /**
      * Pushes the event to Firebase
      * @param fb The Firebase ref
      */
     public void pushToFirebase(Firebase fb) {
+        // generate a unique id
+        generateID();
+
+        // add self to attendee
+        //attendees.add(creator_id);
 
         // Add event to the Events dictionary under event_id
         fb.child("Events").child(event_id).setValue(this);
@@ -326,7 +341,7 @@ public class Event implements Parcelable {
 
             event_id = event_id.concat("" + add);
         }
-        System.out.println("GENERATING: " + this.event_id);
+        Log.d("myTag", "GENERATING: " + this.event_id);
     }
 
     // determines how relevant this event is to a query (2,1,0)
@@ -338,6 +353,29 @@ public class Event implements Parcelable {
             return 1;
         }
         return 0;
+    }
+
+    public boolean isInTime(long time) {
+        return (startTime - 5*60*1000 < time &&
+                endTime + 5*60*1000 > time);
+    }
+
+    public String toString() {
+        String nameString = name.substring(0, Math.min(10, name.length()));
+        if (name.length() > 10) {
+            nameString += "...";
+        }
+        String string = nameString + generateSpaces(15 - nameString.length()) +
+                "(" + Event.types[type] + ")" +
+                generateSpaces(15 - Event.types[type].length());
+        return string;
+    }
+    public String generateSpaces(int count) {
+        /*if (count <= 0) {
+            return "";
+        }
+        return " " + generateSpaces(count-1);*/
+        return "    ";
     }
 
 

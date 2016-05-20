@@ -277,6 +277,12 @@ public class MainAct extends AppCompatActivity
 //        transaction.add(R.id.show_createEvent, createEventFrag).addToBackStack("CreateEventFrag").commit();
     }
 
+    public void goToProfile(View view) {
+        Intent i =  new Intent(this, Profile.class);
+        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
+        startActivity(i);
+    }
+
     public void goToEventInfo(String event_id) {
 //        Intent intent = new Intent(this, EventInfoAct.class);
 //        intent.putExtra("event_id", event_id);
@@ -307,7 +313,8 @@ public class MainAct extends AppCompatActivity
 
         //-----> REPLACE FRAGMENTS HERE <---------------
         adapter.addFragment(new MapFrag(), "Map");
-        adapter.addFragment(new ListAct(), "List");
+        adapter.addFragment(new ListAct(), "Explore");
+        adapter.addFragment(new TestFrag1(), "Profile");
         //adapter.addFragment(new TestFrag1(), "What is this?");
 
         viewPager.setAdapter(adapter);

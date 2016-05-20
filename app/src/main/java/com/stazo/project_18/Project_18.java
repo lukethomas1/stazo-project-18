@@ -7,6 +7,8 @@ import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,8 +19,8 @@ public class Project_18 extends Application {
     public static User me;
     public static ArrayList<Event> pulledEvents = new ArrayList<Event>(); // list of all the events pulled
     public static ArrayList<Integer> filteredCategories = new ArrayList<>();
-    //public static long relevantTime = (new Date()).getTime();
-    public static long relevantTime = Calendar.getInstance().getTimeInMillis();
+    public static int GMTOffset = ((new GregorianCalendar()).getTimeZone()).getRawOffset();
+    public static long relevantTime = System.currentTimeMillis();
     public static String relevantText = new String();
     public Firebase getFB() { return new Firebase(fb);}
     public User getMe() { return me; }
@@ -35,8 +37,7 @@ public class Project_18 extends Application {
 
     // update the time we're interested in
     public void setRelevantTime(int progress) {
-        relevantTime = Calendar.getInstance().getTimeInMillis() + (progress * 60*60*1000);
-        Log.d("myTag", "" + TimeUnit.MILLISECONDS.toHours(relevantTime));
+        relevantTime = System.currentTimeMillis() + (progress * 60*60*1000);
     }
 
     public long getRelevantTime() {return relevantTime;}
@@ -54,8 +55,7 @@ public class Project_18 extends Application {
                 case 2:
                     // if it is a relevant category, and at a relevant time
                     if (filteredCategories.contains(new Integer(e.getType())) &&
-                    e.getStartDate().getTime() < relevantTime &&
-                            e.getEndDate().getTime() > relevantTime) {
+                            e.isInTime(relevantTime)) {
                         // add to start
                         relatedEventIds.add(0, e.getEvent_id());
                     }
@@ -64,8 +64,7 @@ public class Project_18 extends Application {
 
                     // if it is a relevant category, and at a relevant time
                     if (filteredCategories.contains(new Integer(e.getType())) &&
-                            e.getStartDate().getTime() < relevantTime &&
-                            e.getEndDate().getTime() > relevantTime) {
+                            e.isInTime(relevantTime)) {
                         // add to end
                         relatedEventIds.add(e.getEvent_id());
                     }
@@ -86,8 +85,7 @@ public class Project_18 extends Application {
                 case 2:
                     // if it is a relevant category, and at a relevant time
                     if (filteredCategories.contains(new Integer(e.getType())) &&
-                            (noTime || e.getStartDate().getTime() < relevantTime &&
-                            e.getEndDate().getTime() > relevantTime)) {
+                            (noTime || e.isInTime(relevantTime))) {
                         // add to start
                         relatedEvents.add(0, e);
                     }
@@ -95,8 +93,7 @@ public class Project_18 extends Application {
                 case 1:
                     // if it is a relevant category, and at a relevant time
                     if (filteredCategories.contains(new Integer(e.getType())) &&
-                            (noTime || e.getStartDate().getTime() < relevantTime &&
-                            e.getEndDate().getTime() > relevantTime)) {
+                            (noTime || e.isInTime(relevantTime))) {
                         // add to end
                         relatedEvents.add(e);
                     }

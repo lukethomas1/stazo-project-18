@@ -35,7 +35,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 public class MapFrag extends Fragment {
 
     //public static final LatLng REVELLE = new LatLng(32.874447, -117.240914);
-    public static final LatLng REVELLE = new LatLng(32.879759, -117.237824);
+    public static final LatLng REVELLE = new LatLng(32.881759, -117.236824);
     private Firebase fb;
     private GoogleMap map;
     private MapHandler mapHandler;
@@ -91,7 +93,9 @@ public class MapFrag extends Fragment {
                 long rTime = ((Project_18) getActivity().getApplication()).getRelevantTime();
                 String period = "AM";
                 String time = "";
-                long hours = TimeUnit.MILLISECONDS.toHours(rTime) % 24;
+                int DSTOffset = ((new GregorianCalendar()).getTimeZone()).getDSTSavings();
+                long hours = TimeUnit.MILLISECONDS.toHours(rTime + DSTOffset +
+                        Project_18.GMTOffset) % 24;
                 if (progress == 0) {
                     timeTextView.setText("Now");
                 }
@@ -125,6 +129,9 @@ public class MapFrag extends Fragment {
                 timeTextView.setVisibility(View.INVISIBLE);
             }
         });
+
+        // init to zero
+        seekbar.setProgress(0);
     }
 
     @Override
@@ -156,7 +163,6 @@ public class MapFrag extends Fragment {
     }
 
     public void filterRelevantEvents() {
-        Log.d("MyTag", "yo wee filteringgg");
         ArrayList<String> relevantEventIds =
                 ((Project_18) getActivity().getApplication()).findRelevantEventIds();
         mapHandler.displayRelevantEvents(relevantEventIds);
@@ -248,7 +254,7 @@ public class MapFrag extends Fragment {
             displayAllEvents();
 
             // Initial Camera Position
-            float zoom = 15;
+            float zoom = 14.5f;
             float tilt = 0;
             float bearing = 0;
 
@@ -309,12 +315,10 @@ public class MapFrag extends Fragment {
                 // if the event_id of a marker is not contained in relevantEventIds
                 if (relevantEventIds.contains(key)) {
                     // hide the marker
-                    Log.d("MyTag", "Relevant: " + key.toString());
                     markerLookupHM.get(key).setVisible(true);
                 }
                 // if it is relevant, make it visible
                 else {
-                    Log.d("MyTag", "Irrelevant: " + key.toString());
                     markerLookupHM.get(key).setVisible(false);
                 }
                 //it.remove(); // avoids a ConcurrentModificationException
