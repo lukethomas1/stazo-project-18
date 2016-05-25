@@ -20,6 +20,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InitialAct extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs" ;
@@ -42,6 +43,10 @@ public class InitialAct extends AppCompatActivity {
         userId = sharedPreferences.getString("userId", "0"); // "0" default value
         Firebase.setAndroidContext(this);
         fb = ((Project_18) getApplication()).getFB();
+
+        EventHandler EH = new EventHandler();
+        EH.clearEvents();
+        EH.generateEvents();
 
         // if the user logs in for the first time
         if(sharedPreferences.getBoolean("isLoggedIn", false)) { // check if they have logged in before
@@ -90,10 +95,12 @@ public class InitialAct extends AppCompatActivity {
                 if (dataSnapshot.child(userId).exists()) {
 
                     // pull data
-                    userName = ((String) dataSnapshot.child(userId).child("name").getValue());
-                    myEvents = ((ArrayList<String>)
-                            dataSnapshot.child(userId).child("my_events").getValue());
-                    User me = new User(userId, userName, myEvents);
+                    //userName = ((String) dataSnapshot.child(userId).child("name").getValue());
+                    /*myEvents = ((ArrayList<String>)
+                            dataSnapshot.child(userId).child("my_events").getValue());*/
+                    //User me = new User(userId, userName, myEvents);
+                    User me = new User((HashMap<String, Object>)
+                            dataSnapshot.child(userId).getValue());
 
                     // save the user to the application
                     ((Project_18) getApplication()).setMe(me);

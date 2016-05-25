@@ -27,6 +27,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LoginFrag extends Fragment {
 
@@ -152,11 +153,13 @@ public class LoginFrag extends Fragment {
                 if (dataSnapshot.child(userId).exists()) {
 
                     // pull data
-                    userName = ((String) dataSnapshot.child(userId).child("name").getValue());
+                    //userName = ((String) dataSnapshot.child(userId).child("name").getValue());
                     /*myEvents = ((ArrayList<String>)
                             dataSnapshot.child(userId).child("myEvents").getValue());
                             */
-                    User me = new User(userId, userName, myEvents);
+                    //User me = new User(userId, userName, myEvents);
+                    User me = new User((HashMap<String,Object>)
+                            dataSnapshot.child(userId).getValue());
 
                     // save the user to the application
                     ((Project_18) getActivity().getApplication()).setMe(me);
@@ -211,7 +214,8 @@ public class LoginFrag extends Fragment {
     private void createUser() {
         // add user to firebase
         User me = new User(userId, userName);
-        fb.child("Users").child(userId).setValue(me);
+        //fb.child("Users").child(userId).setValue(me);
+        me.pushToFirebase(fb);
 
         // save the user to the application
         ((Project_18) getActivity().getApplication()).setMe(me);
