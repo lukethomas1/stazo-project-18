@@ -357,7 +357,7 @@ public class MapFrag extends Fragment {
 
             // Get ID to set marker icon
             int drawableID = 0;
-            /*
+            
             switch (Event.types[eventType]) {
                 case "Food":
                     if (size == 1) {
@@ -419,10 +419,13 @@ public class MapFrag extends Fragment {
                         drawableID = R.drawable.marker_light_blue_3x;
                     }
                     break;
+
+                default:
+                    drawableID = R.drawable.marker;
             }
 
             // Set icon
-            markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID)); */
+            markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
 
 
             // Add the marker to the map
