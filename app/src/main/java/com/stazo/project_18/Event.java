@@ -1,7 +1,5 @@
 package com.stazo.project_18;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
@@ -16,22 +14,10 @@ import com.firebase.client.Transaction;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.shaded.apache.http.HttpResponse;
-import org.shaded.apache.http.NameValuePair;
-import org.shaded.apache.http.client.ClientProtocolException;
-import org.shaded.apache.http.client.HttpClient;
-import org.shaded.apache.http.client.entity.UrlEncodedFormEntity;
-import org.shaded.apache.http.client.methods.HttpPost;
-import org.shaded.apache.http.impl.client.DefaultHttpClient;
-import org.shaded.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 /**

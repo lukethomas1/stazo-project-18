@@ -3,21 +3,16 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -44,13 +39,6 @@ public class EventInfoFrag extends Fragment {
         v.setVisibility(View.INVISIBLE);
         Toolbar toolbar = (Toolbar) this.getActivity().findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
-
-        /*Event tester = new Event("FBGM",
-                "The goal of this event is to disregard women and acquire capital." +
-                        "We will be offering free bro-tanks and snapbacks.",
-                "Wiz Khalifa", 3, "42042000", "6969", "2034", "2054");*/
-        //showInfo(tester);
-
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
 
@@ -135,10 +123,14 @@ public class EventInfoFrag extends Fragment {
                 d = getResources().getDrawable(R.drawable.ic3);
                 break;
             case 4:
+                d = getResources().getDrawable(R.drawable.ic4);
                 break;
             case 5:
+                d = getResources().getDrawable(R.drawable.ic5);
                 break;
             case 6:
+                break;
+            case 7:
                 break;
         }
         // setting the icon
