@@ -192,15 +192,10 @@ public class MapFrag extends Fragment {
             } else {
                 // Show rationale and request permission.
             }
-
-            System.out.println( "Entered MapHandler's onCreate method." );
-            System.err.println( "Entered MapHandler's onCreate method." );
         }
 
         @Override
         public View getInfoWindow(Marker marker) {
-
-
             return null; // Call getInfoContents
         }
 
@@ -343,7 +338,91 @@ public class MapFrag extends Fragment {
             Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
             // Scale it to 50 x 50
             Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));*/
-            markerOpts.icon(BitmapDescriptorFactory.defaultMarker(Event.typeColors[e.getType()]));
+
+            // Get type to set color
+            int eventType = e.getType();
+
+            // Figure out icon size
+            int size;
+
+            if (e.getPopularity() < 10) {
+                size = 1;
+            }
+            else if (e.getPopularity() < 20) {
+                size = 2;
+            }
+            else {
+                size = 3;
+            }
+
+            // Get ID to set marker icon
+            int drawableID = 0;
+
+            switch (Event.types[eventType]) {
+                case "Food":
+                    if (size == 1) {
+                        drawableID = R.drawable.marker;
+                    }
+
+                    else if (size == 2) {
+                        drawableID = R.drawable.marker_2x;
+                    }
+                    else {
+                        drawableID = R.drawable.marker_3x;
+                    }
+                    break;
+
+                case "Sports":
+                    if (size == 1) {
+                        drawableID = R.drawable.marker_green;
+                    }
+                    else if (size == 2) {
+                        drawableID = R.drawable.marker_green_2x;
+                    }
+                    else {
+                        drawableID = R.drawable.marker_green_3x;
+                    }
+                    break;
+
+                case "Performance":
+                    if (size == 1) {
+                        drawableID = R.drawable.marker_yellow;
+                    }
+                    if (size == 2) {
+                        drawableID = R.drawable.marker_yellow_2x;
+                    }
+                    else {
+                        drawableID = R.drawable.marker_yellow_3x;
+                    }
+                    break;
+
+                case "Academic":
+                    if (size == 1) {
+                        drawableID = R.drawable.marker_magenta;
+                    }
+                    else if (size == 2) {
+                        drawableID = R.drawable.marker_magenta_2x;
+                    }
+                    else {
+                        drawableID = R.drawable.marker_magenta_3x;
+                    }
+                    break;
+
+                case "Social":
+                    if (size == 1) {
+                        drawableID = R.drawable.marker_light_blue;
+                    }
+                    else if (size == 2) {
+                        drawableID = R.drawable.marker_light_blue_2x;
+                    }
+                    else {
+                        drawableID = R.drawable.marker_light_blue_3x;
+                    }
+                    break;
+            }
+
+            // Set icon
+            markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
 
 
             // Add the marker to the map
