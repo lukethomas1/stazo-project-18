@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class MainAct extends AppCompatActivity
     // Search stuff
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class MainAct extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle("Campass");
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         //getSupportActionBar().setSubtitle("By: Stazo");
         //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -134,8 +136,8 @@ public class MainAct extends AppCompatActivity
                         Log.d("myTag", Project_18.filteredCategories.toString());
 
                         // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
                         return true;
                     }
                 }
@@ -161,8 +163,8 @@ public class MainAct extends AppCompatActivity
                         item.setChecked(true);
 
                         // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents("");
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList("");
+                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
+                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
                     }
                 }
 
@@ -202,9 +204,10 @@ public class MainAct extends AppCompatActivity
                     // do search here
                     Log.d("MyTag", newText);
                     Log.d("MyTag", "letsgo");
+                    ((Project_18) getApplication()).setRelevantText(newText);
                     // filter MapFrag
-                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents(newText);
-                    ((ListAct) adapter.getItem(1)).displayFilteredEventList(newText);
+                    ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList();
                     return true;
                 }
 
@@ -274,6 +277,12 @@ public class MainAct extends AppCompatActivity
 //        transaction.add(R.id.show_createEvent, createEventFrag).addToBackStack("CreateEventFrag").commit();
     }
 
+    public void goToProfile(View view) {
+        Intent i =  new Intent(this, Profile.class);
+        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
+        startActivity(i);
+    }
+
     public void goToEventInfo(String event_id) {
 //        Intent intent = new Intent(this, EventInfoAct.class);
 //        intent.putExtra("event_id", event_id);
@@ -286,16 +295,16 @@ public class MainAct extends AppCompatActivity
                 this.getSupportFragmentManager().beginTransaction();
 //        transaction.replace
 //                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
-//        transaction.commit();
-        this.getWindow().setDimAmount((float) 0.8);
-        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-        lp.dimAmount=0.0f;
-        this.getWindow().setAttributes(lp);
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-        transaction
-                .add(R.id.show_eventInfo, eventInfoFrag)
-                .addToBackStack("EventInfoFrag")
-                .commit();
+        transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
+//        this.getWindow().setDimAmount((float) 0.8);
+//        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
+//        lp.dimAmount=0.0f;
+//        this.getWindow().setAttributes(lp);
+//        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+//        transaction
+//                .add(R.id.show_eventInfo, eventInfoFrag)
+//                .addToBackStack("EventInfoFrag")
+//                .commit();
 
     }
 
@@ -304,7 +313,8 @@ public class MainAct extends AppCompatActivity
 
         //-----> REPLACE FRAGMENTS HERE <---------------
         adapter.addFragment(new MapFrag(), "Map");
-        adapter.addFragment(new ListAct(), "List");
+        adapter.addFragment(new ListAct(), "Explore");
+        adapter.addFragment(new TestFrag1(), "Profile");
         //adapter.addFragment(new TestFrag1(), "What is this?");
 
         viewPager.setAdapter(adapter);

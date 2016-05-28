@@ -18,8 +18,34 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="#4286ed"
-            android:onClick="goToCreateEvent"/>
+            app:backgroundTint="@color/colorAccent"
+            android:onClick="goToCreateEvent" />
+            <!--app:backgroundTint="#4286ed" -->
+            <!--android:onClick="goToCreateEvent"/> -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2:00PM"
+        android:id="@+id/timeTextView"
+        android:layout_above="@+id/timeSeekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:visibility="invisible"
+        android:textColor="@color/colorSecondary"/>
+
+    <SeekBar
+            android:id="@+id/timeSeekBar"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="26dp"
+            android:max="12"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            android:progressBackgroundTint="@color/offwhite"/>
+
 
     <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
         <!--android:name="com.google.android.gms.maps.MapFragment"-->

@@ -80,7 +80,7 @@
 
         <!-- <activity android:name=".InitialAct"></activity> -->
 
-        <activity android:name=".MyCreatedEvents"></activity>
+        <activity android:name=".Profile"></activity>
     </application>
 
 </manifest>

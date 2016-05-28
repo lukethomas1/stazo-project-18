@@ -44,6 +44,7 @@ public class CreateEventAct extends AppCompatActivity {
     String name, desc, startDate, endDate, startTime, endTime, type;
     // To hold start date/time and end date/time
     GregorianCalendar startCal, endCal;
+    private long startTimeLong, endTimeLong;
     int typeNum = -1;
 
     /**
@@ -247,13 +248,25 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
+        System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag.getDay()
+                + "/" + startTimeFrag.getHourInt() + "/" + startTimeFrag.getMinInt() + "/");
+        System.out.println("StartDate: " + (endDateFrag.getMonth()) + "/" + endDateFrag.getDay()
+                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/");
+
+        int startYear = startDateFrag.getYear();
+        int startMonth = startDateFrag.getMonth() - 1;
+        int startDay = startDateFrag.getDay();
+        int startHour = startTimeFrag.getHourInt();
+        int startMin = startTimeFrag.getMinInt();
+
+
         startCal = new GregorianCalendar(startDateFrag.getYear(),
-                startDateFrag.getMonth(),
+                startDateFrag.getMonth() - 1,
                 startDateFrag.getDay(),
                 startTimeFrag.getHourInt(),
                 startTimeFrag.getMinInt());
         endCal = new GregorianCalendar(endDateFrag.getYear(),
-                endDateFrag.getMonth(),
+                endDateFrag.getMonth() - 1,
                 endDateFrag.getDay(),
                 endTimeFrag.getHourInt(),
                 endTimeFrag.getMinInt());
@@ -296,8 +309,12 @@ public class CreateEventAct extends AppCompatActivity {
 //            }
 //        }
 
-        System.out.println("startTime: " + startCal.getTime());
-        System.out.println("endTime: " + endCal.getTime());
+        System.out.println("startDate: " + startCal.getTime());
+        System.out.println("endDate: " + endCal.getTime());
+        System.out.println("startTime: " + startCal.getTimeInMillis());
+        System.out.println("endTime: " + endCal.getTimeInMillis());
+        startTimeLong = startCal.getTimeInMillis();
+        endTimeLong = endCal.getTimeInMillis();
 
         //Return validity of user input
         return valid;
@@ -313,9 +330,10 @@ public class CreateEventAct extends AppCompatActivity {
 
         if (checkInput()) {
             event = new Event(name, desc, ((Project_18) getApplication()).getMe().getID(), typeNum,
-                    startCal,
-                    endCal);
-
+                    startTimeLong, endTimeLong, "TEST");
+//            event.setTimes(startCal, endCal);
+            System.out.println("TestIN: " + event.getTest());
+            System.out.println("nameIN: " + event.getName());
             goToLocSelectAct();
         }
     }
@@ -324,6 +342,8 @@ public class CreateEventAct extends AppCompatActivity {
      * Navigate to the map activity.
      */
     private void goToLocSelectAct() {
-        startActivity(new Intent(this, LocSelectAct.class).putExtra("eventToInit", event));
+        Intent intent = new Intent(this, LocSelectAct.class);
+        intent.putExtra("eventToInit", event);
+        startActivity(intent);
     }
 }

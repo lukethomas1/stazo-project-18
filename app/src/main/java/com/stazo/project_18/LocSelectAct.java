@@ -38,6 +38,8 @@ public class LocSelectAct extends FragmentActivity
 
         // Get the event to initialize
         eventToInit = (Event) callingIntent.getParcelableExtra("eventToInit");
+        System.out.println("Start time: " + eventToInit.getStartTime());
+        System.out.println("End time: " + eventToInit.getEndTime());
 
         // Initialize the map_overview
         MapFragment mapFrag =
@@ -68,8 +70,8 @@ public class LocSelectAct extends FragmentActivity
         markerOpts.draggable(true);
         // Set the color of the marker
         markerOpts.icon(
-                BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-
+                //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
+                BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
         // Remove the previous marker if there is one on the map
         if (eventMarker != null) {
             eventMarker.remove();
@@ -83,7 +85,7 @@ public class LocSelectAct extends FragmentActivity
 
         // Initialize the event's id
 //        eventToInit.setEvent_id(eventMarker.getId());
-        eventToInit.generateID();
+        //eventToInit.generateID();
     }
 
     public void goToMap(View view) {
@@ -103,8 +105,11 @@ public class LocSelectAct extends FragmentActivity
         }
 
         else {
-            System.out.println("Start: " + eventToInit.getStartDate().getTime());
-            System.out.println("End: " + eventToInit.getEndDate().getTime());
+//            System.out.println("Start: " + eventToInit.getStartDate().getTime());
+//            System.out.println("End: " + eventToInit.getEndDate().getTime());
+            System.out.println("startTimeToBePushed: " + eventToInit.getStartTime());
+            System.out.println("endTimeToBePushed: " + eventToInit.getEndTime());
+
             // Push the event to the database
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 
