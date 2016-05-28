@@ -70,8 +70,8 @@ public class LocSelectAct extends FragmentActivity
         markerOpts.draggable(true);
         // Set the color of the marker
         markerOpts.icon(
-                BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-
+                //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
+                BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
         // Remove the previous marker if there is one on the map
         if (eventMarker != null) {
             eventMarker.remove();

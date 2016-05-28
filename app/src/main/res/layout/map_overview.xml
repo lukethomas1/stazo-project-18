@@ -16,11 +16,11 @@
             android:layout_height="wrap_content"
             android:src="@drawable/plus_icon"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
             android:layout_margin="@dimen/fab_margin"
             app:backgroundTint="@color/colorAccent"
-            android:onClick="goToProfile" />
+            android:onClick="goToCreateEvent" />
+            <!--app:backgroundTint="#4286ed" -->
             <!--android:onClick="goToCreateEvent"/> -->
 
     <TextView
