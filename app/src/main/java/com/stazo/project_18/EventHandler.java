@@ -11,6 +11,8 @@ import java.util.GregorianCalendar;
 /**
  * Created by isaacwang on 5/18/16.
  */
+
+/* PURELY FOR TESTING PURPOSES, an easy way to clear/generate events */
 public class EventHandler {
     public static ArrayList<LatLng> locations = new ArrayList<LatLng>();
 
@@ -38,9 +40,9 @@ public class EventHandler {
     public void generateEvents() {
         for (int i = 0; i < Event.types.length; i++) {
             Event e = new Event("Event " + i, "Description " + i, "1196215920412322", i, locations.get(i),
-            System.currentTimeMillis(),
-                    System.currentTimeMillis() + (i+2) * 1000 * 60 * 60);
-            Log.d("myTag", "" + e.getEvent_id());
+            System.currentTimeMillis(),     // all events start "now"
+                    System.currentTimeMillis() + (i+2) * 1000 * 60 * 60); // and end in 2,3,4... hours
+            //Log.d("myTag", "" + e.getEvent_id());
             e.pushToFirebase(new Firebase("https://stazo-project-18.firebaseio.com/"));
         }
     }
