@@ -37,7 +37,8 @@ public class EventInfoFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
         v.setVisibility(View.INVISIBLE);
-        Toolbar toolbar = (Toolbar) this.getActivity().findViewById(R.id.toolbar);
+        //android.support.v7.widget.Toolbar toolbar =
+        // (android.support.v7.widget.Toolbar) this.getActivity().findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
