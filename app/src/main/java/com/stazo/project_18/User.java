@@ -24,7 +24,8 @@ public class User {
     private ArrayList<String> reportedEvents = new ArrayList<String>();
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
-    private ArrayList<String> tagTrails = new ArrayList<String>();
+    private ArrayList<String> friends = new ArrayList<String>();
+    //private ArrayList<String> tagTrails = new ArrayList<String>();
 
     public int getExplorerLevel() {
         return explorerLevel;
@@ -58,6 +59,7 @@ public class User {
         categoryTrails.add(type);
         fb.child("Users").child(ID).child("categoryTrails").setValue(categoryTrails);
     }
+
     public void addTrail(Firebase fb, String user_id) {
         if (userTrails.contains(user_id)) {
             return;
@@ -86,32 +88,87 @@ public class User {
         // remove this after all users have myEvents reference in firebase
         if (userMap.containsKey("myEvents")) {
             myEvents.clear();
-            for (String val: ((HashMap<String, String>) userMap.get("myEvents")).values()) {
-                myEvents.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("myEvents") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("myEvents")) {
+                    myEvents.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((HashMap<String, String>) userMap.get("myEvents")).values()) {
+                    myEvents.add(val);
+                }
             }
         }
         if (userMap.containsKey("reportedEvents")) {
             reportedEvents.clear();
-            for (String val: ((HashMap<String, String>) userMap.get("reportedEvents")).values()) {
-                reportedEvents.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("reportedEvents") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("reportedEvents")) {
+                    reportedEvents.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((HashMap<String, String>) userMap.get("reportedEvents")).values()) {
+                    reportedEvents.add(val);
+                }
             }
         }
         if (userMap.containsKey("attendingEvents")) {
             attendingEvents.clear();
-            for (String val: ((HashMap<String, String>) userMap.get("attendingEvents")).values()) {
-                attendingEvents.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("attendingEvents") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("attendingEvents")) {
+                    attendingEvents.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((HashMap<String, String>) userMap.get("attendingEvents")).values()) {
+                    attendingEvents.add(val);
+                }
             }
         }
         if (userMap.containsKey("categoryTrails")) {
             categoryTrails.clear();
-            for (Long val: ((ArrayList<Long>) userMap.get("categoryTrails"))) {
-                categoryTrails.add(val.intValue());
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("categoryTrails") instanceof ArrayList) {
+                for (Long val: (ArrayList<Long>) userMap.get("categoryTrails")) {
+                    categoryTrails.add(new Integer(val.intValue()));
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (Long val : ((ArrayList<Long>) userMap.get("categoryTrails"))) {
+                    categoryTrails.add(val.intValue());
+                }
             }
         }
         if (userMap.containsKey("userTrails")) {
             userTrails.clear();
-            for (String val: ((ArrayList<String>) userMap.get("userTrails"))) {
-                userTrails.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("userTrails") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("userTrails")) {
+                    userTrails.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((ArrayList<String>) userMap.get("userTrails"))) {
+                    userTrails.add(val);
+                }
             }
         }
 
@@ -125,9 +182,7 @@ public class User {
     /**
      * Pushes the user's info onto Firebase
      */
-    public void pushToFirebase(Firebase fb) {
-        fb.child("Users").child(ID).setValue(this);
-    }
+    public void pushToFirebase(Firebase fb) {fb.child("Users").child(ID).setValue(this);}
 
     // true for successful report, false for unsuccessful report
     public boolean reportEvent(String event_id, Firebase fb) {

@@ -3,7 +3,6 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -23,7 +21,6 @@ import com.firebase.client.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -110,7 +107,7 @@ public class EventInfoFrag extends Fragment {
 
         ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
         int findType = e.getType();
-        Drawable d = getResources().getDrawable(R.drawable.gameicon);
+        Drawable d = getResources().getDrawable(R.drawable.type_icon_game);
 
         // determining the icon
         switch(findType) {

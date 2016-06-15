@@ -6,7 +6,7 @@
 
     <!--<item
         android:id="@+id/game"
-        android:icon="@drawable/gameicon"
+        android:icon="@drawable/type_icon_game"
         app:showAsAction="always"
         android:title="game"
         android:orderInCategory="1">

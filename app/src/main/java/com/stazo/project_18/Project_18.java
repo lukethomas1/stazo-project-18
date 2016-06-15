@@ -76,7 +76,7 @@ public class Project_18 extends Application {
         return relatedEventIds;
     }
 
-    // filter based on search and categories, use time of !noTime
+    // filter based on search and categories, use time if !noTime
     public ArrayList<Event> findRelevantEvents (boolean noTime) {
         ArrayList<Event> relatedEvents = new ArrayList<Event>();
         for (Event e: pulledEvents) {
@@ -103,5 +103,13 @@ public class Project_18 extends Application {
             }
         }
         return relatedEvents;
+    }
+
+    // TRAIL STUFF
+
+    // addTrail for category
+    public void addTrail(Integer type) {
+        me.addTrail(getFB(), type);
+        me.pushToFirebase(getFB());
     }
 }

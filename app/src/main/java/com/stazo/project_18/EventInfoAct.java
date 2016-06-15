@@ -100,18 +100,18 @@
 //
 //        ImageView eventIcon = (ImageView) findViewById(R.id.eventIcon);
 //        int findType = e.getType();
-//        Drawable d = getResources().getDrawable(R.drawable.gameicon);
+//        Drawable d = getResources().getDrawable(R.drawable.type_icon_game);
 //
 //        // determining the icon
 //        switch(findType) {
 //            case 1:
-//                d = getResources().getDrawable(R.drawable.sportsicon);
+//                d = getResources().getDrawable(R.drawable.type_icon_sports);
 //                break;
 //            case 2:
-//                d = getResources().getDrawable(R.drawable.foodicon);
+//                d = getResources().getDrawable(R.drawable.type_icon_food);
 //                break;
 //            case 3:
-//                d = getResources().getDrawable(R.drawable.dollaricon);
+//                d = getResources().getDrawable(R.drawable.type_icon_dollar);
 //                break;
 //            case 4:
 //                break;

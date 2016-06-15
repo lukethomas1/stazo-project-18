@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:text="Follow a user or category that\n matches your interests"
+        android:textSize="20dip"
+        android:gravity="center"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/catSection">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dip"
+            android:gravity="center"
+            android:id = "@+id/catRowOne">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonOne"
+                android:tag="1"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonTwo"
+                android:tag="2"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker_light_blue"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonThree"
+                android:tag="3"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker_green" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonFour"
+                android:tag="4"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:gravity="center"
+            android:id = "@+id/catRowTwo">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonFive"
+                android:tag="5"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker_yellow" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonSix"
+                android:tag="6"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker_magenta" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/catButtonSeven"
+                android:tag="7"
+                android:onClick="addCategoryTrail"
+                android:src="@drawable/marker" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/pplSection">
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/usersScrollView" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/usersHorizontalLayout"
+                android:layout_marginTop="30dip"
+                android:layout_marginBottom="30dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User 1"
+                    android:layout_marginRight="15dip"
+                    android:textSize="20dip"
+                    android:id="@+id/ex1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User 2"
+                    android:layout_marginRight="15dip"
+                    android:textSize="20dip"
+                    android:id="@+id/ex2" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User 3"
+                    android:layout_marginRight="15dip"
+                    android:textSize="20dip"
+                    android:id="@+id/ex3" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User 4"
+                    android:layout_marginRight="15dip"
+                    android:textSize="20dip"
+                    android:id="@+id/ex4" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User 5"
+                    android:layout_marginRight="15dip"
+                    android:textSize="20dip"
+                    android:id="@+id/ex5" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User 6"
+                    android:layout_marginRight="15dip"
+                    android:textSize="20dip"
+                    android:id="@+id/ex6" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchView"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:text="Done"
+        android:id="@+id/doneButton"
+        android:onClick="goToProfile"/>
+</LinearLayout>

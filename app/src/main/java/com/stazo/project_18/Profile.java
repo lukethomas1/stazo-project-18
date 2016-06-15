@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -237,6 +238,11 @@ public class Profile extends AppCompatActivity {
         android.support.v4.app.FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();*/
+    }
+    public void goToAddTrails(View view) {
+        Intent i = new Intent(this, AddTrailsAct.class);
+        //i.putExtra("userID", user.getID());
+        startActivity(i);
     }
     private void goToBrowse(){}
     private void goToBrowse(String user_id){}
