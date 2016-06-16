@@ -24,7 +24,18 @@ public class User {
     private ArrayList<String> reportedEvents = new ArrayList<String>();
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
-    private ArrayList<String> tagTrails = new ArrayList<String>();
+
+    // hashmap of user's friends from name to id
+    private HashMap<String, String> friends = new HashMap<String, String>();
+    //private ArrayList<String> tagTrails = new ArrayList<String>();
+
+    public HashMap<String, String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(HashMap<String, String> friends) {
+        this.friends = friends;
+    }
 
     public int getExplorerLevel() {
         return explorerLevel;
@@ -58,6 +69,7 @@ public class User {
         categoryTrails.add(type);
         fb.child("Users").child(ID).child("categoryTrails").setValue(categoryTrails);
     }
+
     public void addTrail(Firebase fb, String user_id) {
         if (userTrails.contains(user_id)) {
             return;
@@ -86,48 +98,108 @@ public class User {
         // remove this after all users have myEvents reference in firebase
         if (userMap.containsKey("myEvents")) {
             myEvents.clear();
-            for (String val: ((HashMap<String, String>) userMap.get("myEvents")).values()) {
-                myEvents.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("myEvents") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("myEvents")) {
+                    myEvents.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((HashMap<String, String>) userMap.get("myEvents")).values()) {
+                    myEvents.add(val);
+                }
             }
         }
         if (userMap.containsKey("reportedEvents")) {
             reportedEvents.clear();
-            for (String val: ((HashMap<String, String>) userMap.get("reportedEvents")).values()) {
-                reportedEvents.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("reportedEvents") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("reportedEvents")) {
+                    reportedEvents.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((HashMap<String, String>) userMap.get("reportedEvents")).values()) {
+                    reportedEvents.add(val);
+                }
             }
         }
         if (userMap.containsKey("attendingEvents")) {
             attendingEvents.clear();
-            for (String val: ((HashMap<String, String>) userMap.get("attendingEvents")).values()) {
-                attendingEvents.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("attendingEvents") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("attendingEvents")) {
+                    attendingEvents.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((HashMap<String, String>) userMap.get("attendingEvents")).values()) {
+                    attendingEvents.add(val);
+                }
             }
         }
         if (userMap.containsKey("categoryTrails")) {
             categoryTrails.clear();
-            for (Long val: ((ArrayList<Long>) userMap.get("categoryTrails"))) {
-                categoryTrails.add(val.intValue());
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("categoryTrails") instanceof ArrayList) {
+                for (Long val: (ArrayList<Long>) userMap.get("categoryTrails")) {
+                    categoryTrails.add(new Integer(val.intValue()));
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (Long val : ((ArrayList<Long>) userMap.get("categoryTrails"))) {
+                    categoryTrails.add(val.intValue());
+                }
             }
         }
         if (userMap.containsKey("userTrails")) {
             userTrails.clear();
-            for (String val: ((ArrayList<String>) userMap.get("userTrails"))) {
-                userTrails.add(val);
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("userTrails") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("userTrails")) {
+                    userTrails.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((ArrayList<String>) userMap.get("userTrails"))) {
+                    userTrails.add(val);
+                }
             }
         }
 
         // test trails
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(0));
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "10209766334938822");
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(2));
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "1070949549640758");
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(0));
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "10209766334938822");
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(2));
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "1070949549640758");
+        friends.put("Justin Ang", "10209766334938822");
+        friends.put("Gates Zeng", "1070949549640758");
+        friends.put("Eric Zhang", "1076100269116381");
+        friends.put("Luke Thomas", "1131880253542315");
+        friends.put("Matthew Ung", "1138117392898486");
+        friends.put("Ansel Blume", "1177156832304841");
+        friends.put("Brian Chan", "1184188798300386");
     }
 
     /**
      * Pushes the user's info onto Firebase
      */
-    public void pushToFirebase(Firebase fb) {
-        fb.child("Users").child(ID).setValue(this);
-    }
+    public void pushToFirebase(Firebase fb) {fb.child("Users").child(ID).setValue(this);}
 
     // true for successful report, false for unsuccessful report
     public boolean reportEvent(String event_id, Firebase fb) {

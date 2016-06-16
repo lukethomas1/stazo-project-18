@@ -269,8 +269,8 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToCreateEvent(View view) {
-        startActivity(new Intent(this, CreateEventAct.class));
-
+        //startActivity(new Intent(this, CreateEventAct.class));
+        goToProfile(view);
 //        CreateEventFrag createEventFrag = new CreateEventFrag();
 //        android.support.v4.app.FragmentTransaction transaction =
 //                this.getSupportFragmentManager().beginTransaction();

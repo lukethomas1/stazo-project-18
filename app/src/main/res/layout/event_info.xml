@@ -34,7 +34,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/eventIcon"
-                    android:src="@drawable/gameicon"
+                    android:src="@drawable/type_icon_game"
                     android:layout_gravity="right"
                     android:layout_weight="0.14"
                     android:layout_marginLeft="10dp"

@@ -19,7 +19,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
         <activity
             android:name=".InitialAct"
             android:label="@string/app_name"
@@ -80,7 +79,11 @@
 
         <!-- <activity android:name=".InitialAct"></activity> -->
 
-        <activity android:name=".Profile"></activity>
+        <activity android:name=".Profile" />
+        <activity
+            android:name=".AddTrailsAct"
+            android:label="@string/title_activity_add_trails"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
