@@ -112,4 +112,10 @@ public class Project_18 extends Application {
         me.addTrail(getFB(), type);
         me.pushToFirebase(getFB());
     }
+
+    // addTrail for user
+    public void addTrail(String userid) {
+        me.addTrail(getFB(), userid);
+        me.pushToFirebase(getFB());
+    }
 }

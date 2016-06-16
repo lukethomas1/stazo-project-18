@@ -24,8 +24,18 @@ public class User {
     private ArrayList<String> reportedEvents = new ArrayList<String>();
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
-    private ArrayList<String> friends = new ArrayList<String>();
+
+    // hashmap of user's friends from name to id
+    private HashMap<String, String> friends = new HashMap<String, String>();
     //private ArrayList<String> tagTrails = new ArrayList<String>();
+
+    public HashMap<String, String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(HashMap<String, String> friends) {
+        this.friends = friends;
+    }
 
     public int getExplorerLevel() {
         return explorerLevel;
@@ -173,10 +183,17 @@ public class User {
         }
 
         // test trails
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(0));
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "10209766334938822");
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(2));
-        addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "1070949549640758");
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(0));
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "10209766334938822");
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(2));
+        //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "1070949549640758");
+        friends.put("Justin Ang", "10209766334938822");
+        friends.put("Gates Zeng", "1070949549640758");
+        friends.put("Eric Zhang", "1076100269116381");
+        friends.put("Luke Thomas", "1131880253542315");
+        friends.put("Matthew Ung", "1138117392898486");
+        friends.put("Ansel Blume", "1177156832304841");
+        friends.put("Brian Chan", "1184188798300386");
     }
 
     /**

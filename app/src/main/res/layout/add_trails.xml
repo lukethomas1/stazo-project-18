@@ -103,53 +103,9 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/usersHorizontalLayout"
+                android:id="@+id/usersLayout"
                 android:layout_marginTop="30dip"
                 android:layout_marginBottom="30dip">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User 1"
-                    android:layout_marginRight="15dip"
-                    android:textSize="20dip"
-                    android:id="@+id/ex1" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User 2"
-                    android:layout_marginRight="15dip"
-                    android:textSize="20dip"
-                    android:id="@+id/ex2" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User 3"
-                    android:layout_marginRight="15dip"
-                    android:textSize="20dip"
-                    android:id="@+id/ex3" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User 4"
-                    android:layout_marginRight="15dip"
-                    android:textSize="20dip"
-                    android:id="@+id/ex4" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User 5"
-                    android:layout_marginRight="15dip"
-                    android:textSize="20dip"
-                    android:id="@+id/ex5" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User 6"
-                    android:layout_marginRight="15dip"
-                    android:textSize="20dip"
-                    android:id="@+id/ex6" />
 
             </LinearLayout>
         </HorizontalScrollView>
