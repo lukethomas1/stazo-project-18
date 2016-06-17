@@ -16,7 +16,11 @@
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:orderInCategory="2"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_profile"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Profile"
         app:showAsAction="always"/>
 
     <group android:checkableBehavior="all">

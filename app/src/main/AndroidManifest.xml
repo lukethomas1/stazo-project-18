@@ -40,14 +40,14 @@
             activity
             android:name=".EventInfoAct"
             android:label="@string/title_activity_event_info"
-            android:theme="@style/AppTheme.NoActionBar" /
+            android:theme="@style/AppTheme.NoActionBar" >
+            <activity android:name=".EventInfoAct" />
         -->
         <activity android:name=".MainAct" />
         <activity
             android:name=".LoginAct"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".EventInfoAct" />
 
         <!-- for FB Login -->
         <activity
@@ -79,11 +79,22 @@
 
         <!-- <activity android:name=".InitialAct"></activity> -->
 
-        <activity android:name=".Profile" />
+        <activity android:name=".Profile"
+            android:parentActivityName=".MainAct">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainAct" />
+        </activity>
         <activity
             android:name=".AddTrailsAct"
             android:label="@string/title_activity_add_trails"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".Profile">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Profile" />
+        </activity>
     </application>
 
 </manifest>

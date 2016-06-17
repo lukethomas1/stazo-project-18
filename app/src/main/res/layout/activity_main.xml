@@ -29,7 +29,7 @@
             android:background="@color/colorSecondary"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabMaxWidth="0dp"
-            app:tabGravity="fill"/>
+            app:tabGravity="fill" />
             <!--android:tabMode="fixed"-->
     </android.support.design.widget.AppBarLayout>
 
