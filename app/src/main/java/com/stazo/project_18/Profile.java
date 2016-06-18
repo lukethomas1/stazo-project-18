@@ -27,6 +27,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,6 +47,8 @@ public class Profile extends AppCompatActivity {
     private Toolbar toolbar;
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
+    private Bitmap profPicBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +60,6 @@ public class Profile extends AppCompatActivity {
         // grab user and fill screen with correct info
         grabInfo();
         //((TextView) findViewById(R.id.nameTextView)).setText("");
-
-        setProfilePicture();
     }
 
     private void setToolbar() {
@@ -116,6 +118,9 @@ public class Profile extends AppCompatActivity {
 
                         // display trails
                         grabAndDisplayTrails();
+
+                        // set profile picture
+                        setProfilePicture();
 
                         // remove event listener
                         fb.child("Users").child(getIntent().getStringExtra("userID")).
@@ -272,11 +277,35 @@ public class Profile extends AppCompatActivity {
     }
 
     private void setProfilePicture() {
-        ImageView iv = (ImageView) findViewById(R.id.profilePicture);
-        Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.me_tho_2);
-        Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 400, 400, true);
-        iv.setImageBitmap(bMapScaled);
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
+                    profPicBitmap = Bitmap.createScaledBitmap(
+                            BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
+                            400,
+                            400,
+                            true);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                final ImageView iv = (ImageView) findViewById(R.id.profilePicture);
+
+                iv.post(new Runnable() {
+                    public void run() {
+                        iv.setImageBitmap(profPicBitmap);
+                    }
+                });
+            }
+        }).start();
+
+        /*ImageView iv = (ImageView) findViewById(R.id.profilePicture);
+        //Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.me_tho_2);
+        Bitmap bMapScaled = Bitmap.createScaledBitmap(profPicBitmap, 400, 400, true);
+        iv.setImageBitmap(bMapScaled);*/
     }
+
 
     private void goToEventInfo(String event_id) {
         // go to detailed event info frag
