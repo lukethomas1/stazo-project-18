@@ -285,18 +285,30 @@ public class Profile extends AppCompatActivity {
     private void goToBrowse() {
     }
 
-    private void goToBrowse(String user_id) {
+    // goes to Explore with search query as an extra.
+    private void goToBrowse(String userTrail) {
+        Intent i = new Intent(this, MainAct.class);
+        i.putExtra("userTrail", userTrail);
+        i.putExtra("toBrowse", true);
+        startActivity(i);
     }
 
-    private void goToBrowse(int type) {
+    // goes to Explore with search query as an extra
+    private void goToBrowse(int categoryTrail) {
+        Intent i = new Intent(this, MainAct.class);
+        i.putExtra("categoryTrail", categoryTrail);
+        i.putExtra("toBrowse", true);
+        startActivity(i);
     }
 
     public void goToProfile() {
+
     }
 
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, MainAct.class));
+        finish();
     }
 
 }

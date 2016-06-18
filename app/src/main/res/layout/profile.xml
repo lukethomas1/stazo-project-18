@@ -75,7 +75,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageButton"
-                    android:onClick="goToAddTrails"/>
+                    android:onClick="goToAddTrails"
+                    android:src="@drawable/ic_actionbar_plus"
+                    android:layout_marginLeft="5dip"
+                    android:background="@null"/>
 
             </LinearLayout>
 

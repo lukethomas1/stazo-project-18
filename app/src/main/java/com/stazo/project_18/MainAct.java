@@ -74,8 +74,17 @@ public class MainAct extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_actionbar_map2);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_actionbar_browse2);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_actionbar_head);
+
         // Default to "All" categories
         //Project_18.filteredCategories.add(-1);
+
+        // Are we going straight to browse?
+        if (getIntent().hasExtra("toBrowse")) {
+            viewPager.setCurrentItem(2);
+        }
     }
 
     private void setToolbar() {
@@ -321,10 +330,9 @@ public class MainAct extends AppCompatActivity
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), "Map");
-        adapter.addFragment(new ListAct(), "Explore");
-        //adapter.addFragment(new TestFrag1(), "Profile");
-        //adapter.addFragment(new TestFrag1(), "What is this?");
+        adapter.addFragment(new MapFrag(), ""); //map
+        adapter.addFragment(new ListAct(), ""); //explore
+        adapter.addFragment(new TestFrag1(), ""); //profile
 
         viewPager.setAdapter(adapter);
     }

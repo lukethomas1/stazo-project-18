@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,6 +33,7 @@ public class CreateEventAct extends AppCompatActivity {
     private List<String> typeList; //Array of the types of events
     int normColor = Color.BLACK; //Color of default text
     int errorColor = Color.RED; //Color of error text
+    private Toolbar toolbar; // toolbar
 
     //The Text labeling the EditTexts
     TextView nameText, descText, pickText, startDateText, endDateText, startText, endText;
@@ -60,6 +65,8 @@ public class CreateEventAct extends AppCompatActivity {
 
         // comment out later, needed for testing
         Firebase.setAndroidContext(this);
+
+        setToolbar();
 
         setUpTextColors();
 
@@ -131,6 +138,50 @@ public class CreateEventAct extends AppCompatActivity {
                 endTimeView.setError(null);
             }
         });
+    }
+
+    //  TOOLBAR STUFF
+
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
+        //getSupportActionBar().setTitle(getString(R.string.app_name));
+        //getSupportActionBar().setSubtitle("By: Stazo");
+        //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.action_profile:
+                        goToProfile();
+                        Log.d("myTag", "you hit action profile");
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+        });
+
+        //back button action
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     /**
@@ -345,5 +396,12 @@ public class CreateEventAct extends AppCompatActivity {
         Intent intent = new Intent(this, LocSelectAct.class);
         intent.putExtra("eventToInit", event);
         startActivity(intent);
+    }
+
+    public void goToProfile() {
+        Intent i =  new Intent(this, Profile.class);
+        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
+        startActivity(i);
+        finish();
     }
 }
