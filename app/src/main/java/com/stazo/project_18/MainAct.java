@@ -83,7 +83,7 @@ public class MainAct extends AppCompatActivity
 
         // Are we going straight to browse?
         if (getIntent().hasExtra("toBrowse")) {
-            viewPager.setCurrentItem(2);
+            viewPager.setCurrentItem(1);
         }
     }
 

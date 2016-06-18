@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -74,6 +75,9 @@ public class ListAct extends android.support.v4.app.Fragment {
 
                         // remove this listener
                         fb.child("Events").removeEventListener(this);
+
+                        // show activity
+                        getActivity().findViewById(R.id.eventList).setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -150,4 +154,5 @@ public class ListAct extends android.support.v4.app.Fragment {
         // true = don't worry about time
         this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(true);
     }
+
 }

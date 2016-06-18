@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:id="@+id/profileLayout"
     tools:context=".Profile"
-    android:visibility="invisible">
+    android:visibility="invisible"
+    android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -32,13 +33,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profilePicture"
+                android:src="@drawable/me_tho_2"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dip"
+                android:background="@drawable/picture_background"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Isaac Wang"
                 android:textSize="26dip"
                 android:layout_marginTop="10dip"
-                android:id="@+id/nameTextView" />
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/nameTextView"
+                android:textColor="@color/profileTextColor"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,7 +60,8 @@
                 android:text="Your Adventures"
                 android:textSize="20dip"
                 android:layout_marginTop="20dip"
-                android:id="@+id/myEventsTextView" />
+                android:id="@+id/myEventsTextView"
+                android:textColor="@color/profileTextColor"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -69,7 +83,8 @@
                     android:layout_gravity="left"
                     android:text="Your Trails"
                     android:textSize="20dip"
-                    android:id="@+id/myTrailsTextView" />
+                    android:id="@+id/myTrailsTextView"
+                    android:textColor="@color/profileTextColor" />
 
                 <ImageButton
                     android:layout_width="wrap_content"

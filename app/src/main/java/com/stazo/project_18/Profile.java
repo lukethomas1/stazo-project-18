@@ -3,6 +3,8 @@ package com.stazo.project_18;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,6 +56,8 @@ public class Profile extends AppCompatActivity {
         // grab user and fill screen with correct info
         grabInfo();
         //((TextView) findViewById(R.id.nameTextView)).setText("");
+
+        setProfilePicture();
     }
 
     private void setToolbar() {
@@ -266,6 +271,13 @@ public class Profile extends AppCompatActivity {
         }
     }
 
+    private void setProfilePicture() {
+        ImageView iv = (ImageView) findViewById(R.id.profilePicture);
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.me_tho_2);
+        Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 400, 400, true);
+        iv.setImageBitmap(bMapScaled);
+    }
+
     private void goToEventInfo(String event_id) {
         // go to detailed event info frag
         /*
@@ -291,6 +303,7 @@ public class Profile extends AppCompatActivity {
         i.putExtra("userTrail", userTrail);
         i.putExtra("toBrowse", true);
         startActivity(i);
+        finish();
     }
 
     // goes to Explore with search query as an extra
@@ -299,6 +312,7 @@ public class Profile extends AppCompatActivity {
         i.putExtra("categoryTrail", categoryTrail);
         i.putExtra("toBrowse", true);
         startActivity(i);
+        finish();
     }
 
     public void goToProfile() {

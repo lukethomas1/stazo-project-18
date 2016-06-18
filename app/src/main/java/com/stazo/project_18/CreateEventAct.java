@@ -66,7 +66,7 @@ public class CreateEventAct extends AppCompatActivity {
         // comment out later, needed for testing
         Firebase.setAndroidContext(this);
 
-        setToolbar();
+        //setToolbar();
 
         setUpTextColors();
 
@@ -177,12 +177,12 @@ public class CreateEventAct extends AppCompatActivity {
         });
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    /*public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         super.onCreateOptionsMenu(menu);
         return true;
-    }
+    }*/
 
     /**
      * Changes all of the TextViews to the default color black.
