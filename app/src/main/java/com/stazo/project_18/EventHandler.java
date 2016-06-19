@@ -43,6 +43,10 @@ public class EventHandler {
             System.currentTimeMillis(),     // all events start "now"
                     System.currentTimeMillis() + (i+2) * 1000 * 60 * 60); // and end in 2,3,4... hours
             //Log.d("myTag", "" + e.getEvent_id());
+
+            // Popularity generation
+            e.setPopularity((int) (Math.random() * 30));
+
             e.pushToFirebase(new Firebase("https://stazo-project-18.firebaseio.com/"));
         }
     }
