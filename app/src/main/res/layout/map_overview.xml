@@ -17,9 +17,11 @@
             android:src="@drawable/plus_icon"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_margin="@dimen/fab_margin"
+            android:layout_marginLeft="@dimen/fab_margin_left"
+            android:layout_marginBottom="@dimen/fab_margin_bottom"
             app:backgroundTint="@color/colorAccent"
-            android:onClick="goToCreateEvent" />
+            android:onClick="goToCreateEvent"
+            app:fabSize="mini"/>
             <!--app:backgroundTint="#4286ed" -->
             <!--android:onClick="goToCreateEvent"/> -->
 
@@ -44,7 +46,8 @@
             android:max="12"
             android:progressTint="@color/colorAccent"
             android:thumbTint="@color/colorAccent"
-            android:progressBackgroundTint="@color/offwhite"/>
+            android:progressBackgroundTint="@color/offwhite"
+            android:visibility="invisible"/>
 
 
     <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->

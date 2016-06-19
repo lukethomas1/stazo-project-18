@@ -345,10 +345,10 @@ public class MapFrag extends Fragment {
             // Figure out icon size
             int size;
 
-            if (e.getPopularity() < 10) {
+            if (e.getPopularity() < Project_18.POP_THRESH1) {
                 size = 1;
             }
-            else if (e.getPopularity() < 20) {
+            else if (e.getPopularity() < Project_18.POP_THRESH2) {
                 size = 2;
             }
             else {
@@ -426,7 +426,6 @@ public class MapFrag extends Fragment {
 
             // Set icon
             markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
-
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);

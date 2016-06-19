@@ -80,6 +80,7 @@ public class AddTrailsAct extends AppCompatActivity {
         Intent i = new Intent(this, Profile.class);
         i.putExtra("userID", ((Project_18) getApplication()).getMe().getID());
         startActivity(i);
+        finish();
     }
 
     public void updateUserSection(String text){
