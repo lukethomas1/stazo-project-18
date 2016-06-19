@@ -37,7 +37,6 @@ public class Profile extends AppCompatActivity {
     private Firebase fb;
     private User user;
     private Context context = this;
-    private Activity activity = this;
     private Event currentEvent;
     private Integer currentCategoryTrail;
     private String currentUserTrail;
@@ -54,6 +53,7 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
         setToolbar();
+
         // set firebase reference
         fb = ((Project_18) getApplication()).getFB();
 
@@ -221,7 +221,7 @@ public class Profile extends AppCompatActivity {
         button.setAllCaps(false);
         button.setGravity(Gravity.LEFT);
         button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(20, 0, 0, 0);
+        //button.setPadding(R.dimen.profile_scrollview_horizontal_margin, 0, 0, 0);
         button.setLayoutParams(lp);
         //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
     }
@@ -276,6 +276,7 @@ public class Profile extends AppCompatActivity {
         }
     }
 
+    // pull and set profile picture
     private void setProfilePicture() {
         new Thread(new Runnable() {
             public void run() {

@@ -27,8 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView2"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin">
+        android:paddingLeft="@dimen/profile_scrollview_horizontal_margin"
+        android:paddingRight="@dimen/profile_scrollview_horizontal_margin">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/profilePicture"
-                android:src="@drawable/me_tho_2"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dip"
                 android:background="@drawable/picture_background"/>
@@ -48,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="Isaac Wang"
                 android:textSize="26dip"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="15dip"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/nameTextView"
                 android:textColor="@color/profileTextColor"/>
@@ -57,9 +56,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="Your Adventures"
+                android:text="Adventures"
                 android:textSize="20dip"
-                android:layout_marginTop="20dip"
+                android:layout_marginTop="25dip"
+                android:layout_marginLeft="5dp"
                 android:id="@+id/myEventsTextView"
                 android:textColor="@color/profileTextColor"/>
 
@@ -81,8 +81,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Your Trails"
+                    android:text="Trails"
                     android:textSize="20dip"
+                    android:layout_marginLeft="5dp"
                     android:id="@+id/myTrailsTextView"
                     android:textColor="@color/profileTextColor" />
 

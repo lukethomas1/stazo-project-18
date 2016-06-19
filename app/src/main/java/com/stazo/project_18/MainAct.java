@@ -4,6 +4,8 @@ import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.AvoidXfermode;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -77,6 +79,16 @@ public class MainAct extends AppCompatActivity
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_actionbar_map2);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_actionbar_browse2);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_actionbar_head);
+
+        tabLayout.getTabAt(0).getIcon().setColorFilter(
+                getResources().getColor(R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(
+                getResources().getColor(R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(
+                getResources().getColor(R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN);
 
         // Default to "All" categories
         //Project_18.filteredCategories.add(-1);
