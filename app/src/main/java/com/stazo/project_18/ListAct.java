@@ -15,7 +15,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ListAct extends android.support.v4.app.Fragment {
 
@@ -25,9 +24,8 @@ public class ListAct extends android.support.v4.app.Fragment {
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
-    List<String> listIds;
+    ArrayList<String> headerList;
+    HashMap<String, ArrayList<Event>> headerToEventListHM;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,31 +83,79 @@ public class ListAct extends android.support.v4.app.Fragment {
     // Creates ListViews for each event in arraylist and adds them to the activity
     private void displayEventList() {
         //Grabs the ListView
-        expListView = (ExpandableListView)getActivity().findViewById(R.id.eventList);
-        listDataHeader = new ArrayList<>();
-        listDataChild = new HashMap<>();
-        listIds = new ArrayList<>();
+        expListView = (ExpandableListView) getActivity().findViewById(R.id.eventList);
+        headerList = new ArrayList<>();
+        headerToEventListHM = new HashMap<>();
 
+        // Add event categories
+        headerList.add("Lit Events");
+        headerList.add("Subscribed Events");
+        headerList.add("Local Events");
+
+        // Add Hot Events
+        ArrayList<Event> hotEventsList = new ArrayList<>();
+
+        // Add all events beyond the popularity threshold to the "hot events" list
+        for (Event event : eventList) {
+            if (event.getPopularity() > Project_18.POP_THRESH2) {
+                hotEventsList.add(event);
+            }
+        }
+
+        headerToEventListHM.put(headerList.get(0), hotEventsList);
+
+        // Add subscribed events
+        // Add this user
+        User thisUser = ((Project_18) getActivity().getApplication()).getMe();
+
+        ArrayList<Event> subscribedEventsList = new ArrayList<>();
+
+        for (Event event : eventList) {
+            if (thisUser.isSubscribedEvent(event)) {
+                subscribedEventsList.add(event);
+            }
+        }
+
+        headerToEventListHM.put(headerList.get(1), subscribedEventsList);
+
+        /* TODO: For local events, base it on a certain radius around the user's current location.
+           Right now it is just all events - hot events - subscribed events */
+
+        ArrayList<Event> localEventsList = new ArrayList<>();
+
+        for (Event event : eventList) {
+            // Whether this event is already in a previous list
+            boolean isInHotList = hotEventsList.contains(event);
+            boolean isInSubscribedList = subscribedEventsList.contains(event);
+
+            // if it is not in a previous list, then add it to the local list
+            if (!isInHotList && !isInSubscribedList) {
+                localEventsList.add(event);
+            }
+        }
+
+        headerToEventListHM.put(headerList.get(2), localEventsList);
+
+        /*
         for(int i = 0; i < eventList.size(); i++) {
             Event evt = eventList.get(i);
 
             listIds.add(evt.getEvent_id());
-            listDataHeader.add(evt.getName());
+            headerList.add(evt.getName());
 
-            List<String> evtDesc = new ArrayList<>();
-            evtDesc.add(evt.getDescription());
+            ArrayList<Event> groupEventsList = new ArrayList<>();
+            groupEventsList.add(evt);
 
-            listDataChild.put(listDataHeader.get(i), evtDesc);
-        }
+            headerToEventListHM.put(headerList.get(i), groupEventsList);
+        } */
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
-                listIds);
+        listAdapter = new ExpandableListAdapter(getActivity(), headerList, headerToEventListHM);
 
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                         int childPosition, long id) {
-                String eventId = listAdapter.getEventId(groupPosition);
+                String eventId = listAdapter.getEventId(groupPosition, childPosition);
 
                 ((MainAct)getActivity()).goToEventInfo(eventId);
 
@@ -120,29 +166,27 @@ public class ListAct extends android.support.v4.app.Fragment {
         expListView.setAdapter(listAdapter);
     }
 
+    /* TODO Filter lists inside of the three main categories (hot, subscribed, and local) */
 
     public void displayFilteredEventList() {
 
-        listDataHeader = new ArrayList<>();
-        listDataChild = new HashMap<>();
-        listIds = new ArrayList<>();
+        headerList = new ArrayList<>();
+        headerToEventListHM = new HashMap<>();
 
         filterEventList();
 
         for(int i = 0; i < eventList.size(); i++) {
             Event evt = eventList.get(i);
 
-            listIds.add(evt.getEvent_id());
-            listDataHeader.add(evt.getName());
+            headerList.add(evt.getName());
 
-            List<String> evtDesc = new ArrayList<>();
-            evtDesc.add(evt.getDescription());
+            ArrayList<Event> groupEventsList = new ArrayList<>();
+            groupEventsList.add(evt);
 
-            listDataChild.put(listDataHeader.get(i), evtDesc);
+            headerToEventListHM.put(headerList.get(i), groupEventsList);
         }
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,
-                listIds);
+        listAdapter = new ExpandableListAdapter(getActivity(), headerList, headerToEventListHM);
 
         expListView.setAdapter(listAdapter);
     }
