@@ -127,8 +127,10 @@ public class EventInfoFrag extends Fragment {
                 d = getResources().getDrawable(R.drawable.ic5);
                 break;
             case 6:
+                d = getResources().getDrawable(R.drawable.ic6);
                 break;
             case 7:
+                d = getResources().getDrawable(R.drawable.ic7);
                 break;
         }
         // setting the icon
