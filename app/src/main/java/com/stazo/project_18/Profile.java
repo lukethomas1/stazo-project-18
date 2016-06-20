@@ -145,6 +145,7 @@ public class Profile extends AppCompatActivity {
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));
                 }
+
                 /* add attendingEvents */
                 for (String event_id : user.getAttendingEvents()) {
                     attendingEvents.add(new Event(dataSnapshot.child(event_id).getValue

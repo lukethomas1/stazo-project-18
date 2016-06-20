@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.firebase.client.Firebase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,11 +26,15 @@ public class AddTrailsAct extends AppCompatActivity {
     private SearchView.OnQueryTextListener queryTextListener;
     private HashMap<String, String> relevantUsers = new HashMap<String, String>();
     private HashMap<String, View> buttonMap = new HashMap<String, View>();
+    private Firebase fb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_trails);
+
+        // get firebase reference
+        fb = ((Project_18) getApplication()).getFB();
 
         // set relevantUsers
         relevantUsers = ((Project_18) getApplication()).getMe().getFriends();
@@ -58,22 +64,7 @@ public class AddTrailsAct extends AppCompatActivity {
 
     public void addCategoryTrail(View v) {
         Integer trailNum = Integer.parseInt((String) v.getTag());
-        switch (trailNum) {
-            case 1:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-            case 2:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-            case 3:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-            case 4:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-            case 5:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-            case 6:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-            case 7:
-                ((Project_18) getApplication()).addTrail(trailNum - 1);
-        }
+        ((Project_18) getApplication()).getMe().addTrail(fb, trailNum - 1);
     }
 
     public void goToProfile(View v) {
@@ -110,7 +101,7 @@ public class AddTrailsAct extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // add the trail
-                    ((Project_18) getApplication()).addTrail(relevantUsers.get(name));
+                    ((Project_18) getApplication()).getMe().addTrail(fb, relevantUsers.get(name));
                 }
             });
             buttonMap.put(name, b);
