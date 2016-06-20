@@ -1,6 +1,8 @@
 package com.stazo.project_18;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,10 +58,10 @@ public class ListAct extends android.support.v4.app.Fragment {
                         }
 
                         // Get the text in the activity
-                        loadingText = (TextView)getActivity().findViewById(R.id.loadingText);
+                        loadingText = (TextView) getActivity().findViewById(R.id.loadingText);
 
                         // Set loading text to "No events" if there were no events
-                        if(eventList.isEmpty()) {
+                        if (eventList.isEmpty()) {
                             loadingText.setText("No Events");
                         }
 
@@ -79,8 +81,10 @@ public class ListAct extends android.support.v4.app.Fragment {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) { }
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
                 });
+
         return v;
     }
 
@@ -194,6 +198,7 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         expListView.setAdapter(listAdapter);
     }
+
     private void filterEventList() {
         // true = don't worry about time
         this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(true);

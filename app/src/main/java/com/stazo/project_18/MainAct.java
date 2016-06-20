@@ -80,14 +80,42 @@ public class MainAct extends AppCompatActivity
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_actionbar_browse2);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_actionbar_head);
 
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int pageNumber) {
+                for (int i = 0; i <= 2; i++) {
+                    if (i == pageNumber) {
+                        tabLayout.getTabAt(i).getIcon().setColorFilter(
+                                getResources().getColor(R.color.colorPrimary),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+                    else {
+                        tabLayout.getTabAt(i).getIcon().setColorFilter(
+                                getResources().getColor(R.color.offwhite),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+
+            }
+        });
+
         tabLayout.getTabAt(0).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorPrimary),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(
-                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.offwhite),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).getIcon().setColorFilter(
-                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.offwhite),
                 PorterDuff.Mode.SRC_IN);
 
         // Default to "All" categories

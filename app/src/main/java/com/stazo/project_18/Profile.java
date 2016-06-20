@@ -60,6 +60,7 @@ public class Profile extends AppCompatActivity {
         // grab user and fill screen with correct info
         grabInfo();
         //((TextView) findViewById(R.id.nameTextView)).setText("");
+        //startActivity(new Intent(this, ListActConcept.class));
     }
 
     private void setToolbar() {
@@ -221,8 +222,8 @@ public class Profile extends AppCompatActivity {
         button.setAllCaps(false);
         button.setGravity(Gravity.LEFT);
         button.setGravity(Gravity.CENTER_VERTICAL);
-        //button.setPadding(R.dimen.profile_scrollview_horizontal_margin, 0, 0, 0);
         button.setLayoutParams(lp);
+        button.setBackgroundColor(getResources().getColor(R.color.white));
         //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
     }
 
@@ -309,7 +310,7 @@ public class Profile extends AppCompatActivity {
 
 
     private void goToEventInfo(String event_id) {
-        // go to detailed event info frag
+        // go to detailed event info act
         /*
         EventInfoFrag eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);

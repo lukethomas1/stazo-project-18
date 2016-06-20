@@ -78,6 +78,7 @@
 
 
         <!-- <activity android:name=".InitialAct"></activity> -->
+        <activity android:name=".ListActConcept"></activity>
 
         <activity android:name=".Profile"
             android:parentActivityName=".MainAct">

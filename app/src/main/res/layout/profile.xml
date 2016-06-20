@@ -56,10 +56,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="Adventures"
+                android:text="Events"
                 android:textSize="20dip"
                 android:layout_marginTop="25dip"
-                android:layout_marginLeft="5dp"
                 android:id="@+id/myEventsTextView"
                 android:textColor="@color/profileTextColor"/>
 
@@ -67,6 +66,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dip"
                 android:id="@+id/eventsLayout">
 
             </LinearLayout>
@@ -81,9 +81,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Trails"
+                    android:text="Subscriptions"
                     android:textSize="20dip"
-                    android:layout_marginLeft="5dp"
                     android:id="@+id/myTrailsTextView"
                     android:textColor="@color/profileTextColor" />
 
@@ -102,6 +101,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dip"
                 android:id="@+id/trailsLayout">
 
             </LinearLayout>
