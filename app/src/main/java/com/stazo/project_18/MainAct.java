@@ -3,6 +3,8 @@ package com.stazo.project_18;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.AvoidXfermode;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -74,29 +76,81 @@ public class MainAct extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_actionbar_map2);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_actionbar_browse2);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_actionbar_head);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int pageNumber) {
+                for (int i = 0; i <= 2; i++) {
+                    if (i == pageNumber) {
+                        tabLayout.getTabAt(i).getIcon().setColorFilter(
+                                getResources().getColor(R.color.colorPrimary),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+                    else {
+                        tabLayout.getTabAt(i).getIcon().setColorFilter(
+                                getResources().getColor(R.color.offwhite),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+
+            }
+        });
+
+        tabLayout.getTabAt(0).getIcon().setColorFilter(
+                getResources().getColor(R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(
+                getResources().getColor(R.color.offwhite),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(
+                getResources().getColor(R.color.offwhite),
+                PorterDuff.Mode.SRC_IN);
+
         // Default to "All" categories
         //Project_18.filteredCategories.add(-1);
+
+        // Are we going straight to browse?
+        if (getIntent().hasExtra("toBrowse")) {
+            viewPager.setCurrentItem(1);
+        }
     }
 
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
+        //getSupportActionBar().setTitle(getString(R.string.app_name));
         //getSupportActionBar().setSubtitle("By: Stazo");
         //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //menu button actions
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                /*switch (item.getItemId()) {
-                    case R.id.game:
-                        Toast.makeText(getApplicationContext(), "clicked game icon!", Toast.LENGTH_SHORT).show();
+                // FOR MENU ITEMS NOT IN THE 3 DOTS
+                switch (item.getItemId()) {
+                    case R.id.action_profile:
+                        goToProfile();
+                        Log.d("myTag", "you hit action profile");
                         return true;
-                }*/
+                }
+
+                // FOR THE 3 DOTS
                 int i;
 
                 // Get the index of the type in the Event.types array
@@ -176,7 +230,7 @@ public class MainAct extends AppCompatActivity
         //back button action
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
@@ -229,8 +283,8 @@ public class MainAct extends AppCompatActivity
     }
 
 //    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//    }
+
+ //   }
 
     private void setDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
@@ -269,8 +323,8 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToCreateEvent(View view) {
-        //startActivity(new Intent(this, CreateEventAct.class));
-        goToProfile(view);
+        startActivity(new Intent(this, CreateEventAct.class));
+        //goToProfile(view);
 //        CreateEventFrag createEventFrag = new CreateEventFrag();
 //        android.support.v4.app.FragmentTransaction transaction =
 //                this.getSupportFragmentManager().beginTransaction();
@@ -278,6 +332,10 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToProfile(View view) {
+        goToProfile();
+    }
+
+    public void goToProfile() {
         Intent i =  new Intent(this, Profile.class);
         i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
         startActivity(i);
@@ -312,10 +370,9 @@ public class MainAct extends AppCompatActivity
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), "Map");
-        adapter.addFragment(new ListAct(), "Explore");
-        adapter.addFragment(new TestFrag1(), "Profile");
-        //adapter.addFragment(new TestFrag1(), "What is this?");
+        adapter.addFragment(new MapFrag(), ""); //map
+        adapter.addFragment(new ListAct(), ""); //explore
+        adapter.addFragment(new TestFrag1(), ""); //profile
 
         viewPager.setAdapter(adapter);
     }

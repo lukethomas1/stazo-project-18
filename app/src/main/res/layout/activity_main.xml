@@ -29,7 +29,7 @@
             android:background="@color/colorSecondary"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabMaxWidth="0dp"
-            app:tabGravity="fill"/>
+            app:tabGravity="fill" />
             <!--android:tabMode="fixed"-->
     </android.support.design.widget.AppBarLayout>
 
@@ -37,7 +37,7 @@
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorSecondary"/>
+        android:background="@color/colorSecondary" />
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

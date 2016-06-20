@@ -12,11 +12,28 @@
         android:orderInCategory="1">
     </item> -->
 
+
+    <item android:id="@+id/action_profile"
+        android:icon="@drawable/ic_actionbar_head"
+        android:title="Profile"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_map"
+        android:icon="@drawable/ic_actionbar_map2"
+        android:title="Map"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+    <item android:id="@+id/action_list"
+        android:icon="@drawable/ic_actionbar_browse2"
+        android:title="Browse"
+        app:showAsAction="always"
+        android:visible="false"/>
+
     <item android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black_24dp"
+        android:icon="@drawable/ic_actionbar_search"
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:orderInCategory="2"
         app:showAsAction="always"/>
 
     <group android:checkableBehavior="all">
