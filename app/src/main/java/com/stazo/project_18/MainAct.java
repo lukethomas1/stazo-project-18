@@ -1,6 +1,5 @@
 package com.stazo.project_18;
 
-import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -291,7 +291,7 @@ public class MainAct extends AppCompatActivity
         // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
         EventInfoFrag eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
-        android.support.v4.app.FragmentTransaction transaction =
+        FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
 //        transaction.replace
 //                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
