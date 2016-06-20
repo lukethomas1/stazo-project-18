@@ -23,7 +23,7 @@ public class User {
     private ArrayList<String> attendingEvents = new ArrayList<String>();
     private ArrayList<String> reportedEvents = new ArrayList<String>();
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
-    private ArrayList<String> userTrails = new ArrayList<String>();
+    private ArrayList<String> userTrails = new ArrayList<String>(); // String of creator IDs
 
     // hashmap of user's friends from name to id
     private HashMap<String, String> friends = new HashMap<String, String>();
@@ -343,4 +343,25 @@ public class User {
 
     public void addEvent(String a) {myEvents.add(a);}
 
+    public boolean isSubscribedEvent(Event event) {
+        // Check the category subscriptions
+        int eventType = event.getType();
+
+        for (Integer category : categoryTrails) {
+            if (eventType == category) {
+                return true;
+            }
+        }
+
+        // Check user subscriptions
+        String creatorID = event.getCreator_id();
+
+        for (String followedID : userTrails) {
+            if (creatorID == followedID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

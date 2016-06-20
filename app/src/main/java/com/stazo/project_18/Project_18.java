@@ -16,6 +16,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class Project_18 extends Application {
     private static final String fb = "https://stazo-project-18.firebaseio.com/";
+
+    // Popularity thresholds
+    public static final int POP_THRESH1 = 10;
+    public static final int POP_THRESH2 = 20;
+
     public static User me;
     public static ArrayList<Event> pulledEvents = new ArrayList<Event>(); // list of all the events pulled
     public static ArrayList<Integer> filteredCategories = new ArrayList<>();

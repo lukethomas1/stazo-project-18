@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,23 +23,23 @@ import java.util.List;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
-    private List<String> _listDataHeader; // Header Titles
-    private HashMap<String, List<String>> _listDataChild; // Child text
-    private List<String> _listIds; // Holds the event ids
+    private List<String> headerList; // Header Titles
+    private HashMap<String, ArrayList<Event>> headerToEventListHM; // Child text
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData,
-                                 List<String> listIDs) {
+                                 HashMap<String, ArrayList<Event>> listChildData) {
         this._context = context;
-        this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
-        this._listIds = listIDs;
+        this.headerList = listDataHeader;
+        this.headerToEventListHM = listChildData;
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+    /**
+     * Returns the event which corresponds to a child
+     */
+    public Object getChild(int groupPosition, int childPosition) {
+        return this.headerToEventListHM.get(this.headerList.get(groupPosition))
+                .get(childPosition);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final String childText = ((Event) getChild(groupPosition, childPosition)).getName();
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -68,18 +71,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .size();
+        return headerToEventListHM.get(headerList.get(groupPosition)).size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this._listDataHeader.get(groupPosition);
+        return headerList.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this._listDataHeader.size();
+        return headerList.size();
     }
 
     @Override
@@ -91,19 +93,36 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
                              ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
-        if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+
+        // FIXME Temporary workaround for "Lit" title
+    //    if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_activity_event_name, null);
-        }
+
+
+            if (groupPosition == 0) {
+                convertView = inflater.inflate(R.layout.group_title, null);
+            }
+            else {
+                convertView = inflater.inflate(R.layout.list_activity_event_name, null);
+            }
+      //  }
 
         convertView.setBackgroundColor(Color.WHITE);
 
-        TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
+        // FIXME Same as above
+        if (groupPosition == 0) {
+            ImageView textImg = (ImageView) convertView.findViewById(R.id.groupTextImage);
+            textImg.setImageResource(R.drawable.lit_events);
+        }
 
-        lblListHeader.setTextColor(Color.DKGRAY);
+       else {
+            TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
 
-        lblListHeader.setText(headerTitle);
+            lblListHeader.setTextColor(Color.DKGRAY);
+
+            lblListHeader.setText(headerTitle);
+        }
 
         return convertView;
     }
@@ -118,7 +137,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public String getEventId(int groupPosition) {
-        return _listIds.get(groupPosition);
+    public String getEventId(int groupPosition, int childPosition) {
+        // Get the list of events under a group
+        ArrayList<Event> eventList = headerToEventListHM.get((String) getGroup(groupPosition));
+
+        return eventList.get(childPosition).getEvent_id();
     }
 }
