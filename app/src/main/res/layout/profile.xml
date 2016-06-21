@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="Events"
+                android:text="Hosting"
                 android:textSize="20dip"
                 android:layout_marginTop="25dip"
                 android:id="@+id/myEventsTextView"
@@ -69,8 +69,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dip"
                 android:id="@+id/eventsLayout">
-
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="Attending"
+                android:textSize="20dip"
+                android:layout_marginTop="25dip"
+                android:id="@+id/myAttendingTextView"
+                android:textColor="@color/profileTextColor"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dip"
+                android:id="@+id/attendingLayout">
+            </LinearLayout>
+
 
             <LinearLayout
                 android:orientation="horizontal"
