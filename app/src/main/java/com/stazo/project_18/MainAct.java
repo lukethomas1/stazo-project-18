@@ -1,15 +1,17 @@
 package com.stazo.project_18;
 
-import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.AvoidXfermode;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -77,6 +79,44 @@ public class MainAct extends AppCompatActivity
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_actionbar_map2);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_actionbar_browse2);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_actionbar_head);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int pageNumber) {
+                for (int i = 0; i <= 2; i++) {
+                    if (i == pageNumber) {
+                        tabLayout.getTabAt(i).getIcon().setColorFilter(
+                                getResources().getColor(R.color.colorPrimary),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+                    else {
+                        tabLayout.getTabAt(i).getIcon().setColorFilter(
+                                getResources().getColor(R.color.offwhite),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+
+            }
+        });
+
+        tabLayout.getTabAt(0).getIcon().setColorFilter(
+                getResources().getColor(R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(
+                getResources().getColor(R.color.offwhite),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(
+                getResources().getColor(R.color.offwhite),
+                PorterDuff.Mode.SRC_IN);
 
         // Default to "All" categories
         //Project_18.filteredCategories.add(-1);
@@ -309,7 +349,7 @@ public class MainAct extends AppCompatActivity
         // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
         EventInfoFrag eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
-        android.support.v4.app.FragmentTransaction transaction =
+        FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
 //        transaction.replace
 //                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");

@@ -3,12 +3,16 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,41 +23,74 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 
 public class EventInfoFrag extends Fragment {
 
-    Firebase fb;
+    private Firebase fb;
     private String passedEventID;
     private View v;
+
+    public void writeCommentClick() {
+        //open comment write window
+        WriteCommentFrag writeFrag = new WriteCommentFrag();
+        writeFrag.setEventID(this.passedEventID);
+        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.show_writeComment, writeFrag).addToBackStack("WriteCommentFrag").commit();
+    }
+
+//    public void pushComment(Comment comment) {
+//        fb = ((Project_18) this.getActivity().getApplication()).getFB();
+//        String event_ID = comment.getEvent_ID();
+//        fb.child("CommentDatabase").child(event_ID).setValue(comment);
+//    }
+
+    public void viewCommentClick() {
+        //open comment view window
+        ViewCommentFrag viewFrag = new ViewCommentFrag();
+        viewFrag.setEventID(this.passedEventID);
+        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
         v.setVisibility(View.INVISIBLE);
-        //android.support.v7.widget.Toolbar toolbar =
-        // (android.support.v7.widget.Toolbar) this.getActivity().findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
 
-        // Get the Intent that led to this Activity
-        //Intent callingIntent = getIntent();
-
         // Get the event_id to display
-        //String event_id = callingIntent.getStringExtra("event_id");
-        String event_id = this.passedEventID;
-
+        //String event_id = this.passedEventID;
         // Display event info
-        System.out.println("EVENT ID: " + event_id);
-        grabEventInfo(event_id);
+        System.out.println("EVENT ID: " + this.passedEventID);
+        grabEventInfo(this.passedEventID);
 
+
+        //setup comment buttons
+        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
+        writeCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                writeCommentClick();
+            }
+        });
+
+        Button viewCommentButton = (Button) v.findViewById(R.id.viewCommentButton);
+        viewCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewCommentClick();
+            }
+        });
         return v;
     }
 
+    //setter method for main act to pass in eventID
     public void setEventID(String passedEventID) {
         this.passedEventID = passedEventID;
     }
@@ -127,8 +164,10 @@ public class EventInfoFrag extends Fragment {
                 d = getResources().getDrawable(R.drawable.ic5);
                 break;
             case 6:
+                d = getResources().getDrawable(R.drawable.ic6);
                 break;
             case 7:
+                d = getResources().getDrawable(R.drawable.ic7);
                 break;
         }
         // setting the icon
