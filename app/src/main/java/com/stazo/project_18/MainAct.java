@@ -150,7 +150,7 @@ public class MainAct extends AppCompatActivity
                         return true;
                 }
 
-                // FOR THE 3 DOTS
+                /*// FOR THE 3 DOTS
                 int i;
 
                 // Get the index of the type in the Event.types array
@@ -222,7 +222,7 @@ public class MainAct extends AppCompatActivity
                     }
                 }
 
-                Log.d("myTag", Project_18.filteredCategories.toString());
+                Log.d("myTag", Project_18.filteredCategories.toString());*/
                 return true;
             }
         });
