@@ -4,6 +4,8 @@ package com.stazo.project_18;
  * Created by ericzhang on 5/14/16.
  */
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
@@ -58,9 +60,14 @@ public class EventInfoFrag extends Fragment {
         trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
     }
 
-    public void attendClick() {
-        //TODO
-
+    public void attendClick(Button b) {
+        if(b.getText() == "Cancel"){
+            b.setBackgroundColor(Color.GREEN);
+            b.setText("I'm Going!");
+        } else {
+            b.setBackgroundColor(Color.RED);
+            b.setText("Cancel");
+        }
     }
 
 
@@ -94,11 +101,11 @@ public class EventInfoFrag extends Fragment {
             }
         });
 
-        Button attendButton = (Button) v.findViewById(R.id.attend);
+        final Button attendButton = (Button) v.findViewById(R.id.attend);
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attendClick();
+                attendClick(attendButton);
             }
         });
         return v;
