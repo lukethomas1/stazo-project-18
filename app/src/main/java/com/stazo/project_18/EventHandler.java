@@ -41,7 +41,7 @@ public class EventHandler {
         for (int i = 0; i < Event.types.length; i++) {
             Event e = new Event("Event " + i, "Description " + i, "1196215920412322", i, locations.get(i),
             System.currentTimeMillis(),     // all events start "now"
-                    System.currentTimeMillis() + ((i+1) * 2) * 1000 * 60); //  2,4,6,8 minutes
+                    System.currentTimeMillis() + ((i+1) * 2) * 1000 * 60 * (12345678)); //  2,4,6,8 minutes
             //Log.d("myTag", "" + e.getEvent_id());
 
             // Popularity generation
