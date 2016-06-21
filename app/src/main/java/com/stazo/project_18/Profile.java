@@ -386,4 +386,10 @@ public class Profile extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
+
 }

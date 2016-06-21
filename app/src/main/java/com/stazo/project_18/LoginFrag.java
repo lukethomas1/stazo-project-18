@@ -221,4 +221,10 @@ public class LoginFrag extends Fragment {
         ((Project_18) getActivity().getApplication()).setMe(me);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
+    }
+
 }

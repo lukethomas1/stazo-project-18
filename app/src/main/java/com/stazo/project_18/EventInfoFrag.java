@@ -156,7 +156,7 @@ public class EventInfoFrag extends Fragment {
         long startMinute = 0;
         //End Initialization
 
-        ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
+        //ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
         int findType = e.getType();
         Drawable d = getResources().getDrawable(R.drawable.type_icon_game);
 
@@ -185,7 +185,7 @@ public class EventInfoFrag extends Fragment {
                 break;
         }
         // setting the icon
-        eventIcon.setImageDrawable(d);
+        //eventIcon.setImageDrawable(d);
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
@@ -293,6 +293,12 @@ public class EventInfoFrag extends Fragment {
 //            }
 //        }
         v.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
     }
 
 }

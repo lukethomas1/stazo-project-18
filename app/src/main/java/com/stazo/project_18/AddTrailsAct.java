@@ -176,5 +176,11 @@ public class AddTrailsAct extends AppCompatActivity {
         b.setPadding(40, 0, 40, 0);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
+
 
 }

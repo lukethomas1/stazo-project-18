@@ -405,4 +405,10 @@ public class CreateEventAct extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
 }
