@@ -58,6 +58,12 @@ public class EventInfoFrag extends Fragment {
         trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
     }
 
+    public void attendClick() {
+        //TODO
+
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
@@ -85,6 +91,14 @@ public class EventInfoFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 viewCommentClick();
+            }
+        });
+
+        Button attendButton = (Button) v.findViewById(R.id.attend);
+        attendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attendClick();
             }
         });
         return v;
