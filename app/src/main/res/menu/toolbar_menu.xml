@@ -36,7 +36,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always"/>
 
-    <group android:checkableBehavior="all">
+    <!--<group android:checkableBehavior="all">
         <item android:id="@+id/all"
             android:title="@string/all"
             android:orderInCategory="1"
@@ -77,6 +77,11 @@
             android:title="@string/other"
             android:orderInCategory="1">
             app:showAsAction="never"
+        </item>
+    </group>-->
+    <group>
+        <item android:id="@+id/Logout"
+            android:title="Logout">
         </item>
     </group>
 

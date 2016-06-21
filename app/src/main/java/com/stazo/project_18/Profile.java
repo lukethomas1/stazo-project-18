@@ -37,6 +37,7 @@ public class Profile extends AppCompatActivity {
     private Firebase fb;
     private User user;
     private Context context = this;
+    private boolean isMe;   // is the profile we're looking at my profile?
     private Event currentEvent;
     private Integer currentCategoryTrail;
     private String currentUserTrail;
@@ -106,6 +107,8 @@ public class Profile extends AppCompatActivity {
     }
 
     private void grabInfo() {
+        isMe = getIntent().getBooleanExtra("isMe", true);   // default is true
+
         fb.child("Users").child(getIntent().getStringExtra("userID")).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -114,11 +117,15 @@ public class Profile extends AppCompatActivity {
                         user = new User((HashMap<String, Object>) dataSnapshot.getValue());
                         ((TextView) findViewById(R.id.nameTextView)).setText(user.getName());
 
+                        Log.d("myTag", "user name is " + user.getName());
+
                         // display events
                         grabAndDisplayEvents();
 
-                        // display trails
-                        grabAndDisplayTrails();
+                        // display trails if isMe
+                        if (isMe) {
+                            grabAndDisplayTrails();
+                        }
 
                         // set profile picture
                         setProfilePicture();
@@ -139,8 +146,10 @@ public class Profile extends AppCompatActivity {
         fb.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 /* add myEvents */
                 for (String event_id : user.getMyEvents()) {
+                    Log.d("myTag", "myEvents is " + user.getMyEvents());
                     myEvents.add(new Event(dataSnapshot.child(event_id).getValue
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));
@@ -170,6 +179,10 @@ public class Profile extends AppCompatActivity {
                         }
                     });
                     eventsLayout.addView(eventButton);
+
+                    // unhide-layout
+                    (findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
+
                     fb.child("Events").removeEventListener(this);
                     return;
                 }
@@ -188,6 +201,7 @@ public class Profile extends AppCompatActivity {
                     });
                     eventsLayout.addView(eventButton);
                 }
+
                 /* display attendingEvents */
                 for (Event e : attendingEvents) {
                     currentEvent = e;
@@ -202,10 +216,11 @@ public class Profile extends AppCompatActivity {
                     });
                     eventsLayout.addView(eventButton);
                 }
-                fb.child("Events").removeEventListener(this);
 
                 // unhide-layout
                 (findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
+
+                fb.child("Events").removeEventListener(this);
             }
 
             @Override
@@ -233,7 +248,7 @@ public class Profile extends AppCompatActivity {
         userTrails = user.getUserTrails();
         LinearLayout trailsLayout = (LinearLayout) findViewById(R.id.trailsLayout);
 
-        // draw category trails
+        /*// draw category trails
         for (Integer type : categoryTrails) {
             currentCategoryTrail = type;
             Button trailButton = new Button(context);
@@ -246,15 +261,15 @@ public class Profile extends AppCompatActivity {
                 }
             });
             trailsLayout.addView(trailButton);
-        }
+        }*/
 
         // draw user trails
-        for (String userId : userTrails) {
-            currentUserTrail = userId;
+        for (final String userID : userTrails) {
+            currentUserTrail = userID;
             final Button trailButton = new Button(context);
 
             // grab name
-            fb.child("Users").child(userId).child("name").
+            fb.child("Users").child(userID).child("name").
                     addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -267,15 +282,19 @@ public class Profile extends AppCompatActivity {
                         public void onCancelled(FirebaseError firebaseError) {
                         }
                     });
+
             makePretty(trailButton);
             trailButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    goToBrowse(currentUserTrail);
+                    goToProfile(userID, false);
                 }
             });
             trailsLayout.addView(trailButton);
         }
+
+        // set title to be visible
+        findViewById(R.id.trailsTitleLayout).setVisibility(View.VISIBLE);
     }
 
     // pull and set profile picture
@@ -298,6 +317,7 @@ public class Profile extends AppCompatActivity {
                 iv.post(new Runnable() {
                     public void run() {
                         iv.setImageBitmap(profPicBitmap);
+                        iv.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -338,17 +358,26 @@ public class Profile extends AppCompatActivity {
         finish();
     }
 
-    // goes to Explore with search query as an extra
+    /*// goes to Explore with search query as an extra
     private void goToBrowse(int categoryTrail) {
         Intent i = new Intent(this, MainAct.class);
         i.putExtra("categoryTrail", categoryTrail);
         i.putExtra("toBrowse", true);
         startActivity(i);
         finish();
+    }*/
+
+    /* go to your own profile */
+    public void goToProfile() {
+        goToProfile(((Project_18) getApplication()).getMe().getID(), true);
     }
 
-    public void goToProfile() {
-
+    /* go to someone else's profile */
+    public void goToProfile(String userID, boolean isMe) {
+        Intent i = new Intent(this, Profile.class);
+        i.putExtra("userID", userID);
+        i.putExtra("isMe", isMe);
+        startActivity(i);
     }
 
     @Override

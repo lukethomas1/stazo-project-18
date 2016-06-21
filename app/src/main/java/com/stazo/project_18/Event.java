@@ -343,9 +343,9 @@ public class Event implements Parcelable {
         if (name.length() > 10) {
             nameString += "...";
         }
-        String string = nameString + generateSpaces(15 - nameString.length()) +
+        String string = nameString + generateSpaces(15 - nameString.length()) /*+
                 "(" + Event.types[type] + ")" +
-                generateSpaces(15 - Event.types[type].length());
+                generateSpaces(15 - Event.types[type].length())*/;
         return string;
     }
     public String generateSpaces(int count) {

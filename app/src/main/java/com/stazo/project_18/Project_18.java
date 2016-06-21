@@ -68,20 +68,20 @@ public class Project_18 extends Application {
             switch (relevance) {
                 case 2:
                     // if it is a relevant category, and at a relevant time
-                    if (filteredCategories.contains(new Integer(e.getType())) &&
-                            e.isInTime(relevantTime)) {
+                    //if (filteredCategories.contains(new Integer(e.getType())) &&
+                      //      e.isInTime(relevantTime)) {
                         // add to start
                         relatedEventIds.add(0, e.getEvent_id());
-                    }
+                    //}
                     break;
                 case 1:
 
                     // if it is a relevant category, and at a relevant time
-                    if (filteredCategories.contains(new Integer(e.getType())) &&
-                            e.isInTime(relevantTime)) {
+                    //if (filteredCategories.contains(new Integer(e.getType())) &&
+                      //      e.isInTime(relevantTime)) {
                         // add to end
                         relatedEventIds.add(e.getEvent_id());
-                    }
+                    //}
                     break;
                 default:
                     break;
@@ -129,19 +129,19 @@ public class Project_18 extends Application {
             switch (relevance) {
                 case 2:
                     // if it is a relevant category, and at a relevant time
-                    if (filteredCategories.contains(new Integer(e.getType())) &&
-                            (noTime || e.isInTime(relevantTime))) {
+                    //if (filteredCategories.contains(new Integer(e.getType())) &&
+                      //      (noTime || e.isInTime(relevantTime))) {
                         // add to start
                         relatedEvents.add(0, e);
-                    }
+                    //}
                     break;
                 case 1:
                     // if it is a relevant category, and at a relevant time
-                    if (filteredCategories.contains(new Integer(e.getType())) &&
-                            (noTime || e.isInTime(relevantTime))) {
+                    //if (filteredCategories.contains(new Integer(e.getType())) &&
+                      //      (noTime || e.isInTime(relevantTime))) {
                         // add to end
                         relatedEvents.add(e);
-                    }
+                    //}
                     break;
                 default:
                     break;
