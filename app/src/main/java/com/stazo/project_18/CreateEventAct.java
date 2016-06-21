@@ -40,17 +40,18 @@ public class CreateEventAct extends AppCompatActivity {
     //The EditText views for each input
     EditText nameView, descView, startDateView, endDateView, startTimeView, endTimeView;
     // The Spinner to pick what type the event is
-    Spinner typeSpinner;
+    //Spinner typeSpinner;
     //Fragments for setting the dates
     DatePickerFragment startDateFrag, endDateFrag;
     //Fragments for setting the times
     TimePickerFragment startTimeFrag, endTimeFrag;
     //Parsed user inputted values, upload these to Firebase
-    String name, desc, startDate, endDate, startTime, endTime, type;
+    String name, desc, startDate, endDate, startTime, endTime; //, type;
     // To hold start date/time and end date/time
     GregorianCalendar startCal, endCal;
     private long startTimeLong, endTimeLong;
-    int typeNum = -1;
+    //int typeNum = -1;
+    int typeNum = 0;
 
     /**
      * Called whenever this layout is created. This should set up the layout so that it is ready
@@ -73,7 +74,7 @@ public class CreateEventAct extends AppCompatActivity {
         grabEditTextViews();
 
         //Sets up the Spinner for selecting an Event Type
-        typeSpinner = (Spinner) findViewById(R.id.EventType);
+        //typeSpinner = (Spinner) findViewById(R.id.EventType);
 
         //Add values here to populate the spinner
         typeList = new ArrayList<>();
@@ -85,10 +86,10 @@ public class CreateEventAct extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        typeSpinner.setAdapter(adapter);
+        //typeSpinner.setAdapter(adapter);
 
         //Actions for spinner selection
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        /*typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
                                        int position, long id) {
@@ -97,7 +98,7 @@ public class CreateEventAct extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {}
-        });
+        });*/
 
         startDateView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +191,7 @@ public class CreateEventAct extends AppCompatActivity {
     private void setUpTextColors() {
         nameText = (TextView) findViewById(R.id.NameText);
         descText = (TextView) findViewById(R.id.DescText);
-        pickText = (TextView) findViewById(R.id.PickText);
+        //pickText = (TextView) findViewById(R.id.PickText);
         startDateText = (TextView) findViewById(R.id.StartDateText);
         endDateText = (TextView) findViewById(R.id.EndDateText);
         startText = (TextView) findViewById(R.id.StartText);
@@ -198,7 +199,7 @@ public class CreateEventAct extends AppCompatActivity {
 
         nameText.setTextColor(normColor);
         descText.setTextColor(normColor);
-        pickText.setTextColor(normColor);
+        //pickText.setTextColor(normColor);
         startDateText.setTextColor(normColor);
         endDateText.setTextColor(normColor);
         startText.setTextColor(normColor);
@@ -224,14 +225,14 @@ public class CreateEventAct extends AppCompatActivity {
         //Grabs user input
         name = nameView.getText().toString();
         desc = descView.getText().toString();
-        type = typeSpinner.getSelectedItem().toString();
+        //type = typeSpinner.getSelectedItem().toString();
 
         // Get the index of the type in the Event.types array
-        for(int i = 0; i < Event.types.length; i++) {
+        /*for(int i = 0; i < Event.types.length; i++) {
             if(type.equals(Event.types[i])) {
                 typeNum = i;
             }
-        }
+        }*/
 
         startDate = startDateView.getText().toString();
         endDate = endDateView.getText().toString();
@@ -261,7 +262,7 @@ public class CreateEventAct extends AppCompatActivity {
         }
 
         if (typeNum == -1) {
-            pickText.setTextColor(errorColor);
+            //pickText.setTextColor(errorColor);
             valid = false;
         }
 
