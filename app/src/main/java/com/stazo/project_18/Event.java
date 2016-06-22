@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -127,10 +128,10 @@ public class Event implements Parcelable {
         this.endTime = ((Long) eventMap.get("endTime")).longValue();
 
         //pull attendees with iterable
-        Iterable<String> attendeesIterable = (Iterable<String>) eventMap.get("attendees");
         this.attendees = new ArrayList<>();
+        Iterable<DataSnapshot> attendeesIterable = (Iterable<DataSnapshot>) eventMap.get("attendees");
         while(attendeesIterable.iterator().hasNext()) {
-            this.attendees.add(attendeesIterable.iterator().next());
+            this.attendees.add((String) attendeesIterable.iterator().next().getValue());
         }
     }
 
