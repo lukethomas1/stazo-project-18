@@ -163,11 +163,12 @@ public class Profile extends AppCompatActivity {
                 }
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) findViewById(R.id.eventsLayout);
+                LinearLayout attendingLayout = (LinearLayout) findViewById(R.id.attendingLayout);
                 //myEvents.clear();
                 //attendingEvents.clear();
 
                 /* no adventures case */
-                if (myEvents.isEmpty() && attendingEvents.isEmpty()) {
+                if (myEvents.isEmpty()) {
                     Button eventButton = new Button(context);
                     eventButton.setText("No adventures, no worries! " +
                             "Just tap to explore.");
@@ -214,7 +215,7 @@ public class Profile extends AppCompatActivity {
                             goToEventInfo(currentEvent.getEvent_id());
                         }
                     });
-                    eventsLayout.addView(eventButton);
+                    attendingLayout.addView(eventButton);
                 }
 
                 // unhide-layout
