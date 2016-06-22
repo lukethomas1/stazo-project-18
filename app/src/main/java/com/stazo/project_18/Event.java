@@ -125,7 +125,13 @@ public class Event implements Parcelable {
         this.event_id = (String) eventMap.get("event_id");
         this.startTime = ((Long) eventMap.get("startTime")).longValue();
         this.endTime = ((Long) eventMap.get("endTime")).longValue();
-        this.attendees = (ArrayList<String>) eventMap.get("attendees");
+
+        //pull attendees with iterable
+        Iterable<String> attendeesIterable = (Iterable<String>) eventMap.get("attendees");
+        this.attendees = new ArrayList<>();
+        while(attendeesIterable.iterator().hasNext()) {
+            this.attendees.add(attendeesIterable.iterator().next());
+        }
     }
 
     // makes a Date object out of a hashmap
