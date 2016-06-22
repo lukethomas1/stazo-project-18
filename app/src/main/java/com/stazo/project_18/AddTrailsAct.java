@@ -1,16 +1,21 @@
 package com.stazo.project_18;
 
+import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,13 +26,24 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.firebase.client.Firebase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
 
 public class AddTrailsAct extends AppCompatActivity {
 
@@ -48,6 +64,7 @@ public class AddTrailsAct extends AppCompatActivity {
 
         // set relevantUsers
         relevantUsers = ((Project_18) getApplication()).getMe().getFriends();
+
         generateButtons();
 
         // search view things
@@ -72,10 +89,10 @@ public class AddTrailsAct extends AppCompatActivity {
         searchView.setOnQueryTextListener(queryTextListener);
     }
 
-    public void addCategoryTrail(View v) {
+    /*public void addCategoryTrail(View v) {
         Integer trailNum = Integer.parseInt((String) v.getTag());
         ((Project_18) getApplication()).getMe().addTrail(fb, trailNum - 1);
-    }
+    }*/
 
     public void goToProfile(View v) {
         Intent i = new Intent(this, Profile.class);
@@ -104,14 +121,22 @@ public class AddTrailsAct extends AppCompatActivity {
 
     private void generateButtons() {
         LinearLayout usersLayout = (LinearLayout) findViewById(R.id.usersLayout);
+
         for (final String name: relevantUsers.keySet()) {
+
+            // picture/button
             final ImageButton b = new ImageButton(getApplicationContext());
+
+            // contains button and name of the user
+            LinearLayout buttonLayout = new LinearLayout(getApplicationContext());
+
             new Thread(new Runnable() {
                 public void run() {
 
                     final Bitmap profPicBitmap;
 
                     try {
+
                         // pull image from FB
                         URL imageURL = new URL("https://graph.facebook.com/" +
                                 relevantUsers.get(name) + "/picture?type=large");
@@ -122,58 +147,83 @@ public class AddTrailsAct extends AppCompatActivity {
                                 200,
                                 200,
                                 true);
+
+                        b.post(new Runnable() {
+                            public void run() {
+                                b.setImageBitmap(profPicBitmap);
+                                b.setVisibility(View.VISIBLE);
+                            }
+                        });
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-
-                    b.post(new Runnable() {
-                        public void run() {
-                            b.setImageBitmap(profPicBitmap);
-                            b.setVisibility(View.VISIBLE);
-                        }
-                    });
                 }
             }).start();
-
-            // make button look good
-            makePretty(b);
 
             // touch animation
             b.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+
                     // set filter when pressed
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         b.setColorFilter(new
                                 PorterDuffColorFilter(getResources().getColor(R.color.skyBlue),
                                 PorterDuff.Mode.MULTIPLY));
-                    } else if (event.getAction() == MotionEvent.ACTION_UP ||
+
+                    }
+
+                    // handle "click"
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        Log.d("myTag", "imageButton pressed");
+                        // add the trail
+                        ((Project_18) getApplication()).getMe().addTrail(fb, relevantUsers.get(name));
+                    }
+
+                    // remove filter on release/cancel
+                    if (event.getAction() == MotionEvent.ACTION_UP ||
                             event.getAction() == MotionEvent.ACTION_CANCEL) {
-                        // remove filter when released
                         b.clearColorFilter();
                     }
                     return true;
                 }
             });
-            // onClick
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
 
-                    Log.d("myTag", "imageButton pressed");
-                    // add the trail
-                    ((Project_18) getApplication()).getMe().addTrail(fb, relevantUsers.get(name));
-                }
-            });
+
+            // make button look good and add to buttonLayout
+            makePretty(b, name, buttonLayout);
+
+            // add to buttonMap
             buttonMap.put(name, b);
-            usersLayout.addView(b);
+
+            // add buttonLayout to layout
+            usersLayout.addView(buttonLayout);
         }
     }
 
-    private void makePretty(ImageButton b) {
+    private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
         //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
         b.setBackgroundColor(getResources().getColor(R.color.white));
         b.setPadding(40, 0, 40, 0);
+        TextView tv = new TextView(getApplicationContext());
+        tv.setText(userName);
+
+        makePretty(tv);
+
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        buttonLayout.setOrientation(LinearLayout.VERTICAL);
+
+        buttonLayout.addView(b);
+        buttonLayout.addView(tv);
+    }
+
+    private void makePretty(TextView tv) {
+        tv.setTextColor(getResources().getColor(R.color.black));
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 
     @Override
