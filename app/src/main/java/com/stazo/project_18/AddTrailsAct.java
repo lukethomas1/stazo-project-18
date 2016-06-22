@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -87,18 +88,30 @@ public class AddTrailsAct extends AppCompatActivity {
         queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 updateUserSection(newText);
+
                 return true;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                //updateUserSection(query);
                 // hide keyboard
                 searchView.clearFocus();
                 return true;
             }
         };
+
+        SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                updateUserSection("");
+                return true;
+            }
+        };
+
+        searchView.setOnCloseListener(closeListener);
         searchView.setOnQueryTextListener(queryTextListener);
     }
 
@@ -119,14 +132,7 @@ public class AddTrailsAct extends AppCompatActivity {
 
         relevantUsers.clear();
         for(String key: allUsers.keySet()) {
-
             if ((key.toLowerCase().contains(text.toLowerCase()))) {
-
-                // hide users that don't exist if they aren't already removed
-                /*if (buttonMap.get(key).getParent() != null) {
-                    buttonMap.get(key).setVisibility(View.INVISIBLE);
-                    //usersLayout.removeView(buttonMap.get(key));
-                }*/
                 relevantUsers.put(key, allUsers.get(key));
                 Log.d("aaa", "match: " + key);
             }
@@ -156,30 +162,32 @@ public class AddTrailsAct extends AppCompatActivity {
         // iterate through relevantUsers and try to find pictures
         // if picture found, add it to Layout
         for (final String name: relevantUsers.keySet()) {
-            new SetButtonTask(this, name).execute();
+            //new SetButtonTask(this, name).execute();
+            AsyncTaskCompat.executeParallel(new SetButtonTask(this, name, relevantUsers.get(name)));
         }
     }
 
     public class SetButtonTask extends AsyncTask<Void, Void, Void> {
 
         Context mContext;
-        Bitmap profPicBitmap = null;
-        String name = null;
+        Bitmap profPicBitmap;
+        String name;
+        String id;
 
-        public SetButtonTask(Context ctx, String name) {
+        public SetButtonTask(Context ctx, String name, String id) {
             mContext = ctx;
             this.name = name;
+            this.id = id;
         }
 
         @Override
         protected Void doInBackground(Void... v) {
-            // Login here
             // pull image from FB
             // if we can pull the profile picture, prepare the button
             try {
                 // pull image from FB
                 URL imageURL = new URL("https://graph.facebook.com/" +
-                        relevantUsers.get(name) + "/picture?type=large");
+                        id + "/picture?type=large");
 
                 // set profile picture bitmap
                 profPicBitmap = Bitmap.createScaledBitmap(
