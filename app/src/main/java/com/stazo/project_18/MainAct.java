@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.view.WindowManager;
 
+import com.firebase.client.Firebase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -430,5 +432,11 @@ public class MainAct extends AppCompatActivity
         else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
     }
 }

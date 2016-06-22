@@ -4,6 +4,8 @@ package com.stazo.project_18;
  * Created by ericzhang on 5/14/16.
  */
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
@@ -34,6 +36,8 @@ public class EventInfoFrag extends Fragment {
 
     private Firebase fb;
     private String passedEventID;
+    private User currUser;
+    private Event currEvent;
     private View v;
 
     public void writeCommentClick() {
@@ -57,6 +61,24 @@ public class EventInfoFrag extends Fragment {
         FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
         trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
     }
+
+    public void attendClick(Button b) {
+        if(b.getText() == "Cancel"){
+            // get the info for the user
+            currUser.unattendEvent(currEvent.getEvent_id(), fb);
+
+                b.setBackgroundColor(Color.GREEN);
+                b.setText("I'm Going!");
+
+        } else {
+            currUser.attendEvent(currEvent.getEvent_id(), fb);
+
+                b.setBackgroundColor(Color.RED);
+                b.setText("Cancel");
+
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +109,14 @@ public class EventInfoFrag extends Fragment {
                 viewCommentClick();
             }
         });
+
+        final Button attendButton = (Button) v.findViewById(R.id.attend);
+        attendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attendClick(attendButton);
+            }
+        });
         return v;
     }
 
@@ -103,19 +133,19 @@ public class EventInfoFrag extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         // get the info for the event
-                        Event e = new Event(dataSnapshot.child("Events").
+                        currEvent = new Event(dataSnapshot.child("Events").
                                 child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
                                 }));
 
                         // get the info for the user
-                        User u = new User((HashMap<String, Object>) dataSnapshot.child("Users").
-                                child(e.getCreator_id()).getValue());
+                        currUser = new User((HashMap<String, Object>) dataSnapshot.child("Users").
+                                child(currEvent.getCreator_id()).getValue());
 
                         System.out.println(((Project_18) getActivity().getApplication()).getMe().getName());
 
                         // display event
-                        showInfo(e, u);
+                        showInfo(currEvent, currUser);
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
@@ -142,7 +172,7 @@ public class EventInfoFrag extends Fragment {
         long startMinute = 0;
         //End Initialization
 
-        ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
+        //ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
         int findType = e.getType();
         Drawable d = getResources().getDrawable(R.drawable.type_icon_game);
 
@@ -171,7 +201,7 @@ public class EventInfoFrag extends Fragment {
                 break;
         }
         // setting the icon
-        eventIcon.setImageDrawable(d);
+        //eventIcon.setImageDrawable(d);
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
@@ -279,6 +309,12 @@ public class EventInfoFrag extends Fragment {
 //            }
 //        }
         v.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
     }
 
 }

@@ -1,5 +1,11 @@
 package com.stazo.project_18;
 
+import android.util.Log;
+
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -8,9 +14,14 @@ import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by ericzhang on 4/25/16.
@@ -233,16 +244,20 @@ public class User {
     // true for successful attend, false for unsuccessful attend
     public boolean attendEvent(String event_id, Firebase fb) {
         if (attendingEvents.contains(event_id)) {
+            Log.d("AttendEvents", "returned false");
             return false;
         }
 
         // increment popularity
         fb.child("Events").child(event_id).child("popularity").runTransaction(new Transaction.Handler() {
+
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
                 if (currentData.getValue() == null) {
+                    Log.d("AttendEvents", "not attending events");
                     currentData.setValue(1);
                 } else {
+                    Log.d("AttendEvents", "actually attending events");
                     currentData.setValue((Long) currentData.getValue() + 1);
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
@@ -260,6 +275,7 @@ public class User {
         // update user's attending events
         attendingEvents.add(event_id);
         fb.child("Users").child(ID).child("attendingEvents").setValue(attendingEvents);
+        Log.d("AttendEvents", "returned true");
         return true;
     }
 
@@ -363,5 +379,64 @@ public class User {
         }
 
         return false;
+    }
+
+    /* construct friend's list */
+    public void constructFriends(final Firebase fb) {
+        /* make the API call */
+        if (AccessToken.getCurrentAccessToken() == null) {
+            Log.d("myTag", "access token was null");
+            return;
+        }
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        try {
+                            final JSONArray json = response.getJSONObject().getJSONArray("data");
+                            Log.d("json", "JSON is " + json.toString());
+                            for(int i=0; i < json.length(); i++){
+                                String name = (String)((JSONObject)json.get(i)).get("name");
+                                String id = (String)((JSONObject)json.get(i)).get("id");
+                                Log.d("friends", "Name: " + name + " ID: " + id);
+                                // if this user is not already in, add to friends
+                                if (!friends.values().contains(id)) {
+                                    //addFriend(fb, id, name);
+                                    friends.put(name, id);
+                                }
+                            }
+                        }
+                        catch (JSONException e) {
+
+                        }
+                    }
+                }
+        ).executeAsync();
+    }
+
+
+    private void addFriend(final Firebase fb, final String id, final String name) {
+        fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // if the friend also has our app, add them
+                if (dataSnapshot.hasChild(id)) {
+                    Log.d("valid_friends", "VALID Name: " + name + " ID: " + id);
+                    friends.put(name, id);
+                }
+                Log.d("invalid_friends", "INVALID Name: " + name + " ID: " + id);
+                fb.child("Users").removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                fb.child("Users").removeEventListener(this);
+            }
+        });
     }
 }

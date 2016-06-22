@@ -27,6 +27,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class LoginFrag extends Fragment {
@@ -127,6 +128,7 @@ public class LoginFrag extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // initialize button from xml
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("user_friends"));
         loginButton.setFragment(this); // passes reference to current fragment
         loginButton.registerCallback(mCallbackManager, mCallback);
 
@@ -160,6 +162,9 @@ public class LoginFrag extends Fragment {
                     //User me = new User(userId, userName, myEvents);
                     User me = new User((HashMap<String,Object>)
                             dataSnapshot.child(userId).getValue());
+
+                    // construct friends list
+                    me.constructFriends(fb);
 
                     // save the user to the application
                     ((Project_18) getActivity().getApplication()).setMe(me);
@@ -214,11 +219,21 @@ public class LoginFrag extends Fragment {
     private void createUser() {
         // add user to firebase
         User me = new User(userId, userName);
+
+        // construct friends list
+        me.constructFriends(fb);
+
         //fb.child("Users").child(userId).setValue(me);
         me.pushToFirebase(fb);
 
         // save the user to the application
         ((Project_18) getActivity().getApplication()).setMe(me);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
     }
 
 }

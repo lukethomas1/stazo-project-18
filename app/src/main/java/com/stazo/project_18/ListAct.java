@@ -203,4 +203,10 @@ public class ListAct extends android.support.v4.app.Fragment {
         this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
+    }
+
 }

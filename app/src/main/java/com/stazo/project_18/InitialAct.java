@@ -102,6 +102,9 @@ public class InitialAct extends AppCompatActivity {
                     User me = new User((HashMap<String, Object>)
                             dataSnapshot.child(userId).getValue());
 
+                    // construct friends
+                    me.constructFriends(fb);
+
                     // save the user to the application
                     ((Project_18) getApplication()).setMe(me);
 
@@ -139,6 +142,13 @@ public class InitialAct extends AppCompatActivity {
         startActivity(new Intent(this, LoginAct.class));
         finish();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
+
 
 
 }
