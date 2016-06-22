@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dip"
-        android:text="Follow a user for updates on their events"
+        android:text="Follow a user to receive\nupdates on their events"
         android:textSize="20dip"
         android:textColor="@color/black"
         android:gravity="center"
@@ -101,6 +101,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/usersScrollView" > -->
 
+
+        <SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:id="@+id/searchView" />
+
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -112,12 +120,6 @@
             </LinearLayout>
 
         <!--</HorizontalScrollView>-->
-
-        <SearchView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:id="@+id/searchView" />
 
     </LinearLayout>
 

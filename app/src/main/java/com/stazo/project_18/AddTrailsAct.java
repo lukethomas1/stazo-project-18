@@ -64,7 +64,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private LinearLayout usersLayout;
     private int rowIndex;
     private AddTrailsAct instance = this;
-    private AsyncTask currentTask = null;
+    private SetButtonTask currentTask = null;
     //private Bitmap profPicBitmap;
 
     @Override
@@ -144,13 +144,12 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     private synchronized void generateButtons() {
-        // iterate through relevantUsers and try to find pictures
-        /*if (currentTask != null) {
+        // optimization
+        if (currentTask != null) {
             currentTask.cancel(true);
-            currentTask = new SetButtonTask(relevantUsers);
-        }*/
-        //currentTask.execute();
-        (new SetButtonTask(relevantUsers)).execute();
+        }
+        currentTask = new SetButtonTask(relevantUsers);
+        currentTask.execute();
     }
 
     private class SetButtonTask extends AsyncTask<Void, Void, Void> {
@@ -176,8 +175,8 @@ public class AddTrailsAct extends AppCompatActivity {
                             BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                     userList.get(name) +
                                     "/picture?type=large")).openConnection().getInputStream()),
-                            200,
-                            200,
+                            180,
+                            180,
                             true));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -191,20 +190,6 @@ public class AddTrailsAct extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             constructUsersLayout(nameToBitmap);
             currentTask = null;
-        }
-
-        private void putToBitmap(String name, String id) {
-            try {
-                nameToBitmap.put(name, Bitmap.createScaledBitmap(
-                        BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
-                                id +
-                                "/picture?type=large")).openConnection().getInputStream()),
-                        200,
-                        200,
-                        true));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -283,7 +268,7 @@ public class AddTrailsAct extends AppCompatActivity {
                 currentRow.addView(buttonLayout);
 
                 // row index handling
-                if (rowIndex < 2) {
+                if (rowIndex < 3) {
                     rowIndex ++;
                 } else {
 
@@ -304,7 +289,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
         //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
         b.setBackgroundColor(getResources().getColor(R.color.white));
-        b.setPadding(60, 0, 60, 0);
+        b.setPadding(40, 0, 40, 0);
         TextView tv = new TextView(getApplicationContext());
         tv.setText(userName.split(" ")[0]);
 

@@ -205,6 +205,7 @@ public class User {
         friends.put("Matthew Ung", "1138117392898486");
         friends.put("Ansel Blume", "1177156832304841");
         friends.put("Brian Chan", "1184188798300386");
+        friends.put("Isaac Wang", "1196215920412322");
     }
 
     /**
