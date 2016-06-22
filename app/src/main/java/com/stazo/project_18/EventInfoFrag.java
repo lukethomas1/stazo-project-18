@@ -36,6 +36,8 @@ public class EventInfoFrag extends Fragment {
 
     private Firebase fb;
     private String passedEventID;
+    private User currUser;
+    private Event currEvent;
     private View v;
 
     public void writeCommentClick() {
@@ -62,11 +64,18 @@ public class EventInfoFrag extends Fragment {
 
     public void attendClick(Button b) {
         if(b.getText() == "Cancel"){
-            b.setBackgroundColor(Color.GREEN);
-            b.setText("I'm Going!");
+            // get the info for the user
+            currUser.unattendEvent(currEvent.getEvent_id(), fb);
+
+                b.setBackgroundColor(Color.GREEN);
+                b.setText("I'm Going!");
+
         } else {
-            b.setBackgroundColor(Color.RED);
-            b.setText("Cancel");
+            currUser.attendEvent(currEvent.getEvent_id(), fb);
+
+                b.setBackgroundColor(Color.RED);
+                b.setText("Cancel");
+
         }
     }
 
@@ -124,19 +133,19 @@ public class EventInfoFrag extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         // get the info for the event
-                        Event e = new Event(dataSnapshot.child("Events").
+                        currEvent = new Event(dataSnapshot.child("Events").
                                 child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
                                 }));
 
                         // get the info for the user
-                        User u = new User((HashMap<String, Object>) dataSnapshot.child("Users").
-                                child(e.getCreator_id()).getValue());
+                        currUser = new User((HashMap<String, Object>) dataSnapshot.child("Users").
+                                child(currEvent.getCreator_id()).getValue());
 
                         System.out.println(((Project_18) getActivity().getApplication()).getMe().getName());
 
                         // display event
-                        showInfo(e, u);
+                        showInfo(currEvent, currUser);
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
