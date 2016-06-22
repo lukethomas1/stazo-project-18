@@ -147,7 +147,7 @@ public class MainAct extends AppCompatActivity
                 // FOR MENU ITEMS NOT IN THE 3 DOTS
                 switch (item.getItemId()) {
                     case R.id.action_profile:
-                        goToProfile();
+                        //goToProfile();
                         Log.d("myTag", "you hit action profile");
                         return true;
                 }
@@ -333,15 +333,20 @@ public class MainAct extends AppCompatActivity
 //        transaction.add(R.id.show_createEvent, createEventFrag).addToBackStack("CreateEventFrag").commit();
     }
 
-    public void goToProfile(View view) {
-        goToProfile();
-    }
+    //shouldn't be needed right now
+//    public void goToProfile(View view) {
+//        ProfileFrag profileFrag = new ProfileFrag();
+//        profileFrag.setUser_ID(((Project_18)this.getApplication()).getMe().getID());
+//        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+//        transaction.add(R.id.show_viewProfile, profileFrag).addToBackStack("CreateEventFrag").commit();
+//    }
 
-    public void goToProfile() {
-        Intent i =  new Intent(this, Profile.class);
-        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
-        startActivity(i);
-    }
+//    public void goToProfile() {
+//        Intent i =  new Intent(this, Profile.class);
+//        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
+//        startActivity(i);
+//    }
+
 
     public void goToEventInfo(String event_id) {
 //        Intent intent = new Intent(this, EventInfoAct.class);
@@ -374,7 +379,12 @@ public class MainAct extends AppCompatActivity
         //-----> REPLACE FRAGMENTS HERE <---------------
         adapter.addFragment(new MapFrag(), ""); //map
         adapter.addFragment(new ListAct(), ""); //explore
-        adapter.addFragment(new TestFrag1(), ""); //profile
+
+        //preemptive set user_id and isMe
+        ProfileFrag profileFrag = new ProfileFrag();
+        profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
+        profileFrag.setIsMe(true);
+        adapter.addFragment(profileFrag, "Profile"); //profile
 
         viewPager.setAdapter(adapter);
     }

@@ -244,16 +244,20 @@ public class User {
     // true for successful attend, false for unsuccessful attend
     public boolean attendEvent(String event_id, Firebase fb) {
         if (attendingEvents.contains(event_id)) {
+            Log.d("AttendEvents", "returned false");
             return false;
         }
 
         // increment popularity
         fb.child("Events").child(event_id).child("popularity").runTransaction(new Transaction.Handler() {
+
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
                 if (currentData.getValue() == null) {
+                    Log.d("AttendEvents", "not attending events");
                     currentData.setValue(1);
                 } else {
+                    Log.d("AttendEvents", "actually attending events");
                     currentData.setValue((Long) currentData.getValue() + 1);
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
@@ -271,6 +275,7 @@ public class User {
         // update user's attending events
         attendingEvents.add(event_id);
         fb.child("Users").child(ID).child("attendingEvents").setValue(attendingEvents);
+        Log.d("AttendEvents", "returned true");
         return true;
     }
 

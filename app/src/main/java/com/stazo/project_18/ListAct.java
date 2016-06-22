@@ -33,7 +33,6 @@ public class ListAct extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
@@ -52,6 +51,10 @@ public class ListAct extends android.support.v4.app.Fragment {
                                     new GenericTypeIndicator<HashMap<String, Object>>() {
                                     }));
 
+//                            Iterable<DataSnapshot> attendeesIterable = eventSnapshot.child("attendees").getChildren();
+//                            while(attendeesIterable.iterator().hasNext()) {
+//                                this.attendees.add(attendeesIterable.iterator().next());
+//                            }
                             // Add event to arraylist
                             eventList.add(e);
 
