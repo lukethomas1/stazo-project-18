@@ -198,13 +198,13 @@ public class User {
         //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "10209766334938822");
         //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(2));
         //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "1070949549640758");
-        /*friends.put("Justin Ang", "10209766334938822");
+        friends.put("Justin Ang", "10209766334938822");
         friends.put("Gates Zeng", "1070949549640758");
         friends.put("Eric Zhang", "1076100269116381");
         friends.put("Luke Thomas", "1131880253542315");
         friends.put("Matthew Ung", "1138117392898486");
         friends.put("Ansel Blume", "1177156832304841");
-        friends.put("Brian Chan", "1184188798300386");*/
+        friends.put("Brian Chan", "1184188798300386");
     }
 
     /**
@@ -400,7 +400,8 @@ public class User {
                                 Log.d("friends", "Name: " + name + " ID: " + id);
                                 // if this user is not already in, add to friends
                                 if (!friends.values().contains(id)) {
-                                    addFriend(fb, id, name);
+                                    //addFriend(fb, id, name);
+                                    friends.put(name, id);
                                 }
                             }
                         }
@@ -411,6 +412,8 @@ public class User {
                 }
         ).executeAsync();
     }
+
+
     private void addFriend(final Firebase fb, final String id, final String name) {
         fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
