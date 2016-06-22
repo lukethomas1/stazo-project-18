@@ -51,6 +51,10 @@ public class ListAct extends android.support.v4.app.Fragment {
                                     new GenericTypeIndicator<HashMap<String, Object>>() {
                                     }));
 
+//                            Iterable<DataSnapshot> attendeesIterable = eventSnapshot.child("attendees").getChildren();
+//                            while(attendeesIterable.iterator().hasNext()) {
+//                                this.attendees.add(attendeesIterable.iterator().next());
+//                            }
                             // Add event to arraylist
                             eventList.add(e);
 

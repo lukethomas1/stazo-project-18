@@ -130,8 +130,10 @@ public class Event implements Parcelable {
         //pull attendees with iterable
         this.attendees = new ArrayList<>();
         Iterable<DataSnapshot> attendeesIterable = (Iterable<DataSnapshot>) eventMap.get("attendees");
-        while(attendeesIterable.iterator().hasNext()) {
-            this.attendees.add((String) attendeesIterable.iterator().next().getValue());
+        if (attendeesIterable != null) {
+            while(attendeesIterable.iterator().hasNext()) {
+                this.attendees.add((String) attendeesIterable.iterator().next().getValue());
+            }
         }
     }
 
