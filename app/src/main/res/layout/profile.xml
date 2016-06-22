@@ -10,19 +10,6 @@
     android:visibility="invisible"
     android:background="@color/white">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"/>
-        <!--android:tabMode="fixed"-->
-    </android.support.design.widget.AppBarLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/profilePicture"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="20dip"
                 android:background="@drawable/picture_background"
                 android:visibility="invisible"/>
 
@@ -111,3 +98,5 @@
     </ScrollView>
 
 </LinearLayout>
+
+

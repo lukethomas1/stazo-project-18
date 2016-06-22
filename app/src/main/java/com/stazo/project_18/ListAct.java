@@ -33,7 +33,6 @@ public class ListAct extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
