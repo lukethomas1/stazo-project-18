@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Project_18 extends Application {
     private static final String fbString = "https://stazo-project-18.firebaseio.com/";
+    //private static final String fbString = "https://project-18-isaac.firebaseio.com/";
 
     // Popularity thresholds
     public static final int POP_THRESH1 = 10;

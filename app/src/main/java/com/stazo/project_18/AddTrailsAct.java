@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,6 +47,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class AddTrailsAct extends AppCompatActivity {
@@ -61,6 +63,8 @@ public class AddTrailsAct extends AppCompatActivity {
     private LinearLayout currentRow;
     private LinearLayout usersLayout;
     private int rowIndex;
+    private AddTrailsAct instance = this;
+    private AsyncTask currentTask = null;
     //private Bitmap profPicBitmap;
 
     @Override
@@ -88,15 +92,13 @@ public class AddTrailsAct extends AppCompatActivity {
         queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 updateUserSection(newText);
-
                 return true;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //updateUserSection(query);
+                updateUserSection(query);
                 // hide keyboard
                 searchView.clearFocus();
                 return true;
@@ -107,7 +109,7 @@ public class AddTrailsAct extends AppCompatActivity {
             @Override
             public boolean onClose() {
                 updateUserSection("");
-                return true;
+                return false;
             }
         };
 
@@ -128,24 +130,88 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     public void updateUserSection(String text){
-        LinearLayout usersLayout = (LinearLayout) findViewById(R.id.usersLayout);
 
         relevantUsers.clear();
+
         for(String key: allUsers.keySet()) {
             if ((key.toLowerCase().contains(text.toLowerCase()))) {
                 relevantUsers.put(key, allUsers.get(key));
-                Log.d("aaa", "match: " + key);
-            }
-            else {
-                //buttonMap.get(key).setVisibility(View.VISIBLE);
             }
         }
-        Log.d("aaa", relevantUsers.toString());
-        usersLayout.removeAllViewsInLayout();
-        generateButtons();
+
+        // instance is a private reference to this AddTrailsAct, probably doesn't matter
+        instance.generateButtons();
     }
 
-    private void generateButtons() {
+    private synchronized void generateButtons() {
+        // iterate through relevantUsers and try to find pictures
+        /*if (currentTask != null) {
+            currentTask.cancel(true);
+            currentTask = new SetButtonTask(relevantUsers);
+        }*/
+        //currentTask.execute();
+        (new SetButtonTask(relevantUsers)).execute();
+    }
+
+    private class SetButtonTask extends AsyncTask<Void, Void, Void> {
+
+        private ConcurrentHashMap<String, String> userList =
+            new ConcurrentHashMap<String, String>();
+
+        private ConcurrentHashMap<String, Bitmap> nameToBitmap =
+                new ConcurrentHashMap<String, Bitmap>();
+
+        public SetButtonTask(HashMap<String, String> userList) {
+            for (String key: userList.keySet()) {
+                this.userList.put(key, userList.get(key));
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... v) {
+
+            for (String name: userList.keySet()) {
+                try {
+                    nameToBitmap.put(name, Bitmap.createScaledBitmap(
+                            BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                    userList.get(name) +
+                                    "/picture?type=large")).openConnection().getInputStream()),
+                            200,
+                            200,
+                            true));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            constructUsersLayout(nameToBitmap);
+            currentTask = null;
+        }
+
+        private void putToBitmap(String name, String id) {
+            try {
+                nameToBitmap.put(name, Bitmap.createScaledBitmap(
+                        BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                id +
+                                "/picture?type=large")).openConnection().getInputStream()),
+                        200,
+                        200,
+                        true));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> nameToBitmap) {
+
+        // clear layout
+        usersLayout.removeAllViewsInLayout();
 
         // make the first row
         currentRow = new LinearLayout(getApplicationContext());
@@ -159,58 +225,15 @@ public class AddTrailsAct extends AppCompatActivity {
         // limits 3 buttons per row
         rowIndex = 0;
 
-        // iterate through relevantUsers and try to find pictures
-        // if picture found, add it to Layout
-        for (final String name: relevantUsers.keySet()) {
-            //new SetButtonTask(this, name).execute();
-            AsyncTaskCompat.executeParallel(new SetButtonTask(this, name, relevantUsers.get(name)));
-        }
-    }
-
-    public class SetButtonTask extends AsyncTask<Void, Void, Void> {
-
-        Context mContext;
-        Bitmap profPicBitmap;
-        String name;
-        String id;
-
-        public SetButtonTask(Context ctx, String name, String id) {
-            mContext = ctx;
-            this.name = name;
-            this.id = id;
-        }
-
-        @Override
-        protected Void doInBackground(Void... v) {
-            // pull image from FB
-            // if we can pull the profile picture, prepare the button
-            try {
-                // pull image from FB
-                URL imageURL = new URL("https://graph.facebook.com/" +
-                        id + "/picture?type=large");
-
-                // set profile picture bitmap
-                profPicBitmap = Bitmap.createScaledBitmap(
-                        BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                        200,
-                        200,
-                        true);
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            addToUsersLayout(profPicBitmap, name);
+        for (String name: nameToBitmap.keySet()) {
+            instance.addToUsersLayout(nameToBitmap.get(name), name);
         }
     }
 
     // add button to the usersLayout
     private void addToUsersLayout(final Bitmap profPicBitmap, final String name) {
+
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -147,7 +147,7 @@ public class MainAct extends AppCompatActivity
                 // FOR MENU ITEMS NOT IN THE 3 DOTS
                 switch (item.getItemId()) {
                     case R.id.action_profile:
-                        //goToProfile();
+                        goToAddTrails();
                         Log.d("myTag", "you hit action profile");
                         return true;
                 }
@@ -347,7 +347,9 @@ public class MainAct extends AppCompatActivity
 //        startActivity(i);
 //    }
 
-
+    public void goToAddTrails() {
+        startActivity(new Intent(this, AddTrailsAct.class));
+    }
     public void goToEventInfo(String event_id) {
 //        Intent intent = new Intent(this, EventInfoAct.class);
 //        intent.putExtra("event_id", event_id);
