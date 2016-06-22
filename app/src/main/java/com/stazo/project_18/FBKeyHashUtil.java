@@ -31,9 +31,7 @@ public class FBKeyHashUtil extends AppCompatActivity {
                 Log.e("FB KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
-
         } catch (NoSuchAlgorithmException e) {
-
         }
     }
 }
