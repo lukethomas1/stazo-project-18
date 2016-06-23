@@ -11,7 +11,7 @@
         android:layout_marginTop="15dip"
         android:text="Follow a user to receive\nupdates on their events"
         android:textSize="20dip"
-        android:textColor="@color/black"
+        android:textColor="@color/colorTextPrimary"
         android:gravity="center"
         android:id="@+id/textView2"
         android:layout_gravity="center_horizontal" />

@@ -93,7 +93,7 @@ public class MainAct extends AppCompatActivity
                     }
                     else {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
-                                getResources().getColor(R.color.offwhite),
+                                getResources().getColor(R.color.colorDivider),
                                 PorterDuff.Mode.SRC_IN);
                     }
                 }
@@ -114,10 +114,10 @@ public class MainAct extends AppCompatActivity
                 getResources().getColor(R.color.colorPrimary),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(
-                getResources().getColor(R.color.offwhite),
+                getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).getIcon().setColorFilter(
-                getResources().getColor(R.color.offwhite),
+                getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
 
         // Default to "All" categories
@@ -257,9 +257,7 @@ public class MainAct extends AppCompatActivity
             queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    // do search here
-                    Log.d("MyTag", newText);
-                    Log.d("MyTag", "letsgo");
+
                     ((Project_18) getApplication()).setRelevantText(newText);
                     // filter MapFrag
                     ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
@@ -269,9 +267,6 @@ public class MainAct extends AppCompatActivity
 
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    // do search here
-                    Log.d("MyTag", query);
-                    Log.d("MyTag", "yooo");
 
                     // hide keyboard
                     searchView.clearFocus();
@@ -283,10 +278,6 @@ public class MainAct extends AppCompatActivity
         super.onCreateOptionsMenu(menu);
         return true;
     }
-
-//    public boolean onOptionsItemSelected(MenuItem item) {
-
- //   }
 
     private void setDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
@@ -386,7 +377,7 @@ public class MainAct extends AppCompatActivity
         ProfileFrag profileFrag = new ProfileFrag();
         profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
         profileFrag.setIsMe(true);
-        adapter.addFragment(profileFrag, "Profile"); //profile
+        adapter.addFragment(profileFrag, ""); //profile
 
         viewPager.setAdapter(adapter);
     }

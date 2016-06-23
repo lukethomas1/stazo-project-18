@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -55,27 +56,44 @@ public class ProfileFrag extends Fragment {
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
     private Bitmap profPicBitmap;
+    private boolean populated = false; // have we already grabInfo?
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.profile, container, false);
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
+        // clear eventslayout
 
-        // grab user and fill screen with correct info
-        grabInfo();
-        //((TextView) findViewById(R.id.nameTextView)).setText("");
-        //startActivity(new Intent(this, ListActConcept.class));
+
         return v;
     }
 
-//    public boolean onCreateOptionsMenu(Menu menu) {
+    //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 //        super.onCreateOptionsMenu(menu);
 //        return true;
 //    }
 
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // grab user and fill screen with correct info
+        grabInfo();
+
+        // set color of plus
+        ((ImageButton) getActivity().findViewById(R.id.goToAddTrailsButton)).
+                //setColorFilter(getResources().getColor(R.color.colorAccent));
+                        setColorFilter(getResources().getColor(R.color.white));
+
+    }
+
     private void grabInfo() {
+        myEvents.clear();
+        attendingEvents.clear();
+
         fb.child("Users").child(this.user_ID).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -130,6 +148,7 @@ public class ProfileFrag extends Fragment {
                 }
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
+                LinearLayout attendingLayout = (LinearLayout) v.findViewById(R.id.attendingLayout);
                 //myEvents.clear();
                 //attendingEvents.clear();
 
@@ -158,7 +177,7 @@ public class ProfileFrag extends Fragment {
                 for (Event e : myEvents) {
                     currentEvent = e;
                     Button eventButton = new Button(getContext());
-                    eventButton.setText(e.toString() + "Host");
+                    eventButton.setText(e.toString()); // + "Host");
                     makePretty(eventButton);
                     eventButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -173,7 +192,7 @@ public class ProfileFrag extends Fragment {
                 for (Event e : attendingEvents) {
                     currentEvent = e;
                     Button eventButton = new Button(getContext());
-                    eventButton.setText(e.toString() + "Attending");
+                    eventButton.setText(e.toString()); // + "Attending");
                     makePretty(eventButton);
                     eventButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -181,11 +200,15 @@ public class ProfileFrag extends Fragment {
                             goToEventInfo(currentEvent.getEvent_id());
                         }
                     });
-                    eventsLayout.addView(eventButton);
+                    attendingLayout.addView(eventButton);
                 }
 
                 // unhide-layout
                 (v.findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
+
+                /*// set hosting background
+                getActivity().findViewById(R.id.hostingLayout).setBackground(
+                        getResources().getDrawable(R.drawable.border_layout));*/
 
                 fb.child("Events").removeEventListener(this);
             }
@@ -194,6 +217,7 @@ public class ProfileFrag extends Fragment {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+
     }
 
     private void makePretty(Button button) {
@@ -203,10 +227,12 @@ public class ProfileFrag extends Fragment {
         button.setTextSize(eventsTextSize);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
-        button.setGravity(Gravity.LEFT);
-        button.setGravity(Gravity.CENTER_VERTICAL);
+        //button.setGravity(Gravity.CENTER_VERTICAL);
+        button.setGravity(Gravity.CENTER);
         button.setLayoutParams(lp);
         button.setBackgroundColor(getResources().getColor(R.color.white));
+        //button.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_event_button));
+        //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
         //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
     }
 
@@ -273,8 +299,8 @@ public class ProfileFrag extends Fragment {
                     URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
                     profPicBitmap = Bitmap.createScaledBitmap(
                             BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                            400,
-                            400,
+                            200,
+                            200,
                             true);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -360,4 +386,6 @@ public class ProfileFrag extends Fragment {
     public void setUser_ID(String user_ID) {
         this.user_ID = user_ID;
     }
+
+
 }

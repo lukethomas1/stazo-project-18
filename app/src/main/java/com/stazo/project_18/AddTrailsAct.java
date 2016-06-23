@@ -235,7 +235,7 @@ public class AddTrailsAct extends AppCompatActivity {
                         // set filter when pressed
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             b.setColorFilter(new
-                                    PorterDuffColorFilter(getResources().getColor(R.color.skyBlue),
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
                                     PorterDuff.Mode.MULTIPLY));
                         }
 
@@ -306,7 +306,7 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     private void makePretty(TextView tv) {
-        tv.setTextColor(getResources().getColor(R.color.black));
+        tv.setTextColor(getResources().getColor(R.color.colorTextPrimary));
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 

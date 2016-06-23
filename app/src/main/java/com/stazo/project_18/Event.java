@@ -348,11 +348,11 @@ public class Event implements Parcelable {
     }
 
     public String toString() {
-        String nameString = name.substring(0, Math.min(10, name.length()));
+        /*String nameString = name.substring(0, Math.min(10, name.length()));
         if (name.length() > 10) {
             nameString += "...";
-        }
-        String string = nameString + generateSpaces(15 - nameString.length()) /*+
+        }*/
+        String string = name; /*+ generateSpaces(15 - nameString.length()) +
                 "(" + Event.types[type] + ")" +
                 generateSpaces(15 - Event.types[type].length())*/;
         return string;

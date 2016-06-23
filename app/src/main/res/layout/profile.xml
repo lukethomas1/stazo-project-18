@@ -8,109 +8,159 @@
     android:id="@+id/profileLayout"
     tools:context=".Profile"
     android:visibility="invisible"
-    android:background="@color/white">
+    android:background="@color/colorDividerLight">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView2"
-        android:paddingLeft="@dimen/profile_scrollview_horizontal_margin"
-        android:paddingRight="@dimen/profile_scrollview_horizontal_margin">
+        android:id="@+id/scrollView2">
+        <!--android:paddingLeft="@dimen/profile_scrollview_horizontal_margin"
+        android:paddingRight="@dimen/profile_scrollview_horizontal_margin">-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary"></LinearLayout>-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/profilePicture"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dip"
-                android:background="@drawable/picture_background"
-                android:visibility="invisible"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Isaac Wang"
-                android:textSize="26dip"
-                android:layout_marginTop="15dip"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/nameTextView"
-                android:textColor="@color/profileTextColor"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Hosting"
-                android:textSize="20dip"
-                android:layout_marginTop="25dip"
-                android:id="@+id/myEventsTextView"
-                android:textColor="@color/profileTextColor"/>
-
+            <!-- PROF PIC AND NAME -->
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:id="@+id/eventsLayout">
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Attending"
-                android:textSize="20dip"
-                android:layout_marginTop="25dip"
-                android:id="@+id/myAttendingTextView"
-                android:textColor="@color/profileTextColor"/>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:id="@+id/attendingLayout">
-            </LinearLayout>
-
-
-            <LinearLayout
+                android:background="@drawable/border_header"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dip"
-                android:id="@+id/trailsTitleLayout"
-                android:visibility="invisible">
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/profilePicture"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginBottom="10dip"
+                    android:background="@drawable/picture_background"
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="Following"
-                    android:textSize="20dip"
-                    android:id="@+id/myTrailsTextView"
-                    android:textColor="@color/profileTextColor" />
+                    android:layout_height="match_parent"
+                    android:text="Isaac Wang"
+                    android:textSize="20sp"
+                    android:layout_gravity="bottom"
+                    android:gravity="center_vertical"
+                    android:id="@+id/nameTextView"
+                    android:textColor="@color/colorTextPrimary"/>
+            </LinearLayout>
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton"
-                    android:onClick="goToAddTrails"
-                    android:src="@drawable/ic_actionbar_plus"
-                    android:layout_marginLeft="5dip"
-                    android:background="@null"/>
+            <!-- HOSTING BLOCK -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:id="@+id/eventsFullLayout"
+                android:layout_marginTop="8dp">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Hosting"
+                    android:textSize="18sp"
+                    android:layout_marginTop="25dip"
+                    android:id="@+id/myEventsTextView"
+                    android:textColor="@color/white"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventsLayout"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal">
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:id="@+id/trailsLayout">
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:id="@+id/attendingFullLayout"
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Attending"
+                    android:textSize="18sp"
+                    android:layout_marginTop="20dip"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/myAttendingTextView"
+                    android:textColor="@color/white"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/attendingLayout"
+                    android:layout_marginTop="10dp">
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/border_layout"
+                android:id="@+id/trailsFullLayout"
+                android:layout_marginTop="8dp">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dip"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/trailsTitleLayout"
+                    android:visibility="invisible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="Following"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="20dip"
+                        android:id="@+id/myTrailsTextView"
+                        android:textColor="@color/white" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/goToAddTrailsButton"
+                        android:onClick="goToAddTrails"
+                        android:src="@drawable/ic_actionbar_plus"
+                        android:layout_marginLeft="5dip"
+                        android:layout_gravity="center_vertical"
+                        android:background="@null"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trailsLayout"
+                    android:layout_marginTop="10dp">
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

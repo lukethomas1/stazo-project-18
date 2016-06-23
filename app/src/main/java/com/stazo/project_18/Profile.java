@@ -307,8 +307,8 @@ public class Profile extends AppCompatActivity {
                     URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
                     profPicBitmap = Bitmap.createScaledBitmap(
                             BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                            400,
-                            400,
+                            200,
+                            200,
                             true);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
