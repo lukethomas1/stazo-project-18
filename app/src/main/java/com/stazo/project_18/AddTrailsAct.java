@@ -123,10 +123,7 @@ public class AddTrailsAct extends AppCompatActivity {
     }*/
 
     public void goToProfile(View v) {
-        Intent i = new Intent(this, Profile.class);
-        i.putExtra("userID", ((Project_18) getApplication()).getMe().getID());
-        startActivity(i);
-        finish();
+        onBackPressed();
     }
 
     public void updateUserSection(String text){
@@ -321,9 +318,15 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     @Override
-    public void onResume() {
+     public void onResume() {
         super.onResume();
         Firebase.setAndroidContext(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
 

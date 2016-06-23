@@ -338,6 +338,10 @@ public class MainAct extends AppCompatActivity
 //        startActivity(i);
 //    }
 
+    public void goToAddTrails(View v) {
+        goToAddTrails();
+    }
+
     public void goToAddTrails() {
         startActivity(new Intent(this, AddTrailsAct.class));
     }
