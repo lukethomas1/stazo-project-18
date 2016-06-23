@@ -185,12 +185,13 @@ public class AddTrailsAct extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void v) {
-            constructUsersLayout(nameToBitmap);
+            constructUsersLayout(nameToBitmap, userList);
             currentTask = null;
         }
     }
 
-    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> nameToBitmap) {
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> nameToBitmap,
+                                                    ConcurrentHashMap<String, String> userList) {
 
         // clear layout
         usersLayout.removeAllViewsInLayout();
@@ -208,12 +209,13 @@ public class AddTrailsAct extends AppCompatActivity {
         rowIndex = 0;
 
         for (String name: nameToBitmap.keySet()) {
-            instance.addToUsersLayout(nameToBitmap.get(name), name);
+            instance.addToUsersLayout(nameToBitmap.get(name), name, userList.get(name));
         }
     }
 
     // add button to the usersLayout
-    private void addToUsersLayout(final Bitmap profPicBitmap, final String name) {
+    private void addToUsersLayout(final Bitmap profPicBitmap, final String name,
+                                  final String id) {
 
 
         runOnUiThread(new Runnable() {
@@ -240,7 +242,7 @@ public class AddTrailsAct extends AppCompatActivity {
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Log.d("myTag", "imageButton pressed");
                             // add the trail
-                            ((Project_18) getApplication()).getMe().addTrail(fb, relevantUsers.get(name));
+                            ((Project_18) getApplication()).getMe().addTrail(fb, id);
                         }
 
                         // remove filter on release/cancel

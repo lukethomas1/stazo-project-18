@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,6 +36,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by ericzhang on 6/20/16.
@@ -56,6 +61,9 @@ public class ProfileFrag extends Fragment {
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
     private Bitmap profPicBitmap;
+    private LinearLayout currentRow;
+    private LinearLayout trailsLayout;
+    private int rowIndex = 0;
     private boolean populated = false; // have we already grabInfo?
 
     @Override
@@ -79,6 +87,8 @@ public class ProfileFrag extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        trailsLayout = (LinearLayout) v.findViewById(R.id.trailsLayout);
 
         // grab user and fill screen with correct info
         grabInfo();
@@ -108,9 +118,11 @@ public class ProfileFrag extends Fragment {
                         grabAndDisplayEvents();
 
                         // display trails if isMe
-                        if (isMe) {
+                        /*if (isMe) {
                             grabAndDisplayTrails();
-                        }
+                        }*/
+
+                        generateTrails();
 
                         // set profile picture
                         setProfilePicture();
@@ -239,7 +251,6 @@ public class ProfileFrag extends Fragment {
     private void grabAndDisplayTrails() {
         categoryTrails = user.getCategoryTrails();
         userTrails = user.getUserTrails();
-        LinearLayout trailsLayout = (LinearLayout) v.findViewById(R.id.trailsLayout);
 
         /*// draw category trails
         for (Integer type : categoryTrails) {
@@ -385,6 +396,197 @@ public class ProfileFrag extends Fragment {
 
     public void setUser_ID(String user_ID) {
         this.user_ID = user_ID;
+    }
+
+    private void generateTrails() {
+        userTrails = user.getUserTrails();
+        //(new UserNamesTask(fb)).execute();
+        final HashMap<String, String> nameToId = new HashMap<String, String>();
+
+        for (final String id : userTrails) {
+            fb.child("Users").child(id).child("name").
+                    addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            nameToId.put((String) dataSnapshot.getValue(), id);
+                            if (nameToId.keySet().size() == userTrails.size()) {
+                                Log.d("newIsh", "userTrails is " + userTrails.toString());
+                                Log.d("newIsh", "nameToId is " + nameToId.toString());
+                                (new SetButtonTask(nameToId)).execute();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+        }
+    }
+
+    private class SetButtonTask extends AsyncTask<Void, Void, Void> {
+
+        private ConcurrentHashMap<String, Bitmap> nameToBitmap =
+                new ConcurrentHashMap<String, Bitmap>();
+        private HashMap<String, String> userList = new HashMap<String, String>();
+
+        public SetButtonTask(HashMap<String, String> userList) {
+            this.userList = userList;
+        }
+
+        @Override
+        protected Void doInBackground(Void... v) {
+
+            for (String name: userList.keySet()) {
+                try {
+                    nameToBitmap.put(name, Bitmap.createScaledBitmap(
+                            BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                    userList.get(name) +
+                                    "/picture?type=large")).openConnection().getInputStream()),
+                            180,
+                            180,
+                            true));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            constructUsersLayout(nameToBitmap, userList);
+        }
+    }
+
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> nameToBitmap,
+                                                    HashMap<String, String> nameToId) {
+
+        // make the first row
+        currentRow = new LinearLayout(getActivity().getApplicationContext());
+
+        // make it pretty
+        makePretty(currentRow);
+
+        // add the first row
+        trailsLayout.addView(currentRow);
+
+        // limits 3 buttons per row
+        rowIndex = 0;
+
+        for (String name: nameToBitmap.keySet()) {
+            addToUsersLayout(nameToBitmap.get(name), name, nameToId.get(name));
+        }
+    }
+
+    // add button to the usersLayout
+    private void addToUsersLayout(final Bitmap profPicBitmap, final String name,
+                                  final String id) {
+
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                // the button we'll be building
+                final ImageButton b = new ImageButton(getActivity().getApplicationContext());
+
+                b.setImageBitmap(profPicBitmap);
+
+                // touch animation
+                b.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // set filter when pressed
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            b.setColorFilter(new
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                    PorterDuff.Mode.MULTIPLY));
+                        }
+
+                        // handle "click"
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Log.d("myTag", "imageButton pressed");
+                            // add the trail
+                            //((Project_18) getActivity().getApplication()).getMe().addTrail(fb, id);
+                        }
+
+                        // remove filter on release/cancel
+                        if (event.getAction() == MotionEvent.ACTION_UP ||
+                                event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            b.clearColorFilter();
+                        }
+                        return true;
+                    }
+                });
+
+                // contains button and name of the user
+                LinearLayout buttonLayout = new LinearLayout(getActivity().getApplicationContext());
+
+                // make button look good and add to buttonLayout
+                makePretty(b, name, buttonLayout);
+
+                // add to buttonMap
+                //buttonMap.put(name, buttonLayout);
+
+                // add buttonLayout to row
+                currentRow.addView(buttonLayout);
+
+                // row index handling
+                if (rowIndex < 3) {
+                    rowIndex++;
+                } else {
+
+                    // reset index
+                    rowIndex = 0;
+
+                    // make new row
+                    currentRow = new LinearLayout(getActivity().getApplicationContext());
+                    makePretty(currentRow);
+
+                    // add new row to the layout
+                    trailsLayout.addView(currentRow);
+                }
+
+                // set title to be visible
+                v.findViewById(R.id.trailsTitleLayout).setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
+        //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
+        b.setBackgroundColor(getResources().getColor(R.color.white));
+        b.setPadding(40, 0, 40, 0);
+        TextView tv = new TextView(getActivity().getApplicationContext());
+        tv.setText(userName.split(" ")[0]);
+
+        makePretty(tv);
+
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        buttonLayout.setOrientation(LinearLayout.VERTICAL);
+
+        buttonLayout.addView(b);
+        buttonLayout.addView(tv);
+    }
+
+    private void makePretty(TextView tv) {
+        tv.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+    }
+
+    private void makePretty(LinearLayout row) {
+        /*LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);*/
+
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setPadding(0, 0, 0, 40);
+        row.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 
 
