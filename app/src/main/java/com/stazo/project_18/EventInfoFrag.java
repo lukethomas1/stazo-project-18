@@ -9,9 +9,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,13 +35,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
-public class EventInfoFrag extends Fragment {
+public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
 
     private Firebase fb;
     private String passedEventID;
     private User currUser;
     private Event currEvent;
     private View v;
+    private BottomSheetBehavior mBottomSheetBehavior;
 
     public void writeCommentClick() {
         //open comment write window
@@ -67,14 +71,14 @@ public class EventInfoFrag extends Fragment {
             // get the info for the user
             currUser.unattendEvent(currEvent.getEvent_id(), fb);
 
-                b.setBackgroundColor(Color.GREEN);
-                b.setText("I'm Going!");
+            b.setBackgroundColor(Color.GREEN);
+            b.setText("I'm Going!");
 
         } else {
             currUser.attendEvent(currEvent.getEvent_id(), fb);
 
-                b.setBackgroundColor(Color.RED);
-                b.setText("Cancel");
+            b.setBackgroundColor(Color.RED);
+            b.setText("Cancel");
 
         }
     }
@@ -92,7 +96,10 @@ public class EventInfoFrag extends Fragment {
         System.out.println("EVENT ID: " + this.passedEventID);
         grabEventInfo(this.passedEventID);
 
-
+        View bottomSheet = v.findViewById( R.id.bottom_sheet );
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setPeekHeight(680);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         //setup comment buttons
         Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
         writeCommentButton.setOnClickListener(new View.OnClickListener() {
@@ -317,4 +324,33 @@ public class EventInfoFrag extends Fragment {
         Firebase.setAndroidContext(getContext());
     }
 
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
 }
