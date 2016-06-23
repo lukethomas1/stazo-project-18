@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -129,10 +130,10 @@ public class Event implements Parcelable {
 
         //pull attendees with iterable
         this.attendees = new ArrayList<>();
-        Iterable<DataSnapshot> attendeesIterable = (Iterable<DataSnapshot>) eventMap.get("attendees");
+        HashMap<Object, Object> attendeesIterable = (HashMap<Object, Object>) eventMap.get("attendees");
         if (attendeesIterable != null) {
-            while(attendeesIterable.iterator().hasNext()) {
-                this.attendees.add((String) attendeesIterable.iterator().next().getValue());
+            for(Object value : attendeesIterable.values()) {
+                this.attendees.add((String) value);
             }
         }
     }
