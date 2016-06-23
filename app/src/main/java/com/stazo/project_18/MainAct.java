@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.view.WindowManager;
 
@@ -133,11 +134,11 @@ public class MainAct extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        //getSupportActionBar().setTitle(getString(R.string.app_name));
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         //getSupportActionBar().setSubtitle("By: Stazo");
         //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //menu button actions
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -280,11 +281,11 @@ public class MainAct extends AppCompatActivity
     }
 
     private void setDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
+        /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

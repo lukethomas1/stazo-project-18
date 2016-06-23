@@ -73,20 +73,31 @@ public class User {
     }
     // can add further stuff later such as event host list, rating, history, upcoming event lists
 
-    public void addTrail(Firebase fb, Integer type) {
+    public boolean addTrail(Firebase fb, Integer type) {
         if (categoryTrails.contains(type)) {
-            return;
+            return false;
         }
         categoryTrails.add(type);
         fb.child("Users").child(ID).child("categoryTrails").setValue(categoryTrails);
+        return true;
     }
 
-    public void addTrail(Firebase fb, String user_id) {
+    public boolean addTrail(Firebase fb, String user_id) {
         if (userTrails.contains(user_id)) {
-            return;
+            return false;
         }
         userTrails.add(user_id);
         fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
+        return true;
+    }
+
+    public boolean removeTrail(Firebase fb, String user_id) {
+        if (!userTrails.contains(user_id)) {
+            return false;
+        }
+        userTrails.remove(user_id);
+        fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
+        return true;
     }
     /**
      * Default constructor for firebase

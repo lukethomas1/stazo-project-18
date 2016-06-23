@@ -1,6 +1,8 @@
 package com.stazo.project_18;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -64,7 +67,8 @@ public class ProfileFrag extends Fragment {
     private LinearLayout currentRow;
     private LinearLayout trailsLayout;
     private int rowIndex = 0;
-    private boolean populated = false; // have we already grabInfo?
+    private float startTime = System.nanoTime();
+    private boolean heldDown = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,14 +79,6 @@ public class ProfileFrag extends Fragment {
 
         return v;
     }
-
-    //    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-//        super.onCreateOptionsMenu(menu);
-//        return true;
-//    }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -117,11 +113,16 @@ public class ProfileFrag extends Fragment {
                         // display events
                         grabAndDisplayEvents();
 
-                        // display trails if isMe
-                        /*if (isMe) {
-                            grabAndDisplayTrails();
-                        }*/
+                        // display trails
+                        userTrails = user.getUserTrails();
 
+                        // empty case
+                        if (userTrails.isEmpty()) {
+                            // set title to be visible
+                            v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
+                        }
+
+                        // non empty case
                         generateTrails();
 
                         // set profile picture
@@ -248,64 +249,10 @@ public class ProfileFrag extends Fragment {
         //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
     }
 
-    private void grabAndDisplayTrails() {
-        categoryTrails = user.getCategoryTrails();
-        userTrails = user.getUserTrails();
-
-        /*// draw category trails
-        for (Integer type : categoryTrails) {
-            currentCategoryTrail = type;
-            Button trailButton = new Button(context);
-            trailButton.setText(Event.types[type]);
-            makePretty(trailButton);
-            trailButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goToBrowse(currentCategoryTrail);
-                }
-            });
-            trailsLayout.addView(trailButton);
-        }*/
-
-        // draw user trails
-        for (final String userID : userTrails) {
-            currentUserTrail = userID;
-            final Button trailButton = new Button(getContext());
-
-            // grab name
-            fb.child("Users").child(userID).child("name").
-                    addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            trailButton.setText((String) dataSnapshot.getValue());
-                            fb.child("Users").child(currentUserTrail).child("name").
-                                    removeEventListener(this);
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                        }
-                    });
-
-            makePretty(trailButton);
-            trailButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goToProfile(userID, false);
-                }
-            });
-            trailsLayout.addView(trailButton);
-        }
-
-        // set title to be visible
-        v.findViewById(R.id.trailsTitleLayout).setVisibility(View.VISIBLE);
-    }
-
     // pull and set profile picture
     private void setProfilePicture() {
         new Thread(new Runnable() {
             public void run() {
-
                 try {
                     URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
                     profPicBitmap = Bitmap.createScaledBitmap(
@@ -326,11 +273,6 @@ public class ProfileFrag extends Fragment {
                 });
             }
         }).start();
-
-        /*ImageView iv = (ImageView) findViewById(R.id.profilePicture);
-        //Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.me_tho_2);
-        Bitmap bMapScaled = Bitmap.createScaledBitmap(profPicBitmap, 400, 400, true);
-        iv.setImageBitmap(bMapScaled);*/
     }
 
 
@@ -352,24 +294,6 @@ public class ProfileFrag extends Fragment {
 
     private void goToBrowse() {
     }
-
-    // goes to Explore with search query as an extra.
-    private void goToBrowse(String userTrail) {
-//        Intent i = new Intent(this, MainAct.class);
-//        i.putExtra("userTrail", userTrail);
-//        i.putExtra("toBrowse", true);
-//        startActivity(i);
-//        finish();
-    }
-
-    /*// goes to Explore with search query as an extra
-    private void goToBrowse(int categoryTrail) {
-        Intent i = new Intent(this, MainAct.class);
-        i.putExtra("categoryTrail", categoryTrail);
-        i.putExtra("toBrowse", true);
-        startActivity(i);
-        finish();
-    }*/
 
     /* go to your own profile */
     public void goToProfile() {
@@ -399,7 +323,6 @@ public class ProfileFrag extends Fragment {
     }
 
     private void generateTrails() {
-        userTrails = user.getUserTrails();
         //(new UserNamesTask(fb)).execute();
         final HashMap<String, String> nameToId = new HashMap<String, String>();
 
@@ -498,25 +421,61 @@ public class ProfileFrag extends Fragment {
                 b.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
+
                         // set filter when pressed
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             b.setColorFilter(new
                                     PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
                                     PorterDuff.Mode.MULTIPLY));
-                        }
-
-                        // handle "click"
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            Log.d("myTag", "imageButton pressed");
-                            // add the trail
-                            //((Project_18) getActivity().getApplication()).getMe().addTrail(fb, id);
+                            heldDown = true;
+                            startTime = System.nanoTime();
                         }
 
                         // remove filter on release/cancel
-                        if (event.getAction() == MotionEvent.ACTION_UP ||
-                                event.getAction() == MotionEvent.ACTION_CANCEL) {
+                        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
                             b.clearColorFilter();
+                            heldDown = false;
                         }
+
+                        // handle "release"
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Log.d("myTag", "imageButton pressed");
+                            b.clearColorFilter();
+
+                            // start dialog
+                            if (heldDown && System.nanoTime() - startTime > 0.5 * (1000000000)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int dialogId) {
+                                        // User clicked OK button
+
+                                        if (((Project_18) getActivity().getApplication()).getMe().
+                                                removeTrail(fb, id)) {
+                                            Toast.makeText(getActivity().getApplicationContext(),
+                                                    "Unfollowed " + name.split(" ")[0],
+                                                    Toast.LENGTH_SHORT).show();
+                                            b.setColorFilter(
+                                                    getResources().getColor(R.color.colorDividerDark),
+                                                    PorterDuff.Mode.MULTIPLY);
+                                        } else {
+                                            Toast.makeText(getActivity().getApplicationContext(),
+                                                    "Already unfollowed " + name.split(" ")[0],
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int dialogId) {
+                                        // User cancelled the dialog
+                                    }
+                                });
+                                builder.setTitle("Unfollow " + name.split(" ")[0] + "?");
+                                (builder.create()).show();
+                            }
+
+                            heldDown = false;
+                        }
+
                         return true;
                     }
                 });
@@ -550,7 +509,7 @@ public class ProfileFrag extends Fragment {
                 }
 
                 // set title to be visible
-                v.findViewById(R.id.trailsTitleLayout).setVisibility(View.VISIBLE);
+                v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
             }
         });
     }

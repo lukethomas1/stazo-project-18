@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -242,7 +243,16 @@ public class AddTrailsAct extends AppCompatActivity {
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Log.d("myTag", "imageButton pressed");
                             // add the trail
-                            ((Project_18) getApplication()).getMe().addTrail(fb, id);
+                            if (!((Project_18) getApplication()).getMe().addTrail(fb, id)) {
+                                Toast.makeText(getApplicationContext(),
+                                        "You are already following " + name.split(" ")[0],
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(),
+                                        "Now following " + name.split(" ")[0],
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         // remove filter on release/cancel

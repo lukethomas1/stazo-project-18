@@ -121,7 +121,20 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/border_layout"
                 android:id="@+id/trailsFullLayout"
+                android:visibility="invisible"
                 android:layout_marginTop="8dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="You aren't following anyone yet. Click the plus to start!"
+                    android:textSize="12sp"
+                    android:layout_marginTop="20dip"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/emptyTrailsTextView"
+                    android:textColor="@color/colorTextPrimary"
+                    android:visibility="invisible"/>
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -129,8 +142,7 @@
                     android:layout_marginTop="20dip"
                     android:layout_marginBottom="5dp"
                     android:gravity="center_horizontal"
-                    android:id="@+id/trailsTitleLayout"
-                    android:visibility="invisible">
+                    android:id="@+id/trailsTitleLayout">
 
                     <TextView
                         android:layout_width="wrap_content"
