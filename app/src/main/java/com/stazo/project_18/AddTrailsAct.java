@@ -66,6 +66,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private int rowIndex;
     private AddTrailsAct instance = this;
     private SetButtonTask currentTask = null;
+    private boolean changedTrails = false;
     //private Bitmap profPicBitmap;
 
     @Override
@@ -124,7 +125,14 @@ public class AddTrailsAct extends AppCompatActivity {
     }*/
 
     public void goToProfile(View v) {
-        onBackPressed();
+        //if (!changedTrails) {
+            onBackPressed();
+        //}
+        /*else {
+            Intent i = new Intent(this, MainAct.class);
+            i.putExtra("toProfile", true);
+            startActivity(i);
+        }*/
     }
 
     public void updateUserSection(String text){
@@ -247,7 +255,9 @@ public class AddTrailsAct extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),
                                         "You are already following " + name.split(" ")[0],
                                         Toast.LENGTH_SHORT).show();
+                                changedTrails = true;
                             }
+
                             else {
                                 Toast.makeText(getApplicationContext(),
                                         "Now following " + name.split(" ")[0],

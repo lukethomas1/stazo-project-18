@@ -128,6 +128,24 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
         }
+
+        // Are we going straight to profile?
+        /*if (getIntent().hasExtra("toProfile")) {
+            // destroy old fragment
+            FragmentManager manager = ((Fragment) adapter.getItem(2).getTargetFragment()).getFragmentManager();
+            FragmentTransaction trans = manager.beginTransaction();
+            trans.remove((Fragment) adapter.getItem(2).getTargetFragment());
+            trans.commit();
+            adapter.destroyItem(viewPager, 2, tabLayout.getTabAt(2));
+
+            // make new fragment
+            ProfileFrag profileFrag = new ProfileFrag();
+            profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
+            profileFrag.setIsMe(true);
+            adapter.addFragment(profileFrag, "");
+            Log.d("lol", "We here bois");
+            viewPager.setCurrentItem(1);
+        }*/
     }
 
     private void setToolbar() {
@@ -311,8 +329,9 @@ public class MainAct extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
-        drawer.closeDrawer(GravityCompat.START);
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
+        /*LinearLayout drawer = (LinearLayout) findViewById(R.id.main);
+        drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
 
@@ -379,7 +398,7 @@ public class MainAct extends AppCompatActivity
         adapter.addFragment(new ListAct(), ""); //explore
 
         //preemptive set user_id and isMe
-        ProfileFrag profileFrag = new ProfileFrag();
+        ProfileFrag profileFrag= new ProfileFrag();
         profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
         profileFrag.setIsMe(true);
         adapter.addFragment(profileFrag, ""); //profile

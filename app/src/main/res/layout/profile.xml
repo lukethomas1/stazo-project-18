@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/profileLayout"
     tools:context=".Profile"
-    android:visibility="invisible"
+    android:visibility="visible"
     android:background="@color/colorDividerLight">
 
     <ScrollView
@@ -121,19 +121,8 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/border_layout"
                 android:id="@+id/trailsFullLayout"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_marginTop="8dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="You aren't following anyone yet. Click the plus to start!"
-                    android:textSize="12sp"
-                    android:layout_marginTop="20dip"
-                    android:layout_marginBottom="5dp"
-                    android:id="@+id/emptyTrailsTextView"
-                    android:textColor="@color/colorTextPrimary"
-                    android:visibility="invisible"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -165,6 +154,26 @@
                         android:background="@null"/>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/emptyTrailsTextContainer"
+                    android:background="@color/white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="You aren't following anyone yet.\nTap the plus to start!"
+                        android:textSize="16sp"
+                        android:lineSpacingExtra="10dp"
+                        android:layout_marginTop="20dip"
+                        android:layout_marginBottom="10dip"
+                        android:id="@+id/emptyTrailsTextView"
+                        android:textColor="@color/colorTextPrimary"
+                        android:visibility="visible"/>
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="10dp"

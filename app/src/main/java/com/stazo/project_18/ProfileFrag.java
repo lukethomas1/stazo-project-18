@@ -86,6 +86,9 @@ public class ProfileFrag extends Fragment {
 
         trailsLayout = (LinearLayout) v.findViewById(R.id.trailsLayout);
 
+        // start by hiding everything
+        v.findViewById(R.id.profileLayout).setVisibility(View.INVISIBLE);
+
         // grab user and fill screen with correct info
         grabInfo();
 
@@ -121,9 +124,16 @@ public class ProfileFrag extends Fragment {
                             // set title to be visible
                             v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
                         }
+                        // not empty
+                        else {
+                            // remove empty textview
+                            v.findViewById(R.id.trailsFullLayout).setVisibility(View.INVISIBLE);
+                            ((LinearLayout) v.findViewById(R.id.trailsFullLayout)).removeView(
+                                    v.findViewById(R.id.emptyTrailsTextContainer));
 
-                        // non empty case
-                        generateTrails();
+                            // get pictures and display imageButtons
+                            generateTrails();
+                        }
 
                         // set profile picture
                         setProfilePicture();
