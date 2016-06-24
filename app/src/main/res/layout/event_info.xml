@@ -101,24 +101,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Description"
-                        android:id="@+id/eventDesc"
-                        android:layout_marginBottom="10dp"
-                        android:textAppearance="@style/EventInfoBody" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="Length: "
                         android:id="@+id/eventLength"
-                        android:layout_marginBottom="10dp"
-                        android:textAppearance="@style/EventInfoBody"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Created by: "
-                        android:id="@+id/eventCreator"
                         android:layout_marginBottom="10dp"
                         android:textAppearance="@style/EventInfoBody"/>
 
@@ -126,7 +110,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="0dp"
                     android:background="@color/colorPrimaryLight"
                     android:id="@+id/breakLine"/>
 
@@ -138,6 +122,21 @@
                     android:text="Event Clock"
                     android:id="@+id/eventClock"
                     android:textSize="40dp" />-->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Created by: "
+                    android:id="@+id/eventCreator"
+                    android:layout_marginBottom="10dp"
+                    android:textAppearance="@style/EventInfoBody" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:id="@+id/eventDesc"
+                    android:layout_marginBottom="10dp"
+                    android:textAppearance="@style/EventInfoBody" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -59,6 +59,8 @@ public class MainAct extends AppCompatActivity
 
     private AppCompatActivity act = this;
 
+    private boolean searched; // did the user just submit a query?
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +200,10 @@ public class MainAct extends AppCompatActivity
                 public void onFocusChange(View v, boolean hasFocus) {
 
                     if (hasFocus) {
+                        if (searchFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+                        }
+                        searched = false;
                         searchFrag = new SearchFrag();
                         transaction =
                                 act.getSupportFragmentManager().beginTransaction();
@@ -210,7 +216,11 @@ public class MainAct extends AppCompatActivity
 
                     else {
                         //searchFrag.getActivity().onBackPressed();
-                        getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+
+                        // if we didn't just search, then close the fragment
+                        if (!searched) {
+                            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+                        }
                         //searchView.setQuery("", true);
                         //searchView.clearFocus();
                     }
@@ -233,6 +243,7 @@ public class MainAct extends AppCompatActivity
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     // hide keyboard
+                    searched = true;
                     searchView.clearFocus();
                     return true;
                 }
