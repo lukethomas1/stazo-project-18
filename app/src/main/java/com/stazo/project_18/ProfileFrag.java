@@ -54,7 +54,6 @@ public class ProfileFrag extends Fragment {
     private String user_ID;
 
     /* for grabbing info from firebase */
-    private Event currentEvent;
     private Integer currentCategoryTrail;
     private String currentUserTrail;
     private static int eventsTextSize = 12;
@@ -197,30 +196,28 @@ public class ProfileFrag extends Fragment {
                 }
 
                 /* display myEvents */
-                for (Event e : myEvents) {
-                    currentEvent = e;
+                for (final Event e : myEvents) {
                     Button eventButton = new Button(getContext());
                     eventButton.setText(e.toString()); // + "Host");
                     makePretty(eventButton);
                     eventButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            goToEventInfo(currentEvent.getEvent_id());
+                            goToEventInfo(e.getEvent_id());
                         }
                     });
                     eventsLayout.addView(eventButton);
                 }
 
                 /* display attendingEvents */
-                for (Event e : attendingEvents) {
-                    currentEvent = e;
+                for (final Event e : attendingEvents) {
                     Button eventButton = new Button(getContext());
                     eventButton.setText(e.toString()); // + "Attending");
                     makePretty(eventButton);
                     eventButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            goToEventInfo(currentEvent.getEvent_id());
+                            goToEventInfo(e.getEvent_id());
                         }
                     });
                     attendingLayout.addView(eventButton);
@@ -283,13 +280,7 @@ public class ProfileFrag extends Fragment {
 
 
     private void goToEventInfo(String event_id) {
-        // go to detailed event info act
-        /*
-        EventInfoFrag eventInfoFrag = new EventInfoFrag();
-        eventInfoFrag.setEventID(event_id);
-        android.support.v4.app.FragmentTransaction transaction =
-                this.getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();*/
+        ((MainAct) getActivity()).goToEventInfo(event_id);
     }
 
     public void goToAddTrails(View view) {

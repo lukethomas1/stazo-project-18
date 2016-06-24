@@ -64,7 +64,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         bottomSheet = v.findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         //mBottomSheetBehavior.setPeekHeight(680);
-        mBottomSheetBehavior.setPeekHeight(610);
+        //mBottomSheetBehavior.setPeekHeight(610);
+
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -125,8 +126,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         40,
                         40,
                         true));
-
     }
+
 
     /* toggle frag state */
     public void toggleState(View v) {
@@ -165,6 +166,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
                         // display event
                         showInfo(currEvent, currUser);
+
+                        mBottomSheetBehavior.setPeekHeight(
+                                getActivity().findViewById(R.id.arrowButtonLayout).getHeight() +
+                                getActivity().findViewById(R.id.measurement).getHeight());
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
