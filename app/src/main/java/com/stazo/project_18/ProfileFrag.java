@@ -218,6 +218,7 @@ public class ProfileFrag extends Fragment {
                         @Override
                         public void onClick(View view) {
                             goToEventInfo(e.getEvent_id());
+                            
                         }
                     });
                     attendingLayout.addView(eventButton);

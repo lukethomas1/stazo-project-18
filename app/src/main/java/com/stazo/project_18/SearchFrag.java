@@ -58,6 +58,7 @@ public class SearchFrag extends Fragment {
         allEvents = ((Project_18) getActivity().getApplication()).getPulledEvents();
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -126,7 +127,7 @@ public class SearchFrag extends Fragment {
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
         button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(40,0,0,0);
+        button.setPadding(40, 0, 0, 0);
         button.setLayoutParams(lp);
         button.setBackgroundColor(getResources().getColor(R.color.white));
     }
@@ -145,7 +146,7 @@ public class SearchFrag extends Fragment {
     }
 
     private void goToEventInfo(String event_id) {
-
+        ((MainAct) getActivity()).goToEventInfo(event_id);
     }
 
     @Override

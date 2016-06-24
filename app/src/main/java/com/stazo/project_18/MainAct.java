@@ -134,24 +134,6 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
         }
-
-        // Are we going straight to profile?
-        /*if (getIntent().hasExtra("toProfile")) {
-            // destroy old fragment
-            FragmentManager manager = ((Fragment) adapter.getItem(2).getTargetFragment()).getFragmentManager();
-            FragmentTransaction trans = manager.beginTransaction();
-            trans.remove((Fragment) adapter.getItem(2).getTargetFragment());
-            trans.commit();
-            adapter.destroyItem(viewPager, 2, tabLayout.getTabAt(2));
-
-            // make new fragment
-            ProfileFrag profileFrag = new ProfileFrag();
-            profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
-            profileFrag.setIsMe(true);
-            adapter.addFragment(profileFrag, "");
-            Log.d("lol", "We here bois");
-            viewPager.setCurrentItem(1);
-        }*/
     }
 
     private void setToolbar() {
@@ -221,10 +203,11 @@ public class MainAct extends AppCompatActivity
                                 act.getSupportFragmentManager().beginTransaction();
                         transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();
                     }
+
                     else {
                         //searchFrag.getActivity().onBackPressed();
                         searchFrag.selfDestruct();
-                        searchView.setQuery("", true);
+                        //searchView.setQuery("", true);
                         //searchView.clearFocus();
                     }
                 }
@@ -245,12 +228,12 @@ public class MainAct extends AppCompatActivity
 
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-
                     // hide keyboard
                     searchView.clearFocus();
                     return true;
                 }
             };
+
             searchView.setOnQueryTextListener(queryTextListener);
         }
         super.onCreateOptionsMenu(menu);
@@ -329,10 +312,14 @@ public class MainAct extends AppCompatActivity
         startActivity(new Intent(this, AddTrailsAct.class));
     }
     public void goToEventInfo(String event_id) {
+        System.out.println("goToEventInfo");
 //        Intent intent = new Intent(this, EventInfoAct.class);
 //        intent.putExtra("event_id", event_id);
 //        startActivity(intent);
-
+        if (searchFrag != null) {
+            searchFrag.selfDestruct();
+        }
+        searchView.clearFocus();
         // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
         eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
