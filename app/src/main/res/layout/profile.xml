@@ -70,11 +70,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="5dp"
                     android:text="Hosting"
-                    android:textSize="18sp"
-                    android:layout_marginTop="25dip"
                     android:id="@+id/myEventsTextView"
-                    android:textColor="@color/white"/>
+                    android:textAppearance="@style/ProfileHeaders"/>
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -99,11 +99,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Attending"
-                    android:textSize="18sp"
                     android:layout_marginTop="20dip"
                     android:layout_marginBottom="5dp"
                     android:id="@+id/myAttendingTextView"
-                    android:textColor="@color/white"/>
+                    android:textAppearance="@style/ProfileHeaders"/>
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -135,13 +134,12 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:text="Following"
-                        android:textSize="18sp"
                         android:layout_marginLeft="20dip"
                         android:id="@+id/myTrailsTextView"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/ProfileHeaders" />
 
                     <ImageButton
                         android:layout_width="wrap_content"

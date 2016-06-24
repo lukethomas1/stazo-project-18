@@ -4,10 +4,13 @@ package com.stazo.project_18;
  * Created by ericzhang on 5/14/16.
  */
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
@@ -17,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +46,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private User currUser;
     private Event currEvent;
     private View v;
+    private View bottomSheet;
     private BottomSheetBehavior mBottomSheetBehavior;
 
     @Override
@@ -56,10 +61,31 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         System.out.println("EVENT ID: " + this.passedEventID);
         grabEventInfo(this.passedEventID);
 
-        View bottomSheet = v.findViewById( R.id.bottom_sheet );
+        bottomSheet = v.findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehavior.setPeekHeight(680);
+        //mBottomSheetBehavior.setPeekHeight(680);
+        mBottomSheetBehavior.setPeekHeight(610);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                // React to state change
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+
+                    getActivity().findViewById(R.id.upArrow).setRotation(180);
+                } else {
+
+                    getActivity().findViewById(R.id.upArrow).setRotation(0);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
+            }
+        });
+
         //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //setup comment buttons
@@ -88,6 +114,29 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         });
 
         return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ((ImageView) getActivity().findViewById(R.id.upArrow)).setImageBitmap(
+                Bitmap.createScaledBitmap((BitmapFactory.decodeResource(getResources(),
+                                R.drawable.up_arrow_big)),
+                        40,
+                        40,
+                        true));
+
+    }
+
+    /* toggle frag state */
+    public void toggleState(View v) {
+        if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+        else {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            getActivity().findViewById(R.id.upArrow).setRotation(0);
+        }
     }
 
     //setter method for main act to pass in eventID
@@ -233,18 +282,17 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
     public void attendClick(Button b) {
-        if(b.getText() == "Cancel"){
+        if(b.getText() == "Joined"){
             // get the info for the user
             currUser.unattendEvent(currEvent.getEvent_id(), fb);
 
-            b.setBackgroundColor(Color.GREEN);
-            b.setText("I'm Going!");
+            b.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            b.setText("Join");
 
         } else {
             currUser.attendEvent(currEvent.getEvent_id(), fb);
-
-            b.setBackgroundColor(Color.RED);
-            b.setText("Cancel");
+            b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            b.setText("Joined");
 
         }
     }

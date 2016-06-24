@@ -51,6 +51,7 @@ public class MainAct extends AppCompatActivity
     private ViewPagerAdapter adapter;
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
+    private EventInfoFrag eventInfoFrag;
 
     // Search stuff
     private SearchView searchView = null;
@@ -293,6 +294,10 @@ public class MainAct extends AppCompatActivity
         return true;
     }
 
+    public void toggleState(View v) {
+        eventInfoFrag.toggleState(v);
+    }
+
     public void goToCreateEvent(View view) {
         startActivity(new Intent(this, CreateEventAct.class));
         //goToProfile(view);
@@ -329,7 +334,7 @@ public class MainAct extends AppCompatActivity
 //        startActivity(intent);
 
         // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
-        EventInfoFrag eventInfoFrag = new EventInfoFrag();
+        eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
         FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
