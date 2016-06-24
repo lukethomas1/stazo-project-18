@@ -202,6 +202,10 @@ public class MainAct extends AppCompatActivity
                         transaction =
                                 act.getSupportFragmentManager().beginTransaction();
                         transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();
+
+                        if (eventInfoFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+                        }
                     }
 
                     else {
