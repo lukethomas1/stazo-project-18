@@ -255,8 +255,8 @@ public class User {
 
     // true for successful attend, false for unsuccessful attend
     public boolean attendEvent(String event_id, Firebase fb) {
+
         if (attendingEvents.contains(event_id)) {
-            Log.d("AttendEvents", "returned false");
             return false;
         }
 
@@ -266,11 +266,13 @@ public class User {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
                 if (currentData.getValue() == null) {
-                    Log.d("AttendEvents", "not attending events");
+                    //Log.d("AttendEvents", "not attending events");
                     currentData.setValue(1);
+                    Log.d("AttendEvents", "Attend aborting");
                 } else {
-                    Log.d("AttendEvents", "actually attending events");
+                    //Log.d("AttendEvents", "actually attending events");
                     currentData.setValue((Long) currentData.getValue() + 1);
+                    Log.d("AttendEvents", "incremented, data now " + currentData.getValue());
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
             }
@@ -287,7 +289,6 @@ public class User {
         // update user's attending events
         attendingEvents.add(event_id);
         fb.child("Users").child(ID).child("attendingEvents").setValue(attendingEvents);
-        Log.d("AttendEvents", "returned true");
         return true;
     }
 
@@ -302,9 +303,12 @@ public class User {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
                 if (currentData.getValue() == null) {
-                    return Transaction.abort();
+                    Log.d("AttendEvents", "Unattend aborting");
+                    // inclusion of line causes first transaction to fail!!!
+                    //return Transaction.abort();
                 } else {
                     currentData.setValue((Long) currentData.getValue() - 1);
+                    Log.d("AttendEvents", "decremented, data now " + currentData.getValue());
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
             }
