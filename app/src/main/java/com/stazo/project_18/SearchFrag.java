@@ -71,10 +71,6 @@ public class SearchFrag extends Fragment {
 
     }
 
-    public void selfDestruct() {
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-    }
-
     public void updateResults(String query) {
 
         queryButtonLayout.removeAllViews();

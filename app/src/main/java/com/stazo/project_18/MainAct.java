@@ -210,7 +210,7 @@ public class MainAct extends AppCompatActivity
 
                     else {
                         //searchFrag.getActivity().onBackPressed();
-                        searchFrag.selfDestruct();
+                        getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
                         //searchView.setQuery("", true);
                         //searchView.clearFocus();
                     }
@@ -321,8 +321,12 @@ public class MainAct extends AppCompatActivity
 //        intent.putExtra("event_id", event_id);
 //        startActivity(intent);
         if (searchFrag != null) {
-            searchFrag.selfDestruct();
+            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
+        if (eventInfoFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+        }
+
         searchView.clearFocus();
         // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
         eventInfoFrag = new EventInfoFrag();
