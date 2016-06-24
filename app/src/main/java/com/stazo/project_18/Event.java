@@ -332,9 +332,14 @@ public class Event implements Parcelable {
         Log.d("myTag", "GENERATING: " + this.event_id);
     }
 
-    // determines how relevant this event is to a query (2,1,0)
+    // determines how relevant this event is to a query (3,2,1,0)
+    // 3 = name match at start, 2 = name match, 1 = description match, 0 = no match
     public int findRelevance(String search) {
         if (name.toLowerCase().contains(search.toLowerCase())) {
+            // if the match is at the start, it is a level 3 match
+            if (name.toLowerCase().indexOf(search.toLowerCase()) == 0) {
+                return 3;
+            }
             return 2;
         }
         if (description.toLowerCase().contains(search.toLowerCase())) {

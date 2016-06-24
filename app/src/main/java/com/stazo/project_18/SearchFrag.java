@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 /**
@@ -75,6 +77,9 @@ public class SearchFrag extends Fragment {
 
         queryButtonLayout.removeAllViews();
         matchEvents = new ArrayList<Event>();
+        ArrayList<Event> levelOne = new ArrayList<Event>();
+        ArrayList<Event> levelTwo = new ArrayList<Event>();
+        ArrayList<Event> levelThree = new ArrayList<Event>();
 
         if (query.equals(new String(""))) {
             return;
@@ -82,16 +87,26 @@ public class SearchFrag extends Fragment {
 
         for (Event e: allEvents) {
             switch (e.findRelevance(query)) {
+                case 3:
+                    levelThree.add(e);
+                    break;
                 case 2:
-                    matchEvents.add(0, e);
+                    levelTwo.add(e);
                     break;
                 case 1:
-                    matchEvents.add(e);
+                    levelOne.add(e);
                     break;
                 default:
                     break;
             }
         }
+        Collections.sort(levelThree, new popularityCompare());
+        Collections.sort(levelTwo, new popularityCompare());
+        Collections.sort(levelOne, new popularityCompare());
+
+        matchEvents.addAll(levelThree);
+        matchEvents.addAll(levelTwo);
+        matchEvents.addAll(levelOne);
 
         for (final Event e: matchEvents) {
             Button eventButton = new Button(getContext());
@@ -111,6 +126,19 @@ public class SearchFrag extends Fragment {
             emptyText.setText("No matches found");
             queryButtonLayout.addView(emptyText);
             makePretty(emptyText);
+        }
+    }
+
+    private class popularityCompare implements Comparator<Event> {
+        @Override
+        public int compare(Event e1, Event e2) {
+            if (e1.getPopularity() < (e2.getPopularity())) {
+                return 1;
+            }
+            if (e1.getPopularity() > (e2.getPopularity())) {
+                return -1;
+            }
+            return 0;
         }
     }
 
