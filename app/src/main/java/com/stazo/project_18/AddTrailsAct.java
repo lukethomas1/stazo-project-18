@@ -253,7 +253,7 @@ public class AddTrailsAct extends AppCompatActivity {
                             // add the trail
                             if (!((Project_18) getApplication()).getMe().addTrail(fb, id)) {
                                 Toast.makeText(getApplicationContext(),
-                                        "You are already following " + name.split(" ")[0],
+                                        "Already following " + name.split(" ")[0],
                                         Toast.LENGTH_SHORT).show();
                                 changedTrails = true;
                             }

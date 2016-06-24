@@ -230,7 +230,7 @@ public class MapFrag extends Fragment {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    //goToEventInfo(marker);
+                    goToEventInfo(marker);
 
                     return false; // Perform default behavior: displaying InfoWindow
                 }
@@ -430,8 +430,6 @@ public class MapFrag extends Fragment {
 
             // Set icon
             //markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
-            /*markerOpts.icon(BitmapDescriptorFactory.defaultMarker(getContext().
-                    getResources().getColor(R.color.colorAccent)));*/
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);

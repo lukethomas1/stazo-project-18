@@ -250,13 +250,9 @@ public class ProfileFrag extends Fragment {
         button.setTextSize(eventsTextSize);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
-        //button.setGravity(Gravity.CENTER_VERTICAL);
         button.setGravity(Gravity.CENTER);
         button.setLayoutParams(lp);
         button.setBackgroundColor(getResources().getColor(R.color.white));
-        //button.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_event_button));
-        //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
-        //button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
     }
 
     // pull and set profile picture

@@ -44,46 +44,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private View v;
     private BottomSheetBehavior mBottomSheetBehavior;
 
-    public void writeCommentClick() {
-        //open comment write window
-        WriteCommentFrag writeFrag = new WriteCommentFrag();
-        writeFrag.setEventID(this.passedEventID);
-        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.show_writeComment, writeFrag).addToBackStack("WriteCommentFrag").commit();
-    }
-
-//    public void pushComment(Comment comment) {
-//        fb = ((Project_18) this.getActivity().getApplication()).getFB();
-//        String event_ID = comment.getEvent_ID();
-//        fb.child("CommentDatabase").child(event_ID).setValue(comment);
-//    }
-
-    public void viewCommentClick() {
-        //open comment view window
-        ViewCommentFrag viewFrag = new ViewCommentFrag();
-        viewFrag.setEventID(this.passedEventID);
-        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
-    }
-
-    public void attendClick(Button b) {
-        if(b.getText() == "Cancel"){
-            // get the info for the user
-            currUser.unattendEvent(currEvent.getEvent_id(), fb);
-
-            b.setBackgroundColor(Color.GREEN);
-            b.setText("I'm Going!");
-
-        } else {
-            currUser.attendEvent(currEvent.getEvent_id(), fb);
-
-            b.setBackgroundColor(Color.RED);
-            b.setText("Cancel");
-
-        }
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
@@ -100,6 +60,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setPeekHeight(680);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
         //setup comment buttons
         Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
         writeCommentButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +86,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 attendClick(attendButton);
             }
         });
+
         return v;
     }
 
@@ -181,34 +144,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         //ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
         int findType = e.getType();
-        Drawable d = getResources().getDrawable(R.drawable.type_icon_game);
 
-        // determining the icon
-        switch(findType) {
-            case 1:
-                d = getResources().getDrawable(R.drawable.ic1);
-                break;
-            case 2:
-                d = getResources().getDrawable(R.drawable.ic2);
-                break;
-            case 3:
-                d = getResources().getDrawable(R.drawable.ic3);
-                break;
-            case 4:
-                d = getResources().getDrawable(R.drawable.ic4);
-                break;
-            case 5:
-                d = getResources().getDrawable(R.drawable.ic5);
-                break;
-            case 6:
-                d = getResources().getDrawable(R.drawable.ic6);
-                break;
-            case 7:
-                d = getResources().getDrawable(R.drawable.ic7);
-                break;
-        }
-        // setting the icon
-        //eventIcon.setImageDrawable(d);
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
@@ -271,52 +207,48 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         else {
             eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
         }
-
-//        if(minutes < 10){
-//            eventTime.setText(hours + ":0" + minutes + " " + timePeriod);
-//        } else {
-//            eventTime.setText(hours + ":" + minutes + " " + timePeriod);
-//        }
-//        //A bit of math to find the time till event.
-//        TextView eventTimeTo = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
-//        if (currTime.get(Calendar.MINUTE) > minutes) {
-//            minutes = minutes + 60;
-//            hours--;
-//        }
-//        if((hours - currTime.get(Calendar.HOUR_OF_DAY) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
-//            eventTimeTo.setText("Started!");
-//            long pastHour = currTime.get(Calendar.HOUR_OF_DAY) - hours - eventHour;
-//            long pastMinute = currTime.get(Calendar.MINUTE) - minutes - eventMinute;
-//            if(pastMinute < 0){
-//                pastMinute += 60;
-//                pastHour--;
-//            }
-//            if(pastHour > 1){
-//                eventTimeTo.setText("COMPLETED");
-//            } else {
-//                if(pastHour == 1){
-//                    eventTimeTo.setText("Finished 1 h ago");
-//                } else {
-//                    eventTimeTo.setText("Finished " + pastMinute + " m ago");
-//                }
-//            }
-//        } else {
-//            if (timePeriod.equalsIgnoreCase("PM")) {
-//                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
-//                    eventTimeTo.setTextColor(Color.RED);
-//                }
-//                eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
-//                        + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
-//            } else {
-//                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
-//                    eventTimeTo.setTextColor(Color.RED);
-//                }
-//                eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
-//                        + (minutes - currTime.MINUTE) + " m");
-//            }
-//        }
         v.setVisibility(View.VISIBLE);
     }
+
+    public void writeCommentClick() {
+        //open comment write window
+        WriteCommentFrag writeFrag = new WriteCommentFrag();
+        writeFrag.setEventID(this.passedEventID);
+        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.show_writeComment, writeFrag).addToBackStack("WriteCommentFrag").commit();
+    }
+
+//    public void pushComment(Comment comment) {
+//        fb = ((Project_18) this.getActivity().getApplication()).getFB();
+//        String event_ID = comment.getEvent_ID();
+//        fb.child("CommentDatabase").child(event_ID).setValue(comment);
+//    }
+
+    public void viewCommentClick() {
+        //open comment view window
+        ViewCommentFrag viewFrag = new ViewCommentFrag();
+        viewFrag.setEventID(this.passedEventID);
+        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
+    }
+
+    public void attendClick(Button b) {
+        if(b.getText() == "Cancel"){
+            // get the info for the user
+            currUser.unattendEvent(currEvent.getEvent_id(), fb);
+
+            b.setBackgroundColor(Color.GREEN);
+            b.setText("I'm Going!");
+
+        } else {
+            currUser.attendEvent(currEvent.getEvent_id(), fb);
+
+            b.setBackgroundColor(Color.RED);
+            b.setText("Cancel");
+
+        }
+    }
+
 
     @Override
     public void onResume() {

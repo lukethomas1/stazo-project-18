@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -48,10 +49,14 @@ public class MainAct extends AppCompatActivity
     private ViewPager viewPager;
     private Toolbar toolbar;
     private ViewPagerAdapter adapter;
+    private FragmentTransaction transaction;
+    private SearchFrag searchFrag;
 
     // Search stuff
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
+
+    private AppCompatActivity act = this;
 
 
     @Override
@@ -165,85 +170,17 @@ public class MainAct extends AppCompatActivity
 
                 // FOR MENU ITEMS NOT IN THE 3 DOTS
                 switch (item.getItemId()) {
-                    case R.id.action_profile:
+                    /*case R.id.action_profile:
                         goToAddTrails();
                         Log.d("myTag", "you hit action profile");
-                        return true;
+                        return true;*/
+                    /*case R.id.action_map:
+                        SearchFrag searchFrag = new SearchFrag();
+                        FragmentTransaction transaction =
+                                act.getSupportFragmentManager().beginTransaction();
+                        transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();*/
+
                 }
-
-                /*// FOR THE 3 DOTS
-                int i;
-
-                // Get the index of the type in the Event.types array
-                for(i = 0; i < Event.types.length; i++) {
-                    // Create Integer object to add to ArrayList
-                    Integer category = new Integer(i);
-
-                    // If it is an existing type
-                    if (item.getTitle().equals(Event.types[i])) {
-
-                        // Toggle Check
-                        item.setChecked(!item.isChecked());
-
-                        // If it is checked, add it
-                        if (item.isChecked()) {
-
-                            // If all is currently checked...
-                            if (toolbar.getMenu().findItem(R.id.all).isChecked()) {
-
-                                // uncheck all
-                                toolbar.getMenu().findItem(R.id.all).setChecked(false);
-
-                                // clear filteredCategories
-                                Project_18.filteredCategories.clear();
-                            }
-
-                            // Add this category
-                            Project_18.filteredCategories.add(category);
-                        }
-
-                        // If it isn't checked anymore, remove it
-                        else {
-                            Project_18.filteredCategories.remove(category);
-                        }
-
-                        // We're done checking
-                        Log.d("myTag", Project_18.filteredCategories.toString());
-
-                        // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
-                        return true;
-                    }
-                }
-
-                // If we iterated fully, then all was clicked
-                if (i == Event.types.length) {
-
-                    // If all wasn't checked, check all. NOTE: You cannot uncheck all
-                    if (!item.isChecked()) {
-
-                        // uncheck all the other categories
-                        toolbar.getMenu().findItem(R.id.food).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.sports).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.performance).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.academic).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.social).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.gaming).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.other).setChecked(false);
-                        Project_18.filteredCategories.clear();
-                        for (int index = 0; index < Event.types.length; index++) {
-                            Project_18.filteredCategories.add(new Integer(index));
-                        }
-                        item.setChecked(true);
-
-                        // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
-                    }
-                }
-
-                Log.d("myTag", Project_18.filteredCategories.toString());*/
                 return true;
             }
         });
@@ -271,16 +208,37 @@ public class MainAct extends AppCompatActivity
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
         }
+
         if (searchView != null) {
+            searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+
+                    if (hasFocus) {
+                        searchFrag = new SearchFrag();
+                        transaction =
+                                act.getSupportFragmentManager().beginTransaction();
+                        transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();
+                    }
+                    else {
+                        //searchFrag.getActivity().onBackPressed();
+                        searchFrag.selfDestruct();
+                        searchView.setQuery("", true);
+                        //searchView.clearFocus();
+                    }
+                }
+            });
+
             searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
             queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
 
-                    ((Project_18) getApplication()).setRelevantText(newText);
+                    /*((Project_18) getApplication()).setRelevantText(newText);
                     // filter MapFrag
                     ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
-                    ((ListAct) adapter.getItem(1)).displayFilteredEventList();
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList();*/
+                    searchFrag.updateResults(newText);
                     return true;
                 }
 

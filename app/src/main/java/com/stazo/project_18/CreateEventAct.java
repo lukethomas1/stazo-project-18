@@ -159,10 +159,10 @@ public class CreateEventAct extends AppCompatActivity {
 
                 switch (item.getItemId()) {
 
-                    case R.id.action_profile:
+                    /*case R.id.action_profile:
                         goToProfile();
                         Log.d("myTag", "you hit action profile");
-                        return true;
+                        return true;*/
                     default:
                         return true;
                 }

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start">-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:openDrawer="start">
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent">-->
+
     <LinearLayout android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
@@ -63,6 +64,11 @@
         android:layout_height="100dp">
     </FrameLayout>
     <FrameLayout
+        android:id="@+id/show_searchFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
+    <FrameLayout
         android:id="@+id/show_createEvent"
         android:layout_width="match_parent"
         android:layout_height="100dp">
@@ -78,5 +84,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>
-</LinearLayout>
-    <!--</android.support.v4.widget.DrawerLayout>-->
+<!--</LinearLayout>-->
+    </android.support.v4.widget.DrawerLayout>
