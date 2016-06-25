@@ -68,6 +68,7 @@ public class ProfileFrag extends Fragment {
     private int rowIndex = 0;
     private float startTime = System.nanoTime();
     private boolean heldDown = false;
+    private ArrayList<ImageButton> nullButtons = new ArrayList<ImageButton>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -175,29 +176,6 @@ public class ProfileFrag extends Fragment {
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
                 LinearLayout attendingLayout = (LinearLayout) v.findViewById(R.id.attendingLayout);
-                //myEvents.clear();
-                //attendingEvents.clear();
-
-                /* no adventures case */
-                /*if (myEvents.isEmpty()) {
-                    Button eventButton = new Button(getContext());
-                    eventButton.setText("No adventures, no worries! " +
-                            "Just tap to explore.");
-                    makePretty(eventButton);
-                    eventButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            goToBrowse();
-                        }
-                    });
-                    eventsLayout.addView(eventButton);
-
-                    // unhide-layout
-                    (v.findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
-
-                    fb.child("Events").removeEventListener(this);
-                    return;
-                }*/
 
                 // if myEvents is not empty, remove the empty button
                 if (!myEvents.isEmpty()) {
@@ -242,10 +220,6 @@ public class ProfileFrag extends Fragment {
 
                 // unhide-layout
                 (v.findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
-
-                /*// set hosting background
-                getActivity().findViewById(R.id.hostingLayout).setBackground(
-                        getResources().getDrawable(R.drawable.border_layout));*/
 
                 fb.child("Events").removeEventListener(this);
             }
@@ -432,16 +406,18 @@ public class ProfileFrag extends Fragment {
 
                         // set filter when pressed
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            b.setColorFilter(new
-                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
-                                    PorterDuff.Mode.MULTIPLY));
+                            if (!nullButtons.contains(b)) {
+                                b.setColorFilter(new
+                                        PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                        PorterDuff.Mode.MULTIPLY));
+                            }
                             heldDown = true;
                             startTime = System.nanoTime();
                         }
 
                         // remove filter on release/cancel
                         if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                            if (b.getTag(1) == null) {
+                            if (!nullButtons.contains(b)) {
                                 b.clearColorFilter();
                             }
                             heldDown = false;
@@ -451,7 +427,7 @@ public class ProfileFrag extends Fragment {
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Log.d("myTag", "imageButton pressed");
 
-                            if (b.getTag(1) == null) {
+                            if (!nullButtons.contains(b)) {
                                 b.clearColorFilter();
                             }
 
@@ -462,15 +438,16 @@ public class ProfileFrag extends Fragment {
                                     public void onClick(DialogInterface dialog, int dialogId) {
                                         // User clicked OK button
 
-                                        if (((Project_18) getActivity().getApplication()).getMe().
+                                        if (((Project_18) getActivity().getApplication()).me.
                                                 removeTrail(fb, id)) {
+
                                             Toast.makeText(getActivity().getApplicationContext(),
                                                     "Unfollowed " + name.split(" ")[0],
                                                     Toast.LENGTH_SHORT).show();
                                             b.setColorFilter(
                                                     getResources().getColor(R.color.colorDividerDark),
                                                     PorterDuff.Mode.MULTIPLY);
-                                            b.setTag(1);
+                                            nullButtons.add(b);
 
                                         } else {
                                             Toast.makeText(getActivity().getApplicationContext(),
