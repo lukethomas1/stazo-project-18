@@ -119,6 +119,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center"
                         android:gravity="center"
                         android:text="You aren't hosting any events."
                         android:textSize="14sp"
@@ -126,6 +127,7 @@
                         android:id="@+id/emptyHostingButton"
                         android:textColor="@color/colorTextPrimary"
                         android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
 
@@ -167,12 +169,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:text="You have no ongoing events."
                         android:textSize="14sp"
                         android:lineSpacingExtra="10dp"
                         android:id="@+id/emptyAttendingTextView"
                         android:textColor="@color/colorTextPrimary"
                         android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
 

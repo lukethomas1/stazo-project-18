@@ -21,11 +21,12 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_event_info_bar"
-                android:id="@+id/arrowButtonLayout">
+                android:id="@+id/arrowButtonLayout"
+                android:visibility="invisible">
 
                 <ImageButton
                     android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                     android:layout_marginBottom="2dp"
                     android:background="@null"
                     android:onClick="toggleState"/>
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
