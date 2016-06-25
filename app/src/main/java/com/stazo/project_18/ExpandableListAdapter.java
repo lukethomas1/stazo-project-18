@@ -3,6 +3,8 @@ package com.stazo.project_18;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +64,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtListChild = (TextView) convertView.findViewById(R.id.eventDetailsList);
 
         txtListChild.setTypeface(null, Typeface.ITALIC);
-        txtListChild.setTextColor(Color.GRAY);
+        txtListChild.setTextColor(Color.WHITE);
 
         txtListChild.setText(childText);
 
@@ -94,35 +96,29 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                              ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
 
-        // FIXME Temporary workaround for "Lit" title
-    //    if (convertView == null) {
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-
-            if (groupPosition == 0) {
-                convertView = inflater.inflate(R.layout.group_title, null);
-            }
-            else {
-                convertView = inflater.inflate(R.layout.list_activity_event_name, null);
-            }
-      //  }
-
-        convertView.setBackgroundColor(Color.WHITE);
-
-        // FIXME Same as above
-        if (groupPosition == 0) {
-            ImageView textImg = (ImageView) convertView.findViewById(R.id.groupTextImage);
-            textImg.setImageResource(R.drawable.lit_events);
+            convertView = inflater.inflate(R.layout.list_activity_event_name, null);
         }
+        //  }
 
-       else {
-            TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
+        // Set blue background
+        convertView.setBackgroundColor(0x3A9F4);
 
-            lblListHeader.setTextColor(Color.DKGRAY);
+        // TODO R.id.color...
 
-            lblListHeader.setText(headerTitle);
-        }
+        // Get the TextView to set the text for
+        TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
+
+        lblListHeader.setBackgroundColor(0x3A9F4); // Set textbox color
+        lblListHeader.setTextColor(Color.WHITE);
+
+        // Make text bold
+        SpannableString spanString = new SpannableString(headerTitle);
+        spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+        lblListHeader.setText(spanString);
 
         return convertView;
     }

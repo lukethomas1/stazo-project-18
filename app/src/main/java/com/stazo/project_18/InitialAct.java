@@ -148,7 +148,4 @@ public class InitialAct extends AppCompatActivity {
         super.onResume();
         Firebase.setAndroidContext(this);
     }
-
-
-
 }

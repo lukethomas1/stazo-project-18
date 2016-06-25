@@ -63,7 +63,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                         // Get the text in the activity
                         loadingText = (TextView) getActivity().findViewById(R.id.loadingText);
 
-                        // Set loading text to "No events" if there were no events
+                        // Set loading text to "No events" if there are no events
                         if (eventList.isEmpty()) {
                             loadingText.setText("No Events");
                         }
@@ -162,6 +162,7 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         listAdapter = new ExpandableListAdapter(getActivity(), headerList, headerToEventListHM);
 
+        // Display event info on child click
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
@@ -174,7 +175,25 @@ public class ListAct extends android.support.v4.app.Fragment {
             }
         });
 
+        // Collapse open list on new expansion
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int prevGroupPos = -1;
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                // Collapse open list on new expansion
+                if (prevGroupPos >= 0 && prevGroupPos != groupPosition) {
+                    expListView.collapseGroup(prevGroupPos);
+                }
+
+                prevGroupPos = groupPosition;
+            }
+        });
+
         expListView.setAdapter(listAdapter);
+
+        // Display hot events by default
+        expListView.expandGroup(0);
     }
 
     /* TODO Filter lists inside of the three main categories (hot, subscribed, and local) */
