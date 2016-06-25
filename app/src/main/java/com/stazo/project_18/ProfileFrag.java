@@ -265,6 +265,7 @@ public class ProfileFrag extends Fragment {
                         iv.setVisibility(View.VISIBLE);
                     }
                 });
+
             }
         }).start();
     }

@@ -217,6 +217,22 @@ public class User {
         friends.put("Ansel Blume", "1177156832304841");
         friends.put("Brian Chan", "1184188798300386");
         friends.put("Isaac Wang", "1196215920412322");
+        /*friends.put("Justin Ang2", "10209766334938822");
+        friends.put("Gates Zeng2", "1070949549640758");
+        friends.put("Eric Zhang2", "1076100269116381");
+        friends.put("Luke Thomas2", "1131880253542315");
+        friends.put("Matthew Ung2", "1138117392898486");
+        friends.put("Ansel Blume2", "1177156832304841");
+        friends.put("Brian Chan2", "1184188798300386");
+        friends.put("Isaac Wang2", "1196215920412322");
+        friends.put("Justin Ang3", "10209766334938822");
+        friends.put("Gates Zeng3", "1070949549640758");
+        friends.put("Eric Zhang3", "1076100269116381");
+        friends.put("Luke Thomas3", "1131880253542315");
+        friends.put("Matthew Ung3", "1138117392898486");
+        friends.put("Ansel Blume3", "1177156832304841");
+        friends.put("Brian Chan3", "1184188798300386");
+        friends.put("Isaac Wang3", "1196215920412322");*/
     }
 
     /**
