@@ -48,13 +48,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private View v;
     private View bottomSheet;
     private BottomSheetBehavior mBottomSheetBehavior;
+    private User me;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
         v.setVisibility(View.INVISIBLE);
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
-
+        me = ((Project_18) this.getActivity().getApplication()).getMe();
         // Get the event_id to display
         //String event_id = this.passedEventID;
         // Display event info
@@ -289,13 +290,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     public void attendClick(Button b) {
         if(b.getText() == "Joined"){
             // get the info for the user
-            currUser.unattendEvent(currEvent.getEvent_id(), fb);
+            me.unattendEvent(currEvent.getEvent_id(), fb);
 
             b.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             b.setText("Join");
 
         } else {
-            currUser.attendEvent(currEvent.getEvent_id(), fb);
+            me.attendEvent(currEvent.getEvent_id(), fb);
             b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
             b.setText("Joined");
 
