@@ -81,6 +81,9 @@ public class AddTrailsAct extends AppCompatActivity {
         // get allUsers
         allUsers = ((Project_18) getApplication()).getMe().getFriends();
 
+        Log.d("shit", "Project_18.me trails is size " +
+                ((Project_18) getApplication()).me.getUserTrails().size());
+
         // take out users we are already following
         filterFollowedUsers();
 
@@ -139,12 +142,21 @@ public class AddTrailsAct extends AppCompatActivity {
             startActivity(i);
         }*/
     }
-
+    public void filterMe() {
+        for (String id: allUsers.values()) {
+            if (id.equals(((Project_18) getApplication()).getMe().getID())) {
+                System.out.println("Is me, filtering out " + id);
+                allUsers.values().remove(id);
+                return;
+            }
+        }
+    }
 
     // removes users from allUsers if you're already following them
     public void filterFollowedUsers() {
         for (String id: ((Project_18) getApplication()).getMe().getUserTrails()) {
             if (allUsers.values().contains(id)) {
+                System.out.println("Already following, filtering out " + id);
                 allUsers.values().remove(id);
             }
         }
@@ -269,8 +281,8 @@ public class AddTrailsAct extends AppCompatActivity {
                             // add the trail
 
                             // already added
-                            if (!((Project_18) getApplication()).getMe().addTrail(fb, id)) {
-                                ((Project_18) getApplication()).getMe().removeTrail(fb, id);
+                            if (!((Project_18) getApplication()).me.addTrail(fb, id)) {
+                                ((Project_18) getApplication()).me.removeTrail(fb, id);
                                 /*Toast.makeText(getApplicationContext(),
                                         "No longer following " + name.split(" ")[0],
                                         Toast.LENGTH_SHORT).show();*/
