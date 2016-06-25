@@ -19,11 +19,9 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/fab_margin_left"
             android:layout_marginBottom="@dimen/fab_margin_bottom"
-            app:backgroundTint="@color/colorAccent"
+            app:backgroundTint="@color/colorPrimary"
             android:onClick="goToCreateEvent"
             app:fabSize="mini"/>
-            <!--app:backgroundTint="#4286ed" -->
-            <!--android:onClick="goToCreateEvent"/> -->
 
     <TextView
         android:layout_width="wrap_content"

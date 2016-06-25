@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/white"
+    android:background="#e7e3e3"
     android:id="@+id/listLayout">
 
     <TextView
@@ -24,6 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/eventList"
-        android:background="@color/white"
-        android:visibility="invisible"/>
+        android:background="@color/colorPrimary"
+        android:elevation="10sp"/>
 </RelativeLayout>
