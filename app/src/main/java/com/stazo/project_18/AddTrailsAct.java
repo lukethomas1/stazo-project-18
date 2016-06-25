@@ -62,8 +62,6 @@ public class AddTrailsAct extends AppCompatActivity {
     private HashMap<String, String> allUsers = new HashMap<String, String>();  // id to name
 
     //private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
-    private HashMap<String, Bitmap> cachedIdToBitmap = new HashMap<String, Bitmap>();
-
     private Firebase fb;
     private LinearLayout currentRow;
     private LinearLayout usersLayout;
@@ -260,9 +258,9 @@ public class AddTrailsAct extends AppCompatActivity {
                     break;
                 }
 
-                if (cachedIdToBitmap.keySet().contains(id)) {
+                if (((Project_18) getApplication()).cachedIdToBitmap.keySet().contains(id)) {
                     Log.d("check", "we have cached entry number " + i);
-                    idToBitmap.put(id, cachedIdToBitmap.get(id));
+                    idToBitmap.put(id, ((Project_18) getApplication()).cachedIdToBitmap.get(id));
                     numToLoad--;
                 }
 
@@ -307,7 +305,7 @@ public class AddTrailsAct extends AppCompatActivity {
 
             // put the same thing in cached
             for (String id: idToBitmap.keySet()) {
-                cachedIdToBitmap.put(id, idToBitmap.get(id));
+                ((Project_18) getApplication()).cachedIdToBitmap.put(id, idToBitmap.get(id));
             }
             constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;

@@ -45,8 +45,8 @@ public class InitialAct extends AppCompatActivity {
         fb = ((Project_18) getApplication()).getFB();
 
         EventHandler EH = new EventHandler();
-        EH.clearEvents();
-        EH.generateEvents();
+        //EH.clearEvents();
+        //EH.generateEvents();
 
         // if the user logs in for the first time
         if(sharedPreferences.getBoolean("isLoggedIn", false)) { // check if they have logged in before

@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
@@ -36,6 +37,10 @@ public class Project_18 extends Application {
     public Firebase getFB() { return new Firebase(fbString);}
     public User getMe() { return me; }
     public void setMe(User user) { me = user; }
+
+    // store images
+    public static HashMap<String, Bitmap> cachedIdToBitmap = new HashMap<String, Bitmap>();
+
 
     // stores a pulled event locally (pulledEvents)
     public void addPulledEvent(Event e) {

@@ -11,6 +11,7 @@
     <color name="colorTextSecondary">#727272</color>
     <color name="colorDivider">#B6B6B6</color>
     <color name="colorDividerLight">#e6e6e6</color>
+    <color name="colorDividerLightGradient">#d9d9d9</color>
     <color name="colorDividerDark">#999999</color>
     <!--<color name="skyBlue"></color>
     <color name="colorSecondary"></color>-->

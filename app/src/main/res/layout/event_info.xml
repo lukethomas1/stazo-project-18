@@ -15,16 +15,16 @@
         android:layout_height="match_parent"
         android:clipToPadding="true"
         android:background="@android:color/white"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        android:elevation="15dp">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorDividerLight"
+                android:background="@drawable/background_event_info_bar"
                 android:id="@+id/arrowButtonLayout">
 
                 <ImageButton
@@ -34,7 +34,7 @@
                     android:id="@+id/upArrow"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/colorDividerLight"
+                    android:background="@null"
                     android:onClick="toggleState"/>
             </LinearLayout>
 

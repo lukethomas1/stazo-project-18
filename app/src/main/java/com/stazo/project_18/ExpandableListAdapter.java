@@ -111,7 +111,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         // Set textbox color
         lblListHeader.setBackgroundColor(ContextCompat.getColor(_context, R.color.colorPrimary));
-        lblListHeader.setTextColor(Color.WHITE);
+        lblListHeader.setTextColor(ContextCompat.getColor(_context, R.color.white));
 
         // Make text bold
         SpannableString spanString = new SpannableString(headerTitle);
