@@ -19,6 +19,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -65,6 +67,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private Firebase fb;
     private LinearLayout currentRow;
     private LinearLayout usersLayout;
+    private InteractiveScrollView scrollView;
     private int rowIndex;
     private AddTrailsAct instance = this;
     private SetButtonTask currentTask = null;
@@ -86,15 +89,28 @@ public class AddTrailsAct extends AppCompatActivity {
         allUsers = new HashMap(((Project_18) getApplication()).getMe().getFriends());
 
         // take out users we are already following
-        //filterFollowedUsers();
+        filterFollowedUsers();
 
-        //filterMe();
+        filterMe();
 
         // relevantUsers = the ones displayed
         relevantUsers = new HashMap<String, String>(allUsers);
 
         // set usersLayout
         usersLayout = (LinearLayout) findViewById(R.id.usersLayout);
+
+        // set scrollView
+        scrollView = (InteractiveScrollView) findViewById(R.id.addTrailsScrollView);
+
+        scrollView.setOnBottomReachedListener(
+                new InteractiveScrollView.OnBottomReachedListener() {
+                    @Override
+                    public void onBottomReached() {
+                        // do something
+                        loadMore();
+                    }
+                }
+        );
 
         generateButtons(true);
 
@@ -138,8 +154,8 @@ public class AddTrailsAct extends AppCompatActivity {
 
     public void goToProfile(View v) {
         //if (!changedTrails) {
-        loadMore();
-        //onBackPressed();
+        //loadMore();
+        onBackPressed();
         //}
         /*else {
             Intent i = new Intent(this, MainAct.class);
@@ -148,10 +164,10 @@ public class AddTrailsAct extends AppCompatActivity {
         }*/
     }
     public void filterMe() {
-        for (String id: allUsers.values()) {
+        for (String id: allUsers.keySet()) {
             if (id.equals(((Project_18) getApplication()).getMe().getID())) {
                 System.out.println("Is me, filtering out " + id);
-                allUsers.values().remove(id);
+                allUsers.remove(id);
                 return;
             }
         }
@@ -160,9 +176,9 @@ public class AddTrailsAct extends AppCompatActivity {
     // removes users from allUsers if you're already following them
     public void filterFollowedUsers() {
         for (String id: ((Project_18) getApplication()).getMe().getUserTrails()) {
-            if (allUsers.values().contains(id)) {
+            if (allUsers.keySet().contains(id)) {
                 Log.d("shit", "Already following, filtering out " + id);
-                allUsers.values().remove(id);
+                allUsers.remove(id);
             }
         }
     }
@@ -253,15 +269,28 @@ public class AddTrailsAct extends AppCompatActivity {
                 else {
                     try {
                         Log.d("check", "we are processing entry number " + i);
-                        // put the same thing in cached
-                        idToBitmap.put(id, Bitmap.createScaledBitmap(
-                                BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
-                                        id +
-                                        "/picture?type=large")).openConnection().getInputStream()),
-                                180,
-                                180,
-                                true));
-                        numToLoad--;
+
+                        // FOR TESTING PURPOSES
+                        if (id.length() < 5) {
+                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                                    BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                            "1196215920412322" +
+                                            "/picture?type=large")).openConnection().getInputStream()),
+                                    180,
+                                    180,
+                                    true));
+                            numToLoad--;
+                        }
+                        else {
+                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                                    BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                            id +
+                                            "/picture?type=large")).openConnection().getInputStream()),
+                                    180,
+                                    180,
+                                    true));
+                            numToLoad--;
+                        }
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -275,11 +304,14 @@ public class AddTrailsAct extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void v) {
+
+            // put the same thing in cached
             for (String id: idToBitmap.keySet()) {
                 cachedIdToBitmap.put(id, idToBitmap.get(id));
             }
             constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;
+            InteractiveScrollView.isReady = true;
             Log.d("cancel", "task COMPLETED...");
         }
     }
@@ -291,6 +323,10 @@ public class AddTrailsAct extends AppCompatActivity {
         // clear layout
         if (clearLayout) {
             usersLayout.removeAllViewsInLayout();
+        }
+
+        if (idToBitmap.isEmpty()) {
+            return;
         }
 
         // make the first row

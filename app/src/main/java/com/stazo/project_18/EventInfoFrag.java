@@ -124,8 +124,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         ((ImageView) getActivity().findViewById(R.id.upArrow)).setImageBitmap(
                 Bitmap.createScaledBitmap((BitmapFactory.decodeResource(getResources(),
                                 R.drawable.up_arrow_big)),
-                        40,
-                        40,
+                        30,
+                        30,
                         true));
     }
 
