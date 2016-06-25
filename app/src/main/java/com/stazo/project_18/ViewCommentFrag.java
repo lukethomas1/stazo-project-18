@@ -14,6 +14,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by ericzhang on 6/20/16.
@@ -32,7 +33,7 @@ public class ViewCommentFrag extends Fragment{
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //get arraylist of comments
-                        ArrayList<String> commentList = new ArrayList<String>();
+                        ArrayList<Comment> commentList = new ArrayList<Comment>();
 
 //                commentList = dataSnapshot.child("comments").getValue(
 //                        new GenericTypeIndicator<ArrayList<String>>() {});
@@ -41,19 +42,21 @@ public class ViewCommentFrag extends Fragment{
                         Iterable<DataSnapshot> commentIterable = dataSnapshot.child("comments").getChildren();
                         while(commentIterable.iterator().hasNext()) {
                             //System.out.println(commentIterable.iterator().next().getValue());
-                            commentList.add((String) commentIterable.iterator().next().getValue());
+                            commentList.add((Comment) commentIterable.iterator().next().getValue(Comment.class));
                         }
 
                         //print it
                         for (int i = 0; i < commentList.size(); i++) {
-                            System.out.println(commentList.get(i));
+                            System.out.print(commentList.get(i).getUser_ID() + ": ");
+                            System.out.println(commentList.get(i).getComment());
                         }
 
                         //show through textviews
                         LinearLayout layout = (LinearLayout) v.findViewById(R.id.viewCommentLayout);
                         for (int i = 0; i < commentList.size(); i++) {
+                            TextView userText = new TextView(getContext());
                             TextView commentText = new TextView(getContext());
-                            commentText.setText(commentList.get(i));
+                            commentText.setText(commentList.get(i).getComment());
                             layout.addView(commentText);
                         }
 

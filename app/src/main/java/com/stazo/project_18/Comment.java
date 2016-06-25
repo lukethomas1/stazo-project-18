@@ -10,24 +10,16 @@ import java.util.ArrayList;
 public class Comment {
 
     private String event_ID;
-    private ArrayList<String> comments;
+    private String comment;
+    private String user_ID;
 
     public Comment() {
     }
 
-    public Comment(Firebase fb, String event_ID) {
+    public Comment(String event_ID, String comment, String user_ID) {
         this.event_ID = event_ID;
-
-    }
-
-    public Comment(String event_ID) {
-        this.event_ID = event_ID;
-        this.comments = new ArrayList<String>();
-    }
-
-    public Comment(String event_ID, ArrayList<String> comments) {
-        this.event_ID = event_ID;
-        this.comments = comments;
+        this.comment = comment;
+        this.user_ID = user_ID;
     }
 
     public void setEvent_ID(String event_ID) {
@@ -38,15 +30,19 @@ public class Comment {
         return this.event_ID;
     }
 
-    public void setComments(ArrayList<String> comments) {
-        this.comments = comments;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public ArrayList<String> getComments() {
-        return this.comments;
+    public String getComment() {
+        return this.comment;
     }
 
-    public void addComment(String comment) {
-        this.comments.add(comment);
+    public void setUser_ID(String user_ID) {
+        this.user_ID = user_ID;
+    }
+
+    public String getUser_ID() {
+        return this.user_ID;
     }
 }
