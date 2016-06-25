@@ -327,7 +327,9 @@ public class User {
 
                         for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
                             // if the ID is ours, remove it and return
-                            if (eventSnapshot.getValue() == ID) {
+                            System.out.println("eventSnapshot.getValue() is " + eventSnapshot.getValue());
+                            if (eventSnapshot.getValue().equals(ID)) {
+                                System.out.println("removing...");
                                 eventSnapshot.getRef().setValue(null);
                                 return;
                             }
