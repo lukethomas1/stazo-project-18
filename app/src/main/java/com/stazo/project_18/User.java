@@ -268,11 +268,9 @@ public class User {
                 if (currentData.getValue() == null) {
                     //Log.d("AttendEvents", "not attending events");
                     currentData.setValue(1);
-                    Log.d("AttendEvents", "Attend aborting");
                 } else {
                     //Log.d("AttendEvents", "actually attending events");
                     currentData.setValue((Long) currentData.getValue() + 1);
-                    Log.d("AttendEvents", "incremented, data now " + currentData.getValue());
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
             }
@@ -288,11 +286,14 @@ public class User {
 
         // update user's attending events
         attendingEvents.add(event_id);
+
+        System.out.println("AttendingEvents is " + attendingEvents);
+        System.out.println("User id is" + ID);
         fb.child("Users").child(ID).child("attendingEvents").setValue(attendingEvents);
         return true;
     }
 
-    // true for successful unattend, false for unsuccessful unattend
+    // true for successful, false for unsuccessful unattend
     public boolean unattendEvent(String event_id, final Firebase fb) {
         if (!(attendingEvents.contains(event_id))) {
             return false;
@@ -327,7 +328,6 @@ public class User {
 
                         for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
                             // if the ID is ours, remove it and return
-                            System.out.println("eventSnapshot.getValue() is " + eventSnapshot.getValue());
                             if (eventSnapshot.getValue().equals(ID)) {
                                 System.out.println("removing...");
                                 eventSnapshot.getRef().setValue(null);
