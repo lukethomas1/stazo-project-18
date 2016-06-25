@@ -3,6 +3,7 @@ package com.stazo.project_18;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -62,10 +63,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView txtListChild = (TextView) convertView.findViewById(R.id.eventDetailsList);
-
-        txtListChild.setTypeface(null, Typeface.ITALIC);
-        txtListChild.setTextColor(Color.WHITE);
-
         txtListChild.setText(childText);
 
         return convertView;
@@ -105,14 +102,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         //  }
 
         // Set blue background
-        convertView.setBackgroundColor(0x3A9F4);
+        convertView.setBackgroundColor(ContextCompat.getColor(_context, R.color.colorPrimary));
 
         // TODO R.id.color...
 
         // Get the TextView to set the text for
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
 
-        lblListHeader.setBackgroundColor(0x3A9F4); // Set textbox color
+        // Set textbox color
+        lblListHeader.setBackgroundColor(ContextCompat.getColor(_context, R.color.colorPrimary));
         lblListHeader.setTextColor(Color.WHITE);
 
         // Make text bold

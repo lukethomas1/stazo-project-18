@@ -101,7 +101,7 @@ public class ListAct extends android.support.v4.app.Fragment {
         // Add event categories
         headerList.add("Lit Events");
         headerList.add("Subscribed Events");
-        headerList.add("Local Events");
+        headerList.add("All Events");
 
         // Add Hot Events
         ArrayList<Event> hotEventsList = new ArrayList<>();
@@ -129,23 +129,15 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         headerToEventListHM.put(headerList.get(1), subscribedEventsList);
 
-        /* TODO: For local events, base it on a certain radius around the user's current location.
-           Right now it is just all events - hot events - subscribed events */
+        /* TODO: For local events, base it on a certain radius around the user's current location. */
 
-        ArrayList<Event> localEventsList = new ArrayList<>();
+        ArrayList<Event> allEventsList = new ArrayList<>();
 
         for (Event event : eventList) {
-            // Whether this event is already in a previous list
-            boolean isInHotList = hotEventsList.contains(event);
-            boolean isInSubscribedList = subscribedEventsList.contains(event);
-
-            // if it is not in a previous list, then add it to the local list
-            if (!isInHotList && !isInSubscribedList) {
-                localEventsList.add(event);
-            }
+            allEventsList.add(event);
         }
 
-        headerToEventListHM.put(headerList.get(2), localEventsList);
+        headerToEventListHM.put(headerList.get(2), allEventsList);
 
         /*
         for(int i = 0; i < eventList.size(); i++) {
