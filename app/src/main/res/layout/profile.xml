@@ -83,8 +83,6 @@
                         android:id="@+id/myEventsTextView"
                         android:textAppearance="@style/ProfileHeaders" />
 
-
-
                     <Button
                         android:layout_width="50dp"
                         android:layout_height="20dp"
@@ -130,12 +128,6 @@
                         android:layout_marginTop="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/white"></LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -183,10 +175,7 @@
                         android:layout_marginTop="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/white"></LinearLayout>
+
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"

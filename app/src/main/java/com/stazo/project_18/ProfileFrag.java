@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -236,12 +237,14 @@ public class ProfileFrag extends Fragment {
                 RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         button.setTextSize(eventsTextSize);
+        button.setTypeface(null, Typeface.NORMAL);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
         button.setGravity(Gravity.CENTER_VERTICAL);
         button.setPadding(120, 0, 0, 0);
         button.setLayoutParams(lp);
-        button.setBackgroundColor(getResources().getColor(R.color.white));
+        //button.setBackgroundColor(getResources().getColor(R.color.white));
+        button.setBackground(getResources().getDrawable(R.drawable.border_event_button));
     }
 
     // pull and set profile picture
