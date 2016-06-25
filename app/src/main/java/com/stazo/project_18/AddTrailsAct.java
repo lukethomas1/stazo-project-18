@@ -79,10 +79,12 @@ public class AddTrailsAct extends AppCompatActivity {
         fb = ((Project_18) getApplication()).getFB();
 
         // get allUsers
-        allUsers = ((Project_18) getApplication()).getMe().getFriends();
+        allUsers = new HashMap(((Project_18) getApplication()).getMe().getFriends());
 
-        Log.d("shit", "Project_18.me trails is size " +
-                ((Project_18) getApplication()).me.getUserTrails().size());
+        Log.d("shit", "Project_18.me trails is " +
+                ((Project_18) getApplication()).me.getUserTrails().toString());
+
+        Log.d("shit", "allUsers.values() is " + allUsers.values().toString());
 
         // take out users we are already following
         filterFollowedUsers();
@@ -156,7 +158,7 @@ public class AddTrailsAct extends AppCompatActivity {
     public void filterFollowedUsers() {
         for (String id: ((Project_18) getApplication()).getMe().getUserTrails()) {
             if (allUsers.values().contains(id)) {
-                System.out.println("Already following, filtering out " + id);
+                Log.d("shit", "Already following, filtering out " + id);
                 allUsers.values().remove(id);
             }
         }
