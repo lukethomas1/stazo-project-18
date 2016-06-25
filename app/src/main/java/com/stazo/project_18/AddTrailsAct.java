@@ -21,6 +21,7 @@ import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -77,9 +78,13 @@ public class AddTrailsAct extends AppCompatActivity {
         // get firebase reference
         fb = ((Project_18) getApplication()).getFB();
 
-        // set relevantUsers
-
+        // get allUsers
         allUsers = ((Project_18) getApplication()).getMe().getFriends();
+
+        // take out users we are already following
+        filterFollowedUsers();
+
+        // relevantUsers = the ones displayed
         relevantUsers = new HashMap<String, String>(allUsers);
 
         // set usersLayout
@@ -133,6 +138,16 @@ public class AddTrailsAct extends AppCompatActivity {
             i.putExtra("toProfile", true);
             startActivity(i);
         }*/
+    }
+
+
+    // removes users from allUsers if you're already following them
+    public void filterFollowedUsers() {
+        for (String id: ((Project_18) getApplication()).getMe().getUserTrails()) {
+            if (allUsers.values().contains(id)) {
+                allUsers.values().remove(id);
+            }
+        }
     }
 
     public void updateUserSection(String text){
@@ -250,18 +265,30 @@ public class AddTrailsAct extends AppCompatActivity {
                         // handle "click"
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Log.d("myTag", "imageButton pressed");
+
                             // add the trail
+
+                            // already added
                             if (!((Project_18) getApplication()).getMe().addTrail(fb, id)) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Already following " + name.split(" ")[0],
-                                        Toast.LENGTH_SHORT).show();
+                                ((Project_18) getApplication()).getMe().removeTrail(fb, id);
+                                /*Toast.makeText(getApplicationContext(),
+                                        "No longer following " + name.split(" ")[0],
+                                        Toast.LENGTH_SHORT).show();*/
                                 changedTrails = true;
+
+                                // remove border
+                                b.setBackgroundResource(0);
                             }
 
+                            // not yet added
                             else {
-                                Toast.makeText(getApplicationContext(),
-                                        "Now following " + name.split(" ")[0],
-                                        Toast.LENGTH_SHORT).show();
+                                /*Toast.makeText(getApplicationContext(),
+                                        "Followed " + name.split(" ")[0],
+                                        Toast.LENGTH_SHORT).show();*/
+
+                                // add border
+                                b.setBackground(getResources().
+                                        getDrawable(R.drawable.border_add_trails_button));
                             }
                         }
 
@@ -307,14 +334,19 @@ public class AddTrailsAct extends AppCompatActivity {
 
     private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
         //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(25,0,25,0);
+
         b.setBackgroundColor(getResources().getColor(R.color.white));
-        b.setPadding(40, 0, 40, 0);
+        b.setPadding(6, 6, 6, 6);
+        b.setLayoutParams(lp);
         TextView tv = new TextView(getApplicationContext());
         tv.setText(userName.split(" ")[0]);
 
         makePretty(tv);
 
-        LinearLayout.LayoutParams lp =
+        LinearLayout.LayoutParams lp2 =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
 

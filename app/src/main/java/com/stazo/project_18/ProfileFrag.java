@@ -73,8 +73,6 @@ public class ProfileFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.profile, container, false);
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
-        // clear eventslayout
-
 
         return v;
     }
@@ -96,11 +94,18 @@ public class ProfileFrag extends Fragment {
                 //setColorFilter(getResources().getColor(R.color.colorAccent));
                         setColorFilter(getResources().getColor(R.color.white));
 
+        ((ImageButton) getActivity().findViewById(R.id.goToCreateEventButton)).
+                //setColorFilter(getResources().getColor(R.color.colorAccent));
+                        setColorFilter(getResources().getColor(R.color.white));
+
     }
 
     private void grabInfo() {
         myEvents.clear();
         attendingEvents.clear();
+
+        // for hacking Justin's account LOL
+        // fb.child("Users").child("10209766334938822").
 
         fb.child("Users").child(this.user_ID).
                 addListenerForSingleValueEvent(new ValueEventListener() {
@@ -126,7 +131,6 @@ public class ProfileFrag extends Fragment {
                         // not empty
                         else {
                             // remove empty textview
-                            v.findViewById(R.id.trailsFullLayout).setVisibility(View.INVISIBLE);
                             ((LinearLayout) v.findViewById(R.id.trailsFullLayout)).removeView(
                                     v.findViewById(R.id.emptyTrailsTextContainer));
 
@@ -175,7 +179,7 @@ public class ProfileFrag extends Fragment {
                 //attendingEvents.clear();
 
                 /* no adventures case */
-                if (myEvents.isEmpty() && attendingEvents.isEmpty()) {
+                /*if (myEvents.isEmpty()) {
                     Button eventButton = new Button(getContext());
                     eventButton.setText("No adventures, no worries! " +
                             "Just tap to explore.");
@@ -193,6 +197,18 @@ public class ProfileFrag extends Fragment {
 
                     fb.child("Events").removeEventListener(this);
                     return;
+                }*/
+
+                // if myEvents is not empty, remove the empty button
+                if (!myEvents.isEmpty()) {
+                    ((LinearLayout) v.findViewById(R.id.eventsFullLayout)).removeView(
+                            v.findViewById(R.id.emptyHostingTextContainer));
+                }
+
+                // if attendingEvents is not empty, remove the empty button
+                if (!attendingEvents.isEmpty()) {
+                    ((LinearLayout) v.findViewById(R.id.attendingFullLayout)).removeView(
+                            v.findViewById(R.id.emptyAttendingTextContainer));
                 }
 
                 /* display myEvents */
@@ -218,7 +234,7 @@ public class ProfileFrag extends Fragment {
                         @Override
                         public void onClick(View view) {
                             goToEventInfo(e.getEvent_id());
-                            
+
                         }
                     });
                     attendingLayout.addView(eventButton);
@@ -282,12 +298,6 @@ public class ProfileFrag extends Fragment {
 
     private void goToEventInfo(String event_id) {
         ((MainAct) getActivity()).goToEventInfo(event_id);
-    }
-
-    public void goToAddTrails(View view) {
-//        Intent i = new Intent(this, AddTrailsAct.class);
-//        //i.putExtra("userID", user.getID());
-//        startActivity(i);
     }
 
     private void goToBrowse() {
@@ -431,14 +441,19 @@ public class ProfileFrag extends Fragment {
 
                         // remove filter on release/cancel
                         if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                            b.clearColorFilter();
+                            if (b.getTag(1) == null) {
+                                b.clearColorFilter();
+                            }
                             heldDown = false;
                         }
 
                         // handle "release"
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Log.d("myTag", "imageButton pressed");
-                            b.clearColorFilter();
+
+                            if (b.getTag(1) == null) {
+                                b.clearColorFilter();
+                            }
 
                             // start dialog
                             if (heldDown && System.nanoTime() - startTime > 0.5 * (1000000000)) {
@@ -455,6 +470,8 @@ public class ProfileFrag extends Fragment {
                                             b.setColorFilter(
                                                     getResources().getColor(R.color.colorDividerDark),
                                                     PorterDuff.Mode.MULTIPLY);
+                                            b.setTag(1);
+
                                         } else {
                                             Toast.makeText(getActivity().getApplicationContext(),
                                                     "Already unfollowed " + name.split(" ")[0],

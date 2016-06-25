@@ -65,23 +65,65 @@
                 android:background="@drawable/border_layout"
                 android:id="@+id/eventsFullLayout"
                 android:layout_marginTop="8dp">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dip"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/eventsTitleLayout">
 
-                <TextView
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:text="Hosting"
+                        android:layout_marginLeft="20dip"
+                        android:id="@+id/myEventsTextView"
+                        android:textAppearance="@style/ProfileHeaders" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/goToCreateEventButton"
+                        android:onClick="goToCreateEvent"
+                        android:src="@drawable/ic_actionbar_plus"
+                        android:layout_marginLeft="5dip"
+                        android:gravity="center"
+                        android:background="@null"/>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Hosting"
-                    android:id="@+id/myEventsTextView"
-                    android:textAppearance="@style/ProfileHeaders"/>
+                    android:id="@+id/emptyHostingTextContainer"
+                    android:background="@color/white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="You aren't hosting any events.\nTap the plus to make one!"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyHostingButton"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"
+                        android:visibility="visible"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/white"></LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/eventsLayout"
-                    android:layout_marginTop="10dp"
                     android:gravity="center_horizontal">
 
                 </LinearLayout>
@@ -98,18 +140,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Attending"
+                    android:text="Joined"
                     android:layout_marginTop="20dip"
                     android:layout_marginBottom="5dp"
                     android:id="@+id/myAttendingTextView"
                     android:textAppearance="@style/ProfileHeaders"/>
 
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/emptyAttendingTextContainer"
+                    android:background="@color/white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="You have no ongoing events."
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyAttendingTextView"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"
+                        android:visibility="visible"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/white"></LinearLayout>
+                <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/attendingLayout"
-                    android:layout_marginTop="10dp">
+                    android:id="@+id/attendingLayout">
                 </LinearLayout>
             </LinearLayout>
 
@@ -148,7 +210,7 @@
                         android:onClick="goToAddTrails"
                         android:src="@drawable/ic_actionbar_plus"
                         android:layout_marginLeft="5dip"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:background="@null"/>
 
                 </LinearLayout>
@@ -163,12 +225,11 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="You aren't following anyone yet.\nTap the plus to start!"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:lineSpacingExtra="10dp"
-                        android:layout_marginTop="20dip"
-                        android:layout_marginBottom="10dip"
-                        android:id="@+id/emptyTrailsTextView"
+                        android:id="@+id/emptyTrailsButton"
                         android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
 
