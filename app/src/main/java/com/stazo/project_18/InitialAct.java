@@ -133,9 +133,14 @@ public class InitialAct extends AppCompatActivity {
 
 
     private void goToMainAct(){
-        Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MainAct.class));
-        finish();
+        if (sharedPreferences.getString("beenWelcomed", "0") == "0") {
+            startActivity(new Intent(this, WelcomeActivity.class));
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainAct.class));
+            finish();
+        }
     }
     private void goToLoginAct(){
 

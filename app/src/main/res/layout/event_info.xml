@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="true"
-        android:background="@android:color/white"
+        android:background="@drawable/border_event_info_layout"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
         android:elevation="15dp">
         <LinearLayout
