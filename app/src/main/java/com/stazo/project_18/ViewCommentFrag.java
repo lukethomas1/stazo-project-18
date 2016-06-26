@@ -1,6 +1,7 @@
 package com.stazo.project_18;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +44,8 @@ import java.util.HashMap;
 public class ViewCommentFrag extends Fragment{
     private String passedEventID;
     private View v;
+    private Activity a;
+    private int numCommentsLoaded = 0;
 
     public void submitComment() {
         Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
@@ -64,6 +68,8 @@ public class ViewCommentFrag extends Fragment{
         v = inflater.inflate(R.layout.view_comment, container, false);
         final Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
         final Context context = getContext();
+        wm = getActivity().getWindowManager();
+        a = getActivity();
 
         //POTENTIALLY BAD, SHOULD DO ASYNC INSTEAD, BUT MIGHT FUCK MESS UP VIEWS
         //DANGER DANGER DANGUH
@@ -99,7 +105,7 @@ public class ViewCommentFrag extends Fragment{
                         }
 
                         //show through views and layouts
-                        for (int i = 0; i < commentList.size(); i++) {
+                        for (int i = numCommentsLoaded; i < commentList.size(); i++) {
 
                             //profile pic
                             Bitmap profPicBitmap;
@@ -181,10 +187,11 @@ public class ViewCommentFrag extends Fragment{
                             commentTextLayoutParams.setMargins(getDPI(10), 0, 0, 0);
                             commentText.setLayoutParams(commentTextLayoutParams);
 
+                            //spacer and inc counter
                             TextView spacer = new TextView(context);
                             View space = inflater.inflate(R.layout.spacer, null);
                             mainLayout.addView(space);
-
+                            numCommentsLoaded++;
                         }
 
                     }
@@ -211,7 +218,7 @@ public class ViewCommentFrag extends Fragment{
         if (getActivity() == null) {
             System.out.println("null");
         }
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        a.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return (size * metrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT;
     }
 
