@@ -209,48 +209,15 @@ public class User {
         //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "10209766334938822");
         //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), new Integer(2));
         //addTrail(new Firebase("https://stazo-project-18.firebaseio.com/"), "1070949549640758");
-        friends.put("10209766334938822", "Justin Ang");
+        /*friends.put("10209766334938822", "Justin Ang");
         friends.put("1070949549640758", "Gates Zeng");
         friends.put("1076100269116381", "Eric Zhang");
         friends.put("1131880253542315", "Luke Thomas");
         friends.put("1138117392898486", "Matthew Ung");
         friends.put("1177156832304841", "Ansel Blume");
         friends.put("1184188798300386", "Brian Chan");
-        friends.put("1196215920412322", "Isaac Wang");
-        friends.put("0", "James");
-        friends.put("1", "James");
-        friends.put("2", "James");
-        friends.put("3", "James");
-        friends.put("4", "James");
-        friends.put("5", "James");
-        friends.put("6", "James");
-        friends.put("7", "James");
-        friends.put("8", "James");
-        friends.put("9", "James");
-        friends.put("10", "James");
-        friends.put("11", "James");
-        friends.put("12", "James");
-        friends.put("13", "James");
-        friends.put("14", "James");
-        friends.put("15", "James");
-        friends.put("16", "James");
-        friends.put("17", "James");
-        friends.put("18", "James");
-        friends.put("19", "James");
-        friends.put("20", "James");
-        friends.put("21", "James");
-        friends.put("22", "James");
-        friends.put("23", "James");
-        friends.put("24", "James");
-        friends.put("25", "James");
-        friends.put("26", "James");
-        friends.put("27", "James");
-        friends.put("28", "James");
-        friends.put("29", "James");
-        friends.put("30", "James");
-        friends.put("31", "James");
-        friends.put("32", "James");
-        friends.put("33", "James");
+        friends.put("1196215920412322", "Isaac Wang");*/
+
     }
 
     /**
@@ -458,7 +425,7 @@ public class User {
                                 // if this user is not already in, add to friends
                                 if (!friends.values().contains(id)) {
                                     //addFriend(fb, id, name);
-                                    friends.put(name, id);
+                                    friends.put(id, name);
                                 }
                             }
                         }

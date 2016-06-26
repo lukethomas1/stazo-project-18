@@ -67,6 +67,7 @@ public class MainAct extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         //toolbar stuff first because it needs to be on top?
