@@ -19,6 +19,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -56,18 +58,21 @@ public class AddTrailsAct extends AppCompatActivity {
 
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
-    private HashMap<String, String> relevantUsers = new HashMap<String, String>();  // name to id
-    private HashMap<String, String> allUsers = new HashMap<String, String>();  // name to id
+    private HashMap<String, String> relevantUsers = new HashMap<String, String>();  // id to name
+    private HashMap<String, String> allUsers = new HashMap<String, String>();  // id to name
 
-    private HashMap<String, View> buttonMap = new HashMap<String, View>(); // name to buttonLayout
     //private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
     private Firebase fb;
     private LinearLayout currentRow;
     private LinearLayout usersLayout;
+    private InteractiveScrollView scrollView;
     private int rowIndex;
     private AddTrailsAct instance = this;
     private SetButtonTask currentTask = null;
     private boolean changedTrails = false;
+    private int numToLoad = 0;
+    private int pageNumber = 0;
+    private static final int SECTION_SIZE = 12;
     //private Bitmap profPicBitmap;
 
     @Override
@@ -81,13 +86,10 @@ public class AddTrailsAct extends AppCompatActivity {
         // get allUsers
         allUsers = new HashMap(((Project_18) getApplication()).getMe().getFriends());
 
-        Log.d("shit", "Project_18.me trails is " +
-                ((Project_18) getApplication()).me.getUserTrails().toString());
-
-        Log.d("shit", "allUsers.values() is " + allUsers.values().toString());
-
         // take out users we are already following
         filterFollowedUsers();
+
+        filterMe();
 
         // relevantUsers = the ones displayed
         relevantUsers = new HashMap<String, String>(allUsers);
@@ -95,7 +97,20 @@ public class AddTrailsAct extends AppCompatActivity {
         // set usersLayout
         usersLayout = (LinearLayout) findViewById(R.id.usersLayout);
 
-        generateButtons();
+        // set scrollView
+        scrollView = (InteractiveScrollView) findViewById(R.id.addTrailsScrollView);
+
+        scrollView.setOnBottomReachedListener(
+                new InteractiveScrollView.OnBottomReachedListener() {
+                    @Override
+                    public void onBottomReached() {
+                        // do something
+                        loadMore();
+                    }
+                }
+        );
+
+        generateButtons(true);
 
         // search view things
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
@@ -104,6 +119,7 @@ public class AddTrailsAct extends AppCompatActivity {
         queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
+                pageNumber = 0;
                 updateUserSection(newText);
                 return true;
             }
@@ -136,7 +152,8 @@ public class AddTrailsAct extends AppCompatActivity {
 
     public void goToProfile(View v) {
         //if (!changedTrails) {
-            onBackPressed();
+        //loadMore();
+        onBackPressed();
         //}
         /*else {
             Intent i = new Intent(this, MainAct.class);
@@ -145,10 +162,10 @@ public class AddTrailsAct extends AppCompatActivity {
         }*/
     }
     public void filterMe() {
-        for (String id: allUsers.values()) {
+        for (String id: allUsers.keySet()) {
             if (id.equals(((Project_18) getApplication()).getMe().getID())) {
                 System.out.println("Is me, filtering out " + id);
-                allUsers.values().remove(id);
+                allUsers.remove(id);
                 return;
             }
         }
@@ -157,65 +174,127 @@ public class AddTrailsAct extends AppCompatActivity {
     // removes users from allUsers if you're already following them
     public void filterFollowedUsers() {
         for (String id: ((Project_18) getApplication()).getMe().getUserTrails()) {
-            if (allUsers.values().contains(id)) {
+            if (allUsers.keySet().contains(id)) {
                 Log.d("shit", "Already following, filtering out " + id);
-                allUsers.values().remove(id);
+                allUsers.remove(id);
             }
         }
     }
 
+    private void loadMore() {
+        pageNumber ++;
+        generateButtons(false);
+    }
+
+    // clears user section and updates it with new relevantUsers
     public void updateUserSection(String text){
 
         relevantUsers.clear();
 
-        for(String key: allUsers.keySet()) {
+        /*for(String key: allUsers.keySet()) {
             if ((key.toLowerCase().contains(text.toLowerCase()))) {
                 relevantUsers.put(key, allUsers.get(key));
             }
+        }*/
+        for(String id: allUsers.keySet()) {
+            if ((allUsers.get(id).toLowerCase().contains(text.toLowerCase()))) {
+                relevantUsers.put(id, allUsers.get(id));
+            }
         }
-
         // instance is a private reference to this AddTrailsAct, probably doesn't matter
-        instance.generateButtons();
+        instance.generateButtons(true);
     }
 
-    private synchronized void generateButtons() {
+    // generates buttons
+    private synchronized void generateButtons(boolean clearLayout) {
+
         // optimization
         if (currentTask != null) {
+            Log.d("cancel", "task CANCELLED");
             currentTask.cancel(true);
         }
-        currentTask = new SetButtonTask(relevantUsers);
+        currentTask = new SetButtonTask(relevantUsers, clearLayout, pageNumber * 12);
+        Log.d("cancel", "task EXECUTING...");
         currentTask.execute();
     }
 
     private class SetButtonTask extends AsyncTask<Void, Void, Void> {
 
         private ConcurrentHashMap<String, String> userList =
-            new ConcurrentHashMap<String, String>();
+                new ConcurrentHashMap<String, String>();
 
-        private ConcurrentHashMap<String, Bitmap> nameToBitmap =
+        private ConcurrentHashMap<String, Bitmap> idToBitmap =
                 new ConcurrentHashMap<String, Bitmap>();
 
-        public SetButtonTask(HashMap<String, String> userList) {
+        private boolean clearLayout;
+
+        private int startingPoint;
+
+        public SetButtonTask(HashMap<String, String> userList, boolean clearLayout, int startingPoint) {
             for (String key: userList.keySet()) {
                 this.userList.put(key, userList.get(key));
             }
+            this.clearLayout = clearLayout;
+            this.startingPoint = startingPoint;
         }
 
         @Override
         protected Void doInBackground(Void... v) {
+            numToLoad = SECTION_SIZE;
 
-            for (String name: userList.keySet()) {
-                try {
-                    nameToBitmap.put(name, Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
-                                    userList.get(name) +
-                                    "/picture?type=large")).openConnection().getInputStream()),
-                            180,
-                            180,
-                            true));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+
+            ArrayList<String> ids = new ArrayList<>(userList.keySet());
+
+            // stop if we run out of entries
+            for (int i = startingPoint; i < userList.keySet().size();i++) {
+
+                final String id = ids.get(i);
+
+                if (isCancelled()) {
+                    break;
                 }
+                // stop after we've loaded 12
+                if (numToLoad == 0) {
+                    break;
+                }
+
+                if (((Project_18) getApplication()).cachedIdToBitmap.keySet().contains(id)) {
+                    Log.d("check", "we have cached entry number " + i);
+                    idToBitmap.put(id, ((Project_18) getApplication()).cachedIdToBitmap.get(id));
+                    numToLoad--;
+                }
+
+                else {
+                    try {
+                        Log.d("check", "we are processing entry number " + i);
+
+                        // FOR TESTING PURPOSES
+                        if (id.length() < 5) {
+                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                                    BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                            "1196215920412322" +
+                                            "/picture?type=large")).openConnection().getInputStream()),
+                                    180,
+                                    180,
+                                    true));
+                            numToLoad--;
+                        }
+                        else {
+                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                                    BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                            id +
+                                            "/picture?type=large")).openConnection().getInputStream()),
+                                    180,
+                                    180,
+                                    true));
+                            numToLoad--;
+                        }
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
             }
 
             return null;
@@ -223,16 +302,30 @@ public class AddTrailsAct extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void v) {
-            constructUsersLayout(nameToBitmap, userList);
+
+            // put the same thing in cached
+            for (String id: idToBitmap.keySet()) {
+                ((Project_18) getApplication()).cachedIdToBitmap.put(id, idToBitmap.get(id));
+            }
+            constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;
+            InteractiveScrollView.isReady = true;
+            Log.d("cancel", "task COMPLETED...");
         }
     }
 
-    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> nameToBitmap,
-                                                    ConcurrentHashMap<String, String> userList) {
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
+                                                    ConcurrentHashMap<String, String> userList,
+                                                    boolean clearLayout) {
 
         // clear layout
-        usersLayout.removeAllViewsInLayout();
+        if (clearLayout) {
+            usersLayout.removeAllViewsInLayout();
+        }
+
+        if (idToBitmap.isEmpty()) {
+            return;
+        }
 
         // make the first row
         currentRow = new LinearLayout(getApplicationContext());
@@ -246,8 +339,8 @@ public class AddTrailsAct extends AppCompatActivity {
         // limits 3 buttons per row
         rowIndex = 0;
 
-        for (String name: nameToBitmap.keySet()) {
-            instance.addToUsersLayout(nameToBitmap.get(name), name, userList.get(name));
+        for (String id: idToBitmap.keySet()) {
+            instance.addToUsersLayout(idToBitmap.get(id), userList.get(id), id);
         }
     }
 
@@ -321,9 +414,6 @@ public class AddTrailsAct extends AppCompatActivity {
                 // make button look good and add to buttonLayout
                 makePretty(b, name, buttonLayout);
 
-                // add to buttonMap
-                buttonMap.put(name, buttonLayout);
-
                 // add buttonLayout to row
                 currentRow.addView(buttonLayout);
 
@@ -376,9 +466,6 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     private void makePretty(LinearLayout row) {
-        /*LinearLayout.LayoutParams lp =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);*/
 
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setPadding(0, 0, 0, 40);
@@ -386,7 +473,7 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     @Override
-     public void onResume() {
+    public void onResume() {
         super.onResume();
         Firebase.setAndroidContext(this);
     }

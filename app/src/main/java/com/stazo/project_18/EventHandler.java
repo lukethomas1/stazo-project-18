@@ -19,7 +19,6 @@ public class EventHandler {
     public static ArrayList<String> eventNames = new ArrayList<String>();
     public static ArrayList<String> eventDescriptions = new ArrayList<String>();
 
-
     // offset from the epoch
     private static int GMTOffset = ((new GregorianCalendar()).getTimeZone()).getRawOffset();
 
@@ -55,7 +54,6 @@ public class EventHandler {
         eventDescriptions.add("soda and other drinks provided");
         eventDescriptions.add("gonna look at some stars");
         eventDescriptions.add("Legacy Speech by professor Ord @ PC");
-
     }
 
     public void clearEvents() {
@@ -77,7 +75,7 @@ public class EventHandler {
             //Log.d("myTag", "" + e.getEvent_id());
 
             // Popularity generation
-            //e.setPopularity((int) (Math.random() * 30));
+            e.setPopularity((int) (Math.random() * 60));
 
             e.pushToFirebase(new Firebase("https://stazo-project-18.firebaseio.com/"));
         }
