@@ -152,7 +152,7 @@
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical">
 
-                    <Button
+                    <!--Button
                         android:layout_width="120dp"
                         android:layout_height="80dp"
                         android:id="@+id/writeCommentButton"
@@ -160,15 +160,13 @@
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="0dp"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="0dp" />
+                        android:layout_marginTop="0dp" /-->
                     <Button
-                        android:layout_width="120dp"
+                        android:layout_width="300dp"
                         android:layout_height="80dp"
                         android:id="@+id/viewCommentButton"
                         android:text="View comments"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true" />
+                        android:layout_centerVertical="true"/>
 
                 </RelativeLayout>
             </LinearLayout>

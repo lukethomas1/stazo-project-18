@@ -91,13 +91,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //setup comment buttons
-        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
-        writeCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                writeCommentClick();
-            }
-        });
+//        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
+//        writeCommentButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                writeCommentClick();
+//            }
+//        });
 
         Button viewCommentButton = (Button) v.findViewById(R.id.viewCommentButton);
         viewCommentButton.setOnClickListener(new View.OnClickListener() {

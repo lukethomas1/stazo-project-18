@@ -15,43 +15,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/eventInfoScroll">
-
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/viewCommentLayout">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width = "match_parent"
-                android:layout_height = "50dp"
-                android:layout_marginTop="30dp"
-                android:textSize = "20dp"
-                android:text = "Comments:">
-            </TextView>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center">
-
-
-            <Button
+            <!-- Layout to add comments to -->
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/submitComment"
-                android:text="Post"
-                />
+                android:layout_height="match_parent"
+                android:id="@+id/viewCommentLayout">
+                <TextView
+                    android:layout_width = "match_parent"
+                    android:layout_height = "30dp"
+                    android:layout_marginTop="10dp"
+                    android:textSize = "20dp"
+                    android:text = "Comments:">
+                </TextView>
+            </LinearLayout>
 
-            <EditText
+            <!-- Layout for posting comments -->
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:hint="Write comment here..."
-                android:id="@+id/commentText" />
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="60dp"
+                    android:hint="Write comment here..."
+                    android:id="@+id/commentText" />
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/submitComment"
+                    android:text="Post" />
+            </LinearLayout>
 
 
         </LinearLayout>
