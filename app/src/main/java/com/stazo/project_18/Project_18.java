@@ -40,6 +40,7 @@ public class Project_18 extends Application {
 
     // store images
     public static HashMap<String, Bitmap> cachedIdToBitmap = new HashMap<String, Bitmap>();
+    public static HashMap<String, String> cachedIdToName = new HashMap<>();
 
 
     // stores a pulled event locally (pulledEvents)

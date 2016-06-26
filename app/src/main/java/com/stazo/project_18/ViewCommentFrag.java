@@ -62,11 +62,16 @@ public class ViewCommentFrag extends Fragment{
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.view_comment, container, false);
-        Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
+        final Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
+        final Context context = getContext();
 
         //POTENTIALLY BAD, SHOULD DO ASYNC INSTEAD, BUT MIGHT FUCK MESS UP VIEWS
         //DANGER DANGER DANGUH
         //CAUTION CAUTION CAUTION
+        /*
+        ALSO STUFF TO STILL KINDA FIX: The loading time on 10+ comments w different profiles, which is caused by loading a shitton of images
+
+         */
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -75,7 +80,7 @@ public class ViewCommentFrag extends Fragment{
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //get arraylist of comments
-                        ArrayList<Comment> commentList = new ArrayList<Comment>();
+                        final ArrayList<Comment> commentList = new ArrayList<Comment>();
 
 //                commentList = dataSnapshot.child("comments").getValue(
 //                        new GenericTypeIndicator<ArrayList<String>>() {});
@@ -98,61 +103,63 @@ public class ViewCommentFrag extends Fragment{
 
                             //profile pic
                             Bitmap profPicBitmap;
-                            try {
-                                URL imageURL = new URL("https://graph.facebook.com/" + commentList.get(i).getUser_ID()
-                                        + "/picture?type=large");
-                                profPicBitmap = Bitmap.createScaledBitmap(
-                                        BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                                        150,
-                                        150,
-                                        true);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+
+                            //get cache and check ID against it
+                            HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
+                            if (imageCache.keySet().contains(commentList.get(i).getUser_ID())) {
+                                System.out.println("cache hit");
+                                profPicBitmap = imageCache.get(commentList.get(i).getUser_ID());
+                            } else {
+                                try {
+                                    URL imageURL = new URL("https://graph.facebook.com/" + commentList.get(i).getUser_ID()
+                                            + "/picture?type=large");
+                                    profPicBitmap = Bitmap.createScaledBitmap(
+                                            BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
+                                            150,
+                                            150,
+                                            true);
+                                    Project_18.cachedIdToBitmap.put(commentList.get(i).getUser_ID(), profPicBitmap);
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
 
-                            ImageView profileView = new ImageView(getContext());
+                            ImageView profileView = new ImageView(context);
                             profileView.setImageBitmap(profPicBitmap);
 
                             //user_id
-                            final TextView userText = new TextView(getContext());
+                            final TextView userText = new TextView(context);
+                            if (Project_18.cachedIdToName.containsKey(commentList.get(i).getUser_ID())) {
+                                userText.setText(Project_18.cachedIdToName.get(commentList.get(i).getUser_ID()));
+                                System.out.println("name cache hit");
+                            }
+                            else {
+                                fb.child("Users").child(commentList.get(i).getUser_ID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        userText.setText((String)dataSnapshot.child("name").getValue());
+                                        Project_18.cachedIdToName.put(dataSnapshot.getKey(), (String)dataSnapshot.child("name").getValue());
+                                    }
 
-                            //userText.setText(commentList.get(i).getUser_ID());
-                            GraphRequest request = GraphRequest.newMeRequest(
-                                    AccessToken.getCurrentAccessToken(),
-                                    new GraphRequest.GraphJSONObjectCallback() {
-                                        @Override
-                                        public void onCompleted(
-                                                JSONObject object,
-                                                GraphResponse response) {
-                                            //add to userText
-                                            String username;
-                                            try {
-                                                username = object.getString("name");
-                                            } catch (Exception e) {
-                                                username = "Error fetching name";
-                                            }
-                                            userText.setText(username);
-                                            userText.setTypeface(null, Typeface.BOLD);
-                                            userText.setTextSize(16);
-                                        }
-                                    });
-                            Bundle parameters = new Bundle();
-                            parameters.putString("fields", "id,name,link");
-                            request.setParameters(parameters);
-                            request.executeAsync();
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+
+                                    }
+                                });
+                            }
 
                             //comment
-                            TextView commentText = new TextView(getContext());
+                            TextView commentText = new TextView(context);
                             commentText.setText(commentList.get(i).getComment());
 
 
                             //layout
                             LinearLayout mainLayout = (LinearLayout) v.findViewById(R.id.viewCommentLayout);
-                            LinearLayout commentLayout = new LinearLayout(getContext());
+                            LinearLayout commentLayout = new LinearLayout(context);
                             commentLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                                     LayoutParams.MATCH_PARENT));
                             commentLayout.setOrientation(LinearLayout.HORIZONTAL);
-                            LinearLayout textLayout = new LinearLayout(getContext());
+                            LinearLayout textLayout = new LinearLayout(context);
                             textLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                                     LayoutParams.WRAP_CONTENT));
                             textLayout.setOrientation(LinearLayout.VERTICAL);
@@ -168,11 +175,13 @@ public class ViewCommentFrag extends Fragment{
                             LayoutParams userTextLayoutParams = new LayoutParams((getDPI(250)), getDPI(20));
                             userTextLayoutParams.setMargins(getDPI(10), 0, 0, 0);
                             userText.setLayoutParams(userTextLayoutParams);
+                            userText.setTypeface(null, Typeface.BOLD);
+                            userText.setTextSize(16);
                             LayoutParams commentTextLayoutParams = new LayoutParams(getDPI(250), LinearLayout.LayoutParams.WRAP_CONTENT);
                             commentTextLayoutParams.setMargins(getDPI(10), 0, 0, 0);
                             commentText.setLayoutParams(commentTextLayoutParams);
 
-                            TextView spacer = new TextView(getContext());
+                            TextView spacer = new TextView(context);
                             View space = inflater.inflate(R.layout.spacer, null);
                             mainLayout.addView(space);
 
@@ -199,6 +208,9 @@ public class ViewCommentFrag extends Fragment{
     public int getDPI(int size){
         DisplayMetrics metrics;
         metrics = new DisplayMetrics();
+        if (getActivity() == null) {
+            System.out.println("null");
+        }
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return (size * metrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT;
     }
