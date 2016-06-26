@@ -14,15 +14,16 @@
 
     <!-- MYSTRINGS -->
     <string name="welcome_header_1">Welcome to fumono!</string>
-    <string name="welcome_desc_1">In case you haven\'t heard, fumono is a locale-based event finder.
+    <string name="welcome_desc_1">If you haven\'t heard, fumono is a locale-based event finder.
         That means everything fun happening nearby can be found here.</string>
 
-    <string name="welcome_header_2">Community Guidelines</string>
-    <string name="welcome_desc_2">The idea behind fumono is simple: meet new people and have fun.
-     To give you an idea of what that looks like, we\'ve come up with a few Community Guidelines.</string>
+    <string name="welcome_header_2">Things to Know</string>
+    <string name="welcome_desc_2">1. All events on fumono are open to
+        everyone\n2. Anyone can post an event to fumono\n3.
+        Any event is welcome (study sessions, beach trips, night socials, etc.) </string>
 
-    <string name="welcome_header_3">Guideline Number One: Be Nice</string>
-    <string name="welcome_desc_3">Hopefully we don\'t need to explain this one.</string>
+    <string name="welcome_header_3">Community Guidelines</string>
+    <string name="welcome_desc_3">1. Be nice\n2. Don\'t be shy\n3. Have fun</string>
 
     <string name="welcome_header_4">Guideline Number Two: Be Inviting</string>
     <string name="welcome_desc_4">Every event on fumono is open to everyone.

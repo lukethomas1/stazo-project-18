@@ -1,5 +1,8 @@
 package com.stazo.project_18;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -14,7 +18,9 @@ public class WelcomeActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 6;
+    private static final int NUM_PAGES = 4;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -49,9 +55,12 @@ public class WelcomeActivity extends FragmentActivity {
         frags.add(wFrag1);
         frags.add(wFrag2);
         frags.add(wFrag3);
-        frags.add(wFrag4);
-        frags.add(wFrag5);
+        //frags.add(wFrag4);
+        //frags.add(wFrag5);
         frags.add(wFrag6);
+
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
     }
 
     @Override
@@ -84,5 +93,18 @@ public class WelcomeActivity extends FragmentActivity {
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+    public void goToMain(View view) {
+
+        startActivity(new Intent(this, MainAct.class));
+        setSharedPreferences();
+        finish();
+    }
+    // save the userId to sharedPreferences so they don't have to relog
+    private void setSharedPreferences() {
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("beenWelcomed", true);
+        editor.apply();
     }
 }

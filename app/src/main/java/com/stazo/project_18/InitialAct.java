@@ -133,7 +133,9 @@ public class InitialAct extends AppCompatActivity {
 
 
     private void goToMainAct(){
-        if (sharedPreferences.getString("beenWelcomed", "0") == "0") {
+
+        // If I have not been welcomed
+        if (!sharedPreferences.getBoolean("beenWelcomed", false)) {
             startActivity(new Intent(this, WelcomeActivity.class));
         }
         else {
