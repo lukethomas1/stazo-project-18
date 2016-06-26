@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +37,18 @@ public class ViewCommentFrag extends Fragment{
     private String passedEventID;
     private View v;
 
+    public void submitComment() {
+        Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
+        String commentText = ((EditText) v.findViewById(R.id.commentText)).getText().toString();
+
+        //used push instead of updating an arrray list, pushing it into the comments array of
+        //the EventComments tied to an Event_ID
+        String user_ID = ((Project_18)this.getActivity().getApplication()).getMe().getID();
+        Comment comment = new Comment(this.passedEventID, commentText, user_ID);
+        fb.child("CommentDatabase").child(this.passedEventID).child("comments").push().setValue(comment);
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.view_comment, container, false);
@@ -58,7 +72,7 @@ public class ViewCommentFrag extends Fragment{
 
                         //get iterable snapshots, iterate through and add to commentList
                         Iterable<DataSnapshot> commentIterable = dataSnapshot.child("comments").getChildren();
-                        while(commentIterable.iterator().hasNext()) {
+                        while (commentIterable.iterator().hasNext()) {
                             //System.out.println(commentIterable.iterator().next().getValue());
                             commentList.add((Comment) commentIterable.iterator().next().getValue(Comment.class));
                         }
@@ -69,8 +83,7 @@ public class ViewCommentFrag extends Fragment{
                             System.out.println(commentList.get(i).getComment());
                         }
 
-                        //show through textviews
-                        LinearLayout layout = (LinearLayout) v.findViewById(R.id.viewCommentLayout);
+                        //show through views and layouts
                         for (int i = 0; i < commentList.size(); i++) {
 
                             //profile pic
@@ -89,7 +102,6 @@ public class ViewCommentFrag extends Fragment{
 
                             ImageView ProfileView = new ImageView(getContext());
                             ProfileView.setImageBitmap(profPicBitmap);
-                            layout.addView(ProfileView);
 
                             //user_id
                             final TextView userText = new TextView(getContext());
@@ -106,8 +118,9 @@ public class ViewCommentFrag extends Fragment{
                                             String username;
                                             try {
                                                 username = object.getString("name");
+                                            } catch (Exception e) {
+                                                username = "Error fetching name";
                                             }
-                                            catch (Exception e) {username = "Error fetching name";}
                                             userText.setText(username);
                                         }
                                     });
@@ -116,19 +129,45 @@ public class ViewCommentFrag extends Fragment{
                             request.setParameters(parameters);
                             request.executeAsync();
 
-                            layout.addView(userText);
-
                             //comment
                             TextView commentText = new TextView(getContext());
                             commentText.setText(commentList.get(i).getComment());
-                            layout.addView(commentText);
+
+
+                            //layout
+                            LinearLayout mainLayout = (LinearLayout) v.findViewById(R.id.viewCommentLayout);
+                            LinearLayout commentLayout = new LinearLayout(getContext());
+                            commentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+                            commentLayout.setOrientation(LinearLayout.HORIZONTAL);
+                            LinearLayout textLayout = new LinearLayout(getContext());
+                            textLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+                            commentLayout.setOrientation(LinearLayout.VERTICAL);
+                            mainLayout.addView(commentLayout);
+                            commentLayout.addView(ProfileView);
+                            commentLayout.addView(textLayout);
+
+                            textLayout.addView(userText);
+                            textLayout.addView(commentText);
+
                         }
 
                     }
+
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
                 });
+
+        final Button submitComment = (Button) v.findViewById(R.id.submitComment);
+        submitComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitComment();
+            }
+        });
+
         return v;
     }
 

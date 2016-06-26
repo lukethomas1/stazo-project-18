@@ -31,5 +31,29 @@
             </TextView>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/submitComment"
+                android:text="Post"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:hint="Write comment here..."
+                android:id="@+id/commentText" />
+
+
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>
