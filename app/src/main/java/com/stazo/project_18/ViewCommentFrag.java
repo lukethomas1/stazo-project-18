@@ -68,7 +68,6 @@ public class ViewCommentFrag extends Fragment{
         v = inflater.inflate(R.layout.view_comment, container, false);
         final Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
         final Context context = getContext();
-        wm = getActivity().getWindowManager();
         a = getActivity();
 
         //POTENTIALLY BAD, SHOULD DO ASYNC INSTEAD, BUT MIGHT FUCK MESS UP VIEWS
