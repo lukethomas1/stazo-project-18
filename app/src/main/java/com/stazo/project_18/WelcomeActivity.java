@@ -36,8 +36,6 @@ public class WelcomeActivity extends FragmentActivity {
     private Welcome1Frag wFrag1 = new Welcome1Frag();
     private Welcome2Frag wFrag2 = new Welcome2Frag();
     private Welcome3Frag wFrag3 = new Welcome3Frag();
-    private Welcome4Frag wFrag4 = new Welcome4Frag();
-    private Welcome5Frag wFrag5 = new Welcome5Frag();
     private Welcome6Frag wFrag6 = new Welcome6Frag();
 
     private ArrayList<Fragment> frags = new ArrayList<Fragment>();
@@ -94,6 +92,7 @@ public class WelcomeActivity extends FragmentActivity {
             return NUM_PAGES;
         }
     }
+
     public void goToMain(View view) {
 
         startActivity(new Intent(this, MainAct.class));

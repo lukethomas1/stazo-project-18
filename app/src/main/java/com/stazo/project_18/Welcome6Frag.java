@@ -16,7 +16,7 @@ public class Welcome6Frag extends Fragment {
                              Bundle savedInstanceState) {
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.welcome_6, container, false);
+                R.layout.welcome_4, container, false);
         return rootView;
     }
 

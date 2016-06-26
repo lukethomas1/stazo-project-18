@@ -157,10 +157,6 @@ public class SearchFrag extends Fragment {
     }
 
     private void makePretty(TextView tv) {
-        /*ViewGroup.LayoutParams params = tv.getLayoutParams();
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        tv.setLayoutParams(params);*/
 
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(16);
@@ -170,6 +166,7 @@ public class SearchFrag extends Fragment {
     }
 
     private void goToEventInfo(String event_id) {
+        ((MainAct) getActivity()).simulateClick(event_id);
         ((MainAct) getActivity()).goToEventInfo(event_id);
     }
 

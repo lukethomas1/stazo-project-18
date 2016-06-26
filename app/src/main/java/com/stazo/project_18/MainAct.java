@@ -51,7 +51,9 @@ public class MainAct extends AppCompatActivity
     private ViewPagerAdapter adapter;
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
-    private EventInfoFrag eventInfoFrag;
+    private static EventInfoFrag eventInfoFrag;
+
+    private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
     // Search stuff
     private SearchView searchView = null;
@@ -327,49 +329,44 @@ public class MainAct extends AppCompatActivity
         startActivity(new Intent(this, AddTrailsAct.class));
     }
     public void goToEventInfo(String event_id) {
-        System.out.println("goToEventInfo");
-//        Intent intent = new Intent(this, EventInfoAct.class);
-//        intent.putExtra("event_id", event_id);
-//        startActivity(intent);
+
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
-
         searchView.clearFocus();
-        // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
+
         eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
         FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
-//        transaction.replace
-//                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
         transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
-//        this.getWindow().setDimAmount((float) 0.8);
-//        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-//        lp.dimAmount=0.0f;
-//        this.getWindow().setAttributes(lp);
-//        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-//        transaction
-//                .add(R.id.show_eventInfo, eventInfoFrag)
-//                .addToBackStack("EventInfoFrag")
-//                .commit();
-
+    }
+    public void simulateClick(String event_id) {
+        ((MapFrag) tabFragments.get(0)).simulateOnClick(event_id);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), ""); //map
-        adapter.addFragment(new ListAct(), ""); //explore
+        MapFrag mapFrag = new MapFrag();
+        ListAct listAct = new ListAct();
+        ProfileFrag profileFrag= new ProfileFrag();
+
+        // save references to fragments
+        tabFragments.add(mapFrag);
+        tabFragments.add(listAct);
+        tabFragments.add(profileFrag);
 
         //preemptive set user_id and isMe
-        ProfileFrag profileFrag= new ProfileFrag();
         profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
         profileFrag.setIsMe(true);
+
+        adapter.addFragment(mapFrag, ""); //map
+        adapter.addFragment(listAct, ""); //explore
         adapter.addFragment(profileFrag, ""); //profile
 
         viewPager.setAdapter(adapter);
