@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/profileLayout"
-    tools:context=".Profile"
     android:visibility="visible"
-    android:background="@color/colorDividerLight">
+    android:background="@color/colorDividerLight"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    android:layout_marginBottom="0dp">
 
     <com.stazo.project_18.InteractiveScrollView
         android:layout_width="match_parent"
@@ -20,7 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/profileLinear">
             <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
@@ -71,14 +73,6 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="6dp"
-                    android:background="@color/white"
-                    android:id="@+id/profileHeaderPadding"
-                    android:orientation="horizontal"
-                    android:visibility="gone"></LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
                     android:orientation="horizontal"
@@ -114,6 +108,19 @@
                         android:textColor="@color/colorDivider"/>
                 </LinearLayout>
 
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/followButton"
+                    android:onClick="followUser"
+                    android:layout_gravity="center"
+                    android:text="Follow"
+                    android:textSize="10dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center"
+                    android:background="@color/colorAccent"
+                    android:textColor="@color/colorTextPrimary"/>
 
             </LinearLayout>
 
@@ -125,6 +132,7 @@
                 android:background="@drawable/border_layout"
                 android:id="@+id/eventsFullLayout"
                 android:layout_marginTop="8dp">
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -137,7 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="bottom"
-                        android:text="Hosting"
+                        android:text="Ongoing"
                         android:layout_marginLeft="20dip"
                         android:layout_marginBottom="12dp"
                         android:id="@+id/myEventsTextView"
@@ -169,7 +177,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="You aren't hosting any events."
+                        android:text="You have no ongoing events."
                         android:textSize="12sp"
                         android:lineSpacingExtra="10dp"
                         android:id="@+id/emptyHostingText"
@@ -186,53 +194,6 @@
                     android:id="@+id/eventsLayout"
                     android:gravity="center_horizontal">
 
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/border_layout"
-                android:id="@+id/attendingFullLayout"
-                android:layout_marginTop="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity=""
-                    android:text="Joined"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginLeft="20dip"
-                    android:id="@+id/myAttendingTextView"
-                    android:textAppearance="@style/ProfileHeaders"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/emptyAttendingTextContainer"
-                    android:background="@color/white">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:text="You have no ongoing events."
-                        android:textSize="12sp"
-                        android:lineSpacingExtra="10dp"
-                        android:id="@+id/emptyAttendingTextView"
-                        android:textColor="@color/colorTextPrimary"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:visibility="visible"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/attendingLayout">
                 </LinearLayout>
             </LinearLayout>
 
@@ -302,14 +263,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:background="@color/white"></LinearLayout>
-                <LinearLayout
-                    android:orientation="vertical"
+                <com.stazo.project_18.InteractiveScrollViewHorizontal
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/trailsLayout"
-                    android:layout_marginTop="0dp"
+                    android:id="@+id/trailsScrollView"
                     android:background="@color/white">
-                </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/trailsLayout"
+                        android:layout_marginBottom="5dp">
+                    </LinearLayout>
+                </com.stazo.project_18.InteractiveScrollViewHorizontal>
             </LinearLayout>
         </LinearLayout>
     </com.stazo.project_18.InteractiveScrollView>

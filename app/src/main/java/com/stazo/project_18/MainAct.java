@@ -30,6 +30,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -65,6 +66,8 @@ public class MainAct extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     private static EventInfoFrag eventInfoFrag;
+    private static ProfileFrag otherProfileFrag;
+    private static ProfileFrag newOtherProfileFrag;
 
     private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
@@ -222,15 +225,17 @@ public class MainAct extends AppCompatActivity
                         if (searchFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
                         }
+                        if (eventInfoFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+                        }
+                        if (otherProfileFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                        }
                         searched = false;
                         searchFrag = new SearchFrag();
                         transaction =
                                 act.getSupportFragmentManager().beginTransaction();
                         transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();
-
-                        if (eventInfoFrag != null) {
-                            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
-                        }
                     }
 
                     else {
@@ -312,7 +317,8 @@ public class MainAct extends AppCompatActivity
     }
 
     public void toggleState(View v) {
-        eventInfoFrag.toggleState(v);
+        if (eventInfoFrag != null)
+            eventInfoFrag.toggleState(v);
     }
 
     public void goToCreateEvent(View view) {
@@ -332,18 +338,26 @@ public class MainAct extends AppCompatActivity
 //        transaction.add(R.id.show_viewProfile, profileFrag).addToBackStack("CreateEventFrag").commit();
 //    }
 
-//    public void goToProfile() {
-//        Intent i =  new Intent(this, Profile.class);
-//        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
-//        startActivity(i);
-//    }
-
     public void goToOtherProfile(String userId) {
-        ProfileFrag profileFrag = new ProfileFrag();
-        profileFrag.setInfo(userId, false);
+        if (searchFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+        }
+        if (eventInfoFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+        }
+
+        newOtherProfileFrag = new ProfileFrag();
+        newOtherProfileFrag.setInfo(userId, false);
         FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.show_otherProfile, profileFrag).addToBackStack("ProfileFrag").commit();
+        transaction.add(R.id.show_otherProfile, newOtherProfileFrag).addToBackStack("ProfileFrag").commit();
+    }
+
+    public void updateOtherProfileFrag() {
+        if (otherProfileFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+        }
+        otherProfileFrag = newOtherProfileFrag;
     }
 
     public void goToAddTrails(View v) {
@@ -357,12 +371,16 @@ public class MainAct extends AppCompatActivity
         final LinearLayout container = new LinearLayout(this);
         container.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
 
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        container.setLayoutParams(lp2);
+        container.setGravity(Gravity.CENTER);
+
         final EditText input = new EditText(this);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(50,20,50,0);
+        lp.setMargins(0, 20, 0, 0);
         input.setLayoutParams(lp);
         input.setGravity(Gravity.CENTER);
         input.setText(Project_18.me.getBio());
@@ -375,7 +393,7 @@ public class MainAct extends AppCompatActivity
 
         input.setSelection(input.getText().length());
         input.setBackground(null);
-        input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        //input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         //input.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
         container.addView(input);
@@ -408,6 +426,7 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails() {
         startActivity(new Intent(this, AddTrailsAct.class));
     }
+
     public void goToEventInfo(String event_id) {
 
         if (searchFrag != null) {
@@ -416,13 +435,22 @@ public class MainAct extends AppCompatActivity
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
+
+        if (otherProfileFrag != null) {
+            //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+            getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
+        }
+
+        simulateClick(event_id);
+
         searchView.clearFocus();
 
         eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
-        FragmentTransaction transaction =
-                this.getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
+        this.getSupportFragmentManager().beginTransaction().
+                add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
+        //transaction.add(eventInfoFrag, "EventInfoFrag").commit();
+
     }
     public void simulateClick(String event_id) {
         ((MapFrag) tabFragments.get(0)).simulateOnClick(event_id);
@@ -531,5 +559,9 @@ public class MainAct extends AppCompatActivity
     public void onResume() {
         super.onResume();
         Firebase.setAndroidContext(this);
+    }
+
+    public void followUser(View v) {
+        otherProfileFrag.followUser();
     }
 }

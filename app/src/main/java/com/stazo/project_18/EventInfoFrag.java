@@ -68,7 +68,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
 
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -131,8 +132,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
 
-    /* toggle frag state */
-    public void toggleState(View v) {
+    public void toggleState() {
+
         if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
@@ -140,6 +141,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             //getActivity().findViewById(R.id.upArrow).setRotation(0);
         }
+    }
+
+    /* toggle frag state */
+    public void toggleState(View v) {
+        toggleState();
     }
 
     //setter method for main act to pass in eventID

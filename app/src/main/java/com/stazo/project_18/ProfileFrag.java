@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -65,15 +66,15 @@ public class ProfileFrag extends Fragment {
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
     private Bitmap profPicBitmap;
-    private LinearLayout currentRow;
+    //private LinearLayout currentRow;
     private LinearLayout trailsLayout;
-    private int rowIndex = 0;
+    //private int rowIndex = 0;
     private float startTime = System.nanoTime();
     private boolean heldDown = false;
     private ArrayList<ImageButton> nullButtons = new ArrayList<ImageButton>();
-    private int SECTION_SIZE = 4;
+    private int SECTION_SIZE = 5;
     private int page = 0;
-    private InteractiveScrollView scrollView;
+    private InteractiveScrollViewHorizontal scrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,10 +96,10 @@ public class ProfileFrag extends Fragment {
         v.findViewById(R.id.profileLayout).setVisibility(View.INVISIBLE);
 
         // set scrollView
-        scrollView = (InteractiveScrollView) getActivity().findViewById(R.id.profileScrollView);
+        scrollView = (InteractiveScrollViewHorizontal) getActivity().findViewById(R.id.trailsScrollView);
 
         scrollView.setOnBottomReachedListener(
-                new InteractiveScrollView.OnBottomReachedListener() {
+                new InteractiveScrollViewHorizontal.OnBottomReachedListener() {
                     @Override
                     public void onBottomReached() {
                         // do something
@@ -107,7 +108,6 @@ public class ProfileFrag extends Fragment {
                 }
         );
         grabInfo();
-
     }
 
     // gets everything going
@@ -126,10 +126,11 @@ public class ProfileFrag extends Fragment {
 
         if (!isMe) {
             // hide me-specific info
-            ((LinearLayout) v.findViewById(R.id.profileHeaderLayout)).
-                    removeView(v.findViewById(R.id.userOptions));
-            ((LinearLayout) v.findViewById(R.id.profileHeaderLayout)).
-                    removeView(v.findViewById(R.id.userOptions));
+            v.findViewById(R.id.userOptions).setVisibility(View.GONE);
+            setFollowButton(Project_18.me.getUserTrails().contains(user_ID));
+
+            v.findViewById(R.id.goToCreateEventButton).setVisibility(View.GONE);
+            v.findViewById(R.id.goToAddTrailsButton).setVisibility(View.GONE);
 
             // set margin top to 0
             /*LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
@@ -137,8 +138,10 @@ public class ProfileFrag extends Fragment {
             lp.topMargin = 0;
             v.findViewById(R.id.profileHeaderLayout).setLayoutParams(lp);*/
 
-            // add padding
-            v.findViewById(R.id.profileHeaderPadding).setVisibility(View.VISIBLE);
+        }
+        else {
+            // hide not-me-specific info
+            v.findViewById(R.id.followButton).setVisibility(View.GONE);
         }
 
         myEvents.clear();
@@ -163,6 +166,9 @@ public class ProfileFrag extends Fragment {
 
                         // display trails
                         userTrails = user.getUserTrails();
+
+                        ((TextView) v.findViewById(R.id.myTrailsTextView)).
+                                setText("Following (" + userTrails.size() + ")");
 
                         // empty case
                         if (userTrails.isEmpty()) {
@@ -218,29 +224,25 @@ public class ProfileFrag extends Fragment {
                 }
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
-                LinearLayout attendingLayout = (LinearLayout) v.findViewById(R.id.attendingLayout);
-                if (myEvents.isEmpty()) {
+
+                /*if (myEvents.isEmpty()) {
                     if (!isMe) {
                         ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
                                 user.getName() + " isn't hosting any events.");
                     }
                 }
 
-                // if myEvents is not empty, remove the empty button
-                else {
-                    ((LinearLayout) v.findViewById(R.id.eventsFullLayout)).removeView(
-                            v.findViewById(R.id.emptyHostingTextContainer));
-                }
-                if (attendingEvents.isEmpty()) {
+                // if myEvents is not empty, remove the empty text
+                else {*/
+                //}
+                if (myEvents.isEmpty() && attendingEvents.isEmpty()) {
                     if (!isMe) {
-                        ((TextView) v.findViewById(R.id.emptyAttendingTextView)).setText(
+                        ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
                                 user.getName() + " has no ongoing events");
                     }
                 }
-                // if attendingEvents is not empty, remove the empty button
                 else {
-                    ((LinearLayout) v.findViewById(R.id.attendingFullLayout)).removeView(
-                            v.findViewById(R.id.emptyAttendingTextContainer));
+                    v.findViewById(R.id.emptyHostingTextContainer).setVisibility(View.GONE);
                 }
 
                 /* display myEvents */
@@ -269,11 +271,8 @@ public class ProfileFrag extends Fragment {
 
                         }
                     });
-                    attendingLayout.addView(eventButton);
+                    eventsLayout.addView(eventButton);
                 }
-
-                // unhide-layout
-                (v.findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
 
                 fb.child("Events").removeEventListener(this);
             }
@@ -324,6 +323,14 @@ public class ProfileFrag extends Fragment {
                         profPicBitmap = Project_18.BITMAP_RESIZER(profPicBitmap, 400, 400);
                         iv.setImageBitmap(profPicBitmap);
                         iv.setVisibility(View.VISIBLE);
+
+                        // unhide-layout
+                        (v.findViewById(R.id.profileLayout)).setVisibility(View.VISIBLE);
+
+                        // replace old frag now that it's loaded
+                        if (!isMe) {
+                            ((MainAct) getActivity()).updateOtherProfileFrag();
+                        }
                     }
                 });
 
@@ -432,16 +439,16 @@ public class ProfileFrag extends Fragment {
         //trailsLayout.removeAllViews();
 
         // make the first row
-        currentRow = new LinearLayout(getActivity().getApplicationContext());
+        //currentRow = new LinearLayout(getActivity().getApplicationContext());
 
         // make it pretty
-        makePretty(currentRow);
+        //makePretty(currentRow);
 
         // add the first row
-        trailsLayout.addView(currentRow);
+        //trailsLayout.addView(currentRow);
 
         // limits 3 buttons per row
-        rowIndex = 0;
+        //rowIndex = 0;
 
         for (String id: idToBitmap.keySet()) {
             addToUsersLayout(idToBitmap.get(id), idToName.get(id), id);
@@ -549,10 +556,10 @@ public class ProfileFrag extends Fragment {
                 //buttonMap.put(name, buttonLayout);
 
                 // add buttonLayout to row
-                currentRow.addView(buttonLayout);
+                //currentRow.addView(buttonLayout);
 
                 // row index handling
-                if (rowIndex < 3) {
+                /*if (rowIndex < 3) {
                     rowIndex++;
                 } else {
 
@@ -565,7 +572,11 @@ public class ProfileFrag extends Fragment {
 
                     // add new row to the layout
                     trailsLayout.addView(currentRow);
-                }
+                }*/
+                /*ViewGroup.LayoutParams lp = new ViewGroup.
+                        LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);*/
+                trailsLayout.addView(buttonLayout);
 
                 // set title to be visible
                 v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
@@ -605,6 +616,36 @@ public class ProfileFrag extends Fragment {
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setPadding(0, 0, 0, 40);
         row.setGravity(Gravity.CENTER_HORIZONTAL);
+    }
+
+    public void followUser() {
+        Firebase fb = Project_18.getFB();
+        if (Project_18.me.getUserTrails().contains(user_ID)) {
+            Log.d("flw", "userTrails did contain id, now removing");
+            Project_18.me.removeTrail(fb, user_ID);
+            setFollowButton(false);
+        }
+        else {
+            Log.d("flw", "userTrails did not contain id, now adding");
+            Project_18.me.addTrail(fb, user_ID);
+            setFollowButton(true);
+        }
+    }
+
+    private void setFollowButton(boolean following) {
+        if (following) {
+            Log.d("flw", "setting to following");
+            ((Button) v.findViewById(R.id.followButton)).setText("Following");
+            v.findViewById(R.id.followButton).
+                    setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+        }
+
+        else {
+            Log.d("flw", "setting to follow");
+            ((Button) v.findViewById(R.id.followButton)).setText("Follow");
+            v.findViewById(R.id.followButton).
+                    setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        }
     }
 
 

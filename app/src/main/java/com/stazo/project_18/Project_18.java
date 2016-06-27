@@ -39,7 +39,7 @@ public class Project_18 extends Application {
     public static int GMTOffset = ((new GregorianCalendar()).getTimeZone()).getRawOffset();
     public static long relevantTime = System.currentTimeMillis();
     public static String relevantText = new String();
-    public Firebase getFB() { return new Firebase(fbString);}
+    public static Firebase getFB() { return new Firebase(fbString);}
     public User getMe() { return me; }
     public void setMe(User user) { me = user; }
     public static final String pictureSize = "250";
