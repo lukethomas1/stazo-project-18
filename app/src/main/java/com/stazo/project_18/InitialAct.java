@@ -45,8 +45,8 @@ public class InitialAct extends AppCompatActivity {
         fb = ((Project_18) getApplication()).getFB();
 
         EventHandler EH = new EventHandler();
-        EH.clearEvents();
-        EH.generateEvents();
+        //EH.clearEvents();
+        //EH.generateEvents();
 
         // if the user logs in for the first time
         if(sharedPreferences.getBoolean("isLoggedIn", false)) { // check if they have logged in before
@@ -94,19 +94,14 @@ public class InitialAct extends AppCompatActivity {
                 // if the user exists, pull their data and goToMapAct
                 if (dataSnapshot.child(userId).exists()) {
 
-                    // pull data
-                    //userName = ((String) dataSnapshot.child(userId).child("name").getValue());
-                    /*myEvents = ((ArrayList<String>)
-                            dataSnapshot.child(userId).child("my_events").getValue());*/
-                    //User me = new User(userId, userName, myEvents);
                     User me = new User((HashMap<String, Object>)
                             dataSnapshot.child(userId).getValue());
 
-                    // construct friends
-                    me.constructFriends(fb);
-
                     // save the user to the application
                     ((Project_18) getApplication()).setMe(me);
+
+                    // construct friends
+                    me.constructFriends(fb);
 
                     // remove listener
                     fb.child("Users").removeEventListener(this);
@@ -133,9 +128,16 @@ public class InitialAct extends AppCompatActivity {
 
 
     private void goToMainAct(){
-        Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MainAct.class));
-        finish();
+
+        // If I have not been welcomed
+        if (!sharedPreferences.getBoolean("beenWelcomed", false)) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Welcome back", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainAct.class));
+            finish();
+        }
     }
     private void goToLoginAct(){
 
@@ -147,5 +149,10 @@ public class InitialAct extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         Firebase.setAndroidContext(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }

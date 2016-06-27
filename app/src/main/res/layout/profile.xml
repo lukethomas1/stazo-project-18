@@ -31,14 +31,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_header"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginTop="8dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/profilePicture"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:layout_marginTop="10dip"
                     android:layout_marginRight="20dip"
                     android:layout_marginLeft="20dip"
@@ -47,14 +47,65 @@
                     android:visibility="invisible"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Isaac Wang"
                     android:textSize="20sp"
                     android:layout_gravity="bottom"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:id="@+id/nameTextView"
                     android:textColor="@color/colorTextPrimary"/>
+
+                <TextView
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Jet fuel can't melt steel beams. Open your EYES people."
+                    android:id="@+id/bio"
+                    android:textStyle="italic"
+                    android:textColor="@color/colorTextPrimary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/userOptions"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btn_edit"
+                        android:text="Edit Bio"
+                        android:onClick="editBio"
+                        android:textSize="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:background="@null"
+                        android:textColor="@color/colorDivider"/>
+
+                    <Button
+                        android:id="@+id/btn_logout"
+                        android:text="Log Out"
+                        android:onClick="logoutUser"
+                        android:textSize="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:background="@null"
+                        android:textColor="@color/colorDivider"/>
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <!-- HOSTING BLOCK -->
@@ -68,30 +119,34 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dip"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="center_horizontal"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity=""
                     android:id="@+id/eventsTitleLayout">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:gravity="bottom"
                         android:text="Hosting"
                         android:layout_marginLeft="20dip"
+                        android:layout_marginBottom="12dp"
                         android:id="@+id/myEventsTextView"
                         android:textAppearance="@style/ProfileHeaders" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
                         android:id="@+id/goToCreateEventButton"
                         android:onClick="goToCreateEvent"
-                        android:src="@drawable/ic_actionbar_plus"
-                        android:layout_marginLeft="5dip"
+                        android:layout_gravity="bottom"
+                        android:text="Create"
+                        android:textSize="10dp"
+                        android:textAllCaps="false"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginLeft="10dp"
                         android:gravity="center"
-                        android:background="@null"/>
+                        android:background="@color/colorAccent"/>
 
                 </LinearLayout>
 
@@ -103,21 +158,17 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="You aren't hosting any events.\nTap the plus to make one!"
-                        android:textSize="14sp"
+                        android:text="You aren't hosting any events."
+                        android:textSize="12sp"
                         android:lineSpacingExtra="10dp"
-                        android:id="@+id/emptyHostingButton"
+                        android:id="@+id/emptyHostingText"
                         android:textColor="@color/colorTextPrimary"
                         android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/white"></LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -136,13 +187,15 @@
                 android:background="@drawable/border_layout"
                 android:id="@+id/attendingFullLayout"
                 android:layout_marginTop="8dp">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_gravity=""
                     android:text="Joined"
-                    android:layout_marginTop="20dip"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="20dip"
                     android:id="@+id/myAttendingTextView"
                     android:textAppearance="@style/ProfileHeaders"/>
 
@@ -155,18 +208,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:text="You have no ongoing events."
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:lineSpacingExtra="10dp"
                         android:id="@+id/emptyAttendingTextView"
                         android:textColor="@color/colorTextPrimary"
                         android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:visibility="visible"/>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/white"></LinearLayout>
+
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -188,30 +240,34 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dip"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="center_horizontal"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dip"
+                    android:gravity=""
                     android:id="@+id/trailsTitleLayout">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:gravity="bottom"
                         android:text="Following"
                         android:layout_marginLeft="20dip"
+                        android:layout_marginBottom="12dp"
                         android:id="@+id/myTrailsTextView"
                         android:textAppearance="@style/ProfileHeaders" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
                         android:id="@+id/goToAddTrailsButton"
                         android:onClick="goToAddTrails"
-                        android:src="@drawable/ic_actionbar_plus"
-                        android:layout_marginLeft="5dip"
+                        android:layout_gravity="bottom"
+                        android:text="Search"
+                        android:textSize="10dp"
+                        android:textAllCaps="false"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginLeft="10dp"
                         android:gravity="center"
-                        android:background="@null"/>
+                        android:background="@color/colorAccent"/>
 
                 </LinearLayout>
 
@@ -224,10 +280,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="You aren't following anyone yet.\nTap the plus to start!"
-                        android:textSize="14sp"
+                        android:text="You aren't following anyone yet."
+                        android:textSize="12sp"
                         android:lineSpacingExtra="10dp"
-                        android:id="@+id/emptyTrailsButton"
+                        android:id="@+id/emptyTrailsText"
                         android:textColor="@color/colorTextPrimary"
                         android:layout_marginTop="10dp"
                         android:visibility="visible"/>

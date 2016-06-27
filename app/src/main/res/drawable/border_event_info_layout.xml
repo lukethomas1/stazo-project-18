@@ -3,15 +3,15 @@
     <!-- lower rectangle (border color) -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorDivider" />
+            <solid android:color="@color/colorPrimaryLight" />
         </shape>
     </item>
 
     <!-- upper rectangle (background color) -->
-    <item
-        android:bottom=".5dp">
+    <item android:top="3dp">
         <shape android:shape="rectangle">
             <solid android:color="@color/white" />
         </shape>
     </item>
+
 </layer-list>

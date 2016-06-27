@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -87,17 +89,22 @@ public class ProfileFrag extends Fragment {
         // start by hiding everything
         v.findViewById(R.id.profileLayout).setVisibility(View.INVISIBLE);
 
+        if (!isMe) {
+            ((LinearLayout) v.findViewById(R.id.profileLayout)).
+                    removeView(v.findViewById(R.id.userOptions));
+        }
+
         // grab user and fill screen with correct info
         grabInfo();
 
         // set color of plus
-        ((ImageButton) getActivity().findViewById(R.id.goToAddTrailsButton)).
+        /*((ImageButton) getActivity().findViewById(R.id.goToAddTrailsButton)).
                 //setColorFilter(getResources().getColor(R.color.colorAccent));
-                        setColorFilter(getResources().getColor(R.color.white));
+                        setColorFilter(getResources().getColor(R.color.colorAccent));
 
         ((ImageButton) getActivity().findViewById(R.id.goToCreateEventButton)).
                 //setColorFilter(getResources().getColor(R.color.colorAccent));
-                        setColorFilter(getResources().getColor(R.color.white));
+                        setColorFilter(getResources().getColor(R.color.colorAccent));*/
 
     }
 
@@ -114,9 +121,10 @@ public class ProfileFrag extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // set user and grab data
                         user = new User((HashMap<String, Object>) dataSnapshot.getValue());
-                        ((TextView) v.findViewById(R.id.nameTextView)).setText(user.getName());
 
-                        Log.d("myTag", "user name is " + user.getName());
+                        // set name and bio
+                        ((TextView) v.findViewById(R.id.nameTextView)).setText(user.getName());
+                        ((TextView) v.findViewById(R.id.bio)).setText(user.getBio());
 
                         // display events
                         grabAndDisplayEvents();
@@ -128,6 +136,10 @@ public class ProfileFrag extends Fragment {
                         if (userTrails.isEmpty()) {
                             // set title to be visible
                             v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
+                            if (!isMe) {
+                                ((TextView) v.findViewById(R.id.emptyTrailsText)).setText(
+                                        user.getName() + " isn't following anyone.");
+                            }
                         }
                         // not empty
                         else {
@@ -176,15 +188,26 @@ public class ProfileFrag extends Fragment {
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
                 LinearLayout attendingLayout = (LinearLayout) v.findViewById(R.id.attendingLayout);
+                if (myEvents.isEmpty()) {
+                    if (!isMe) {
+                        ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
+                                user.getName() + " isn't hosting any events.");
+                    }
+                }
 
                 // if myEvents is not empty, remove the empty button
-                if (!myEvents.isEmpty()) {
+                else {
                     ((LinearLayout) v.findViewById(R.id.eventsFullLayout)).removeView(
                             v.findViewById(R.id.emptyHostingTextContainer));
                 }
-
+                if (attendingEvents.isEmpty()) {
+                    if (!isMe) {
+                        ((TextView) v.findViewById(R.id.emptyAttendingTextView)).setText(
+                                user.getName() + " has no ongoing events");
+                    }
+                }
                 // if attendingEvents is not empty, remove the empty button
-                if (!attendingEvents.isEmpty()) {
+                else {
                     ((LinearLayout) v.findViewById(R.id.attendingFullLayout)).removeView(
                             v.findViewById(R.id.emptyAttendingTextContainer));
                 }
@@ -236,31 +259,45 @@ public class ProfileFrag extends Fragment {
                 RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         button.setTextSize(eventsTextSize);
+        button.setTypeface(null, Typeface.NORMAL);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
-        button.setGravity(Gravity.CENTER);
+        button.setGravity(Gravity.CENTER_VERTICAL);
+        button.setPadding(120, 0, 0, 0);
         button.setLayoutParams(lp);
-        button.setBackgroundColor(getResources().getColor(R.color.white));
+        //button.setBackgroundColor(getResources().getColor(R.color.white));
+        button.setBackground(getResources().getDrawable(R.drawable.border_event_button));
     }
 
     // pull and set profile picture
     private void setProfilePicture() {
         new Thread(new Runnable() {
             public void run() {
-                try {
-                    URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
-                    profPicBitmap = Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                            200,
-                            200,
-                            true);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                if (((Project_18) getActivity().getApplication()).
+                        cachedIdToBitmap.keySet().contains(user.getID())) {
+                    profPicBitmap = ((Project_18) getActivity().getApplication()).
+                            cachedIdToBitmap.get(user.getID());
+                }
+                else {
+                    try {
+                        URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
+                        profPicBitmap = Bitmap.createScaledBitmap(
+                                BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
+                                400,
+                                400,
+                                true);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 final ImageView iv = (ImageView) v.findViewById(R.id.profilePicture);
 
                 iv.post(new Runnable() {
                     public void run() {
+
+                        // cache image
+                        ((Project_18) getActivity().getApplication()).
+                                cachedIdToBitmap.put(user.getID(), profPicBitmap);
                         iv.setImageBitmap(profPicBitmap);
                         iv.setVisibility(View.VISIBLE);
                     }
@@ -280,15 +317,10 @@ public class ProfileFrag extends Fragment {
 
     /* go to your own profile */
     public void goToProfile() {
-//        goToProfile(((Project_18) getApplication()).getMe().getID(), true);
     }
 
     /* go to someone else's profile */
     public void goToProfile(String userID, boolean isMe) {
-//        Intent i = new Intent(this, Profile.class);
-//        i.putExtra("userID", userID);
-//        i.putExtra("isMe", isMe);
-//        startActivity(i);
 
         ProfileFrag profileFrag = new ProfileFrag();
         profileFrag.setUser_ID(userID);
@@ -307,18 +339,16 @@ public class ProfileFrag extends Fragment {
 
     private void generateTrails() {
         //(new UserNamesTask(fb)).execute();
-        final HashMap<String, String> nameToId = new HashMap<String, String>();
+        final HashMap<String, String> idToName = new HashMap<String, String>();
 
         for (final String id : userTrails) {
             fb.child("Users").child(id).child("name").
                     addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            nameToId.put((String) dataSnapshot.getValue(), id);
-                            if (nameToId.keySet().size() == userTrails.size()) {
-                                Log.d("newIsh", "userTrails is " + userTrails.toString());
-                                Log.d("newIsh", "nameToId is " + nameToId.toString());
-                                (new SetButtonTask(nameToId)).execute();
+                            idToName.put(id, (String) dataSnapshot.getValue());
+                            if (idToName.keySet().size() == userTrails.size()) {
+                                (new SetButtonTask(idToName)).execute();
                             }
                         }
 
@@ -332,8 +362,9 @@ public class ProfileFrag extends Fragment {
 
     private class SetButtonTask extends AsyncTask<Void, Void, Void> {
 
-        private ConcurrentHashMap<String, Bitmap> nameToBitmap =
+        private ConcurrentHashMap<String, Bitmap> idToBitmap =
                 new ConcurrentHashMap<String, Bitmap>();
+
         private HashMap<String, String> userList = new HashMap<String, String>();
 
         public SetButtonTask(HashMap<String, String> userList) {
@@ -343,17 +374,25 @@ public class ProfileFrag extends Fragment {
         @Override
         protected Void doInBackground(Void... v) {
 
-            for (String name: userList.keySet()) {
-                try {
-                    nameToBitmap.put(name, Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
-                                    userList.get(name) +
-                                    "/picture?type=large")).openConnection().getInputStream()),
-                            180,
-                            180,
-                            true));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            for (String id: userList.keySet()) {
+
+
+                if (((Project_18) getActivity().getApplication()).cachedIdToBitmap.keySet().contains(id)) {
+                    idToBitmap.put(id, ((Project_18) getActivity().getApplication()).cachedIdToBitmap.get(id));
+                }
+
+                else {
+                    try {
+                        idToBitmap.put(id, Bitmap.createScaledBitmap(
+                                BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                        id +
+                                        "/picture?type=large")).openConnection().getInputStream()),
+                                180,
+                                180,
+                                true));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
@@ -362,12 +401,20 @@ public class ProfileFrag extends Fragment {
 
         @Override
         protected void onPostExecute(Void v) {
-            constructUsersLayout(nameToBitmap, userList);
+
+            // put the same thing in cached
+            for (String id: idToBitmap.keySet()) {
+                ((Project_18) getActivity().getApplication()).cachedIdToBitmap.put(id, idToBitmap.get(id));
+            }
+
+            constructUsersLayout(idToBitmap, userList);
         }
     }
 
-    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> nameToBitmap,
-                                                    HashMap<String, String> nameToId) {
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
+                                                    HashMap<String, String> idToName) {
+
+        //trailsLayout.removeAllViews();
 
         // make the first row
         currentRow = new LinearLayout(getActivity().getApplicationContext());
@@ -381,8 +428,8 @@ public class ProfileFrag extends Fragment {
         // limits 3 buttons per row
         rowIndex = 0;
 
-        for (String name: nameToBitmap.keySet()) {
-            addToUsersLayout(nameToBitmap.get(name), name, nameToId.get(name));
+        for (String id: idToBitmap.keySet()) {
+            addToUsersLayout(idToBitmap.get(id), idToName.get(id), id);
         }
     }
 

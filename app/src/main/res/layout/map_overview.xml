@@ -19,7 +19,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/fab_margin_left"
             android:layout_marginBottom="@dimen/fab_margin_bottom"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@color/colorAccent"
             android:onClick="goToCreateEvent"
             app:fabSize="mini"/>
 
