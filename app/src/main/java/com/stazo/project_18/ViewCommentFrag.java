@@ -113,15 +113,15 @@ public class ViewCommentFrag extends Fragment{
                             ImageView profileView = new ImageView(context);
                             profileView.setImageBitmap(profileImage);
                             //get cache and check ID against it
-//                            HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
-//                            if (imageCache.keySet().contains(commentList.get(i).getUser_ID())) {
-//                                System.out.println("cache hit");
-//                                profileImage = imageCache.get(commentList.get(i).getUser_ID());
-//                                profileView.setImageBitmap(profileImage);
-//                            } else {
+                            HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
+                            if (imageCache.keySet().contains(commentList.get(i).getUser_ID())) {
+                                System.out.println("cache hit");
+                                profileImage = imageCache.get(commentList.get(i).getUser_ID());
+                                profileView.setImageBitmap(profileImage);
+                            } else {
                             Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
                             profileThread.start();
-//                            }
+                            }
 
                             //user_id
                             final TextView userText = new TextView(context);
