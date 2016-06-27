@@ -24,15 +24,15 @@ public class Welcome6Frag extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.welcome_1_image);
-        float heightOverWidth = ((float) original.getHeight())/((float)original.getWidth());
-
-        ((ImageView) getActivity().findViewById(R.id.welcome_6_image)).setImageBitmap(
-                Bitmap.createScaledBitmap((BitmapFactory.decodeResource(getResources(),
-                                R.drawable.welcome_1_image)),
-                        600,
-                        (int) (600 * heightOverWidth),
-                        true));
+//        Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.welcome_1_image);
+//        float heightOverWidth = ((float) original.getHeight())/((float)original.getWidth());
+//
+//        ((ImageView) getActivity().findViewById(R.id.welcome_6_image)).setImageBitmap(
+//                Bitmap.createScaledBitmap((BitmapFactory.decodeResource(getResources(),
+//                                R.drawable.welcome_1_image)),
+//                        600,
+//                        (int) (600 * heightOverWidth),
+//                        true));
 
     }
 }

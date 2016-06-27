@@ -104,8 +104,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         // Set blue background
         convertView.setBackgroundColor(ContextCompat.getColor(_context, R.color.colorPrimary));
 
-        // TODO R.id.color...
-
         // Get the TextView to set the text for
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.eventNamesList);
 

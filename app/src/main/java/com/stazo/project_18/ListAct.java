@@ -21,6 +21,8 @@ import java.util.HashMap;
 
 public class ListAct extends android.support.v4.app.Fragment {
 
+    private static final long HAPPENING_NOW_WINDOW = 3600000; // Milliseconds in an hour
+
     private Firebase fb;
     ArrayList<Event> eventList = new ArrayList<Event>();
     private TextView loadingText;
@@ -99,8 +101,8 @@ public class ListAct extends android.support.v4.app.Fragment {
         headerToEventListHM = new HashMap<>();
 
         // Add event categories
-        headerList.add("Lit Events");
-        headerList.add("Subscribed Events");
+        headerList.add("Hot Events");
+        headerList.add("Happening Now");
         headerList.add("All Events");
 
         // Add Hot Events
@@ -115,19 +117,23 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         headerToEventListHM.put(headerList.get(0), hotEventsList);
 
-        // Add subscribed events
-        // Add this user
+        // Find events happening soon
         User thisUser = ((Project_18) getActivity().getApplication()).getMe();
 
-        ArrayList<Event> subscribedEventsList = new ArrayList<>();
+        ArrayList<Event> nowEventsList = new ArrayList<>();
+
+        // Get current time in milliseconds
+        long currentTime = System.currentTimeMillis();
 
         for (Event event : eventList) {
-            if (thisUser.isSubscribedEvent(event)) {
-                subscribedEventsList.add(event);
+            // Happening now if within an hour from start and hasn't ended yet
+            if (event.getStartTime() - currentTime < HAPPENING_NOW_WINDOW
+                    && currentTime < event.getEndTime()) {
+                nowEventsList.add(event);
             }
         }
 
-        headerToEventListHM.put(headerList.get(1), subscribedEventsList);
+        headerToEventListHM.put(headerList.get(1), nowEventsList);
 
         /* TODO: For local events, base it on a certain radius around the user's current location. */
 
