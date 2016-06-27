@@ -7,8 +7,7 @@
     android:weightSum="1"
     android:id="@+id/event_info_ll"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-    app:behavior_peekHeight="120dp"
-    android:onClick="toggleState">
+    app:behavior_peekHeight="120dp">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"

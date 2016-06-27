@@ -8,7 +8,7 @@
     </item>
 
     <!-- upper rectangle (background color) -->
-    <item android:top="3dp">
+    <item android:top="5dp">
         <shape android:shape="rectangle">
             <solid android:color="@color/white" />
         </shape>
