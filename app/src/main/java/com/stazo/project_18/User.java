@@ -412,15 +412,6 @@ public class User {
     public void addEvent(String a) {myEvents.add(a);}
 
     public boolean isSubscribedEvent(Event event) {
-        // Check the category subscriptions
-        int eventType = event.getType();
-
-        for (Integer category : categoryTrails) {
-            if (eventType == category) {
-                return true;
-            }
-        }
-
         // Check user subscriptions
         String creatorID = event.getCreator_id();
 
