@@ -323,36 +323,34 @@ public class AddTrailsAct extends AppCompatActivity {
                     break;
                 }
 
-                if (((Project_18) getApplication()).cachedIdToBitmap.keySet().contains(id)) {
+                if (((Project_18) getApplication()).getBitmapFromMemCache(id) != null) {
                     Log.d("check", "we have cached entry number " + i);
-                    idToBitmap.put(id, ((Project_18) getApplication()).cachedIdToBitmap.get(id));
+                    idToBitmap.put(id, ((Project_18) getApplication()).getBitmapFromMemCache(id));
                     numToLoad--;
                 }
 
                 else {
+                    Log.d("memCheck", "Not in cache, size of cache is " +
+                            ((Project_18) getApplication()).getMemoryCache().size());
                     try {
                         Log.d("check", "we are processing entry number " + i);
 
                         // FOR TESTING PURPOSES
                         if (id.length() < 5) {
-                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                            idToBitmap.put(id,
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             "1196215920412322" +
-                                            "/picture?type=large")).openConnection().getInputStream()),
-                                    180,
-                                    180,
-                                    true));
+                                            "/picture?width=" +
+                                            Project_18.pictureSize)).openConnection().getInputStream()));
                             numToLoad--;
                         }
                         else {
                             Log.d("check", "id: " + id);
-                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                            idToBitmap.put(id,
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             id +
-                                            "/picture?type=large")).openConnection().getInputStream()),
-                                    180,
-                                    180,
-                                    true));
+                                            "/picture?width=" +
+                                            Project_18.pictureSize)).openConnection().getInputStream()));
                             numToLoad--;
                         }
 
@@ -372,7 +370,9 @@ public class AddTrailsAct extends AppCompatActivity {
             // iteration
             for (String id: idToBitmap.keySet()) {
                 // store in cache
-                ((Project_18) getApplication()).cachedIdToBitmap.put(id, idToBitmap.get(id));
+                ((Project_18) getApplication()).addBitmapToMemoryCache(id, idToBitmap.get(id));
+
+                idToBitmap.put(id, Project_18.BITMAP_RESIZER(idToBitmap.get(id), 180, 180));
 
             }
 

@@ -391,6 +391,7 @@ public class MainAct extends AppCompatActivity
                         Intent i = new Intent(act, MainAct.class);
                         i.putExtra("toProfile", true);
                         startActivity(i);
+                        finish();
                     }
                 });
 

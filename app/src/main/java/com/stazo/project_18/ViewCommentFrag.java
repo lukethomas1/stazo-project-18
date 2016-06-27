@@ -229,7 +229,8 @@ public class ViewCommentFrag extends Fragment{
                         profileView.setImageBitmap(profileImage);
                     }
                 });
-                Project_18.cachedIdToBitmap.put(user_ID, profileImage);
+                ((Project_18) getActivity().getApplication()).
+                        addBitmapToMemoryCache(user_ID, profileImage);
                 System.out.println("Thread finished");
             } catch (IOException e) {
                 throw new RuntimeException(e);

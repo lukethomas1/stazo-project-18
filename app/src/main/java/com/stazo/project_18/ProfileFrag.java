@@ -304,22 +304,14 @@ public class ProfileFrag extends Fragment {
     private void setProfilePicture() {
         new Thread(new Runnable() {
             public void run() {
-                if (((Project_18) getActivity().getApplication()).
-                        cachedIdToBitmap.keySet().contains(user.getID())) {
-                    profPicBitmap = Bitmap.createScaledBitmap(((Project_18) getActivity().getApplication()).
-                            cachedIdToBitmap.get(user.getID()),
-                            400,
-                            400,
-                            true);
+                try {
+                    URL imageURL = new URL("https://graph.facebook.com/" +
+                            user.getID() + "/picture?width=" + Project_18.pictureSizeHigh);
+                    profPicBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-                else {
-                    try {
-                        URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
-                        profPicBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+
                 final ImageView iv = (ImageView) v.findViewById(R.id.profilePicture);
 
                 iv.post(new Runnable() {
@@ -327,13 +319,9 @@ public class ProfileFrag extends Fragment {
 
                         // cache image
                         ((Project_18) getActivity().getApplication()).
-                                cachedIdToBitmap.put(user.getID(), Bitmap.createBitmap(profPicBitmap));
+                                addBitmapToMemoryCache(user.getID(), Bitmap.createBitmap(profPicBitmap));
 
-                        // scale image
-                        profPicBitmap = Bitmap.createScaledBitmap(profPicBitmap,
-                                400,
-                                400,
-                                true);
+                        profPicBitmap = Project_18.BITMAP_RESIZER(profPicBitmap, 400, 400);
                         iv.setImageBitmap(profPicBitmap);
                         iv.setVisibility(View.VISIBLE);
                     }
@@ -395,19 +383,19 @@ public class ProfileFrag extends Fragment {
             for (String id: userList.keySet()) {
 
 
-                if (((Project_18) getActivity().getApplication()).cachedIdToBitmap.keySet().contains(id)) {
-                    idToBitmap.put(id, ((Project_18) getActivity().getApplication()).cachedIdToBitmap.get(id));
+                if (((Project_18) getActivity().getApplication()).
+                        getBitmapFromMemCache(id) != null) {
+                    idToBitmap.put(id, ((Project_18) getActivity().getApplication()).
+                            getBitmapFromMemCache(id));
                 }
 
                 else {
                     try {
-                        idToBitmap.put(id, Bitmap.createScaledBitmap(
+                        idToBitmap.put(id,
                                 BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                         id +
-                                        "/picture?type=large")).openConnection().getInputStream()),
-                                180,
-                                180,
-                                true));
+                                        "/picture?width=" +
+                                        Project_18.pictureSize)).openConnection().getInputStream()));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -425,13 +413,12 @@ public class ProfileFrag extends Fragment {
                 Bitmap unscaled = Bitmap.createBitmap(idToBitmap.get(id));
 
                 // cache it
-                ((Project_18) getActivity().getApplication()).cachedIdToBitmap.put(id, unscaled);
+                ((Project_18) getActivity().getApplication()).addBitmapToMemoryCache(id, unscaled);
 
                 // scale it
-                idToBitmap.put(id, Bitmap.createScaledBitmap(unscaled,
+                idToBitmap.put(id, Project_18.BITMAP_RESIZER(unscaled,
                         180,
-                        180,
-                        true));
+                        180));
             }
 
             constructUsersLayout(idToBitmap, userList);
