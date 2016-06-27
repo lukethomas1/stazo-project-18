@@ -248,21 +248,7 @@ public class Profile extends AppCompatActivity {
         categoryTrails = user.getCategoryTrails();
         userTrails = user.getUserTrails();
         LinearLayout trailsLayout = (LinearLayout) findViewById(R.id.trailsLayout);
-
-        /*// draw category trails
-        for (Integer type : categoryTrails) {
-            currentCategoryTrail = type;
-            Button trailButton = new Button(context);
-            trailButton.setText(Event.types[type]);
-            makePretty(trailButton);
-            trailButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goToBrowse(currentCategoryTrail);
-                }
-            });
-            trailsLayout.addView(trailButton);
-        }*/
+        trailsLayout.removeAllViews();
 
         // draw user trails
         for (final String userID : userTrails) {
