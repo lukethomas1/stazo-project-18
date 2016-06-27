@@ -52,7 +52,6 @@ public class LoginFrag extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
             // go to the Map screen
-            goToMainAct();
 
             if(Profile.getCurrentProfile() == null) {
                 mProfileTracker = new ProfileTracker() {
@@ -101,10 +100,6 @@ public class LoginFrag extends Fragment {
 
         }
     };
-
-    public LoginFrag() {
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -7,16 +7,18 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.stazo.project_18.LoginFrag"
-    tools:showIn="@layout/login">
+    tools:showIn="@layout/login"
+    android:background="@color/colorPrimary" >
 
     <TextView
         android:id="@+id/title_text"
         android:layout_above="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/login_title"
+        android:text="@string/app_name"
         android:textSize="40sp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textColor="@color/white" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.AvoidXfermode;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -27,7 +28,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
@@ -52,6 +56,8 @@ public class MainAct extends AppCompatActivity
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
     private EventInfoFrag eventInfoFrag;
+    private SharedPreferences sharedPreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
 
     // Search stuff
     private SearchView searchView = null;
@@ -368,6 +374,7 @@ public class MainAct extends AppCompatActivity
 
         //preemptive set user_id and isMe
         ProfileFrag profileFrag= new ProfileFrag();
+        Log.d("MainAct", ((Project_18)this.getApplication()).getMe().getID());
         profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
         profileFrag.setIsMe(true);
         adapter.addFragment(profileFrag, ""); //profile
@@ -402,6 +409,37 @@ public class MainAct extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public void logoutUser(View view) {
+        Log.i("MainAct", "Logging Out");
+
+        clearSharedPreferences();
+        fbLogout();
+
+        goToInitialAct();
+
+    }
+
+    private void clearSharedPreferences() {
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId", "0");
+        editor.putBoolean("isLoggedIn", false);
+        editor.apply();
+    }
+
+    private void fbLogout() {
+        Log.i("MainAct", "Accesstoken should be something: " + AccessToken.getCurrentAccessToken());
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            Log.i("MainAct", "Accesstoken should be null: " + AccessToken.getCurrentAccessToken());
+            Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void goToInitialAct(){
+        startActivity(new Intent(this, InitialAct.class));
     }
 
     @Override
