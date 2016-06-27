@@ -48,6 +48,8 @@ public class InitialAct extends AppCompatActivity {
         //EH.clearEvents();
         //EH.generateEvents();
 
+        ((Project_18) getApplication()).pullAllUsers();
+
         // if the user logs in for the first time
         if(sharedPreferences.getBoolean("isLoggedIn", false)) { // check if they have logged in before
             // tracks if the AccessToken has changed and sees if it is still valid

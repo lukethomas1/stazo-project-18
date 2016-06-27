@@ -41,7 +41,7 @@ public class Project_18 extends Application {
     // store images
     public static HashMap<String, Bitmap> cachedIdToBitmap = new HashMap<String, Bitmap>();
     public static HashMap<String, String> cachedIdToName = new HashMap<>();
-
+    public static HashMap<String, String> allUsers = new HashMap<String, String>();
 
     // stores a pulled event locally (pulledEvents)
     public void addPulledEvent(Event e) {
@@ -157,17 +157,21 @@ public class Project_18 extends Application {
         return relatedEvents;
     }
 
-    // TRAIL STUFF
 
-    // addTrail for category
-    /*public void addTrail(Integer type) {
-        me.addTrail(getFB(), type);
-        me.pushToFirebase(getFB());
-    }*/
+    public void pullAllUsers() {
+        getFB().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> usersIterable = dataSnapshot.getChildren();
+                for (DataSnapshot user : usersIterable) {
+                    allUsers.put(user.getKey(), (String) user.child("name").getValue());
+                }
+            }
 
-    // addTrail for user
-    /*public void addTrail(String userid) {
-        me.addTrail(getFB(), userid);
-        me.pushToFirebase(getFB());
-    }*/
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
 }

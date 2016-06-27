@@ -142,40 +142,23 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     public void pullUsersAndLoad(Firebase fb) {
-        float startTime = System.nanoTime();
-        fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> usersIterable = dataSnapshot.getChildren();
-                for (DataSnapshot user : usersIterable) {
-                    //System.out.println(commentIterable.iterator().next().getValue());
-                    allUsers.put(user.getKey(), (String) user.child("name").getValue());
-                }
 
-                // get allUsers
-                //allUsers = (HashMap<String, String>) idToName.getValue();
+        // get allUsers
+        allUsers = new HashMap<>(Project_18.allUsers);
 
-                // set friends
-                friends = new HashMap(((Project_18) getApplication()).getMe().getFriends());
+        // set friends
+        friends = new HashMap(((Project_18) getApplication()).getMe().getFriends());
 
-                // testing purposes
-                generateFakeAccounts();
+        // testing purposes
+        generateFakeAccounts();
 
-                // take out users we are already following
-                filterUsers();
+        // take out users we are already following
+        filterUsers();
 
-                // relevantUsers = the ones displayed
-                relevantUsers = new HashMap<String, String>(allUsers);
+        // relevantUsers = the ones displayed
+        relevantUsers = new HashMap<String, String>(allUsers);
 
-                generateButtons(true);
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+        generateButtons(true);
     }
 
     public void generateFakeAccounts() {
@@ -323,7 +306,6 @@ public class AddTrailsAct extends AppCompatActivity {
         protected Void doInBackground(Void... v) {
             numToLoad = SECTION_SIZE;
 
-
             ArrayList<String> ids = new ArrayList<>(userList.keySet());
             ids = sortByFriends(ids);
 
@@ -396,7 +378,7 @@ public class AddTrailsAct extends AppCompatActivity {
 
             constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;
-            InteractiveScrollView.isReady = true;
+            scrollView.ready();
             Log.d("cancel", "task COMPLETED...");
         }
     }

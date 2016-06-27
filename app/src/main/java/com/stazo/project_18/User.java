@@ -32,7 +32,8 @@ public class User {
     private String name;
     private int explorerLevel;
 
-    private String bio = "";
+    private static final String DEFAULT_BIO = "This user does not have a bio.";
+    private String bio = DEFAULT_BIO;
     private ArrayList<String> myEvents = new ArrayList<String>();
     private ArrayList<String> attendingEvents = new ArrayList<String>();
     private ArrayList<String> reportedEvents = new ArrayList<String>();
@@ -51,10 +52,32 @@ public class User {
     }
 
     public void setBio(Firebase fb, String bio) {
+        bio = filterBio(bio);
+
         this.bio = bio;
 
         fb.child("Users").child(getID()).child("bio").setValue(bio);
 
+    }
+
+    public String filterBio(String bio) {
+        if (bio.length() == 0) {
+            return DEFAULT_BIO;
+        }
+        int newlines = 0;
+        int i = 0;
+
+        // remove newlines
+        while (i < bio.length()) {
+            char c = bio.charAt(i);
+            if (c == '\n') {
+                bio = bio.substring(0, i) + bio.substring(i + 1);
+                continue;
+            }
+            i++;
+        }
+
+        return bio;
     }
 
     public HashMap<String, String> getFriends() {
