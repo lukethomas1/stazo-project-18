@@ -239,11 +239,8 @@ public class AddTrailsAct extends AppCompatActivity {
                 allUsers.remove(id);
             }
         }
-        for (String id: allUsers.keySet()) {
-            if (id.equals(Project_18.me.getID())) {
-                allUsers.remove(id);
-            }
-        }
+        allUsers.remove(Project_18.me.getID());
+
     }
 
     private ArrayList<String> sortByFriends(Collection<String> users) {
