@@ -119,8 +119,8 @@ public class ViewCommentFrag extends Fragment{
 //                                profileImage = imageCache.get(commentList.get(i).getUser_ID());
 //                                profileView.setImageBitmap(profileImage);
 //                            } else {
-                                Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
-                                profileThread.run();
+                            Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
+                            profileThread.start();
 //                            }
 
                             //user_id
@@ -159,7 +159,6 @@ public class ViewCommentFrag extends Fragment{
                                     LayoutParams.WRAP_CONTENT));
                             textLayout.setOrientation(LinearLayout.VERTICAL);
 
-                            mainLayout.addView(commentLayout);
                             textLayout.addView(userText);
                             textLayout.addView(commentText);
                             commentLayout.addView(profileView);
@@ -177,9 +176,12 @@ public class ViewCommentFrag extends Fragment{
                             commentText.setLayoutParams(commentTextLayoutParams);
 
                             //spacer and inc counter
-                            TextView spacer = new TextView(context);
                             View space = inflater.inflate(R.layout.spacer, null);
-                            mainLayout.addView(space);
+
+                            getActivity().runOnUiThread(new UpdateViewRunnable(mainLayout, commentLayout, space));
+
+//                            mainLayout.addView(commentLayout);
+//                            mainLayout.addView(space);
                             numCommentsLoaded++;
                         }
 
@@ -232,6 +234,24 @@ public class ViewCommentFrag extends Fragment{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private class UpdateViewRunnable implements Runnable {
+        private LinearLayout mainLayout;
+        private View addedView;
+        private View addedView2;
+
+        UpdateViewRunnable(LinearLayout mainLayout, View addedView, View addedView2) {
+            this.mainLayout = mainLayout;
+            this.addedView = addedView;
+            this.addedView2 = addedView2;
+        }
+        @Override
+        public void run() {
+            mainLayout.addView(addedView);
+            mainLayout.addView(addedView2);
+            System.out.println("run on ui thread");
         }
     }
 
