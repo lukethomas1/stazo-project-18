@@ -227,11 +227,6 @@ public class LoginFrag extends Fragment {
 
         //fb.child("Users").child(userId).setValue(me);
         me.pushToFirebase(fb);
-
-        Map<String, Object> idToName = new HashMap<String, Object>();
-        idToName.put(userId, userName);
-
-        fb.child("UsersIdToName").updateChildren(idToName);
     }
 
     @Override

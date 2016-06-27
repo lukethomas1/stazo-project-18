@@ -1,8 +1,10 @@
 package com.stazo.project_18;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.AvoidXfermode;
@@ -21,13 +23,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -333,6 +339,57 @@ public class MainAct extends AppCompatActivity
 
     public void goToAddTrails(View v) {
         goToAddTrails();
+    }
+    public void editBio(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("New Bio");
+        //alertDialog.setMessage("Enter Password");
+
+        final LinearLayout container = new LinearLayout(this);
+
+        final EditText input = new EditText(this);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(50,0,50,0);
+        input.setLayoutParams(lp);
+
+        input.setText(Project_18.me.getBio());
+
+        // length
+        int maxLength = 60;
+        InputFilter[] fArray = new InputFilter[1];
+        fArray[0] = new InputFilter.LengthFilter(maxLength);
+        input.setFilters(fArray);
+
+        input.setSelection(input.getText().length());
+
+        //input.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
+        container.addView(input);
+        alertDialog.setView(container);
+
+        alertDialog.setPositiveButton("Change Bio",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Project_18.me.setBio(((Project_18)
+                                getApplication()).getFB(), input.getText().toString());
+
+                        // reload profile
+                        Intent i = new Intent(act, MainAct.class);
+                        i.putExtra("toProfile", true);
+                        startActivity(i);
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
     }
 
     public void goToAddTrails() {
