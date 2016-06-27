@@ -142,11 +142,12 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     public void pullUsersAndLoad(Firebase fb) {
+        float startTime = System.nanoTime();
         fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> usersIterable = dataSnapshot.getChildren();
-                for (DataSnapshot user: usersIterable) {
+                for (DataSnapshot user : usersIterable) {
                     //System.out.println(commentIterable.iterator().next().getValue());
                     allUsers.put(user.getKey(), (String) user.child("name").getValue());
                 }
