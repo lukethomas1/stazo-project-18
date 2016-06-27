@@ -71,17 +71,22 @@ public class ProfileFrag extends Fragment {
     private float startTime = System.nanoTime();
     private boolean heldDown = false;
     private ArrayList<ImageButton> nullButtons = new ArrayList<ImageButton>();
+    private int SECTION_SIZE = 4;
+    private int page = 0;
+    private InteractiveScrollView scrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.profile, container, false);
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
+        page = 0;
 
         return v;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
 
         trailsLayout = (LinearLayout) v.findViewById(R.id.trailsLayout);
@@ -89,26 +94,53 @@ public class ProfileFrag extends Fragment {
         // start by hiding everything
         v.findViewById(R.id.profileLayout).setVisibility(View.INVISIBLE);
 
-        if (!isMe) {
-            ((LinearLayout) v.findViewById(R.id.profileLayout)).
-                    removeView(v.findViewById(R.id.userOptions));
-        }
+        // set scrollView
+        scrollView = (InteractiveScrollView) getActivity().findViewById(R.id.profileScrollView);
 
-        // grab user and fill screen with correct info
+        scrollView.setOnBottomReachedListener(
+                new InteractiveScrollView.OnBottomReachedListener() {
+                    @Override
+                    public void onBottomReached() {
+                        // do something
+                        loadMore();
+                    }
+                }
+        );
         grabInfo();
-
-        // set color of plus
-        /*((ImageButton) getActivity().findViewById(R.id.goToAddTrailsButton)).
-                //setColorFilter(getResources().getColor(R.color.colorAccent));
-                        setColorFilter(getResources().getColor(R.color.colorAccent));
-
-        ((ImageButton) getActivity().findViewById(R.id.goToCreateEventButton)).
-                //setColorFilter(getResources().getColor(R.color.colorAccent));
-                        setColorFilter(getResources().getColor(R.color.colorAccent));*/
 
     }
 
+    // gets everything going
+    public void setInfo(String user_ID, boolean isMe) {
+        this.user_ID = user_ID;
+        this.isMe = isMe;
+    }
+
+    private synchronized void loadMore() {
+        page++;
+        generateTrails();
+    }
+
+    // does everything that requires data (Firebase, userId, isMe)
     private void grabInfo() {
+
+        if (!isMe) {
+            // hide me-specific info
+            ((LinearLayout) v.findViewById(R.id.profileHeaderLayout)).
+                    removeView(v.findViewById(R.id.userOptions));
+            ((LinearLayout) v.findViewById(R.id.profileHeaderLayout)).
+                    removeView(v.findViewById(R.id.userOptions));
+
+            // set margin top to 0
+            /*LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
+                    v.findViewById(R.id.profileHeaderLayout).getLayoutParams();
+            lp.topMargin = 0;
+            v.findViewById(R.id.profileHeaderLayout).setLayoutParams(lp);*/
+
+            // add padding
+            v.findViewById(R.id.profileHeaderPadding).setVisibility(View.VISIBLE);
+        }
+
         myEvents.clear();
         attendingEvents.clear();
 
@@ -173,7 +205,6 @@ public class ProfileFrag extends Fragment {
 
                 /* add myEvents */
                 for (String event_id : user.getMyEvents()) {
-                    Log.d("myTag", "myEvents is " + user.getMyEvents());
                     myEvents.add(new Event(dataSnapshot.child(event_id).getValue
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));
@@ -275,17 +306,16 @@ public class ProfileFrag extends Fragment {
             public void run() {
                 if (((Project_18) getActivity().getApplication()).
                         cachedIdToBitmap.keySet().contains(user.getID())) {
-                    profPicBitmap = ((Project_18) getActivity().getApplication()).
-                            cachedIdToBitmap.get(user.getID());
+                    profPicBitmap = Bitmap.createScaledBitmap(((Project_18) getActivity().getApplication()).
+                            cachedIdToBitmap.get(user.getID()),
+                            400,
+                            400,
+                            true);
                 }
                 else {
                     try {
                         URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
-                        profPicBitmap = Bitmap.createScaledBitmap(
-                                BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                                400,
-                                400,
-                                true);
+                        profPicBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -297,7 +327,13 @@ public class ProfileFrag extends Fragment {
 
                         // cache image
                         ((Project_18) getActivity().getApplication()).
-                                cachedIdToBitmap.put(user.getID(), profPicBitmap);
+                                cachedIdToBitmap.put(user.getID(), Bitmap.createBitmap(profPicBitmap));
+
+                        // scale image
+                        profPicBitmap = Bitmap.createScaledBitmap(profPicBitmap,
+                                400,
+                                400,
+                                true);
                         iv.setImageBitmap(profPicBitmap);
                         iv.setVisibility(View.VISIBLE);
                     }
@@ -319,44 +355,26 @@ public class ProfileFrag extends Fragment {
     public void goToProfile() {
     }
 
-    /* go to someone else's profile */
-    public void goToProfile(String userID, boolean isMe) {
-
-        ProfileFrag profileFrag = new ProfileFrag();
-        profileFrag.setUser_ID(userID);
-        profileFrag.setIsMe(isMe);
-        FragmentTransaction transaction = this.getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.show_viewProfile, profileFrag).addToBackStack("CreateEventFrag").commit();
-    }
-
-    public void setIsMe(boolean isMe) {
-        this.isMe = isMe;
-    }
-
-    public void setUser_ID(String user_ID) {
-        this.user_ID = user_ID;
-    }
-
     private void generateTrails() {
         //(new UserNamesTask(fb)).execute();
         final HashMap<String, String> idToName = new HashMap<String, String>();
+        int startingPoint = page * SECTION_SIZE;
+        if (startingPoint >= userTrails.size()) {
+            return;
+        }
 
-        for (final String id : userTrails) {
-            fb.child("Users").child(id).child("name").
-                    addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            idToName.put(id, (String) dataSnapshot.getValue());
-                            if (idToName.keySet().size() == userTrails.size()) {
-                                (new SetButtonTask(idToName)).execute();
-                            }
-                        }
+        int numToLoad = Math.min(SECTION_SIZE, userTrails.size() - startingPoint);
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+        for (int i = page * SECTION_SIZE; ; i++) {
+            if (numToLoad == 0) {
+                (new SetButtonTask(idToName)).execute();
+                break;
+            }
 
-                        }
-                    });
+            final String id = userTrails.get(i);
+
+            idToName.put(id, Project_18.allUsers.get(id));
+            numToLoad--;
         }
     }
 
@@ -404,10 +422,20 @@ public class ProfileFrag extends Fragment {
 
             // put the same thing in cached
             for (String id: idToBitmap.keySet()) {
-                ((Project_18) getActivity().getApplication()).cachedIdToBitmap.put(id, idToBitmap.get(id));
+                Bitmap unscaled = Bitmap.createBitmap(idToBitmap.get(id));
+
+                // cache it
+                ((Project_18) getActivity().getApplication()).cachedIdToBitmap.put(id, unscaled);
+
+                // scale it
+                idToBitmap.put(id, Bitmap.createScaledBitmap(unscaled,
+                        180,
+                        180,
+                        true));
             }
 
             constructUsersLayout(idToBitmap, userList);
+            scrollView.ready();
         }
     }
 
@@ -473,14 +501,18 @@ public class ProfileFrag extends Fragment {
 
                         // handle "release"
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            Log.d("myTag", "imageButton pressed");
 
                             if (!nullButtons.contains(b)) {
                                 b.clearColorFilter();
                             }
 
-                            // start dialog
-                            if (heldDown && System.nanoTime() - startTime > 0.5 * (1000000000)) {
+                            // click case
+                            if (!(heldDown && System.nanoTime() - startTime > 0.5 * (1000000000))) {
+                                ((MainAct) getActivity()).goToOtherProfile(id);
+                            }
+
+                            // held case
+                            else {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int dialogId) {
@@ -587,6 +619,7 @@ public class ProfileFrag extends Fragment {
         row.setPadding(0, 0, 0, 40);
         row.setGravity(Gravity.CENTER_HORIZONTAL);
     }
+
 
 
 }

@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -337,33 +338,44 @@ public class MainAct extends AppCompatActivity
 //        startActivity(i);
 //    }
 
+    public void goToOtherProfile(String userId) {
+        ProfileFrag profileFrag = new ProfileFrag();
+        profileFrag.setInfo(userId, false);
+        FragmentTransaction transaction =
+                this.getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.show_otherProfile, profileFrag).addToBackStack("ProfileFrag").commit();
+    }
+
     public void goToAddTrails(View v) {
         goToAddTrails();
     }
     public void editBio(View view) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("New Bio");
-        //alertDialog.setMessage("Enter Password");
+        //alertDialog.setTitle("New Bio (100 char limit)");
+        alertDialog.setMessage("New bio (100 char):");
 
         final LinearLayout container = new LinearLayout(this);
+        container.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
 
         final EditText input = new EditText(this);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(50,0,50,0);
+        lp.setMargins(50,20,50,0);
         input.setLayoutParams(lp);
-
+        input.setGravity(Gravity.CENTER);
         input.setText(Project_18.me.getBio());
 
         // length
-        int maxLength = 60;
+        int maxLength = 100;
         InputFilter[] fArray = new InputFilter[1];
         fArray[0] = new InputFilter.LengthFilter(maxLength);
         input.setFilters(fArray);
 
         input.setSelection(input.getText().length());
+        input.setBackground(null);
+        input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         //input.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
         container.addView(input);
@@ -429,8 +441,7 @@ public class MainAct extends AppCompatActivity
         tabFragments.add(profileFrag);
 
         //preemptive set user_id and isMe
-        profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
-        profileFrag.setIsMe(true);
+        profileFrag.setInfo(Project_18.me.getID(), true);
 
         adapter.addFragment(mapFrag, ""); //map
         adapter.addFragment(listAct, ""); //explore

@@ -11,7 +11,7 @@ import android.widget.ScrollView;
 
 public class InteractiveScrollView extends ScrollView {
     OnBottomReachedListener mListener;
-    public static boolean isReady = true;
+    private boolean isReady = true;
 
     public InteractiveScrollView(Context context, AttributeSet attrs,
                                  int defStyle) {
@@ -57,6 +57,10 @@ public class InteractiveScrollView extends ScrollView {
      */
     public interface OnBottomReachedListener{
         public void onBottomReached();
+    }
+
+    public void ready() {
+        isReady = true;
     }
 
 }
