@@ -70,6 +70,7 @@ public class LogoutAct extends AppCompatActivity {
     private void goToInitialAct(){
         startActivity(new Intent(this, InitialAct.class));
     }
+
     @Override
     public void onResume() {
         super.onResume();

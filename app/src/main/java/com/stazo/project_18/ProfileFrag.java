@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -88,6 +89,11 @@ public class ProfileFrag extends Fragment {
         // start by hiding everything
         v.findViewById(R.id.profileLayout).setVisibility(View.INVISIBLE);
 
+        if (!isMe) {
+            ((LinearLayout) v.findViewById(R.id.profileLayout)).
+                    removeView(v.findViewById(R.id.userOptions));
+        }
+
         // grab user and fill screen with correct info
         grabInfo();
 
@@ -115,9 +121,10 @@ public class ProfileFrag extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // set user and grab data
                         user = new User((HashMap<String, Object>) dataSnapshot.getValue());
-                        ((TextView) v.findViewById(R.id.nameTextView)).setText(user.getName());
 
-                        Log.d("myTag", "user name is " + user.getName());
+                        // set name and bio
+                        ((TextView) v.findViewById(R.id.nameTextView)).setText(user.getName());
+                        ((TextView) v.findViewById(R.id.bio)).setText(user.getBio());
 
                         // display events
                         grabAndDisplayEvents();
@@ -129,6 +136,10 @@ public class ProfileFrag extends Fragment {
                         if (userTrails.isEmpty()) {
                             // set title to be visible
                             v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
+                            if (!isMe) {
+                                ((TextView) v.findViewById(R.id.emptyTrailsText)).setText(
+                                        user.getName() + " isn't following anyone.");
+                            }
                         }
                         // not empty
                         else {
@@ -177,15 +188,26 @@ public class ProfileFrag extends Fragment {
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
                 LinearLayout attendingLayout = (LinearLayout) v.findViewById(R.id.attendingLayout);
+                if (myEvents.isEmpty()) {
+                    if (!isMe) {
+                        ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
+                                user.getName() + " isn't hosting any events.");
+                    }
+                }
 
                 // if myEvents is not empty, remove the empty button
-                if (!myEvents.isEmpty()) {
+                else {
                     ((LinearLayout) v.findViewById(R.id.eventsFullLayout)).removeView(
                             v.findViewById(R.id.emptyHostingTextContainer));
                 }
-
+                if (attendingEvents.isEmpty()) {
+                    if (!isMe) {
+                        ((TextView) v.findViewById(R.id.emptyAttendingTextView)).setText(
+                                user.getName() + " has no ongoing events");
+                    }
+                }
                 // if attendingEvents is not empty, remove the empty button
-                if (!attendingEvents.isEmpty()) {
+                else {
                     ((LinearLayout) v.findViewById(R.id.attendingFullLayout)).removeView(
                             v.findViewById(R.id.emptyAttendingTextContainer));
                 }
@@ -261,8 +283,8 @@ public class ProfileFrag extends Fragment {
                         URL imageURL = new URL("https://graph.facebook.com/" + user.getID() + "/picture?type=large");
                         profPicBitmap = Bitmap.createScaledBitmap(
                                 BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                                200,
-                                200,
+                                400,
+                                400,
                                 true);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -295,15 +317,10 @@ public class ProfileFrag extends Fragment {
 
     /* go to your own profile */
     public void goToProfile() {
-//        goToProfile(((Project_18) getApplication()).getMe().getID(), true);
     }
 
     /* go to someone else's profile */
     public void goToProfile(String userID, boolean isMe) {
-//        Intent i = new Intent(this, Profile.class);
-//        i.putExtra("userID", userID);
-//        i.putExtra("isMe", isMe);
-//        startActivity(i);
 
         ProfileFrag profileFrag = new ProfileFrag();
         profileFrag.setUser_ID(userID);
@@ -396,6 +413,8 @@ public class ProfileFrag extends Fragment {
 
     private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
                                                     HashMap<String, String> idToName) {
+
+        //trailsLayout.removeAllViews();
 
         // make the first row
         currentRow = new LinearLayout(getActivity().getApplicationContext());

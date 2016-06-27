@@ -1,9 +1,12 @@
 package com.stazo.project_18;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.AvoidXfermode;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -20,14 +23,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
@@ -51,7 +61,11 @@ public class MainAct extends AppCompatActivity
     private ViewPagerAdapter adapter;
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
-    private EventInfoFrag eventInfoFrag;
+    private SharedPreferences sharedPreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    private static EventInfoFrag eventInfoFrag;
+
+    private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
     // Search stuff
     private SearchView searchView = null;
@@ -65,6 +79,7 @@ public class MainAct extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         //toolbar stuff first because it needs to be on top?
@@ -135,6 +150,9 @@ public class MainAct extends AppCompatActivity
         // Are we going straight to browse?
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
+        }
+        if (getIntent().hasExtra("toProfile")) {
+            viewPager.setCurrentItem(2);
         }
     }
 
@@ -322,54 +340,100 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails(View v) {
         goToAddTrails();
     }
+    public void editBio(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("New Bio");
+        //alertDialog.setMessage("Enter Password");
+
+        final LinearLayout container = new LinearLayout(this);
+
+        final EditText input = new EditText(this);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(50,0,50,0);
+        input.setLayoutParams(lp);
+
+        input.setText(Project_18.me.getBio());
+
+        // length
+        int maxLength = 60;
+        InputFilter[] fArray = new InputFilter[1];
+        fArray[0] = new InputFilter.LengthFilter(maxLength);
+        input.setFilters(fArray);
+
+        input.setSelection(input.getText().length());
+
+        //input.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
+        container.addView(input);
+        alertDialog.setView(container);
+
+        alertDialog.setPositiveButton("Change Bio",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Project_18.me.setBio(((Project_18)
+                                getApplication()).getFB(), input.getText().toString());
+
+                        // reload profile
+                        Intent i = new Intent(act, MainAct.class);
+                        i.putExtra("toProfile", true);
+                        startActivity(i);
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+    }
 
     public void goToAddTrails() {
         startActivity(new Intent(this, AddTrailsAct.class));
     }
     public void goToEventInfo(String event_id) {
-        System.out.println("goToEventInfo");
-//        Intent intent = new Intent(this, EventInfoAct.class);
-//        intent.putExtra("event_id", event_id);
-//        startActivity(intent);
+
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
-
         searchView.clearFocus();
-        // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
+
         eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
         FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
-//        transaction.replace
-//                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
         transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
-//        this.getWindow().setDimAmount((float) 0.8);
-//        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-//        lp.dimAmount=0.0f;
-//        this.getWindow().setAttributes(lp);
-//        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-//        transaction
-//                .add(R.id.show_eventInfo, eventInfoFrag)
-//                .addToBackStack("EventInfoFrag")
-//                .commit();
-
+    }
+    public void simulateClick(String event_id) {
+        ((MapFrag) tabFragments.get(0)).simulateOnClick(event_id);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), ""); //map
-        adapter.addFragment(new ListAct(), ""); //explore
+        MapFrag mapFrag = new MapFrag();
+        ListAct listAct = new ListAct();
+        ProfileFrag profileFrag= new ProfileFrag();
+
+        // save references to fragments
+        tabFragments.add(mapFrag);
+        tabFragments.add(listAct);
+        tabFragments.add(profileFrag);
 
         //preemptive set user_id and isMe
-        ProfileFrag profileFrag= new ProfileFrag();
         profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
         profileFrag.setIsMe(true);
+
+        adapter.addFragment(mapFrag, ""); //map
+        adapter.addFragment(listAct, ""); //explore
         adapter.addFragment(profileFrag, ""); //profile
 
         viewPager.setAdapter(adapter);
@@ -402,6 +466,37 @@ public class MainAct extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public void logoutUser(View view) {
+        Log.i("MainAct", "Logging Out");
+
+        clearSharedPreferences();
+        fbLogout();
+
+        goToInitialAct();
+
+    }
+
+    private void clearSharedPreferences() {
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId", "0");
+        editor.putBoolean("isLoggedIn", false);
+        editor.apply();
+    }
+
+    private void fbLogout() {
+        Log.i("MainAct", "Accesstoken should be something: " + AccessToken.getCurrentAccessToken());
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            Log.i("MainAct", "Accesstoken should be null: " + AccessToken.getCurrentAccessToken());
+            Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void goToInitialAct(){
+        startActivity(new Intent(this, InitialAct.class));
     }
 
     @Override

@@ -75,10 +75,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 // React to state change
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 
-                    getActivity().findViewById(R.id.upArrow).setRotation(180);
+                    //getActivity().findViewById(R.id.upArrow).setRotation(180);
                 } else {
 
-                    getActivity().findViewById(R.id.upArrow).setRotation(0);
+                    //getActivity().findViewById(R.id.upArrow).setRotation(0);
                 }
             }
 
@@ -121,12 +121,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((ImageView) getActivity().findViewById(R.id.upArrow)).setImageBitmap(
+        /*((ImageView) getActivity().findViewById(R.id.upArrow)).setImageBitmap(
                 Bitmap.createScaledBitmap((BitmapFactory.decodeResource(getResources(),
                                 R.drawable.up_arrow_big)),
                         30,
                         30,
-                        true));
+                        true));*/
     }
 
 
@@ -137,7 +137,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
         else {
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            getActivity().findViewById(R.id.upArrow).setRotation(0);
+            //getActivity().findViewById(R.id.upArrow).setRotation(0);
         }
     }
 
@@ -169,7 +169,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         showInfo(currEvent, currUser);
 
                         mBottomSheetBehavior.setPeekHeight(
-                                getActivity().findViewById(R.id.arrowButtonLayout).getHeight() +
+                                //getActivity().findViewById(R.id.arrowButtonLayout).getHeight() +
                                 getActivity().findViewById(R.id.measurement).getHeight());
 
                         // remove this listener
