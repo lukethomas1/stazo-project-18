@@ -139,6 +139,9 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
         }
+        if (getIntent().hasExtra("toProfile")) {
+            viewPager.setCurrentItem(2);
+        }
     }
 
     private void setToolbar() {

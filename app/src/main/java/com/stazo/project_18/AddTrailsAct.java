@@ -142,12 +142,17 @@ public class AddTrailsAct extends AppCompatActivity {
     }
 
     public void pullUsersAndLoad(Firebase fb) {
-        fb.child("UsersIdToName").addListenerForSingleValueEvent(new ValueEventListener() {
+        fb.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot idToName) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> usersIterable = dataSnapshot.getChildren();
+                for (DataSnapshot user: usersIterable) {
+                    //System.out.println(commentIterable.iterator().next().getValue());
+                    allUsers.put(user.getKey(), (String) user.child("name").getValue());
+                }
 
                 // get allUsers
-                allUsers = (HashMap<String, String>) idToName.getValue();
+                //allUsers = (HashMap<String, String>) idToName.getValue();
 
                 // set friends
                 friends = new HashMap(((Project_18) getApplication()).getMe().getFriends());
@@ -221,15 +226,11 @@ public class AddTrailsAct extends AppCompatActivity {
     }*/
 
     public void goToProfile(View v) {
-        //if (!changedTrails) {
-        //loadMore();
-        onBackPressed();
-        //}
-        /*else {
-            Intent i = new Intent(this, MainAct.class);
-            i.putExtra("toProfile", true);
-            startActivity(i);
-        }*/
+
+        //onBackPressed();
+        Intent i = new Intent(this, MainAct.class);
+        i.putExtra("toProfile", true);
+        startActivity(i);
     }
 
     // removes users from allUsers if you're already following them or if they're you

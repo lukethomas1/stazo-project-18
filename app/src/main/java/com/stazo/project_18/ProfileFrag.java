@@ -300,10 +300,6 @@ public class ProfileFrag extends Fragment {
 
     /* go to someone else's profile */
     public void goToProfile(String userID, boolean isMe) {
-//        Intent i = new Intent(this, Profile.class);
-//        i.putExtra("userID", userID);
-//        i.putExtra("isMe", isMe);
-//        startActivity(i);
 
         ProfileFrag profileFrag = new ProfileFrag();
         profileFrag.setUser_ID(userID);
@@ -396,6 +392,8 @@ public class ProfileFrag extends Fragment {
 
     private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
                                                     HashMap<String, String> idToName) {
+
+        //trailsLayout.removeAllViews();
 
         // make the first row
         currentRow = new LinearLayout(getActivity().getApplicationContext());
