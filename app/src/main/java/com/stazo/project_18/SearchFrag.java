@@ -203,6 +203,11 @@ public class SearchFrag extends Fragment {
         ArrayList<Event> levelThree = new ArrayList<Event>();
 
         for (Event e: allEvents) {
+            // stop when we've found 10 name matches
+            if (levelTwo.size() + levelThree.size() >= 10) {
+                break;
+            }
+
             switch (e.findRelevance(query)) {
                 case 3:
                     levelThree.add(e);
@@ -226,7 +231,13 @@ public class SearchFrag extends Fragment {
         matchEvents.addAll(levelTwo);
         matchEvents.addAll(levelOne);
 
+        int counter = 0;
         for (final Event e: matchEvents) {
+
+            // load at most 5 events
+            if (counter >= 10) {
+                break;
+            }
             Button eventButton = new Button(getContext());
             eventButton.setText(e.getName());
             makePretty(eventButton, true);
@@ -237,6 +248,7 @@ public class SearchFrag extends Fragment {
                 }
             });
             queryButtonLayout.addView(eventButton);
+            counter++;
         }
 
         if (matchUsers.isEmpty() && matchEvents.isEmpty()) {
