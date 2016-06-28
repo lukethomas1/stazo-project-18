@@ -148,11 +148,12 @@ public class User {
     }
 
     public void addFollower (Firebase fb, String user_id) {
-        if(userFollowers.contains(user_id)) {
-            return;
-        }
-
         userFollowers.add(user_id);
+        fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
+    }
+
+    public void removeFollower(Firebase fb, String user_id) {
+        userFollowers.remove(user_id);
         fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
     }
 
@@ -160,6 +161,13 @@ public class User {
      * Default constructor for firebase
      */
     public User() {
+    }
+
+    public User(String user_id) {
+        this.ID = user_id;
+        this.name = "";
+
+
     }
 
     // for new users
@@ -527,5 +535,14 @@ public class User {
                 fb.child("Users").removeEventListener(this);
             }
         });
+    }
+
+    // To be called whenever a User creates an event
+    public void notifyFollowers(String eventID, String eventName, String userName, int type) {
+        Notification not = new Notification(eventID, eventName, userName, type);
+
+        for(String followerID : userFollowers) {
+            not.pushToFirebase(Project_18.getFB(), followerID);
+        }
     }
 }

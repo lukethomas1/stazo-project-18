@@ -17,7 +17,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -122,6 +121,7 @@ public class MainAct extends AppCompatActivity
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int pageNumber) {
+                hideInfo();
                 for (int i = 0; i <= 2; i++) {
                     if (i == pageNumber) {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
@@ -165,41 +165,49 @@ public class MainAct extends AppCompatActivity
             viewPager.setCurrentItem(1);
         }
 
-        // NOTIFICATIONS
+//        // NOTIFICATIONS
+//
+//        User currentUser = ((Project_18) this.getApplication()).getMe();
+//        Firebase fbRef = ((Project_18) this.getApplication()).getFB();
+//        fbRef.child("Notifications").push();
+//
+//
+//        // Make sure user is in notification database
+//        if(fbRef.child("Notifications") != null) {
+//            if (fbRef.child("Notifications").child(currentUser.getID()) != null) {
+//                fbRef.child("Notifications").child(currentUser.getID()).addListenerForSingleValueEvent(
+//                        new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                //notify = (boolean) dataSnapshot.child("Notify").getValue();
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(FirebaseError firebaseError) {
+//                            }
+//                        }
+//                );
+//            }
+//
+//            // If that user isn't in the notification database, add it in
+//            else {
+//
+//            }
+//        }
+//
+//        // TODO we need some sort of red exclamation mark or something to indicate this
+//        if(notify == true) {
+//            // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
+//        }
 
-        User currentUser = ((Project_18) this.getApplication()).getMe();
-        Firebase fbRef = ((Project_18) this.getApplication()).getFB();
-        fbRef.child("Notifications").push();
-
-        // Make sure user is in notification database
-        if(fbRef.child("Notifications") != null) {
-            if (fbRef.child("Notifications").child(currentUser.getID()) != null) {
-                fbRef.child("Notifications").child(currentUser.getID()).addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                //notify = (boolean) dataSnapshot.child("Notify").getValue();
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-                        }
-                );
-            }
-
-            // If that user isn't in the notification database, add it in
-            else {
-
-            }
-        }
-
-        // TODO we need some sort of red exclamation mark or something to indicate this
-        if(notify == true) {
-            // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
-        }
         if (getIntent().hasExtra("toProfile")) {
             viewPager.setCurrentItem(2);
+        }
+    }
+
+    public void hideInfo() {
+        if (eventInfoFrag != null) {
+            eventInfoFrag.hideEventInfo();
         }
     }
 
@@ -253,7 +261,7 @@ public class MainAct extends AppCompatActivity
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
         // Search stuff
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
@@ -273,7 +281,6 @@ public class MainAct extends AppCompatActivity
                         }
                         if (otherProfileFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
-                            otherProfileStateChange(false);
                         }
                         searched = false;
                         searchFrag = new SearchFrag();
@@ -312,7 +319,6 @@ public class MainAct extends AppCompatActivity
                 public boolean onQueryTextSubmit(String query) {
                     // hide keyboard
                     searched = true;
-                    searchView.setIconified(true);
                     searchView.clearFocus();
                     return true;
                 }
@@ -404,7 +410,6 @@ public class MainAct extends AppCompatActivity
     }
 
     public void updateOtherProfileFrag() {
-        otherProfileStateChange(true);
         if (otherProfileFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
         }
@@ -415,6 +420,7 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails(View v) {
         goToAddTrails();
     }
+
     public void editBio(View view) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         //alertDialog.setTitle("New Bio (100 char limit)");
@@ -480,7 +486,6 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToEventInfo(String event_id) {
-
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
@@ -490,13 +495,11 @@ public class MainAct extends AppCompatActivity
 
         if (otherProfileFrag != null) {
             //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
-            otherProfileStateChange(false);
             getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
         }
 
         simulateClick(event_id);
 
-        searchView.setIconified(true);
         searchView.clearFocus();
 
         eventInfoFrag = new EventInfoFrag();
@@ -517,11 +520,13 @@ public class MainAct extends AppCompatActivity
         MapFrag mapFrag = new MapFrag();
         ListAct listAct = new ListAct();
         ProfileFrag profileFrag= new ProfileFrag();
+        NotificationFrag notFrag = new NotificationFrag();
 
         // save references to fragments
         tabFragments.add(mapFrag);
         tabFragments.add(listAct);
         tabFragments.add(profileFrag);
+        tabFragments.add(notFrag);
 
         //preemptive set user_id and isMe
         profileFrag.setInfo(Project_18.me.getID(), true);
@@ -529,6 +534,7 @@ public class MainAct extends AppCompatActivity
         adapter.addFragment(mapFrag, ""); //map
         adapter.addFragment(listAct, ""); //explore
         adapter.addFragment(profileFrag, ""); //profile
+        adapter.addFragment(notFrag, ""); //notifications
 
         viewPager.setAdapter(adapter);
     }
@@ -563,13 +569,37 @@ public class MainAct extends AppCompatActivity
     }
 
     public void logoutUser(View view) {
-        Log.i("MainAct", "Logging Out");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        clearSharedPreferences();
-        fbLogout();
+        builder.setTitle("Log Out");
+        builder.setMessage("Are you sure? Like really sure?");
 
-        goToInitialAct();
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("MainAct", "Logout Confirmed: Logging Out");
+
+                clearSharedPreferences();
+                fbLogout();
+                goToInitialAct();
+
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("MainAct", "Logout Cancelled");
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void clearSharedPreferences() {
@@ -593,20 +623,8 @@ public class MainAct extends AppCompatActivity
         startActivity(new Intent(this, InitialAct.class));
     }
 
-    public void otherProfileStateChange(boolean entering) {
-        if (entering) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("");
-        }
-        else {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setTitle(getString(R.string.app_name));
-        }
-    }
-
     @Override
     public void onBackPressed() {
-        otherProfileStateChange(false);
         System.out.println("test");
         if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
             getSupportFragmentManager().popBackStackImmediate();

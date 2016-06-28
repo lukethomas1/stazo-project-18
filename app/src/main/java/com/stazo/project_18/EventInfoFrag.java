@@ -68,7 +68,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
-
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         mBottomSheetBehavior.setHideable(true);
@@ -106,6 +105,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         });
 
         final Button attendButton = (Button) v.findViewById(R.id.attend);
+
+        // if the user is already attending an event, change the button text to "Joined"
+        if (me.getAttendingEvents().contains(passedEventID)) {
+            attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            attendButton.setText("Joined");
+        }
+
+        // listener for attendButton
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +134,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         true));*/
     }
 
+    public void hideEventInfo() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
 
     public void toggleState() {
 

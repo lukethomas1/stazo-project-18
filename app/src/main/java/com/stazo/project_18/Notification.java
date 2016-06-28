@@ -39,6 +39,32 @@ public class Notification {
         onClickID = "";
     }
 
+    // Type 2
+    public Notification(String ID, String name, int type) {
+        this.viewed = false;
+        onClickID = ID;
+        this.type = type;
+        generateNotifID();
+
+        // TYPE 2: <user_who_followed_me> is now following you.     onClickID = userId
+        if(type == 2) {
+            message = name + " is now follwing you.";
+        }
+    }
+
+    // Type 1
+    public Notification(String eventID, String eventName, String userName, int type) {
+        this.viewed = false;
+        onClickID = eventID;
+        this.type = type;
+        generateNotifID();
+
+        // TYPE 1: <user_name> is hosting <event_name> at <location> in <hours>   onClickID = eventId
+        if(type == 1) {
+            message = userName + " is hosting " + eventName + ".";
+        }
+    }
+
     public Notification(String text, boolean viewed, String ID, int type) {
         message = text;
         this.viewed = viewed;
@@ -53,6 +79,12 @@ public class Notification {
         for (String id: usersWhoCare) {
             fb.child("NotifDatabase").child(id).push().setValue(notif);
         }
+    }
+
+    public void pushToFirebase(Firebase fb, String userWhoCares) {
+        final Notification notif = this;
+
+        fb.child("NotifDatabase").child(userWhoCares).push().setValue(notif);
     }
 
     public void generateNotifID() {

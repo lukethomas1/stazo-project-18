@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -258,6 +259,13 @@ public class MapFrag extends Fragment {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
                     goToEventInfo(marker);
+                }
+            });
+            map.setOnInfoWindowCloseListener(new GoogleMap.OnInfoWindowCloseListener() {
+                @Override
+                public void onInfoWindowClose(Marker marker) {
+                    // Hides the eventInfoFrag when the infoWindow disappears
+                    ((MainAct) getActivity()).hideInfo();
                 }
             });
 

@@ -662,11 +662,20 @@ public class ProfileFrag extends Fragment {
         if (Project_18.me.getUserTrails().contains(user_ID)) {
             Log.d("flw", "userTrails did contain id, now removing");
             Project_18.me.removeTrail(fb, user_ID);
+            User otherUser = new User(user_ID);
+            otherUser.removeFollower(fb, Project_18.me.getID());
+
             setFollowButton(false);
         }
         else {
             Log.d("flw", "userTrails did not contain id, now adding");
             Project_18.me.addTrail(fb, user_ID);
+            User otherUser = new User(user_ID);
+            otherUser.addFollower(fb, Project_18.me.getID());
+
+            Notification not = new Notification(Project_18.me.getID(), Project_18.me.getName(), 0);
+            not.pushToFirebase(fb, user_ID);
+
             setFollowButton(true);
         }
     }

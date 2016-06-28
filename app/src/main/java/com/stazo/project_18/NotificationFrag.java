@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -33,14 +35,37 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
 
         currentUser = ((Project_18) this.getActivity().getApplication()).getMe();
 
+        // Update the notifications
+        pullNotifications(currentUser.getID());
+
+        // Show them on the screen
+        displayNotifications();
+
         return v;
     }
 
-    private ArrayList<Notification> loadNotifications() {
-        // List of follower IDs
-        ArrayList<Notification> notifications = new ArrayList<>();
+    private void displayNotifications() {
+        LinearLayout LL1 = ((LinearLayout) this.getActivity().findViewById(R.id.LL1));
 
-        return notifications;
+        for(Notification not : notifs) {
+            final Notification finalNot = not;
+            Button butt = new Button(this.getActivity());
+            butt.setText(not.getMessage());
+
+            butt.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    goToEventInfo(finalNot.getOnClickID());
+                    setToViewed(finalNot);
+                }
+            });
+
+            LL1.addView(butt);
+        }
+    }
+
+    private void goToEventInfo(String event_id) {
+        // Delegate Activity switching to encapsulating activity
+        ((MainAct)this.getActivity()).goToEventInfo(event_id);
     }
 
     public void pullNotifications(String userId) {
