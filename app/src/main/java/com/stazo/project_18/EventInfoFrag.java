@@ -67,20 +67,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-
+        mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                // React to state change
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-
-                    //getActivity().findViewById(R.id.upArrow).setRotation(180);
-                } else {
-
-                    //getActivity().findViewById(R.id.upArrow).setRotation(0);
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehavior.setPeekHeight(0);
                 }
             }
 
@@ -110,6 +104,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         });
 
         final Button attendButton = (Button) v.findViewById(R.id.attend);
+
+        // if the user is already attending an event, change the button text to "Joined"
+        if (me.getAttendingEvents().contains(passedEventID)) {
+            attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            attendButton.setText("Joined");
+        }
+
+        // listener for attendButton
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +133,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         true));*/
     }
 
+    public void hideEventInfo() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
 
     public void toggleState() {
 
@@ -223,6 +228,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         SimpleDateFormat startDayFormat = new SimpleDateFormat("MM/dd", Locale.US);
         SimpleDateFormat startTimeFormat = new SimpleDateFormat("HH:mm", Locale.US);
+
         String startText = "Starting on " + startDayFormat.format(start) +
                 " at " + startTimeFormat.format(start);
         eventDate.setText(startText);

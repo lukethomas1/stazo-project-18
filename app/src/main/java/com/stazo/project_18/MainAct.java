@@ -120,6 +120,7 @@ public class MainAct extends AppCompatActivity
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int pageNumber) {
+                hideInfo();
                 for (int i = 0; i <= 2; i++) {
                     if (i == pageNumber) {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
@@ -200,6 +201,12 @@ public class MainAct extends AppCompatActivity
 
         if (getIntent().hasExtra("toProfile")) {
             viewPager.setCurrentItem(2);
+        }
+    }
+
+    public void hideInfo() {
+        if (eventInfoFrag != null) {
+            eventInfoFrag.hideEventInfo();
         }
     }
 
@@ -406,6 +413,7 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails(View v) {
         goToAddTrails();
     }
+
     public void editBio(View view) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         //alertDialog.setTitle("New Bio (100 char limit)");
@@ -471,7 +479,6 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToEventInfo(String event_id) {
-
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
@@ -555,13 +562,37 @@ public class MainAct extends AppCompatActivity
     }
 
     public void logoutUser(View view) {
-        Log.i("MainAct", "Logging Out");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        clearSharedPreferences();
-        fbLogout();
+        builder.setTitle("Log Out");
+        builder.setMessage("Are you sure? Like really sure?");
 
-        goToInitialAct();
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("MainAct", "Logout Confirmed: Logging Out");
+
+                clearSharedPreferences();
+                fbLogout();
+                goToInitialAct();
+
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("MainAct", "Logout Cancelled");
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void clearSharedPreferences() {
