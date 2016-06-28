@@ -345,7 +345,7 @@ public class MainAct extends AppCompatActivity
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
-
+        searchView.clearFocus();
         newOtherProfileFrag = new ProfileFrag();
         newOtherProfileFrag.setInfo(userId, false);
         FragmentTransaction transaction =

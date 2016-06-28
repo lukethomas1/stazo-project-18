@@ -131,14 +131,13 @@ public class SearchFrag extends Fragment {
         for (final String id: matchUsers.keySet()) {
             LinearLayout container = new LinearLayout(getActivity());
             LinearLayout.LayoutParams lp = new LinearLayout.
-                    LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.height = 160;
+                    LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 150);
+            //lp.height = 120;
             lp.gravity = Gravity.CENTER;
             container.setLayoutParams(lp);
             container.setOrientation(LinearLayout.HORIZONTAL);
             container.setGravity(Gravity.CENTER);
-            container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            container.setBackgroundColor(getResources().getColor(R.color.white));
 
             // set up button
             Button userButton = new Button(getContext());
@@ -157,6 +156,7 @@ public class SearchFrag extends Fragment {
             final Bitmap unscaledBitmap;
 
             if (((Project_18) getActivity().getApplication()).getBitmapFromMemCache(id) != null) {
+
                 // grab image
                 unscaledBitmap = ((Project_18) getActivity().getApplication()).getBitmapFromMemCache(id);
 
@@ -165,9 +165,15 @@ public class SearchFrag extends Fragment {
                 iv.setImageBitmap(profPicBitmap);
                 makePretty(iv);
 
+                // add to layout
                 container.addView(iv);
                 container.addView(userButton);
-                queryButtonLayout.addView(container);
+                if (friends.keySet().contains(id)) {
+                    friendsButtonLayout.addView(container);
+                }
+                else {
+                    othersButtonLayout.addView(container);
+                }
             }
 
             else {
@@ -241,7 +247,7 @@ public class SearchFrag extends Fragment {
             this.id = id;
             this.userButton = userButton;
             this.container = container;
-            isFriend = isFriend;
+            this.isFriend = isFriend;
         }
 
         @Override
@@ -251,7 +257,7 @@ public class SearchFrag extends Fragment {
                         BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                 id +
                                 "/picture?width=" +
-                                Project_18.pictureSizeLow)).openConnection().getInputStream());
+                                Project_18.pictureSize)).openConnection().getInputStream());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -314,15 +320,14 @@ public class SearchFrag extends Fragment {
         button.setPadding(40, 0, 0, 0);
         button.setLayoutParams(lp);
         if (forEvent) {
-            button.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            button.setBackgroundColor(getResources().getColor(R.color.white));
         }
         else {
-            button.setBackgroundColor(getResources().getColor(R.color.white));
+            button.setBackground(null);
         }
     }
 
     private void makePretty(TextView tv) {
-
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(16);
         tv.setBackgroundColor(getResources().getColor(R.color.white));
