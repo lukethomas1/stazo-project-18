@@ -27,29 +27,11 @@ public class WriteCommentFrag extends Fragment {
         Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
         String commentText = ((EditText) v.findViewById(R.id.commentText)).getText().toString();
 
-        //make comment based off of eventinfo
-//        Comment comment = new Comment(this.passedEventID);
-//        comment.addComment(commentText);
-//        fb.child("CommentDatabase").child(this.passedEventID).addListenerForSingleValueEvent(
-//                new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        //get arraylist of comments
-//                        ArrayList<String> commentList = dataSnapshot.child("comments").getValue(
-//                                new GenericTypeIndicator<ArrayList<String>>() {
-//                                });
-//                        if (commentList != null) {
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(FirebaseError firebaseError) {
-//                    }
-//                });
-//        fb.child("CommentDatabase").child(this.passedEventID).setValue(comment);
-
-        //used push instead of updating an arrray list
-        fb.child("CommentDatabase").child(this.passedEventID).child("comments").push().setValue(commentText);
+        //used push instead of updating an arrray list, pushing it into the comments array of
+        //the EventComments tied to an Event_ID
+        String user_ID = ((Project_18)this.getActivity().getApplication()).getMe().getID();
+        Comment comment = new Comment(this.passedEventID, commentText, user_ID);
+        fb.child("CommentDatabase").child(this.passedEventID).child("comments").push().setValue(comment);
 
     }
 

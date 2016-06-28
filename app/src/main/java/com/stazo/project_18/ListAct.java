@@ -21,6 +21,8 @@ import java.util.HashMap;
 
 public class ListAct extends android.support.v4.app.Fragment {
 
+    private static final long HAPPENING_NOW_WINDOW = 3600000; // Milliseconds in an hour
+
     private Firebase fb;
     ArrayList<Event> eventList = new ArrayList<Event>();
     private TextView loadingText;
@@ -33,7 +35,6 @@ public class ListAct extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.activity_list, container, false);
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
@@ -52,6 +53,10 @@ public class ListAct extends android.support.v4.app.Fragment {
                                     new GenericTypeIndicator<HashMap<String, Object>>() {
                                     }));
 
+//                            Iterable<DataSnapshot> attendeesIterable = eventSnapshot.child("attendees").getChildren();
+//                            while(attendeesIterable.iterator().hasNext()) {
+//                                this.attendees.add(attendeesIterable.iterator().next());
+//                            }
                             // Add event to arraylist
                             eventList.add(e);
 
@@ -60,7 +65,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                         // Get the text in the activity
                         loadingText = (TextView) getActivity().findViewById(R.id.loadingText);
 
-                        // Set loading text to "No events" if there were no events
+                        // Set loading text to "No events" if there are no events
                         if (eventList.isEmpty()) {
                             loadingText.setText("No Events");
                         }
@@ -96,9 +101,9 @@ public class ListAct extends android.support.v4.app.Fragment {
         headerToEventListHM = new HashMap<>();
 
         // Add event categories
-        headerList.add("Lit Events");
-        headerList.add("Subscribed Events");
-        headerList.add("Local Events");
+        headerList.add("Hot Events");
+        headerList.add("Happening Now");
+        headerList.add("All Events");
 
         // Add Hot Events
         ArrayList<Event> hotEventsList = new ArrayList<>();
@@ -112,37 +117,33 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         headerToEventListHM.put(headerList.get(0), hotEventsList);
 
-        // Add subscribed events
-        // Add this user
+        // Find events happening soon
         User thisUser = ((Project_18) getActivity().getApplication()).getMe();
 
-        ArrayList<Event> subscribedEventsList = new ArrayList<>();
+        ArrayList<Event> nowEventsList = new ArrayList<>();
+
+        // Get current time in milliseconds
+        long currentTime = System.currentTimeMillis();
 
         for (Event event : eventList) {
-            if (thisUser.isSubscribedEvent(event)) {
-                subscribedEventsList.add(event);
+            // Happening now if within an hour from start and hasn't ended yet
+            if (event.getStartTime() - currentTime < HAPPENING_NOW_WINDOW
+                    && currentTime < event.getEndTime()) {
+                nowEventsList.add(event);
             }
         }
 
-        headerToEventListHM.put(headerList.get(1), subscribedEventsList);
+        headerToEventListHM.put(headerList.get(1), nowEventsList);
 
-        /* TODO: For local events, base it on a certain radius around the user's current location.
-           Right now it is just all events - hot events - subscribed events */
+        /* TODO: For local events, base it on a certain radius around the user's current location. */
 
-        ArrayList<Event> localEventsList = new ArrayList<>();
+        ArrayList<Event> allEventsList = new ArrayList<>();
 
         for (Event event : eventList) {
-            // Whether this event is already in a previous list
-            boolean isInHotList = hotEventsList.contains(event);
-            boolean isInSubscribedList = subscribedEventsList.contains(event);
-
-            // if it is not in a previous list, then add it to the local list
-            if (!isInHotList && !isInSubscribedList) {
-                localEventsList.add(event);
-            }
+            allEventsList.add(event);
         }
 
-        headerToEventListHM.put(headerList.get(2), localEventsList);
+        headerToEventListHM.put(headerList.get(2), allEventsList);
 
         /*
         for(int i = 0; i < eventList.size(); i++) {
@@ -159,6 +160,7 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         listAdapter = new ExpandableListAdapter(getActivity(), headerList, headerToEventListHM);
 
+        // Display event info on child click
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
@@ -171,7 +173,25 @@ public class ListAct extends android.support.v4.app.Fragment {
             }
         });
 
+        // Collapse open list on new expansion
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int prevGroupPos = -1;
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                // Collapse open list on new expansion
+                if (prevGroupPos >= 0 && prevGroupPos != groupPosition) {
+                    expListView.collapseGroup(prevGroupPos);
+                }
+
+                prevGroupPos = groupPosition;
+            }
+        });
+
         expListView.setAdapter(listAdapter);
+
+        // Display hot events by default
+        expListView.expandGroup(0);
     }
 
     /* TODO Filter lists inside of the three main categories (hot, subscribed, and local) */
@@ -202,6 +222,12 @@ public class ListAct extends android.support.v4.app.Fragment {
     private void filterEventList() {
         // true = don't worry about time
         this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
     }
 
 }

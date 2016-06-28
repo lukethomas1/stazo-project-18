@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.firebase.client.Firebase;
 
 public class LogoutAct extends AppCompatActivity {
     SharedPreferences sharedPreferences;
@@ -70,5 +71,10 @@ public class LogoutAct extends AppCompatActivity {
         startActivity(new Intent(this, InitialAct.class));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
 
 }

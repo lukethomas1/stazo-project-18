@@ -6,108 +6,280 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/profileLayout"
-    tools:context=".Profile"
-    android:visibility="invisible"
-    android:background="@color/white">
+    android:visibility="visible"
+    android:background="@color/colorDividerLight"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    android:layout_marginBottom="0dp">
 
-    <android.support.design.widget.AppBarLayout
+    <com.stazo.project_18.InteractiveScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:id="@+id/profileScrollView">
+        <!--android:paddingLeft="@dimen/profile_scrollview_horizontal_margin"
+        android:paddingRight="@dimen/profile_scrollview_horizontal_margin">-->
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"/>
-        <!--android:tabMode="fixed"-->
-    </android.support.design.widget.AppBarLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView2"
-        android:paddingLeft="@dimen/profile_scrollview_horizontal_margin"
-        android:paddingRight="@dimen/profile_scrollview_horizontal_margin">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/profileLinear">
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary"></LinearLayout>-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/profilePicture"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dip"
-                android:background="@drawable/picture_background"
-                android:visibility="invisible"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Isaac Wang"
-                android:textSize="26dip"
-                android:layout_marginTop="15dip"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/nameTextView"
-                android:textColor="@color/profileTextColor"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Events"
-                android:textSize="20dip"
-                android:layout_marginTop="25dip"
-                android:id="@+id/myEventsTextView"
-                android:textColor="@color/profileTextColor"/>
-
+            <!-- PROF PIC AND NAME -->
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_header"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:id="@+id/eventsLayout">
+                android:layout_marginTop="8dp"
+                android:id="@+id/profileHeaderLayout">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dip"
-                android:id="@+id/trailsTitleLayout"
-                android:visibility="invisible">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/profilePicture"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginBottom="10dip"
+                    android:background="@drawable/picture_background"
+                    android:visibility="invisible"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="Following"
-                    android:textSize="20dip"
-                    android:id="@+id/myTrailsTextView"
-                    android:textColor="@color/profileTextColor" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Isaac Wang"
+                    android:textSize="20sp"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:id="@+id/nameTextView"
+                    android:textColor="@color/colorTextPrimary"/>
 
-                <ImageButton
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="240dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageButton"
-                    android:onClick="goToAddTrails"
-                    android:src="@drawable/ic_actionbar_plus"
-                    android:layout_marginLeft="5dip"
-                    android:background="@null"/>
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Jet fuel can't melt steel beams. Open your EYES people."
+                    android:id="@+id/bio"
+                    android:textStyle="italic"
+                    android:textColor="@color/colorTextPrimary"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/userOptions"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btn_edit"
+                        android:text="Edit Bio"
+                        android:onClick="editBio"
+                        android:textSize="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:background="@null"
+                        android:textColor="@color/colorDivider"/>
+
+                    <Button
+                        android:id="@+id/btn_logout"
+                        android:text="Log Out"
+                        android:onClick="logoutUser"
+                        android:textSize="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:background="@null"
+                        android:textColor="@color/colorDivider"/>
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/followButton"
+                    android:onClick="followUser"
+                    android:layout_gravity="center"
+                    android:text="Follow"
+                    android:textSize="10dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center"
+                    android:background="@color/colorAccent"
+                    android:textColor="@color/colorTextPrimary"/>
+
+            </LinearLayout>
+
+            <!-- HOSTING BLOCK -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:id="@+id/eventsFullLayout"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity=""
+                    android:id="@+id/eventsTitleLayout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:text="Ongoing"
+                        android:layout_marginLeft="20dip"
+                        android:layout_marginBottom="12dp"
+                        android:id="@+id/myEventsTextView"
+                        android:textAppearance="@style/ProfileHeaders" />
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/goToCreateEventButton"
+                        android:onClick="goToCreateEvent"
+                        android:layout_gravity="bottom"
+                        android:text="Create"
+                        android:textSize="10dp"
+                        android:textAllCaps="false"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:background="@color/colorAccent"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/emptyHostingTextContainer"
+                    android:background="@color/white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="You have no ongoing events."
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyHostingText"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="visible"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventsLayout"
+                    android:gravity="center_horizontal">
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:id="@+id/trailsLayout">
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/border_layout"
+                android:id="@+id/trailsFullLayout"
+                android:visibility="visible"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dip"
+                    android:gravity=""
+                    android:id="@+id/trailsTitleLayout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:text="Following"
+                        android:layout_marginLeft="20dip"
+                        android:layout_marginBottom="12dp"
+                        android:id="@+id/myTrailsTextView"
+                        android:textAppearance="@style/ProfileHeaders" />
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/goToAddTrailsButton"
+                        android:onClick="goToAddTrails"
+                        android:layout_gravity="bottom"
+                        android:text="Search"
+                        android:textSize="10dp"
+                        android:textAllCaps="false"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:background="@color/colorAccent"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/emptyTrailsTextContainer"
+                    android:background="@color/white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="You aren't following anyone yet."
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyTrailsText"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"
+                        android:visibility="visible"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/white"></LinearLayout>
+                <com.stazo.project_18.InteractiveScrollViewHorizontal
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trailsScrollView"
+                    android:background="@color/white">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/trailsLayout"
+                        android:layout_marginBottom="5dp">
+                    </LinearLayout>
+                </com.stazo.project_18.InteractiveScrollViewHorizontal>
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.stazo.project_18.InteractiveScrollView>
 
 </LinearLayout>
+
+

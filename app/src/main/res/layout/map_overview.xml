@@ -22,8 +22,6 @@
             app:backgroundTint="@color/colorAccent"
             android:onClick="goToCreateEvent"
             app:fabSize="mini"/>
-            <!--app:backgroundTint="#4286ed" -->
-            <!--android:onClick="goToCreateEvent"/> -->
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +32,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="5dp"
         android:visibility="invisible"
-        android:textColor="@color/colorSecondary"/>
+        android:textColor="@color/colorPrimaryDark"/>
 
     <SeekBar
             android:id="@+id/timeSeekBar"
@@ -46,7 +44,7 @@
             android:max="12"
             android:progressTint="@color/colorAccent"
             android:thumbTint="@color/colorAccent"
-            android:progressBackgroundTint="@color/offwhite"
+            android:progressBackgroundTint="@color/colorTextIcons"
             android:visibility="invisible"/>
 
 

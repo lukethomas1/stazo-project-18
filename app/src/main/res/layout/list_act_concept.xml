@@ -21,7 +21,7 @@
                 android:layout_marginTop="24dip"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:id="@+id/Upcoming"
-                android:textColor="@color/black"/>
+                android:textColor="@color/colorTextPrimary"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -36,7 +36,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/led"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/Baewatch"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
             </LinearLayout>
 
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_marginTop="24dip"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:id="@+id/Subscribed"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorTextPrimary" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -72,7 +72,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/board"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/soccer"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/basketball"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
             </LinearLayout>
 
             <TextView
@@ -102,7 +102,7 @@
                 android:layout_marginTop="24dip"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:id="@+id/All"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorTextPrimary" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -118,7 +118,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other1"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other2"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other3"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other4"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other5"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -172,7 +172,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other6"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:id="@+id/other7"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/colorTextPrimary" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -4,16 +4,26 @@ package com.stazo.project_18;
  * Created by ericzhang on 5/14/16.
  */
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -30,55 +40,66 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
-public class EventInfoFrag extends Fragment {
+public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
 
     private Firebase fb;
     private String passedEventID;
+    private User currUser;
+    private Event currEvent;
     private View v;
-
-    public void writeCommentClick() {
-        //open comment write window
-        WriteCommentFrag writeFrag = new WriteCommentFrag();
-        writeFrag.setEventID(this.passedEventID);
-        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.show_writeComment, writeFrag).addToBackStack("WriteCommentFrag").commit();
-    }
-
-//    public void pushComment(Comment comment) {
-//        fb = ((Project_18) this.getActivity().getApplication()).getFB();
-//        String event_ID = comment.getEvent_ID();
-//        fb.child("CommentDatabase").child(event_ID).setValue(comment);
-//    }
-
-    public void viewCommentClick() {
-        //open comment view window
-        ViewCommentFrag viewFrag = new ViewCommentFrag();
-        viewFrag.setEventID(this.passedEventID);
-        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
-    }
+    private View bottomSheet;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private User me;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
         v.setVisibility(View.INVISIBLE);
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
-
+        me = ((Project_18) this.getActivity().getApplication()).getMe();
         // Get the event_id to display
         //String event_id = this.passedEventID;
         // Display event info
         System.out.println("EVENT ID: " + this.passedEventID);
         grabEventInfo(this.passedEventID);
 
+        bottomSheet = v.findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        //mBottomSheetBehavior.setPeekHeight(680);
+        //mBottomSheetBehavior.setPeekHeight(610);
 
-        //setup comment buttons
-        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
-        writeCommentButton.setOnClickListener(new View.OnClickListener() {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onClick(View v) {
-                writeCommentClick();
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                // React to state change
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+
+                    //getActivity().findViewById(R.id.upArrow).setRotation(180);
+                } else {
+
+                    //getActivity().findViewById(R.id.upArrow).setRotation(0);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
             }
         });
+
+        //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        //setup comment buttons
+//        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
+//        writeCommentButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                writeCommentClick();
+//            }
+//        });
 
         Button viewCommentButton = (Button) v.findViewById(R.id.viewCommentButton);
         viewCommentButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +108,44 @@ public class EventInfoFrag extends Fragment {
                 viewCommentClick();
             }
         });
+
+        final Button attendButton = (Button) v.findViewById(R.id.attend);
+        attendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attendClick(attendButton);
+            }
+        });
+
         return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        /*((ImageView) getActivity().findViewById(R.id.upArrow)).setImageBitmap(
+                Bitmap.createScaledBitmap((BitmapFactory.decodeResource(getResources(),
+                                R.drawable.up_arrow_big)),
+                        30,
+                        30,
+                        true));*/
+    }
+
+
+    public void toggleState() {
+
+        if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+        else {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            //getActivity().findViewById(R.id.upArrow).setRotation(0);
+        }
+    }
+
+    /* toggle frag state */
+    public void toggleState(View v) {
+        toggleState();
     }
 
     //setter method for main act to pass in eventID
@@ -103,19 +161,23 @@ public class EventInfoFrag extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         // get the info for the event
-                        Event e = new Event(dataSnapshot.child("Events").
+                        currEvent = new Event(dataSnapshot.child("Events").
                                 child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
                                 }));
 
                         // get the info for the user
-                        User u = new User((HashMap<String, Object>) dataSnapshot.child("Users").
-                                child(e.getCreator_id()).getValue());
+                        currUser = new User((HashMap<String, Object>) dataSnapshot.child("Users").
+                                child(currEvent.getCreator_id()).getValue());
 
                         System.out.println(((Project_18) getActivity().getApplication()).getMe().getName());
 
                         // display event
-                        showInfo(e, u);
+                        showInfo(currEvent, currUser);
+
+                        mBottomSheetBehavior.setPeekHeight(
+                                //getActivity().findViewById(R.id.arrowButtonLayout).getHeight() +
+                                getActivity().findViewById(R.id.measurement).getHeight());
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
@@ -142,36 +204,9 @@ public class EventInfoFrag extends Fragment {
         long startMinute = 0;
         //End Initialization
 
-        ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
+        //ImageView eventIcon = (ImageView) this.getActivity().findViewById(R.id.eventIcon);
         int findType = e.getType();
-        Drawable d = getResources().getDrawable(R.drawable.type_icon_game);
 
-        // determining the icon
-        switch(findType) {
-            case 1:
-                d = getResources().getDrawable(R.drawable.ic1);
-                break;
-            case 2:
-                d = getResources().getDrawable(R.drawable.ic2);
-                break;
-            case 3:
-                d = getResources().getDrawable(R.drawable.ic3);
-                break;
-            case 4:
-                d = getResources().getDrawable(R.drawable.ic4);
-                break;
-            case 5:
-                d = getResources().getDrawable(R.drawable.ic5);
-                break;
-            case 6:
-                d = getResources().getDrawable(R.drawable.ic6);
-                break;
-            case 7:
-                d = getResources().getDrawable(R.drawable.ic7);
-                break;
-        }
-        // setting the icon
-        eventIcon.setImageDrawable(d);
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
@@ -234,51 +269,81 @@ public class EventInfoFrag extends Fragment {
         else {
             eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
         }
-
-//        if(minutes < 10){
-//            eventTime.setText(hours + ":0" + minutes + " " + timePeriod);
-//        } else {
-//            eventTime.setText(hours + ":" + minutes + " " + timePeriod);
-//        }
-//        //A bit of math to find the time till event.
-//        TextView eventTimeTo = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
-//        if (currTime.get(Calendar.MINUTE) > minutes) {
-//            minutes = minutes + 60;
-//            hours--;
-//        }
-//        if((hours - currTime.get(Calendar.HOUR_OF_DAY) < 0) || ((minutes - currTime.get(Calendar.MINUTE)) < 0)){
-//            eventTimeTo.setText("Started!");
-//            long pastHour = currTime.get(Calendar.HOUR_OF_DAY) - hours - eventHour;
-//            long pastMinute = currTime.get(Calendar.MINUTE) - minutes - eventMinute;
-//            if(pastMinute < 0){
-//                pastMinute += 60;
-//                pastHour--;
-//            }
-//            if(pastHour > 1){
-//                eventTimeTo.setText("COMPLETED");
-//            } else {
-//                if(pastHour == 1){
-//                    eventTimeTo.setText("Finished 1 h ago");
-//                } else {
-//                    eventTimeTo.setText("Finished " + pastMinute + " m ago");
-//                }
-//            }
-//        } else {
-//            if (timePeriod.equalsIgnoreCase("PM")) {
-//                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
-//                    eventTimeTo.setTextColor(Color.RED);
-//                }
-//                eventTimeTo.setText("In: " + (hours - currTime.get(Calendar.HOUR_OF_DAY))
-//                        + " h " + (minutes - currTime.get(Calendar.MINUTE)) + " m");
-//            } else {
-//                if((hours - currTime.get(Calendar.HOUR_OF_DAY)) < 1){
-//                    eventTimeTo.setTextColor(Color.RED);
-//                }
-//                eventTimeTo.setText("In: " + (hours - currTime.HOUR_OF_DAY) + " h "
-//                        + (minutes - currTime.MINUTE) + " m");
-//            }
-//        }
         v.setVisibility(View.VISIBLE);
     }
 
+    public void writeCommentClick() {
+        //open comment write window
+        WriteCommentFrag writeFrag = new WriteCommentFrag();
+        writeFrag.setEventID(this.passedEventID);
+        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.show_writeComment, writeFrag).addToBackStack("WriteCommentFrag").commit();
+    }
+
+//    public void pushComment(Comment comment) {
+//        fb = ((Project_18) this.getActivity().getApplication()).getFB();
+//        String event_ID = comment.getEvent_ID();
+//        fb.child("CommentDatabase").child(event_ID).setValue(comment);
+//    }
+
+    public void viewCommentClick() {
+        //open comment view window
+        ViewCommentFrag viewFrag = new ViewCommentFrag();
+        viewFrag.setEventID(this.passedEventID);
+        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
+    }
+
+    public void attendClick(Button b) {
+        if(b.getText() == "Joined"){
+            // get the info for the user
+            me.unattendEvent(currEvent.getEvent_id(), fb);
+
+            b.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            b.setText("Join");
+
+        } else {
+            me.attendEvent(currEvent.getEvent_id(), fb);
+            b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            b.setText("Joined");
+
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(getContext());
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
 }

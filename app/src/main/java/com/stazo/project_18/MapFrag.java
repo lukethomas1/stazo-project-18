@@ -78,7 +78,6 @@ public class MapFrag extends Fragment {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapHandler);
 
-
         return v;
     }
 
@@ -171,6 +170,9 @@ public class MapFrag extends Fragment {
                 ((Project_18) getActivity().getApplication()).findRelevantEventIds();
         mapHandler.displayRelevantEvents(relevantEventIds);
     }
+    public void simulateOnClick(String event_id) {
+        mapHandler.simulateOnClick(event_id);
+    }
 
     /**
      * Map Handler
@@ -210,6 +212,15 @@ public class MapFrag extends Fragment {
             return infoWindow;
         }
 
+        public void simulateOnClick(String eventId) {
+            simulateOnClick(markerLookupHM.get(eventId));
+        }
+
+        public void simulateOnClick(Marker marker) {
+            marker.showInfoWindow();
+            map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
+        }
+
         private void render(Marker marker, View inflatedLayout) {
 
             // Set title and event description
@@ -230,8 +241,7 @@ public class MapFrag extends Fragment {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    //goToEventInfo(marker);
-
+                    goToEventInfo(marker);
                     return false; // Perform default behavior: displaying InfoWindow
                 }
             });
@@ -429,7 +439,7 @@ public class MapFrag extends Fragment {
             }
 
             // Set icon
-            markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
+            //markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);

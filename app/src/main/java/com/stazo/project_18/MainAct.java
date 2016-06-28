@@ -1,8 +1,12 @@
 package com.stazo.project_18;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.AvoidXfermode;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -19,12 +23,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.firebase.client.Firebase;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -50,6 +66,15 @@ public class MainAct extends AppCompatActivity
     private ViewPager viewPager;
     private Toolbar toolbar;
     private ViewPagerAdapter adapter;
+    private FragmentTransaction transaction;
+    private SearchFrag searchFrag;
+    private SharedPreferences sharedPreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    private static EventInfoFrag eventInfoFrag;
+    private static ProfileFrag otherProfileFrag;
+    private static ProfileFrag newOtherProfileFrag;
+
+    private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
     // Search stuff
     private SearchView searchView = null;
@@ -58,9 +83,14 @@ public class MainAct extends AppCompatActivity
     // For notifications
     private boolean notify = false;
 
+    private AppCompatActivity act = this;
+
+    private boolean searched; // did the user just submit a query?
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         //toolbar stuff first because it needs to be on top?
@@ -98,7 +128,7 @@ public class MainAct extends AppCompatActivity
                     }
                     else {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
-                                getResources().getColor(R.color.offwhite),
+                                getResources().getColor(R.color.colorDivider),
                                 PorterDuff.Mode.SRC_IN);
                     }
                 }
@@ -119,10 +149,10 @@ public class MainAct extends AppCompatActivity
                 getResources().getColor(R.color.colorPrimary),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(
-                getResources().getColor(R.color.offwhite),
+                getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).getIcon().setColorFilter(
-                getResources().getColor(R.color.offwhite),
+                getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
 
         // Default to "All" categories
@@ -132,6 +162,7 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
         }
+<<<<<<< HEAD
 
         // NOTIFICATIONS
 
@@ -166,6 +197,10 @@ public class MainAct extends AppCompatActivity
         // TODO we need some sort of red exclamation mark or something to indicate this
         if(notify == true) {
             // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
+=======
+        if (getIntent().hasExtra("toProfile")) {
+            viewPager.setCurrentItem(2);
+>>>>>>> 403e2de9921fe994f69b8edc409f79d02a373227
         }
     }
 
@@ -173,11 +208,11 @@ public class MainAct extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        //getSupportActionBar().setTitle(getString(R.string.app_name));
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         //getSupportActionBar().setSubtitle("By: Stazo");
         //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //menu button actions
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -186,85 +221,17 @@ public class MainAct extends AppCompatActivity
 
                 // FOR MENU ITEMS NOT IN THE 3 DOTS
                 switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        goToProfile();
+                    /*case R.id.action_profile:
+                        goToAddTrails();
                         Log.d("myTag", "you hit action profile");
-                        return true;
+                        return true;*/
+                    /*case R.id.action_map:
+                        SearchFrag searchFrag = new SearchFrag();
+                        FragmentTransaction transaction =
+                                act.getSupportFragmentManager().beginTransaction();
+                        transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();*/
+
                 }
-
-                /*// FOR THE 3 DOTS
-                int i;
-
-                // Get the index of the type in the Event.types array
-                for(i = 0; i < Event.types.length; i++) {
-                    // Create Integer object to add to ArrayList
-                    Integer category = new Integer(i);
-
-                    // If it is an existing type
-                    if (item.getTitle().equals(Event.types[i])) {
-
-                        // Toggle Check
-                        item.setChecked(!item.isChecked());
-
-                        // If it is checked, add it
-                        if (item.isChecked()) {
-
-                            // If all is currently checked...
-                            if (toolbar.getMenu().findItem(R.id.all).isChecked()) {
-
-                                // uncheck all
-                                toolbar.getMenu().findItem(R.id.all).setChecked(false);
-
-                                // clear filteredCategories
-                                Project_18.filteredCategories.clear();
-                            }
-
-                            // Add this category
-                            Project_18.filteredCategories.add(category);
-                        }
-
-                        // If it isn't checked anymore, remove it
-                        else {
-                            Project_18.filteredCategories.remove(category);
-                        }
-
-                        // We're done checking
-                        Log.d("myTag", Project_18.filteredCategories.toString());
-
-                        // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
-                        return true;
-                    }
-                }
-
-                // If we iterated fully, then all was clicked
-                if (i == Event.types.length) {
-
-                    // If all wasn't checked, check all. NOTE: You cannot uncheck all
-                    if (!item.isChecked()) {
-
-                        // uncheck all the other categories
-                        toolbar.getMenu().findItem(R.id.food).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.sports).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.performance).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.academic).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.social).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.gaming).setChecked(false);
-                        toolbar.getMenu().findItem(R.id.other).setChecked(false);
-                        Project_18.filteredCategories.clear();
-                        for (int index = 0; index < Event.types.length; index++) {
-                            Project_18.filteredCategories.add(new Integer(index));
-                        }
-                        item.setChecked(true);
-
-                        // Update filtering
-                        ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
-                        ((ListAct) adapter.getItem(1)).displayFilteredEventList();
-                    }
-                }
-
-                Log.d("myTag", Project_18.filteredCategories.toString());*/
                 return true;
             }
         });
@@ -292,48 +259,76 @@ public class MainAct extends AppCompatActivity
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
         }
+
         if (searchView != null) {
+            searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+
+                    if (hasFocus) {
+                        if (searchFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+                        }
+                        if (eventInfoFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+                        }
+                        if (otherProfileFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                        }
+                        searched = false;
+                        searchFrag = new SearchFrag();
+                        transaction =
+                                act.getSupportFragmentManager().beginTransaction();
+                        transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();
+                    }
+
+                    else {
+                        //searchFrag.getActivity().onBackPressed();
+
+                        // if we didn't just search, then close the fragment
+                        if (!searched) {
+                            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+                        }
+                        //searchView.setQuery("", true);
+                        //searchView.clearFocus();
+                    }
+                }
+            });
+
             searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
             queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    // do search here
-                    Log.d("MyTag", newText);
-                    Log.d("MyTag", "letsgo");
-                    ((Project_18) getApplication()).setRelevantText(newText);
+
+                    /*((Project_18) getApplication()).setRelevantText(newText);
                     // filter MapFrag
                     ((MapFrag) adapter.getItem(0)).filterRelevantEvents();
-                    ((ListAct) adapter.getItem(1)).displayFilteredEventList();
+                    ((ListAct) adapter.getItem(1)).displayFilteredEventList();*/
+                    searchFrag.updateResults(newText);
                     return true;
                 }
 
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    // do search here
-                    Log.d("MyTag", query);
-                    Log.d("MyTag", "yooo");
-
                     // hide keyboard
+                    searched = true;
                     searchView.clearFocus();
                     return true;
                 }
             };
+
             searchView.setOnQueryTextListener(queryTextListener);
         }
         super.onCreateOptionsMenu(menu);
         return true;
     }
 
-//    public boolean onOptionsItemSelected(MenuItem item) {
-
- //   }
-
     private void setDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
+        /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -359,9 +354,15 @@ public class MainAct extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
-        drawer.closeDrawer(GravityCompat.START);
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main);
+        /*LinearLayout drawer = (LinearLayout) findViewById(R.id.main);
+        drawer.closeDrawer(GravityCompat.START);*/
         return true;
+    }
+
+    public void toggleState(View v) {
+        if (eventInfoFrag != null)
+            eventInfoFrag.toggleState(v);
     }
 
     public void goToCreateEvent(View view) {
@@ -373,48 +374,151 @@ public class MainAct extends AppCompatActivity
 //        transaction.add(R.id.show_createEvent, createEventFrag).addToBackStack("CreateEventFrag").commit();
     }
 
-    public void goToProfile(View view) {
-        goToProfile();
+    //shouldn't be needed right now
+//    public void goToProfile(View view) {
+//        ProfileFrag profileFrag = new ProfileFrag();
+//        profileFrag.setUser_ID(((Project_18)this.getApplication()).getMe().getID());
+//        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+//        transaction.add(R.id.show_viewProfile, profileFrag).addToBackStack("CreateEventFrag").commit();
+//    }
+
+    public void goToOtherProfile(String userId) {
+        if (searchFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+        }
+        if (eventInfoFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+        }
+        searchView.clearFocus();
+        newOtherProfileFrag = new ProfileFrag();
+        newOtherProfileFrag.setInfo(userId, false);
+        FragmentTransaction transaction =
+                this.getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.show_otherProfile, newOtherProfileFrag).addToBackStack("ProfileFrag").commit();
     }
 
-    public void goToProfile() {
-        Intent i =  new Intent(this, Profile.class);
-        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
-        startActivity(i);
+    public void updateOtherProfileFrag() {
+        if (otherProfileFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+        }
+        otherProfileFrag = newOtherProfileFrag;
+    }
+
+    public void goToAddTrails(View v) {
+        goToAddTrails();
+    }
+    public void editBio(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        //alertDialog.setTitle("New Bio (100 char limit)");
+        alertDialog.setMessage("New bio (100 char):");
+
+        final LinearLayout container = new LinearLayout(this);
+        container.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
+
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        container.setLayoutParams(lp2);
+        container.setGravity(Gravity.CENTER);
+
+        final EditText input = new EditText(this);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 20, 0, 0);
+        input.setLayoutParams(lp);
+        input.setGravity(Gravity.CENTER);
+        input.setText(Project_18.me.getBio());
+
+        // length
+        int maxLength = 100;
+        InputFilter[] fArray = new InputFilter[1];
+        fArray[0] = new InputFilter.LengthFilter(maxLength);
+        input.setFilters(fArray);
+
+        input.setSelection(input.getText().length());
+        input.setBackground(null);
+        //input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+        //input.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
+        container.addView(input);
+        alertDialog.setView(container);
+
+        alertDialog.setPositiveButton("Change Bio",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Project_18.me.setBio(((Project_18)
+                                getApplication()).getFB(), input.getText().toString());
+
+                        // reload profile
+                        Intent i = new Intent(act, MainAct.class);
+                        i.putExtra("toProfile", true);
+                        startActivity(i);
+                        finish();
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+    }
+
+    public void goToAddTrails() {
+        startActivity(new Intent(this, AddTrailsAct.class));
     }
 
     public void goToEventInfo(String event_id) {
-//        Intent intent = new Intent(this, EventInfoAct.class);
-//        intent.putExtra("event_id", event_id);
-//        startActivity(intent);
 
-        // UNCOMMENT IF YOU WANT EVENT INFO TURNED INTO FRAG
-        EventInfoFrag eventInfoFrag = new EventInfoFrag();
+        if (searchFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+        }
+        if (eventInfoFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+        }
+
+        if (otherProfileFrag != null) {
+            //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+            getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
+        }
+
+        simulateClick(event_id);
+
+        searchView.clearFocus();
+
+        eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
-        FragmentTransaction transaction =
-                this.getSupportFragmentManager().beginTransaction();
-//        transaction.replace
-//                (R.id.show_eventInfo, eventInfoFrag, "EventInfoFrag");
-        transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
-//        this.getWindow().setDimAmount((float) 0.8);
-//        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-//        lp.dimAmount=0.0f;
-//        this.getWindow().setAttributes(lp);
-//        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-//        transaction
-//                .add(R.id.show_eventInfo, eventInfoFrag)
-//                .addToBackStack("EventInfoFrag")
-//                .commit();
+        this.getSupportFragmentManager().beginTransaction().
+                add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
+        //transaction.add(eventInfoFrag, "EventInfoFrag").commit();
 
+    }
+    public void simulateClick(String event_id) {
+        ((MapFrag) tabFragments.get(0)).simulateOnClick(event_id);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //-----> REPLACE FRAGMENTS HERE <---------------
-        adapter.addFragment(new MapFrag(), ""); //map
-        adapter.addFragment(new ListAct(), ""); //explore
-        adapter.addFragment(new TestFrag1(), ""); //profile
+        MapFrag mapFrag = new MapFrag();
+        ListAct listAct = new ListAct();
+        ProfileFrag profileFrag= new ProfileFrag();
+
+        // save references to fragments
+        tabFragments.add(mapFrag);
+        tabFragments.add(listAct);
+        tabFragments.add(profileFrag);
+
+        //preemptive set user_id and isMe
+        profileFrag.setInfo(Project_18.me.getID(), true);
+
+        adapter.addFragment(mapFrag, ""); //map
+        adapter.addFragment(listAct, ""); //explore
+        adapter.addFragment(profileFrag, ""); //profile
 
         viewPager.setAdapter(adapter);
     }
@@ -448,6 +552,37 @@ public class MainAct extends AppCompatActivity
         }
     }
 
+    public void logoutUser(View view) {
+        Log.i("MainAct", "Logging Out");
+
+        clearSharedPreferences();
+        fbLogout();
+
+        goToInitialAct();
+
+    }
+
+    private void clearSharedPreferences() {
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId", "0");
+        editor.putBoolean("isLoggedIn", false);
+        editor.apply();
+    }
+
+    private void fbLogout() {
+        Log.i("MainAct", "Accesstoken should be something: " + AccessToken.getCurrentAccessToken());
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            Log.i("MainAct", "Accesstoken should be null: " + AccessToken.getCurrentAccessToken());
+            Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void goToInitialAct(){
+        startActivity(new Intent(this, InitialAct.class));
+    }
+
     @Override
     public void onBackPressed() {
         System.out.println("test");
@@ -462,5 +597,15 @@ public class MainAct extends AppCompatActivity
         else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
+
+    public void followUser(View v) {
+        otherProfileFrag.followUser();
     }
 }

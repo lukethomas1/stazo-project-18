@@ -4,12 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -125,7 +127,15 @@ public class Event implements Parcelable {
         this.event_id = (String) eventMap.get("event_id");
         this.startTime = ((Long) eventMap.get("startTime")).longValue();
         this.endTime = ((Long) eventMap.get("endTime")).longValue();
-        this.attendees = (ArrayList<String>) eventMap.get("attendees");
+
+        //pull attendees with iterable
+        this.attendees = new ArrayList<>();
+        HashMap<Object, Object> attendeesIterable = (HashMap<Object, Object>) eventMap.get("attendees");
+        if (attendeesIterable != null) {
+            for(Object value : attendeesIterable.values()) {
+                this.attendees.add((String) value);
+            }
+        }
     }
 
     // makes a Date object out of a hashmap
@@ -322,9 +332,14 @@ public class Event implements Parcelable {
         Log.d("myTag", "GENERATING: " + this.event_id);
     }
 
-    // determines how relevant this event is to a query (2,1,0)
+    // determines how relevant this event is to a query (3,2,1,0)
+    // 3 = name match at start, 2 = name match, 1 = description match, 0 = no match
     public int findRelevance(String search) {
         if (name.toLowerCase().contains(search.toLowerCase())) {
+            // if the match is at the start, it is a level 3 match
+            if (name.toLowerCase().indexOf(search.toLowerCase()) == 0) {
+                return 3;
+            }
             return 2;
         }
         if (description.toLowerCase().contains(search.toLowerCase())) {
@@ -339,11 +354,11 @@ public class Event implements Parcelable {
     }
 
     public String toString() {
-        String nameString = name.substring(0, Math.min(10, name.length()));
+        /*String nameString = name.substring(0, Math.min(10, name.length()));
         if (name.length() > 10) {
             nameString += "...";
-        }
-        String string = nameString + generateSpaces(15 - nameString.length()) /*+
+        }*/
+        String string = name; /*+ generateSpaces(15 - nameString.length()) +
                 "(" + Event.types[type] + ")" +
                 generateSpaces(15 - Event.types[type].length())*/;
         return string;

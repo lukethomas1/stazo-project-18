@@ -66,18 +66,18 @@
                 android:maxLines="8"
                 android:scrollbars="vertical"/>
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Pick an Event Type"
-                android:id="@+id/PickText" />
+                android:id="@+id/PickText" />-->
 
-            <Spinner
+            <!--<Spinner
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/EventType" />
+                android:id="@+id/EventType" />-->
 
             <LinearLayout
                 android:orientation="horizontal"

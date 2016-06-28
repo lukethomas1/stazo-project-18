@@ -4,29 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.stazo.project_18.toolbar">
 
-    <!--<item
-        android:id="@+id/game"
-        android:icon="@drawable/type_icon_game"
-        app:showAsAction="always"
-        android:title="game"
-        android:orderInCategory="1">
-    </item> -->
-
-
-    <item android:id="@+id/action_profile"
-        android:icon="@drawable/ic_actionbar_head"
-        android:title="Profile"
-        app:showAsAction="always"/>
-
     <item android:id="@+id/action_map"
-        android:icon="@drawable/ic_actionbar_map2"
+        android:icon="@drawable/ic_actionbar_search"
         android:title="Map"
-        app:showAsAction="always"
-        android:visible="false"/>
-
-    <item android:id="@+id/action_list"
-        android:icon="@drawable/ic_actionbar_browse2"
-        android:title="Browse"
         app:showAsAction="always"
         android:visible="false"/>
 
@@ -34,51 +14,9 @@
         android:icon="@drawable/ic_actionbar_search"
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:visible="true"/>
 
-    <!--<group android:checkableBehavior="all">
-        <item android:id="@+id/all"
-            android:title="@string/all"
-            android:orderInCategory="1"
-            android:checked="true">
-            app:showAsAction="never"
-        </item>
-        <item android:id="@+id/food"
-            android:title="@string/food"
-            android:orderInCategory="1">
-            app:showAsAction="never"
-        </item>
-
-        <item android:id="@+id/sports"
-            android:title="@string/sports"
-            android:orderInCategory="2"
-            app:showAsAction="never"/>
-
-        <item android:id="@+id/performance"
-            android:title="@string/performance"
-            android:orderInCategory="3"
-            app:showAsAction="never"/>
-        <item android:id="@+id/academic"
-            android:title="@string/academic"
-            android:orderInCategory="1">
-            app:showAsAction="never"
-        </item>
-        <item android:id="@+id/social"
-            android:title="@string/social"
-            android:orderInCategory="1">
-            app:showAsAction="never"
-        </item>
-        <item android:id="@+id/gaming"
-            android:title="@string/gaming"
-            android:orderInCategory="1">
-            app:showAsAction="never"
-        </item>
-        <item android:id="@+id/other"
-            android:title="@string/other"
-            android:orderInCategory="1">
-            app:showAsAction="never"
-        </item>
-    </group>-->
     <group>
         <item android:id="@+id/Logout"
             android:title="Logout">

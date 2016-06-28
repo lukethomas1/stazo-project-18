@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">fomono</string>
+    <string name="app_name">fumono</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_test">Sign in</string>
 
@@ -11,6 +11,30 @@
     <string name="social">Social</string>
     <string name="gaming">Gaming</string>
     <string name="other">Other</string>
+
+    <!-- MYSTRINGS -->
+    <string name="welcome_header_1">Welcome to fumono!</string>
+    <string name="welcome_desc_1">If you haven\'t heard, fumono is a locale-based event finder.
+        That means everything fun happening nearby can be found here.</string>
+
+    <string name="welcome_header_2">Things to Know</string>
+    <string name="welcome_desc_2">1. All events on fumono are open to
+        everyone\n2. Anyone can post an event to fumono\n3.
+        Any event is welcome (study sessions, beach trips, night socials, etc.) </string>
+
+    <string name="welcome_header_3">Community Guidelines</string>
+    <string name="welcome_desc_3">1. Be nice\n2. Don\'t be shy\n3. Have fun</string>
+
+    <string name="welcome_header_4">Guideline Number Two: Be Inviting</string>
+    <string name="welcome_desc_4">Every event on fumono is open to everyone.
+        Treat every person you meet like a friend, and they might become one.</string>
+
+    <string name="welcome_header_5">Guideline Number Three: Don\'t Be Shy</string>
+    <string name="welcome_desc_5">You\'ve never been in higher demand.
+        Every host wants YOU at their event. Don\'t be afraid to explore something new!</string>
+
+    <string name="welcome_header_6">You\'re Ready!</string>
+    <string name="welcome_desc_6">Go out and have your first adventure.</string>
 
     <!-- Strings related to login -->
     <string name="facebook_app_id">1071049549602950</string>
@@ -136,4 +160,5 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_add_trails">AddTrailsAct</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
 </resources>
