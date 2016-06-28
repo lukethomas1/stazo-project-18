@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -39,6 +41,17 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
         
 
         return v;
+    }
+
+    private void displayNotifications() {
+        LinearLayout LL1 = ((LinearLayout) this.getActivity().findViewById(R.id.LL1));
+
+        for(Notification not : notifs) {
+            Button butt = new Button(this.getActivity());
+            butt.setText(not.getMessage());
+
+            LL1.addView(butt);
+        }
     }
 
     private ArrayList<Notification> loadNotifications() {
