@@ -110,18 +110,20 @@ public class SearchFrag extends Fragment {
         HashMap<String, String> matchFriends = new HashMap<>();
         HashMap<String, String> matchOthers = new HashMap<>();
 
+        for (String id: friends.keySet()) {
+            String name = friends.get(id);
+            if (name.toLowerCase().contains(query.toLowerCase())) {
+                matchFriends.put(id, name);
+            }
+        }
+
         for (String id: allUsers.keySet()) {
-            if (id.equals(Project_18.me.getID())) {
+            if (id.equals(Project_18.me.getID()) || friends.containsKey(id)) {
                 continue;
             }
             String name = allUsers.get(id);
             if (name.toLowerCase().contains(query.toLowerCase())) {
-                if (friends.keySet().contains(id)) {
-                    matchFriends.put(id, name);
-                }
-                else {
-                    matchOthers.put(id, name);
-                }
+                matchOthers.put(id, name);
             }
         }
 

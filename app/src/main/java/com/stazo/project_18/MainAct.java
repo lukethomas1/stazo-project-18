@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -210,7 +211,7 @@ public class MainAct extends AppCompatActivity
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
         // Search stuff
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
@@ -230,6 +231,7 @@ public class MainAct extends AppCompatActivity
                         }
                         if (otherProfileFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                            otherProfileStateChange(false);
                         }
                         searched = false;
                         searchFrag = new SearchFrag();
@@ -268,6 +270,7 @@ public class MainAct extends AppCompatActivity
                 public boolean onQueryTextSubmit(String query) {
                     // hide keyboard
                     searched = true;
+                    searchView.setIconified(true);
                     searchView.clearFocus();
                     return true;
                 }
@@ -345,6 +348,8 @@ public class MainAct extends AppCompatActivity
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
+
+        searchView.setIconified(true);
         searchView.clearFocus();
         newOtherProfileFrag = new ProfileFrag();
         newOtherProfileFrag.setInfo(userId, false);
@@ -354,6 +359,7 @@ public class MainAct extends AppCompatActivity
     }
 
     public void updateOtherProfileFrag() {
+        otherProfileStateChange(true);
         if (otherProfileFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
         }
@@ -438,11 +444,13 @@ public class MainAct extends AppCompatActivity
 
         if (otherProfileFrag != null) {
             //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+            otherProfileStateChange(false);
             getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
         }
 
         simulateClick(event_id);
 
+        searchView.setIconified(true);
         searchView.clearFocus();
 
         eventInfoFrag = new EventInfoFrag();
@@ -539,8 +547,20 @@ public class MainAct extends AppCompatActivity
         startActivity(new Intent(this, InitialAct.class));
     }
 
+    public void otherProfileStateChange(boolean entering) {
+        if (entering) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
+        else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        }
+    }
+
     @Override
     public void onBackPressed() {
+        otherProfileStateChange(false);
         System.out.println("test");
         if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
             getSupportFragmentManager().popBackStackImmediate();
