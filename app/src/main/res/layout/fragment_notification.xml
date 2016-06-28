@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Loading Notifications"
-            android:id="@+id/textView3"
+            android:id="@+id/loadingText"
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>

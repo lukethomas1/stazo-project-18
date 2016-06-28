@@ -42,6 +42,11 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
 
         currentUser = ((Project_18) this.getActivity().getApplication()).getMe();
 
+        // Update the notifications
+        pullNotifications(currentUser.getID());
+
+        
+
         return v;
     }
 
