@@ -24,6 +24,7 @@ public class User {
     private ArrayList<String> reportedEvents = new ArrayList<String>();
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>(); // String of creator IDs
+    private ArrayList<String> userFollowers = new ArrayList<>(); // String of follower IDs
 
     // hashmap of user's friends from name to id
     private HashMap<String, String> friends = new HashMap<String, String>();
@@ -62,6 +63,10 @@ public class User {
     }
     // can add further stuff later such as event host list, rating, history, upcoming event lists
 
+    public ArrayList<String> getUserFollowers() { return userFollowers; }
+
+    public void setUserFollowers(ArrayList<String> followers) { userFollowers = followers; }
+
     public void addTrail(Firebase fb, Integer type) {
         if (categoryTrails.contains(type)) {
             return;
@@ -71,12 +76,23 @@ public class User {
     }
 
     public void addTrail(Firebase fb, String user_id) {
+        // Following
         if (userTrails.contains(user_id)) {
             return;
         }
         userTrails.add(user_id);
         fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
     }
+
+    public void addFollower (Firebase fb, String user_id) {
+        if(userFollowers.contains(user_id)) {
+            return;
+        }
+
+        userFollowers.add(user_id);
+        fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
+    }
+
     /**
      * Default constructor for firebase
      */
@@ -178,6 +194,25 @@ public class User {
             else {
                 for (String val : ((ArrayList<String>) userMap.get("userTrails"))) {
                     userTrails.add(val);
+                }
+            }
+        }
+
+        // Followers, people who are subscribed to this user
+        if (userMap.containsKey("userFollowers")) {
+            userFollowers.clear();
+
+            // if stored as ArrayList (from user.pushToFirebase)
+            if (userMap.get("userFollowers") instanceof ArrayList) {
+                for (String val: (ArrayList<String>) userMap.get("userFollowers")) {
+                    userFollowers.add(val);
+                }
+            }
+
+            // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
+            else {
+                for (String val : ((ArrayList<String>) userMap.get("userFollowers"))) {
+                    userFollowers.add(val);
                 }
             }
         }

@@ -26,6 +26,11 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.view.WindowManager;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +55,8 @@ public class MainAct extends AppCompatActivity
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
+    // For notifications
+    private boolean notify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +131,41 @@ public class MainAct extends AppCompatActivity
         // Are we going straight to browse?
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
+        }
+
+        // NOTIFICATIONS
+
+        User currentUser = ((Project_18) this.getApplication()).getMe();
+        Firebase fbRef = ((Project_18) this.getApplication()).getFB();
+        fbRef.child("Notifications").push();
+
+        
+        // Make sure user is in notification database
+        if(fbRef.child("Notifications") != null) {
+            if (fbRef.child("Notifications").child(currentUser.getID()) != null) {
+                fbRef.child("Notifications").child(currentUser.getID()).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //notify = (boolean) dataSnapshot.child("Notify").getValue();
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        }
+                );
+            }
+
+            // If that user isn't in the notification database, add it in
+            else {
+
+            }
+        }
+
+        // TODO we need some sort of red exclamation mark or something to indicate this
+        if(notify == true) {
+            // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
         }
     }
 
