@@ -234,7 +234,7 @@ public class SearchFrag extends Fragment {
         int counter = 0;
         for (final Event e: matchEvents) {
 
-            // load at most 5 events
+            // load at most 10 events
             if (counter >= 10) {
                 break;
             }

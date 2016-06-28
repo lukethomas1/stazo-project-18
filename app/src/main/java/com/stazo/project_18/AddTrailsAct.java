@@ -79,7 +79,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private boolean changedTrails = false;
     private int numToLoad = 0;
     private int pageNumber = 0;
-    private static final int SECTION_SIZE = 12;
+    private static final int SECTION_SIZE = 16;
     //private Bitmap profPicBitmap;
 
     @Override
@@ -341,7 +341,7 @@ public class AddTrailsAct extends AppCompatActivity {
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             "1196215920412322" +
                                             "/picture?width=" +
-                                            Project_18.pictureSize)).openConnection().getInputStream()));
+                                            Project_18.pictureSizeLow)).openConnection().getInputStream()));
                             numToLoad--;
                         }
                         else {
@@ -350,7 +350,7 @@ public class AddTrailsAct extends AppCompatActivity {
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             id +
                                             "/picture?width=" +
-                                            Project_18.pictureSize)).openConnection().getInputStream()));
+                                            Project_18.pictureSizeLow)).openConnection().getInputStream()));
                             numToLoad--;
                         }
 
