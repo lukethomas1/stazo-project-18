@@ -219,7 +219,6 @@ public class MapFrag extends Fragment {
         public void simulateOnClick(Marker marker) {
             marker.showInfoWindow();
             map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
-            //goToEventInfo(marker);
         }
 
         private void render(Marker marker, View inflatedLayout) {

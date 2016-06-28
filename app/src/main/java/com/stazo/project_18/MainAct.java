@@ -1,9 +1,12 @@
 package com.stazo.project_18;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.AvoidXfermode;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,21 +17,36 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +69,11 @@ public class MainAct extends AppCompatActivity
     private ViewPagerAdapter adapter;
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
+    private SharedPreferences sharedPreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
     private static EventInfoFrag eventInfoFrag;
+    private static ProfileFrag otherProfileFrag;
+    private static ProfileFrag newOtherProfileFrag;
 
     private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
@@ -59,14 +81,17 @@ public class MainAct extends AppCompatActivity
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
+    // For notifications
+    private boolean notify = false;
+
     private AppCompatActivity act = this;
 
     private boolean searched; // did the user just submit a query?
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         //toolbar stuff first because it needs to be on top?
@@ -138,6 +163,43 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
         }
+
+        // NOTIFICATIONS
+
+        User currentUser = ((Project_18) this.getApplication()).getMe();
+        Firebase fbRef = ((Project_18) this.getApplication()).getFB();
+        fbRef.child("Notifications").push();
+
+        // Make sure user is in notification database
+        if(fbRef.child("Notifications") != null) {
+            if (fbRef.child("Notifications").child(currentUser.getID()) != null) {
+                fbRef.child("Notifications").child(currentUser.getID()).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //notify = (boolean) dataSnapshot.child("Notify").getValue();
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        }
+                );
+            }
+
+            // If that user isn't in the notification database, add it in
+            else {
+
+            }
+        }
+
+        // TODO we need some sort of red exclamation mark or something to indicate this
+        if(notify == true) {
+            // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
+        }
+        if (getIntent().hasExtra("toProfile")) {
+            viewPager.setCurrentItem(2);
+        }
     }
 
     private void setToolbar() {
@@ -190,7 +252,7 @@ public class MainAct extends AppCompatActivity
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
         // Search stuff
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
@@ -205,15 +267,18 @@ public class MainAct extends AppCompatActivity
                         if (searchFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
                         }
+                        if (eventInfoFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+                        }
+                        if (otherProfileFrag != null) {
+                            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                            otherProfileStateChange(false);
+                        }
                         searched = false;
                         searchFrag = new SearchFrag();
                         transaction =
                                 act.getSupportFragmentManager().beginTransaction();
                         transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();
-
-                        if (eventInfoFrag != null) {
-                            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
-                        }
                     }
 
                     else {
@@ -246,6 +311,7 @@ public class MainAct extends AppCompatActivity
                 public boolean onQueryTextSubmit(String query) {
                     // hide keyboard
                     searched = true;
+                    searchView.setIconified(true);
                     searchView.clearFocus();
                     return true;
                 }
@@ -295,7 +361,8 @@ public class MainAct extends AppCompatActivity
     }
 
     public void toggleState(View v) {
-        eventInfoFrag.toggleState(v);
+        if (eventInfoFrag != null)
+            eventInfoFrag.toggleState(v);
     }
 
     public void goToCreateEvent(View view) {
@@ -315,19 +382,98 @@ public class MainAct extends AppCompatActivity
 //        transaction.add(R.id.show_viewProfile, profileFrag).addToBackStack("CreateEventFrag").commit();
 //    }
 
-//    public void goToProfile() {
-//        Intent i =  new Intent(this, Profile.class);
-//        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
-//        startActivity(i);
-//    }
+    public void goToOtherProfile(String userId) {
+        if (searchFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
+        }
+        if (eventInfoFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+        }
+
+        searchView.setIconified(true);
+        searchView.clearFocus();
+        newOtherProfileFrag = new ProfileFrag();
+        newOtherProfileFrag.setInfo(userId, false);
+        FragmentTransaction transaction =
+                this.getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.show_otherProfile, newOtherProfileFrag).addToBackStack("ProfileFrag").commit();
+    }
+
+    public void updateOtherProfileFrag() {
+        otherProfileStateChange(true);
+        if (otherProfileFrag != null) {
+            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+        }
+        otherProfileFrag = newOtherProfileFrag;
+    }
 
     public void goToAddTrails(View v) {
         goToAddTrails();
+    }
+    public void editBio(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        //alertDialog.setTitle("New Bio (100 char limit)");
+        alertDialog.setMessage("New bio (100 char):");
+
+        final LinearLayout container = new LinearLayout(this);
+        container.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
+
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        container.setLayoutParams(lp2);
+        container.setGravity(Gravity.CENTER);
+
+        final EditText input = new EditText(this);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 20, 0, 0);
+        input.setLayoutParams(lp);
+        input.setGravity(Gravity.CENTER);
+        input.setText(Project_18.me.getBio());
+
+        // length
+        int maxLength = 100;
+        InputFilter[] fArray = new InputFilter[1];
+        fArray[0] = new InputFilter.LengthFilter(maxLength);
+        input.setFilters(fArray);
+
+        input.setSelection(input.getText().length());
+        input.setBackground(null);
+        //input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+        //input.setBackground(getResources().getDrawable(R.drawable.border_welcome_desc));
+        container.addView(input);
+        alertDialog.setView(container);
+
+        alertDialog.setPositiveButton("Change Bio",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Project_18.me.setBio(((Project_18)
+                                getApplication()).getFB(), input.getText().toString());
+
+                        // reload profile
+                        Intent i = new Intent(act, MainAct.class);
+                        i.putExtra("toProfile", true);
+                        startActivity(i);
+                        finish();
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
     }
 
     public void goToAddTrails() {
         startActivity(new Intent(this, AddTrailsAct.class));
     }
+
     public void goToEventInfo(String event_id) {
 
         if (searchFrag != null) {
@@ -336,13 +482,24 @@ public class MainAct extends AppCompatActivity
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
+
+        if (otherProfileFrag != null) {
+            //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+            otherProfileStateChange(false);
+            getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
+        }
+
+        simulateClick(event_id);
+
+        searchView.setIconified(true);
         searchView.clearFocus();
 
         eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
-        FragmentTransaction transaction =
-                this.getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
+        this.getSupportFragmentManager().beginTransaction().
+                add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
+        //transaction.add(eventInfoFrag, "EventInfoFrag").commit();
+
     }
     public void simulateClick(String event_id) {
         ((MapFrag) tabFragments.get(0)).simulateOnClick(event_id);
@@ -362,8 +519,7 @@ public class MainAct extends AppCompatActivity
         tabFragments.add(profileFrag);
 
         //preemptive set user_id and isMe
-        profileFrag.setUser_ID(((Project_18) this.getApplication()).getMe().getID());
-        profileFrag.setIsMe(true);
+        profileFrag.setInfo(Project_18.me.getID(), true);
 
         adapter.addFragment(mapFrag, ""); //map
         adapter.addFragment(listAct, ""); //explore
@@ -401,8 +557,51 @@ public class MainAct extends AppCompatActivity
         }
     }
 
+    public void logoutUser(View view) {
+        Log.i("MainAct", "Logging Out");
+
+        clearSharedPreferences();
+        fbLogout();
+
+        goToInitialAct();
+
+    }
+
+    private void clearSharedPreferences() {
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId", "0");
+        editor.putBoolean("isLoggedIn", false);
+        editor.apply();
+    }
+
+    private void fbLogout() {
+        Log.i("MainAct", "Accesstoken should be something: " + AccessToken.getCurrentAccessToken());
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            Log.i("MainAct", "Accesstoken should be null: " + AccessToken.getCurrentAccessToken());
+            Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void goToInitialAct(){
+        startActivity(new Intent(this, InitialAct.class));
+    }
+
+    public void otherProfileStateChange(boolean entering) {
+        if (entering) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
+        else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        }
+    }
+
     @Override
     public void onBackPressed() {
+        otherProfileStateChange(false);
         System.out.println("test");
         if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
             getSupportFragmentManager().popBackStackImmediate();
@@ -421,5 +620,9 @@ public class MainAct extends AppCompatActivity
     public void onResume() {
         super.onResume();
         Firebase.setAndroidContext(this);
+    }
+
+    public void followUser(View v) {
+        otherProfileFrag.followUser();
     }
 }

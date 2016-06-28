@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -107,43 +109,33 @@ public class ViewCommentFrag extends Fragment{
                         for (int i = numCommentsLoaded; i < commentList.size(); i++) {
 
                             //profile pic
-                            Bitmap profPicBitmap;
-
-                            //get cache and check ID against it
-                            HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
-                            if (imageCache.keySet().contains(commentList.get(i).getUser_ID())) {
-                                System.out.println("cache hit");
-                                profPicBitmap = imageCache.get(commentList.get(i).getUser_ID());
-                            } else {
-                                try {
-                                    URL imageURL = new URL("https://graph.facebook.com/" + commentList.get(i).getUser_ID()
-                                            + "/picture?type=large");
-                                    profPicBitmap = Bitmap.createScaledBitmap(
-                                            BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                                            150,
-                                            150,
-                                            true);
-                                    Project_18.cachedIdToBitmap.put(commentList.get(i).getUser_ID(), profPicBitmap);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-
+                            Bitmap profileImage = null;
                             ImageView profileView = new ImageView(context);
-                            profileView.setImageBitmap(profPicBitmap);
+                            profileView.setImageBitmap(profileImage);
+                            //get cache and check ID against it
+                            //HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
+                            if (((Project_18) getActivity().getApplication()).
+                                    getBitmapFromMemCache(commentList.get(i).getUser_ID()) != null) {
+                                System.out.println("cache hit");
+                                profileImage = ((Project_18) getActivity().getApplication()).
+                                        getBitmapFromMemCache(commentList.get(i).getUser_ID());
+                                profileView.setImageBitmap(profileImage);
+                            } else {
+                            Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
+                            profileThread.start();
+                            }
 
                             //user_id
                             final TextView userText = new TextView(context);
                             if (Project_18.cachedIdToName.containsKey(commentList.get(i).getUser_ID())) {
                                 userText.setText(Project_18.cachedIdToName.get(commentList.get(i).getUser_ID()));
                                 System.out.println("name cache hit");
-                            }
-                            else {
+                            } else {
                                 fb.child("Users").child(commentList.get(i).getUser_ID()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        userText.setText((String)dataSnapshot.child("name").getValue());
-                                        Project_18.cachedIdToName.put(dataSnapshot.getKey(), (String)dataSnapshot.child("name").getValue());
+                                        userText.setText((String) dataSnapshot.child("name").getValue());
+                                        Project_18.cachedIdToName.put(dataSnapshot.getKey(), (String) dataSnapshot.child("name").getValue());
                                     }
 
                                     @Override
@@ -169,7 +161,6 @@ public class ViewCommentFrag extends Fragment{
                                     LayoutParams.WRAP_CONTENT));
                             textLayout.setOrientation(LinearLayout.VERTICAL);
 
-                            mainLayout.addView(commentLayout);
                             textLayout.addView(userText);
                             textLayout.addView(commentText);
                             commentLayout.addView(profileView);
@@ -187,9 +178,12 @@ public class ViewCommentFrag extends Fragment{
                             commentText.setLayoutParams(commentTextLayoutParams);
 
                             //spacer and inc counter
-                            TextView spacer = new TextView(context);
                             View space = inflater.inflate(R.layout.spacer, null);
-                            mainLayout.addView(space);
+
+                            getActivity().runOnUiThread(new UpdateViewRunnable(mainLayout, commentLayout, space));
+
+//                            mainLayout.addView(commentLayout);
+//                            mainLayout.addView(space);
                             numCommentsLoaded++;
                         }
 
@@ -209,6 +203,59 @@ public class ViewCommentFrag extends Fragment{
         });
 
         return v;
+    }
+
+    private class ProfilePicRunnable implements Runnable {
+        private Bitmap profileImage;
+        String user_ID;
+        ImageView profileView;
+        ProfilePicRunnable(Bitmap profileImage, String user_ID, ImageView profileView) {
+            this.profileImage = profileImage;
+            this.user_ID = user_ID;
+            this.profileView = profileView;
+        }
+        public void run() {
+            try {
+                URL imageURL = new URL("https://graph.facebook.com/" + user_ID
+                        + "/picture?type=large");
+                profileImage = Bitmap.createScaledBitmap(
+                        BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
+                        150,
+                        150,
+                        true);
+//                profileView.setImageBitmap(profileImage);
+                Handler updateView = new Handler(Looper.getMainLooper());
+                updateView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        profileView.setImageBitmap(profileImage);
+                    }
+                });
+                ((Project_18) getActivity().getApplication()).
+                        addBitmapToMemoryCache(user_ID, profileImage);
+                System.out.println("Thread finished");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private class UpdateViewRunnable implements Runnable {
+        private LinearLayout mainLayout;
+        private View addedView;
+        private View addedView2;
+
+        UpdateViewRunnable(LinearLayout mainLayout, View addedView, View addedView2) {
+            this.mainLayout = mainLayout;
+            this.addedView = addedView;
+            this.addedView2 = addedView2;
+        }
+        @Override
+        public void run() {
+            mainLayout.addView(addedView);
+            mainLayout.addView(addedView2);
+            System.out.println("run on ui thread");
+        }
     }
 
     public int getDPI(int size){

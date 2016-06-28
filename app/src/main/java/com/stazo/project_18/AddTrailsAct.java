@@ -40,7 +40,10 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,8 +52,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -60,6 +66,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private SearchView.OnQueryTextListener queryTextListener;
     private HashMap<String, String> relevantUsers = new HashMap<String, String>();  // id to name
     private HashMap<String, String> allUsers = new HashMap<String, String>();  // id to name
+    private HashMap<String, String> friends = new HashMap<String, String>();  // id to name
 
     //private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
     private Firebase fb;
@@ -72,7 +79,7 @@ public class AddTrailsAct extends AppCompatActivity {
     private boolean changedTrails = false;
     private int numToLoad = 0;
     private int pageNumber = 0;
-    private static final int SECTION_SIZE = 12;
+    private static final int SECTION_SIZE = 16;
     //private Bitmap profPicBitmap;
 
     @Override
@@ -82,17 +89,6 @@ public class AddTrailsAct extends AppCompatActivity {
 
         // get firebase reference
         fb = ((Project_18) getApplication()).getFB();
-
-        // get allUsers
-        allUsers = new HashMap(((Project_18) getApplication()).getMe().getFriends());
-
-        // take out users we are already following
-        filterFollowedUsers();
-
-        filterMe();
-
-        // relevantUsers = the ones displayed
-        relevantUsers = new HashMap<String, String>(allUsers);
 
         // set usersLayout
         usersLayout = (LinearLayout) findViewById(R.id.usersLayout);
@@ -109,8 +105,6 @@ public class AddTrailsAct extends AppCompatActivity {
                     }
                 }
         );
-
-        generateButtons(true);
 
         // search view things
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
@@ -143,6 +137,71 @@ public class AddTrailsAct extends AppCompatActivity {
 
         searchView.setOnCloseListener(closeListener);
         searchView.setOnQueryTextListener(queryTextListener);
+
+        pullUsersAndLoad(fb);
+    }
+
+    public void pullUsersAndLoad(Firebase fb) {
+
+        // get allUsers
+        allUsers = new HashMap<>(Project_18.allUsers);
+
+        // set friends
+        friends = new HashMap(((Project_18) getApplication()).getMe().getFriends());
+
+        // testing purposes
+        generateFakeAccounts();
+
+        // take out users we are already following
+        filterUsers();
+
+        // relevantUsers = the ones displayed
+        relevantUsers = new HashMap<String, String>(allUsers);
+
+        generateButtons(true);
+    }
+
+    public void generateFakeAccounts() {
+        allUsers.put("0", "James");
+        allUsers.put("1", "James");
+        allUsers.put("2", "James");
+        allUsers.put("3", "James");
+        allUsers.put("4", "James");
+        allUsers.put("5", "James");
+        allUsers.put("6", "James");
+        allUsers.put("7", "James");
+        allUsers.put("8", "James");
+        allUsers.put("9", "James");
+        allUsers.put("10", "James");
+        allUsers.put("11", "James");
+        allUsers.put("12", "James");
+        allUsers.put("13", "James");
+        allUsers.put("14", "James");
+        allUsers.put("15", "James");
+        allUsers.put("16", "James");
+        allUsers.put("17", "James");
+        allUsers.put("18", "James");
+        allUsers.put("19", "James");
+        allUsers.put("20", "James");
+        allUsers.put("21", "James");
+        allUsers.put("22", "James");
+        allUsers.put("23", "James");
+        allUsers.put("24", "James");
+        allUsers.put("25", "James");
+        allUsers.put("26", "James");
+        allUsers.put("27", "James");
+        allUsers.put("28", "James");
+        allUsers.put("29", "James");
+        allUsers.put("30", "James");
+
+        /*allUsers.put("1070949549640758", "Gates Zeng");
+        allUsers.put("1076100269116381", "Eric Zhang");
+        allUsers.put("1131880253542315", "Luke Thomas");
+        allUsers.put("1138117392898486", "Matthew Ung");
+        allUsers.put("1177156832304841", "Ansel Blume");
+        allUsers.put("1184188798300386", "Brian Chan");
+        allUsers.put("1196215920412322", "Isaac Wang");
+        allUsers.put("10209766334938822", "Justin Ang");*/
     }
 
     /*public void addCategoryTrail(View v) {
@@ -151,34 +210,35 @@ public class AddTrailsAct extends AppCompatActivity {
     }*/
 
     public void goToProfile(View v) {
-        //if (!changedTrails) {
-        //loadMore();
-        onBackPressed();
-        //}
-        /*else {
-            Intent i = new Intent(this, MainAct.class);
-            i.putExtra("toProfile", true);
-            startActivity(i);
-        }*/
-    }
-    public void filterMe() {
-        for (String id: allUsers.keySet()) {
-            if (id.equals(((Project_18) getApplication()).getMe().getID())) {
-                System.out.println("Is me, filtering out " + id);
-                allUsers.remove(id);
-                return;
-            }
-        }
+
+        //onBackPressed();
+        Intent i = new Intent(this, MainAct.class);
+        i.putExtra("toProfile", true);
+        startActivity(i);
     }
 
-    // removes users from allUsers if you're already following them
-    public void filterFollowedUsers() {
+    // removes users from allUsers if you're already following them or if they're you
+    public void filterUsers() {
         for (String id: ((Project_18) getApplication()).getMe().getUserTrails()) {
             if (allUsers.keySet().contains(id)) {
-                Log.d("shit", "Already following, filtering out " + id);
                 allUsers.remove(id);
             }
         }
+        allUsers.remove(Project_18.me.getID());
+
+    }
+
+    private ArrayList<String> sortByFriends(Collection<String> users) {
+        ArrayList<String> sorted = new ArrayList<>();
+        for (String id: users) {
+            if (friends.containsKey(id)) {
+                sorted.add(0, id);
+            }
+            else {
+                sorted.add(id);
+            }
+        }
+        return sorted;
     }
 
     private void loadMore() {
@@ -196,11 +256,15 @@ public class AddTrailsAct extends AppCompatActivity {
                 relevantUsers.put(key, allUsers.get(key));
             }
         }*/
+
+        // filter users that match
         for(String id: allUsers.keySet()) {
             if ((allUsers.get(id).toLowerCase().contains(text.toLowerCase()))) {
                 relevantUsers.put(id, allUsers.get(id));
             }
         }
+
+
         // instance is a private reference to this AddTrailsAct, probably doesn't matter
         instance.generateButtons(true);
     }
@@ -242,8 +306,9 @@ public class AddTrailsAct extends AppCompatActivity {
         protected Void doInBackground(Void... v) {
             numToLoad = SECTION_SIZE;
 
-
             ArrayList<String> ids = new ArrayList<>(userList.keySet());
+            ids = sortByFriends(ids);
+
 
             // stop if we run out of entries
             for (int i = startingPoint; i < userList.keySet().size();i++) {
@@ -258,35 +323,34 @@ public class AddTrailsAct extends AppCompatActivity {
                     break;
                 }
 
-                if (((Project_18) getApplication()).cachedIdToBitmap.keySet().contains(id)) {
+                if (((Project_18) getApplication()).getBitmapFromMemCache(id) != null) {
                     Log.d("check", "we have cached entry number " + i);
-                    idToBitmap.put(id, ((Project_18) getApplication()).cachedIdToBitmap.get(id));
+                    idToBitmap.put(id, ((Project_18) getApplication()).getBitmapFromMemCache(id));
                     numToLoad--;
                 }
 
                 else {
+                    Log.d("memCheck", "Not in cache, size of cache is " +
+                            ((Project_18) getApplication()).getMemoryCache().size());
                     try {
                         Log.d("check", "we are processing entry number " + i);
 
                         // FOR TESTING PURPOSES
                         if (id.length() < 5) {
-                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                            idToBitmap.put(id,
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             "1196215920412322" +
-                                            "/picture?type=large")).openConnection().getInputStream()),
-                                    180,
-                                    180,
-                                    true));
+                                            "/picture?width=" +
+                                            Project_18.pictureSizeLow)).openConnection().getInputStream()));
                             numToLoad--;
                         }
                         else {
-                            idToBitmap.put(id, Bitmap.createScaledBitmap(
+                            Log.d("check", "id: " + id);
+                            idToBitmap.put(id,
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             id +
-                                            "/picture?type=large")).openConnection().getInputStream()),
-                                    180,
-                                    180,
-                                    true));
+                                            "/picture?width=" +
+                                            Project_18.pictureSizeLow)).openConnection().getInputStream()));
                             numToLoad--;
                         }
 
@@ -303,13 +367,18 @@ public class AddTrailsAct extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v) {
 
-            // put the same thing in cached
+            // iteration
             for (String id: idToBitmap.keySet()) {
-                ((Project_18) getApplication()).cachedIdToBitmap.put(id, idToBitmap.get(id));
+                // store in cache
+                ((Project_18) getApplication()).addBitmapToMemoryCache(id, idToBitmap.get(id));
+
+                idToBitmap.put(id, Project_18.BITMAP_RESIZER(idToBitmap.get(id), 180, 180));
+
             }
+
             constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;
-            InteractiveScrollView.isReady = true;
+            scrollView.ready();
             Log.d("cancel", "task COMPLETED...");
         }
     }
@@ -339,7 +408,10 @@ public class AddTrailsAct extends AppCompatActivity {
         // limits 3 buttons per row
         rowIndex = 0;
 
-        for (String id: idToBitmap.keySet()) {
+        // sort by friends again
+        ArrayList<String> ids = sortByFriends(idToBitmap.keySet());
+
+        for (String id: ids) {
             instance.addToUsersLayout(idToBitmap.get(id), userList.get(id), id);
         }
     }

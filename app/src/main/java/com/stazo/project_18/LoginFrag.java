@@ -29,6 +29,7 @@ import com.firebase.client.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class LoginFrag extends Fragment {
 
@@ -52,7 +53,9 @@ public class LoginFrag extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
             // go to the Map screen
-            goToMainAct();
+
+            //goToMainAct();
+
 
             if(Profile.getCurrentProfile() == null) {
                 mProfileTracker = new ProfileTracker() {
@@ -101,10 +104,6 @@ public class LoginFrag extends Fragment {
 
         }
     };
-
-    public LoginFrag() {
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -220,14 +219,14 @@ public class LoginFrag extends Fragment {
         // add user to firebase
         User me = new User(userId, userName);
 
+        // save the user to the application
+        ((Project_18) getActivity().getApplication()).setMe(me);
+
         // construct friends list
         me.constructFriends(fb);
 
         //fb.child("Users").child(userId).setValue(me);
         me.pushToFirebase(fb);
-
-        // save the user to the application
-        ((Project_18) getActivity().getApplication()).setMe(me);
     }
 
     @Override

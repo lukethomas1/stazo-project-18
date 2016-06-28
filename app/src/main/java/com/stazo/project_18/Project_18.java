@@ -2,7 +2,12 @@ package com.stazo.project_18;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.util.Log;
+import android.util.LruCache;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -34,14 +39,44 @@ public class Project_18 extends Application {
     public static int GMTOffset = ((new GregorianCalendar()).getTimeZone()).getRawOffset();
     public static long relevantTime = System.currentTimeMillis();
     public static String relevantText = new String();
-    public Firebase getFB() { return new Firebase(fbString);}
+    public static Firebase getFB() { return new Firebase(fbString);}
     public User getMe() { return me; }
     public void setMe(User user) { me = user; }
+    public static final String pictureSize = "250";
+    public static final String pictureSizeHigh = "400";
+    public static final String pictureSizeLow = "100";
+
+    final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+    final int cacheSize = maxMemory / 8;
+
+    public LruCache<String, Bitmap> memoryCache = new LruCache<String, Bitmap>(cacheSize) {
+        @Override
+        protected int sizeOf(String key, Bitmap bitmap) {
+            // The cache size will be measured in kilobytes rather than
+            // number of items.
+            //return bitmap.getByteCount() / 1024;
+            return 1;
+        }
+    };
 
     // store images
-    public static HashMap<String, Bitmap> cachedIdToBitmap = new HashMap<String, Bitmap>();
+    //public static HashMap<String, Bitmap> cachedIdToBitmap = new HashMap<String, Bitmap>();
     public static HashMap<String, String> cachedIdToName = new HashMap<>();
+    public static HashMap<String, String> allUsers = new HashMap<String, String>();
 
+    public LruCache<String, Bitmap> getMemoryCache(){
+        return memoryCache;
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            memoryCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return memoryCache.get(key);
+    }
 
     // stores a pulled event locally (pulledEvents)
     public void addPulledEvent(Event e) {
@@ -157,17 +192,41 @@ public class Project_18 extends Application {
         return relatedEvents;
     }
 
-    // TRAIL STUFF
 
-    // addTrail for category
-    /*public void addTrail(Integer type) {
-        me.addTrail(getFB(), type);
-        me.pushToFirebase(getFB());
-    }*/
+    public void pullAllUsers() {
+        getFB().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> usersIterable = dataSnapshot.getChildren();
+                for (DataSnapshot user : usersIterable) {
+                    allUsers.put(user.getKey(), (String) user.child("name").getValue());
+                }
+            }
 
-    // addTrail for user
-    /*public void addTrail(String userid) {
-        me.addTrail(getFB(), userid);
-        me.pushToFirebase(getFB());
-    }*/
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    public static Bitmap BITMAP_RESIZER(Bitmap bitmap,int newWidth,int newHeight) {
+        Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+        float ratioX = newWidth / (float) bitmap.getWidth();
+        float ratioY = newHeight / (float) bitmap.getHeight();
+        float middleX = newWidth / 2.0f;
+        float middleY = newHeight / 2.0f;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2,
+                new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        return scaledBitmap;
+
+    }
 }

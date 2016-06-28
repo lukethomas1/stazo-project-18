@@ -64,6 +64,11 @@
         android:layout_height="100dp">
     </FrameLayout>
     <FrameLayout
+        android:id="@+id/show_otherProfile"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+    </FrameLayout>
+    <FrameLayout
         android:id="@+id/show_searchFrag"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

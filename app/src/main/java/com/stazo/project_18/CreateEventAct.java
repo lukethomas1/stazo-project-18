@@ -400,8 +400,8 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     public void goToProfile() {
-        Intent i =  new Intent(this, Profile.class);
-        i.putExtra("userID", ((Project_18)getApplication()).getMe().getID());
+        Intent i =  new Intent(this, MainAct.class);
+        i.putExtra("toProfile", true);
         startActivity(i);
         finish();
     }
