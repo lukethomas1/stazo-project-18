@@ -107,4 +107,8 @@ public class WelcomeActivity extends FragmentActivity {
         editor.putBoolean("beenWelcomed", true);
         editor.apply();
     }
+
+    public void proceed(View v) {
+        mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+    }
 }

@@ -28,13 +28,33 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="16dp"
             android:layout_marginLeft="8dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:text="Which events can I go to?"
+                android:textStyle="italic"
+                android:textAppearance="@style/WelcomeDesc"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="All events are open to everyone."
+                android:textStyle="bold"
+                android:textAppearance="@style/WelcomeDesc"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Who can post events?"
                 android:textStyle="italic"
                 android:textAppearance="@style/WelcomeDesc"
@@ -42,8 +62,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
                 android:text="Anyone."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
@@ -52,7 +70,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp">
             <TextView
@@ -65,7 +83,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:text="Any kind."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
@@ -74,7 +91,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp">
             <TextView
@@ -87,7 +104,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:text="No."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
@@ -96,10 +112,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginLeft="8dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,8 +125,50 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:text="No."
+                android:textStyle="bold"
+                android:textAppearance="@style/WelcomeDesc"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Do I need to take a picture to make an event?"
+                android:textStyle="italic"
+                android:textAppearance="@style/WelcomeDesc"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yup."
+                android:textStyle="bold"
+                android:textAppearance="@style/WelcomeDesc"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="What if I have nothing to take a picture of?"
+                android:textStyle="italic"
+                android:textAppearance="@style/WelcomeDesc"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take a picture of nothing."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
                 android:layout_gravity="center"/>
@@ -127,5 +184,23 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/welcome_FAQ_image"
-        android:src="@drawable/welcome_1_image"/>
+        android:src="@drawable/welcome_1_image"
+        android:visibility="gone"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relative">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Okay"
+            android:textAllCaps="false"
+            android:textStyle="normal"
+            android:background="@color/colorPrimary"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="65dp"
+            android:textColor="@color/white"
+            android:onClick="proceed"/>
+    </RelativeLayout>
 </LinearLayout>

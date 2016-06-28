@@ -14,7 +14,7 @@
 
     <!-- MYSTRINGS -->
     <string name="welcome_header_1">Welcome to fumono!</string>
-    <string name="welcome_desc_1">If you haven\'t heard, fumono is a locale-based event finder.
+    <string name="welcome_desc_1">Fumono is a locale-based event finder.
         That means everything fun happening nearby can be found here.</string>
 
     <string name="welcome_header_2">Things to Know</string>
