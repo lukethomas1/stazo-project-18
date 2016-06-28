@@ -506,11 +506,13 @@ public class MainAct extends AppCompatActivity
         MapFrag mapFrag = new MapFrag();
         ListAct listAct = new ListAct();
         ProfileFrag profileFrag= new ProfileFrag();
+        NotificationFrag notFrag = new NotificationFrag();
 
         // save references to fragments
         tabFragments.add(mapFrag);
         tabFragments.add(listAct);
         tabFragments.add(profileFrag);
+        tabFragments.add(notFrag);
 
         //preemptive set user_id and isMe
         profileFrag.setInfo(Project_18.me.getID(), true);
@@ -518,6 +520,7 @@ public class MainAct extends AppCompatActivity
         adapter.addFragment(mapFrag, ""); //map
         adapter.addFragment(listAct, ""); //explore
         adapter.addFragment(profileFrag, ""); //profile
+        adapter.addFragment(notFrag, ""); //notifications
 
         viewPager.setAdapter(adapter);
     }
