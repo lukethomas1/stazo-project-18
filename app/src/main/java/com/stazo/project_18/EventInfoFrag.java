@@ -68,19 +68,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
 
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-
+        mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                // React to state change
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-
-                    //getActivity().findViewById(R.id.upArrow).setRotation(180);
-                } else {
-
-                    //getActivity().findViewById(R.id.upArrow).setRotation(0);
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehavior.setPeekHeight(0);
                 }
             }
 
@@ -223,8 +218,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         SimpleDateFormat startDayFormat = new SimpleDateFormat("MM/dd", Locale.US);
         SimpleDateFormat startTimeFormat = new SimpleDateFormat("HH:mm", Locale.US);
-
-        int startday = startDayFormat.format(start).charAt(4);
 
         String startText = "Starting on " + startDayFormat.format(start) +
                 " at " + startTimeFormat.format(start);
