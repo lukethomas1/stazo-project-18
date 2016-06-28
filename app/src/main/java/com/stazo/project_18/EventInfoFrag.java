@@ -216,6 +216,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         SimpleDateFormat startDayFormat = new SimpleDateFormat("MM/dd", Locale.US);
         SimpleDateFormat startTimeFormat = new SimpleDateFormat("HH:mm", Locale.US);
+
+        int startday = startDayFormat.format(start).charAt(4);
+
         String startText = "Starting on " + startDayFormat.format(start) +
                 " at " + startTimeFormat.format(start);
         eventDate.setText(startText);
