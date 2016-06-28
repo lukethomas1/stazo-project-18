@@ -74,6 +74,7 @@ public class MainAct extends AppCompatActivity
     private static EventInfoFrag eventInfoFrag;
     private static ProfileFrag otherProfileFrag;
     private static ProfileFrag newOtherProfileFrag;
+    private static boolean pendingProfile = false;
 
     private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
@@ -389,7 +390,10 @@ public class MainAct extends AppCompatActivity
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
-
+        if (pendingProfile) {
+            return;
+        }
+        pendingProfile = true;
         searchView.setIconified(true);
         searchView.clearFocus();
         newOtherProfileFrag = new ProfileFrag();
@@ -405,6 +409,7 @@ public class MainAct extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
         }
         otherProfileFrag = newOtherProfileFrag;
+        pendingProfile = false;
     }
 
     public void goToAddTrails(View v) {

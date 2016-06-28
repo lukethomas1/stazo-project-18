@@ -107,6 +107,7 @@ public class ProfileFrag extends Fragment {
                     }
                 }
         );
+
         grabInfo();
     }
 
@@ -195,6 +196,7 @@ public class ProfileFrag extends Fragment {
                         // remove event listener
                         fb.child("Users").child(user_ID).
                                 removeEventListener(this);
+
                     }
 
                     @Override
@@ -240,8 +242,7 @@ public class ProfileFrag extends Fragment {
                         ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
                                 user.getName() + " has no ongoing events");
                     }
-                }
-                else {
+                } else {
                     v.findViewById(R.id.emptyHostingTextContainer).setVisibility(View.GONE);
                 }
 
