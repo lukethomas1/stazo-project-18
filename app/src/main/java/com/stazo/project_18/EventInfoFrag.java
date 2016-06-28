@@ -126,6 +126,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         true));*/
     }
 
+    public void hideEventInfo() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
 
     public void toggleState() {
 

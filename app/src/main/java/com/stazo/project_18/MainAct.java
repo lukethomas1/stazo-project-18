@@ -121,6 +121,7 @@ public class MainAct extends AppCompatActivity
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int pageNumber) {
+                hideInfo();
                 for (int i = 0; i <= 2; i++) {
                     if (i == pageNumber) {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
@@ -199,6 +200,12 @@ public class MainAct extends AppCompatActivity
         }
         if (getIntent().hasExtra("toProfile")) {
             viewPager.setCurrentItem(2);
+        }
+    }
+
+    public void hideInfo() {
+        if (eventInfoFrag != null) {
+            eventInfoFrag.hideEventInfo();
         }
     }
 
@@ -410,6 +417,7 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails(View v) {
         goToAddTrails();
     }
+
     public void editBio(View view) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         //alertDialog.setTitle("New Bio (100 char limit)");
@@ -475,7 +483,6 @@ public class MainAct extends AppCompatActivity
     }
 
     public void goToEventInfo(String event_id) {
-
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
