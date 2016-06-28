@@ -71,7 +71,7 @@ public class MainAct extends AppCompatActivity
     private SearchFrag searchFrag;
     private SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    private static EventInfoFrag eventInfoFrag;
+    public static EventInfoFrag eventInfoFrag;
     private static ProfileFrag otherProfileFrag;
     private static ProfileFrag newOtherProfileFrag;
     private static boolean pendingProfile = false;

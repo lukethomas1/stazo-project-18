@@ -43,7 +43,8 @@ import java.util.Locale;
 public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
 
     private Firebase fb;
-    private String passedEventID;
+
+    public String passedEventID;
     private User currUser;
     private Event currEvent;
     private View v;
@@ -304,6 +305,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             b.setText("Joined");
 
         }
+    }
+
+
+    public String getPassedEventID() {
+        return passedEventID;
     }
 
 

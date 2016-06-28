@@ -99,6 +99,7 @@ public class WelcomeActivity extends FragmentActivity {
         setSharedPreferences();
         finish();
     }
+
     // save the userId to sharedPreferences so they don't have to relog
     private void setSharedPreferences() {
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);

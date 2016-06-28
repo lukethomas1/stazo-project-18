@@ -134,6 +134,7 @@ public class InitialAct extends AppCompatActivity {
             finish();
         }
     }
+
     private void goToLoginAct(){
 
         startActivity(new Intent(this, LoginAct.class));

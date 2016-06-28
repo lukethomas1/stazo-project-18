@@ -85,6 +85,7 @@ public class MapFrag extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         seekbar = (SeekBar) getView().findViewById(R.id.timeSeekBar);
         timeTextView = (TextView) getView().findViewById(R.id.timeTextView);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -301,6 +302,11 @@ public class MapFrag extends Fragment {
 
                                 // display event
                                 displayEvent(e);
+                            }
+
+                            // if we have an eventInfo open, go to that
+                            if (MainAct.eventInfoFrag != null) {
+                                simulateOnClick(MainAct.eventInfoFrag.getPassedEventID());
                             }
 
                             // remove this listener

@@ -250,21 +250,31 @@ public class ProfileFrag extends Fragment {
                 for (final Event e : myEvents) {
                     Button eventButton = new Button(getContext());
                     eventButton.setText(e.toString()); // + "Host");
-                    makePretty(eventButton);
+                    LinearLayout container = new LinearLayout(getActivity());
+                    ImageView iv = new ImageView(getActivity());
+                    iv.setImageResource(R.drawable.icon_multiple_people);
+                    TextView tv = new TextView(getActivity());
+                    tv.setText(Integer.toString(e.getAttendees().size()));
+                    makePretty(eventButton, iv, tv, container);
                     eventButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             goToEventInfo(e.getEvent_id());
                         }
                     });
-                    eventsLayout.addView(eventButton);
+                    eventsLayout.addView(container);
                 }
 
                 /* display attendingEvents */
                 for (final Event e : attendingEvents) {
                     Button eventButton = new Button(getContext());
                     eventButton.setText(e.toString()); // + "Attending");
-                    makePretty(eventButton);
+                    LinearLayout container = new LinearLayout(getActivity());
+                    ImageView iv = new ImageView(getActivity());
+                    iv.setImageResource(R.drawable.icon_multiple_people);
+                    TextView tv = new TextView(getActivity());
+                    tv.setText(Integer.toString(e.getAttendees().size()));
+                    makePretty(eventButton, iv, tv, container);
                     eventButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -272,7 +282,7 @@ public class ProfileFrag extends Fragment {
 
                         }
                     });
-                    eventsLayout.addView(eventButton);
+                    eventsLayout.addView(container);
                 }
 
                 fb.child("Events").removeEventListener(this);
@@ -285,19 +295,47 @@ public class ProfileFrag extends Fragment {
 
     }
 
-    private void makePretty(Button button) {
-        RelativeLayout.LayoutParams lp = new
-                RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+    private void makePretty(Button button, ImageView iv, TextView numGoing, LinearLayout container) {
+
+        LinearLayout.LayoutParams containerLP = new LinearLayout.
+                LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        containerLP.gravity = Gravity.CENTER_VERTICAL;
+        container.setLayoutParams(containerLP);
+        container.setOrientation(LinearLayout.HORIZONTAL);
+        container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+        //container.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        LinearLayout.LayoutParams numGoingLP=new LinearLayout.
+                LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        numGoingLP.gravity = Gravity.CENTER_VERTICAL;
+        numGoingLP.rightMargin = 20;
+        numGoing.setLayoutParams(numGoingLP);
+
+        LinearLayout.LayoutParams ivLP=new LinearLayout.
+                LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        ivLP.gravity=Gravity.CENTER_VERTICAL;
+        ivLP.rightMargin = 20;
+        iv.setLayoutParams(ivLP);
+
+        LinearLayout.LayoutParams lp = new
+                LinearLayout.LayoutParams(950,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         button.setTextSize(eventsTextSize);
         button.setTypeface(null, Typeface.NORMAL);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
         button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(120, 0, 0, 0);
+        button.setPadding(80, 0, 0, 0);
         button.setLayoutParams(lp);
-        //button.setBackgroundColor(getResources().getColor(R.color.white));
-        button.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+        button.setBackground(null);
+
+
+        container.addView(button);
+        container.addView(iv);
+        container.addView(numGoing);
     }
 
     // pull and set profile picture
