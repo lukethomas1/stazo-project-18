@@ -565,13 +565,37 @@ public class MainAct extends AppCompatActivity
     }
 
     public void logoutUser(View view) {
-        Log.i("MainAct", "Logging Out");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        clearSharedPreferences();
-        fbLogout();
+        builder.setTitle("Log Out");
+        builder.setMessage("Are you sure? Like really sure?");
 
-        goToInitialAct();
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("MainAct", "Logout Confirmed: Logging Out");
+
+                clearSharedPreferences();
+                fbLogout();
+                goToInitialAct();
+
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("MainAct", "Logout Cancelled");
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void clearSharedPreferences() {
