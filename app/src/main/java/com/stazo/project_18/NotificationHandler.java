@@ -51,8 +51,10 @@ public class NotificationHandler {
                     Notification notif = notifSnap.getValue(Notification.class);
                     notifs.add(notif);
                 }
-
-                Log.d("Notifications", "Notifications are: " + notifs.toString());
+                for (int i = 0; i < notifs.size(); i++) {
+                    Log.d("Notifications", "Notification is: " + notifs.get(i).getNotifID());
+                }
+                testViewed();
             }
 
             @Override
@@ -60,5 +62,30 @@ public class NotificationHandler {
 
             }
         });
+    }
+
+    public void testViewed() {
+        setToViewed(notifs.get(0));
+        setToViewed(notifs.get(2));
+    }
+
+    public void setToViewed(final Notification notif) {
+        Project_18.getFB().child("NotifDatabase").child("1184188798300386").
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
+                            Notification pulledNotif = notifSnap.getValue(Notification.class);
+                            if (pulledNotif.getNotifID().equals(notif.getNotifID())) {
+                                notifSnap.getRef().child("viewed").setValue(true);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
     }
 }

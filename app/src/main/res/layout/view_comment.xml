@@ -18,7 +18,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="520dp"
             android:id="@+id/eventInfoScroll">
 
                 <!-- Layout to add comments to -->
@@ -42,8 +42,8 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:gravity="center">
             <EditText
                 android:layout_width="250dp"
@@ -51,10 +51,14 @@
                 android:hint="Write comment here..."
                 android:id="@+id/commentText" />
             <Button
-                android:layout_width="80dp"
-                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:layout_height="40dp"
                 android:id="@+id/submitComment"
-                android:text="Post" />
+                android:text="Post"
+                android:textAllCaps="false"
+                android:textSize="12dp"
+                android:textColor="@color/colorTextPrimary"
+                android:background="@color/colorAccent"/>
         </LinearLayout>
 
     </LinearLayout>

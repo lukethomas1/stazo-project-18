@@ -35,6 +35,7 @@ import java.util.HashMap;
  * to handle interaction events.
  */
 public class SearchFrag extends Fragment {
+    private static final int MAX_USERS = 3;
     private View v;
     private Toolbar toolbar;
     private LinearLayout queryButtonLayout, friendsButtonLayout, othersButtonLayout;
@@ -110,14 +111,22 @@ public class SearchFrag extends Fragment {
         HashMap<String, String> matchFriends = new HashMap<>();
         HashMap<String, String> matchOthers = new HashMap<>();
 
+        // look through friends first
         for (String id: friends.keySet()) {
             String name = friends.get(id);
             if (name.toLowerCase().contains(query.toLowerCase())) {
                 matchFriends.put(id, name);
+                if (matchFriends.size() == MAX_USERS) {
+                    break;
+                }
             }
         }
 
-        for (String id: allUsers.keySet()) {
+        for (String id : allUsers.keySet()) {
+            // we only want MAX_USERS loaded
+            if (matchFriends.size() + matchOthers.size() >= MAX_USERS) {
+                break;
+            }
             if (id.equals(Project_18.me.getID()) || friends.containsKey(id)) {
                 continue;
             }
@@ -126,6 +135,7 @@ public class SearchFrag extends Fragment {
                 matchOthers.put(id, name);
             }
         }
+
 
         matchUsers.putAll(matchFriends);
         matchUsers.putAll(matchOthers);
@@ -193,6 +203,11 @@ public class SearchFrag extends Fragment {
         ArrayList<Event> levelThree = new ArrayList<Event>();
 
         for (Event e: allEvents) {
+            // stop when we've found 10 name matches
+            if (levelTwo.size() + levelThree.size() >= 10) {
+                break;
+            }
+
             switch (e.findRelevance(query)) {
                 case 3:
                     levelThree.add(e);
@@ -216,7 +231,13 @@ public class SearchFrag extends Fragment {
         matchEvents.addAll(levelTwo);
         matchEvents.addAll(levelOne);
 
+        int counter = 0;
         for (final Event e: matchEvents) {
+
+            // load at most 10 events
+            if (counter >= 10) {
+                break;
+            }
             Button eventButton = new Button(getContext());
             eventButton.setText(e.getName());
             makePretty(eventButton, true);
@@ -227,6 +248,7 @@ public class SearchFrag extends Fragment {
                 }
             });
             queryButtonLayout.addView(eventButton);
+            counter++;
         }
 
         if (matchUsers.isEmpty() && matchEvents.isEmpty()) {

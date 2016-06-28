@@ -31,7 +31,7 @@
 
         <com.stazo.project_18.InteractiveScrollView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="370dp"
             android:id="@+id/addTrailsScrollView"
             android:layout_marginTop="30dp">
 
