@@ -163,7 +163,6 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(1);
         }
-<<<<<<< HEAD
 
         // NOTIFICATIONS
 
@@ -171,7 +170,6 @@ public class MainAct extends AppCompatActivity
         Firebase fbRef = ((Project_18) this.getApplication()).getFB();
         fbRef.child("Notifications").push();
 
-        
         // Make sure user is in notification database
         if(fbRef.child("Notifications") != null) {
             if (fbRef.child("Notifications").child(currentUser.getID()) != null) {
@@ -198,10 +196,9 @@ public class MainAct extends AppCompatActivity
         // TODO we need some sort of red exclamation mark or something to indicate this
         if(notify == true) {
             // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
-=======
+        }
         if (getIntent().hasExtra("toProfile")) {
             viewPager.setCurrentItem(2);
->>>>>>> 403e2de9921fe994f69b8edc409f79d02a373227
         }
     }
 
