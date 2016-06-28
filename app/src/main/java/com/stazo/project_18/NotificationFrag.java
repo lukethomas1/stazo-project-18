@@ -16,15 +16,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NotificationFrag.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NotificationFrag#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NotificationFrag extends android.support.v4.app.Fragment {
 
     private View v;
@@ -48,10 +39,6 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
     private ArrayList<Notification> loadNotifications() {
         // List of follower IDs
         ArrayList<Notification> notifications = new ArrayList<>();
-
-        //notifications = ( (ArrayList<Notification>) fb.child("Notifications").child(currentUser.getID()));
-
-
 
         return notifications;
     }

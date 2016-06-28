@@ -47,8 +47,11 @@ public class InitialAct extends AppCompatActivity {
         EventHandler EH = new EventHandler();
         //EH.clearEvents();
         //EH.generateEvents();
+        NotificationHandler NH = new NotificationHandler();
+        //NH.generateNotifications();
+        NH.pullNotifications();
 
-        ((Project_18) getApplication()).pullAllUsers();
+                ((Project_18) getApplication()).pullAllUsers();
 
         // if the user logs in for the first time
         if(sharedPreferences.getBoolean("isLoggedIn", false)) { // check if they have logged in before

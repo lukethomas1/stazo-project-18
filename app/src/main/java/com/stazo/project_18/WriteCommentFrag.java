@@ -32,7 +32,6 @@ public class WriteCommentFrag extends Fragment {
         String user_ID = ((Project_18)this.getActivity().getApplication()).getMe().getID();
         Comment comment = new Comment(this.passedEventID, commentText, user_ID);
         fb.child("CommentDatabase").child(this.passedEventID).child("comments").push().setValue(comment);
-
     }
 
 

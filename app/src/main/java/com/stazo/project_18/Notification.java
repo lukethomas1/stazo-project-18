@@ -38,22 +38,13 @@ public class Notification {
     public void pushToFirebase(Firebase fb, final ArrayList<String> usersWhoCare) {
         final Notification notif = this;
 
-        // loop through NotifDatabase users and push notif to those who care
-        fb.child("NotifDatabase").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userNotifs: dataSnapshot.getChildren()) {
-                    if (usersWhoCare.contains(userNotifs.getValue())) {
-                        userNotifs.getRef().push().setValue(notif);
-                    }
-                }
-            }
+        for (String id: usersWhoCare) {
+            fb.child("NotifDatabase").child(id).push().setValue(notif);
+        }
+    }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+    public String toString() {
+        return message;
     }
 
     // NECESSARY FOR FIREBASE
