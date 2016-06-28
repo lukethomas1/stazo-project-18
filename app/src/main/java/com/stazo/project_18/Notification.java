@@ -6,6 +6,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by luket on 6/20/2016.
@@ -16,6 +18,15 @@ public class Notification {
     // TYPE 1: <user_i_am_following> is hosting <event_name> at <location> in <hours>   onClickID = eventId
     // TYPE 2: <user_who_followed_me> is now following you.     onClickID = userId
 
+    public String getNotifID() {
+        return notifID;
+    }
+
+    public void setNotifID(String notifID) {
+        this.notifID = notifID;
+    }
+
+    private String notifID;
     private String message;
     private String creatorName;
     private String onClickID;       // User OR Event ID depending on type
@@ -33,6 +44,7 @@ public class Notification {
         this.viewed = viewed;
         onClickID = ID;
         this.type = type;
+        generateNotifID();
     }
 
     public void pushToFirebase(Firebase fb, final ArrayList<String> usersWhoCare) {
@@ -42,6 +54,16 @@ public class Notification {
             fb.child("NotifDatabase").child(id).push().setValue(notif);
         }
     }
+
+    public void generateNotifID() {
+        Random rand = new Random();
+        for (int i = 0; i < 10; i++) {
+            String id = "" + (char) (65 + rand.nextInt(26));
+            notifID = id;
+        }
+    }
+
+
 
     public String toString() {
         return message;

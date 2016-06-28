@@ -62,4 +62,25 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
             }
         });
     }
+
+    // Sets the current notif to "viewed" for user Me
+    public void setToViewed(final Notification notif) {
+        fb.child("NotifDatabase").child(Project_18.me.getID()).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
+                            Notification pulledNotif = notifSnap.getValue(Notification.class);
+                            if (pulledNotif.getNotifID().equals(notif.getNotifID())) {
+                                notifSnap.getRef().child("viewed").setValue(true);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+    }
 }

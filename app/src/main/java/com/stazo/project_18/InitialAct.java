@@ -48,8 +48,9 @@ public class InitialAct extends AppCompatActivity {
         //EH.clearEvents();
         //EH.generateEvents();
         NotificationHandler NH = new NotificationHandler();
-        //NH.generateNotifications();
+        NH.generateNotifications();
         NH.pullNotifications();
+        //NH.testViewed();
 
                 ((Project_18) getApplication()).pullAllUsers();
 
