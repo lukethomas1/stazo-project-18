@@ -134,12 +134,6 @@ public class ProfileFrag extends Fragment {
             v.findViewById(R.id.goToCreateEventButton).setVisibility(View.GONE);
             v.findViewById(R.id.goToAddTrailsButton).setVisibility(View.GONE);
 
-            // set margin top to 0
-            /*LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
-                    v.findViewById(R.id.profileHeaderLayout).getLayoutParams();
-            lp.topMargin = 0;
-            v.findViewById(R.id.profileHeaderLayout).setLayoutParams(lp);*/
-
         }
         else {
             // hide not-me-specific info
@@ -228,16 +222,6 @@ public class ProfileFrag extends Fragment {
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
 
-                /*if (myEvents.isEmpty()) {
-                    if (!isMe) {
-                        ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
-                                user.getName() + " isn't hosting any events.");
-                    }
-                }
-
-                // if myEvents is not empty, remove the empty text
-                else {*/
-                //}
                 if (myEvents.isEmpty() && attendingEvents.isEmpty()) {
                     if (!isMe) {
                         ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
@@ -429,7 +413,6 @@ public class ProfileFrag extends Fragment {
 
             for (String id: userList.keySet()) {
 
-
                 if (((Project_18) getActivity().getApplication()).
                         getBitmapFromMemCache(id) != null) {
                     idToBitmap.put(id, ((Project_18) getActivity().getApplication()).
@@ -592,30 +575,6 @@ public class ProfileFrag extends Fragment {
                 // make button look good and add to buttonLayout
                 makePretty(b, name, buttonLayout);
 
-                // add to buttonMap
-                //buttonMap.put(name, buttonLayout);
-
-                // add buttonLayout to row
-                //currentRow.addView(buttonLayout);
-
-                // row index handling
-                /*if (rowIndex < 3) {
-                    rowIndex++;
-                } else {
-
-                    // reset index
-                    rowIndex = 0;
-
-                    // make new row
-                    currentRow = new LinearLayout(getActivity().getApplicationContext());
-                    makePretty(currentRow);
-
-                    // add new row to the layout
-                    trailsLayout.addView(currentRow);
-                }*/
-                /*ViewGroup.LayoutParams lp = new ViewGroup.
-                        LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);*/
                 trailsLayout.addView(buttonLayout);
 
                 // set title to be visible

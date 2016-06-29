@@ -119,10 +119,10 @@ public class ViewCommentFrag extends Fragment{
                                 System.out.println("cache hit");
                                 profileImage = ((Project_18) getActivity().getApplication()).
                                         getBitmapFromMemCache(commentList.get(i).getUser_ID());
-                                profileView.setImageBitmap(profileImage);
+                                profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
                             } else {
-                            Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
-                            profileThread.start();
+                                Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
+                                profileThread.start();
                             }
 
                             //user_id
@@ -215,22 +215,22 @@ public class ViewCommentFrag extends Fragment{
             this.profileView = profileView;
         }
         public void run() {
+
             try {
                 URL imageURL = new URL("https://graph.facebook.com/" + user_ID
-                        + "/picture?type=large");
-                profileImage = Bitmap.createScaledBitmap(
-                        BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()),
-                        150,
-                        150,
-                        true);
-//                profileView.setImageBitmap(profileImage);
+                        + "/picture?width=" + Project_18.pictureSize);
+                profileImage = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+
+                //
                 Handler updateView = new Handler(Looper.getMainLooper());
                 updateView.post(new Runnable() {
                     @Override
                     public void run() {
-                        profileView.setImageBitmap(profileImage);
+                        profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
                     }
                 });
+
+                // add to cache
                 ((Project_18) getActivity().getApplication()).
                         addBitmapToMemoryCache(user_ID, profileImage);
                 System.out.println("Thread finished");
@@ -238,6 +238,7 @@ public class ViewCommentFrag extends Fragment{
                 throw new RuntimeException(e);
             }
         }
+
     }
 
     private class UpdateViewRunnable implements Runnable {

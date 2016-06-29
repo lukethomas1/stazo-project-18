@@ -152,7 +152,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Length"
-                            android:textColor="@color/colorAccent"
+                            android:textColor="@color/colorAccentDark"
                             android:id="@+id/eventLength"
                             android:textAppearance="@style/EventInfoBody"
                             android:onClick="toggleState"/>
