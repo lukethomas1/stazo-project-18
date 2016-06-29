@@ -19,10 +19,16 @@
     <color name="colorAccent">#FF4081</color>-->
 
     <!-- THEME LIGHT-BLUE WITH YELLOW ACCENT-->
+    <!--<color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorPrimaryLight">#B3E5FC</color>
+    <color name="colorAccent">#FFEB3B</color>-->
+
+    <!-- THEME LIGHT-BLUE WITH DEEP ORANGE ACCENT-->
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorPrimaryLight">#B3E5FC</color>
-    <color name="colorAccent">#FFEB3B</color>
+    <color name="colorAccent">#FF5722</color>
 
     <!-- THEME EXTRA-LIGHT-BLUE -->
     <!--<color name="colorPrimary">#81D4FA</color>

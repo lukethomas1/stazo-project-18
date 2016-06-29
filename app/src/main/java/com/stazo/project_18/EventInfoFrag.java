@@ -15,6 +15,7 @@ import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +33,11 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -206,6 +212,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
         TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
+        ImageView eventCreatorPic = (ImageView) this.getActivity().findViewById(R.id.creatorPic);
         long startHour = 0;
         long startMinute = 0;
         //End Initialization
@@ -216,7 +223,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
-        eventCreator.setText("Created by: " + u.getName());
+        eventCreator.setText(u.getName());
+
+        // setting the event creator image
+        //Bitmap bmp = getFBPhoto(u.getID());
+        //eventCreatorPic.setImageBitmap(bmp);
 
         // show time fields
         //Initialize time
@@ -226,32 +237,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         Date end = new Date(endTime);
 
         //Set start time
-
-        SimpleDateFormat startDayFormat = new SimpleDateFormat("MM/dd", Locale.US);
-        SimpleDateFormat startTimeFormat = new SimpleDateFormat("HH:mm", Locale.US);
-
-        String startText = "Starting on " + startDayFormat.format(start) +
-                " at " + startTimeFormat.format(start);
+        String startText = buildStartDay(start) + " at " + buildStartTime(start);
         eventDate.setText(startText);
 
         //Set event length
-        long length = endTime - startTime;
-        long eventHour = length/(1000 * 60 * 60);
-        long eventMinute = length/(1000 * 60) - eventHour*60;
-
-        if(eventHour > 0){
-            if(eventHour == 1){
-                eventLength.setText("Duration: " + eventHour + " hour and ");
-            } else {
-                eventLength.setText("Duration: " + eventHour + " hours and ");
-            }
-        }
-        if(eventMinute == 1){
-            eventLength.setText(eventLength.getText() + "" + eventMinute + " minute");
-        }
-        else {
-            eventLength.setText(eventLength.getText() + "" + eventMinute + " minutes");
-        }
+        String durationText = buildDurationTime(startTime, endTime);
+        eventLength.setText(durationText);
 
         //Set how long until start time or if started/completed yet
         Calendar curr = Calendar.getInstance();
@@ -293,6 +284,65 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 //        fb.child("CommentDatabase").child(event_ID).setValue(comment);
 //    }
 
+    public String buildStartDay(Date start) {
+        String finalString;
+        String dayString;
+        // get today's day in MM/dd format
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat today = new SimpleDateFormat("MM/dd", Locale.US);
+
+        // convert start time to MM/dd format
+        SimpleDateFormat startDay = new SimpleDateFormat("MM/dd", Locale.US);
+        dayString = startDay.format(start);
+
+        // compare today's date
+        if (dayString.equals(today.format(c.getTime()))) {
+            finalString = "Today";
+        }
+        else {
+            startDay = new SimpleDateFormat("MMM dd", Locale.US);
+            finalString = startDay.format(start);
+        }
+        return finalString;
+    }
+
+    public String buildStartTime(Date start) {
+        SimpleDateFormat startTime = new SimpleDateFormat("h:mm a", Locale.US);
+        return startTime.format(start);
+    }
+
+    public String buildDurationTime(long startTime, long endTime) {
+        String finalString = "";
+        long length = endTime - startTime;
+        long eventHour = length/(1000 * 60 * 60);
+        long eventMin = length/(1000 * 60) - eventHour*60;
+
+        if (eventHour > 0) {
+            finalString = finalString + eventHour;
+            if (eventHour == 1) {
+                finalString = finalString + " hr";
+            }
+            else {
+                finalString = finalString + " hrs";
+            }
+            Log.d("EventInfoFrag", "eventMin: " + eventMin);
+            if (eventMin > 0) {
+                finalString = finalString + " and " + eventMin;
+            }
+        }
+        if (eventMin > 0) {
+            if (eventMin == 1) {
+                finalString = finalString + " min";
+            }
+            else {
+                finalString = finalString + " mins";
+            }
+        }
+
+        return finalString;
+    }
+
+
     public void viewCommentClick() {
         //open comment view window
         ViewCommentFrag viewFrag = new ViewCommentFrag();
@@ -317,6 +367,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
     }
 
+    // pull and set event creator picture
+    private void setCreatorPicture() {
+
+    }
 
     public String getPassedEventID() {
         return passedEventID;
