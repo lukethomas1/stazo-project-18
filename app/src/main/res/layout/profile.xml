@@ -117,7 +117,8 @@
                     android:text="Follow"
                     android:textSize="10dp"
                     android:textAllCaps="false"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center"
                     android:background="@color/colorAccent"
                     android:textColor="@color/colorTextPrimary"/>

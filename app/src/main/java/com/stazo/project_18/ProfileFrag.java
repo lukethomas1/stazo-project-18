@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -686,6 +687,9 @@ public class ProfileFrag extends Fragment {
             ((Button) v.findViewById(R.id.followButton)).setText("Following");
             v.findViewById(R.id.followButton).
                     setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            ((Button) v.findViewById(R.id.followButton)).
+                    setTextColor(getResources().getColor(R.color.colorDivider));
+            ((Button) v.findViewById(R.id.followButton)).setTypeface(null, Typeface.BOLD_ITALIC);
         }
 
         else {
@@ -693,8 +697,12 @@ public class ProfileFrag extends Fragment {
             ((Button) v.findViewById(R.id.followButton)).setText("Follow");
             v.findViewById(R.id.followButton).
                     setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            ((Button) v.findViewById(R.id.followButton)).
+                    setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            ((Button) v.findViewById(R.id.followButton)).setTypeface(null, Typeface.BOLD);
         }
     }
+
 
 
 

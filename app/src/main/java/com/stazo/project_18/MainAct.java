@@ -11,6 +11,7 @@ import android.graphics.AvoidXfermode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -250,6 +251,7 @@ public class MainAct extends AppCompatActivity
                         }
                         if (otherProfileFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                            otherProfileStateChange(false);
                         }
                         searched = false;
                         searchFrag = new SearchFrag();
@@ -379,6 +381,7 @@ public class MainAct extends AppCompatActivity
     }
 
     public void updateOtherProfileFrag() {
+        otherProfileStateChange(true);
         if (otherProfileFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
         }
@@ -463,11 +466,14 @@ public class MainAct extends AppCompatActivity
         }
 
         if (otherProfileFrag != null) {
+            otherProfileStateChange(false);
             //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
             getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
         }
 
         simulateClick(event_id);
+
+        searchView.setIconified(true);
 
         searchView.clearFocus();
 
@@ -588,12 +594,43 @@ public class MainAct extends AppCompatActivity
         }
     }
 
-    private void goToInitialAct(){
+    private void goToInitialAct() {
         startActivity(new Intent(this, InitialAct.class));
+    }
+    public void otherProfileStateChange(boolean entering) {
+        if (entering) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
+        else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        }
+    }
+
+    public static Intent getOpenFacebookIntent(Context context, String userId) {
+
+        try {
+            context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
+
+            String facebookScheme = "fb://page/" + userId;
+
+            return new Intent(Intent.ACTION_VIEW, Uri.parse(facebookScheme));
+        } catch (Exception e) {
+            // Cache and Open a url in browser
+            String facebookProfileUri = "https://www.facebook.com/jasonbao";
+            return new Intent(Intent.ACTION_VIEW, Uri.parse(facebookProfileUri));
+        }
+    }
+
+    public void goToFacebookProfile(View v) {
+        Intent facebookIntent = getOpenFacebookIntent(this, Project_18.me.getID());
+        startActivity(facebookIntent);
     }
 
     @Override
     public void onBackPressed() {
+        otherProfileStateChange(false);
         System.out.println("test");
         if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
             getSupportFragmentManager().popBackStackImmediate();
