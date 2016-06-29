@@ -238,14 +238,15 @@
                     android:layout_marginBottom="5dp"
                     android:onClick="toggleState"/>
 
-                <TextView
+
+                <!--<TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="X h Y m left"
                     android:textAppearance="@style/EventInfoBody"
                     android:id="@+id/eventTimeTo"
-                    android:onClick="toggleState"/>
+                    android:onClick="toggleState"/>-->
 
                 <RelativeLayout
                     android:layout_width="match_parent"
