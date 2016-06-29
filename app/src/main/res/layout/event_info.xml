@@ -91,6 +91,7 @@
                             android:gravity="center"/>
 
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -98,23 +99,65 @@
                         android:layout_marginBottom="10dp"
                         android:onClick="toggleState"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Event Date"
-                        android:id="@+id/eventDate"
-                        android:layout_marginBottom="10dp"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:onClick="toggleState"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="toggleState">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Length: "
-                        android:id="@+id/eventLength"
-                        android:layout_marginBottom="10dp"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:onClick="toggleState"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Starts"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="0dp"
+                            android:textAppearance="@style/EventInfoBody"
+                            android:onClick="toggleState"/>
+
+                        <View android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Length"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="0dp"
+                            android:textAppearance="@style/EventInfoBody"
+                            android:onClick="toggleState"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="toggleState"
+                        android:layout_marginBottom="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Event Date"
+                            android:id="@+id/eventDate"
+                            android:textAppearance="@style/EventInfoBody"
+                            android:onClick="toggleState"/>
+
+                        <View android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Length"
+                            android:textColor="@color/colorAccent"
+                            android:id="@+id/eventLength"
+                            android:textAppearance="@style/EventInfoBody"
+                            android:onClick="toggleState"/>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -133,15 +176,15 @@
                     android:text="Event Clock"
                     android:id="@+id/eventClock"
                     android:textSize="40dp" />-->
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Created by: "
-                    android:id="@+id/eventCreator"
-                    android:layout_marginBottom="10dp"
+                    android:text="Description"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="0dp"
                     android:textAppearance="@style/EventInfoBody"
-                    android:onClick="toggleState" />
+                    android:onClick="toggleState"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -150,6 +193,50 @@
                     android:layout_marginBottom="10dp"
                     android:textAppearance="@style/EventInfoBody"
                     android:onClick="toggleState" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:onClick="toggleState" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Created by"
+                        android:layout_marginBottom="10dp"
+                        android:textAppearance="@style/EventInfoBody"
+                        android:onClick="toggleState" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/creatorPic"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dip"
+                        android:layout_marginRight="20dip"
+                        android:layout_marginLeft="20dip"
+                        android:layout_marginBottom="10dip"
+                        android:background="@drawable/picture_background"
+                        android:visibility="invisible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Creator"
+                        android:id="@+id/eventCreator"
+                        android:layout_marginBottom="10dp"
+                        android:textAppearance="@style/EventInfoBody"
+                        android:onClick="toggleState" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="5dp"
+                    android:onClick="toggleState"/>
 
                 <TextView
                     android:layout_width="wrap_content"
