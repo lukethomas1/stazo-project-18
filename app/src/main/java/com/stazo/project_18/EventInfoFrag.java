@@ -211,7 +211,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         TextView eventDescription = (TextView) this.getActivity().findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
-        TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
+        //TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
         ImageView eventCreatorPic = (ImageView) this.getActivity().findViewById(R.id.creatorPic);
         long startHour = 0;
         long startMinute = 0;
@@ -244,6 +244,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         String durationText = buildDurationTime(startTime, endTime);
         eventLength.setText(durationText);
 
+        /*
         //Set how long until start time or if started/completed yet
         Calendar curr = Calendar.getInstance();
         long currTime = curr.getTimeInMillis();
@@ -267,6 +268,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         else {
             eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
         }
+        */
+
         v.setVisibility(View.VISIBLE);
     }
 
