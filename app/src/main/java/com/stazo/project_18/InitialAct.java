@@ -59,17 +59,6 @@ public class InitialAct extends AppCompatActivity {
             // tracks if the AccessToken has changed and sees if it is still valid
             accessToken = AccessToken.getCurrentAccessToken();
             updateWithToken(accessToken);
-            /*accessTokenTracker = new AccessTokenTracker() {
-                @Override
-                // Will only be called if there is a change in the current AccessTokens
-                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-
-                    Log.d("FB SDK", "InitialAct: oldAccessToken: " + oldAccessToken);
-                    Log.d("FB SDK", "InitialAct: newAccessToken: " + newAccessToken);
-
-                }
-            };
-            */
         }
         else { // first time logging in
             Log.d("FB SDK", "InitialAct: First Time Logging In");
@@ -145,6 +134,7 @@ public class InitialAct extends AppCompatActivity {
             finish();
         }
     }
+
     private void goToLoginAct(){
 
         startActivity(new Intent(this, LoginAct.class));

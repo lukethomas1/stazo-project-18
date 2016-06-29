@@ -146,7 +146,7 @@
                         android:layout_height="match_parent"
                         android:gravity="bottom"
                         android:text="Ongoing"
-                        android:layout_marginLeft="20dip"
+                        android:layout_marginLeft="12dip"
                         android:layout_marginBottom="12dp"
                         android:id="@+id/myEventsTextView"
                         android:textAppearance="@style/ProfileHeaders" />
@@ -220,7 +220,7 @@
                         android:layout_height="match_parent"
                         android:gravity="bottom"
                         android:text="Following"
-                        android:layout_marginLeft="20dip"
+                        android:layout_marginLeft="12dip"
                         android:layout_marginBottom="12dp"
                         android:id="@+id/myTrailsTextView"
                         android:textAppearance="@style/ProfileHeaders" />

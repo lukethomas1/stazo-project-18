@@ -43,4 +43,15 @@
         android:layout_marginBottom="20dp"
         android:id="@+id/welcome_2_image"
         android:src="@drawable/welcome_1_image"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Okay"
+        android:textAllCaps="false"
+        android:textStyle="normal"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:onClick="proceed"/>
 </LinearLayout>
