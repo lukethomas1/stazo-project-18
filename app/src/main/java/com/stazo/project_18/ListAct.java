@@ -18,6 +18,7 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.PropertyPermission;
 
 public class ListAct extends android.support.v4.app.Fragment {
 
@@ -53,11 +54,6 @@ public class ListAct extends android.support.v4.app.Fragment {
                                     new GenericTypeIndicator<HashMap<String, Object>>() {
                                     }));
 
-//                            Iterable<DataSnapshot> attendeesIterable = eventSnapshot.child("attendees").getChildren();
-//                            while(attendeesIterable.iterator().hasNext()) {
-//                                this.attendees.add(attendeesIterable.iterator().next());
-//                            }
-                            // Add event to arraylist
                             eventList.add(e);
 
                         }
@@ -76,6 +72,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                         }
 
                         // Display all the events the were pulled from Firebase
+                        // TODO do not call if list already populated
                         displayEventList();
 
                         // remove this listener
