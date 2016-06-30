@@ -73,8 +73,8 @@ public class MainAct extends AppCompatActivity
 
 
     private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private Toolbar toolbar;
+    public static ViewPager viewPager;
+    public static Toolbar toolbar;
     private ViewPagerAdapter adapter;
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
@@ -133,6 +133,11 @@ public class MainAct extends AppCompatActivity
             @Override
             public void onPageSelected(int pageNumber) {
                 hideInfo();
+
+                if (otherProfileFrag != null) {
+                    getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                    otherProfileStateChange(false);
+                }
 
                 for (int i = 0; i <= 3; i++) {
                     if (i == pageNumber) {

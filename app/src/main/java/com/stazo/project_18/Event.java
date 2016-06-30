@@ -8,9 +8,12 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -353,24 +356,26 @@ public class Event implements Parcelable {
                 endTime + 5*60*1000 > time);
     }
 
-    public String toString() {
-        /*String nameString = name.substring(0, Math.min(10, name.length()));
-        if (name.length() > 10) {
-            nameString += "...";
-        }*/
-        String string = name; /*+ generateSpaces(15 - nameString.length()) +
-                "(" + Event.types[type] + ")" +
-                generateSpaces(15 - Event.types[type].length())*/;
-        return string;
-    }
-    public String generateSpaces(int count) {
-        /*if (count <= 0) {
-            return "";
+    public String getDetails() {
+        Date start = new Date(startTime);
+
+        // convert start time to MM/dd format
+        String startDay = new SimpleDateFormat("EE").format(start);
+
+        // compare today's date
+        if (startDay.equals(new SimpleDateFormat("EE", Locale.US).format(new Date()))) {
+            startDay = "Today";
         }
-        return " " + generateSpaces(count-1);*/
-        return "    ";
+
+        SimpleDateFormat startTimeFormat = new SimpleDateFormat("h:mm a", Locale.US);
+
+        return startDay + " at " + startTimeFormat.format(start);
     }
 
+    public String toString() {
+        String string = name;
+        return string;
+    }
 
 
     /*class ReportEventTask extends AsyncTask<String, Void, String> {
