@@ -370,7 +370,8 @@ public class MainAct extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
         if (eventInfoFrag != null) {
-            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+            //getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+            eventInfoFrag.collapse();
         }
         if (pendingProfile) {
             return;

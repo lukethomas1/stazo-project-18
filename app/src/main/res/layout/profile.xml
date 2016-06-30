@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/profileLayout"
     android:visibility="visible"
-    android:background="@color/colorDividerLight"
+    android:background="@color/colorDividerExtraLight"
     android:layout_marginTop="?android:attr/actionBarSize"
     android:layout_marginBottom="0dp">
 

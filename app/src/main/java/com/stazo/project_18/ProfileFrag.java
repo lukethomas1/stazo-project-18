@@ -296,7 +296,7 @@ public class ProfileFrag extends Fragment {
         });
     }
 
-    private void makePretty(TextView button, ImageView iv, TextView numGoing,
+    private void makePretty(TextView eventName, ImageView iv, TextView numGoing,
                             TextView info, LinearLayout container) {
 
         LinearLayout.LayoutParams containerLP = new LinearLayout.
@@ -322,31 +322,30 @@ public class ProfileFrag extends Fragment {
         ivLP.rightMargin = 20;
         iv.setLayoutParams(ivLP);
 
-        LinearLayout buttonAndInfo = new LinearLayout(getActivity());
+        LinearLayout eventNameAndInfo = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lp = new
                 LinearLayout.LayoutParams(950,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.gravity=Gravity.NO_GRAVITY;
-        buttonAndInfo.setLayoutParams(lp);
-        buttonAndInfo.setOrientation(LinearLayout.VERTICAL);
+        eventNameAndInfo.setLayoutParams(lp);
+        eventNameAndInfo.setOrientation(LinearLayout.VERTICAL);
 
         info.setTextColor(getResources().getColor(R.color.colorDivider));
         info.setTextSize(detailsTextSize);
         info.setPadding(160, 0, 0, 20);
         info.setGravity(Gravity.CENTER_VERTICAL);
 
-        button.setTextSize(eventsTextSize);
-        button.setTypeface(null, Typeface.NORMAL);
-        //button.setTypeface(Typeface.MONOSPACE);
-        button.setAllCaps(false);
-        button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(80, 0, 0, 0);
-        button.setBackground(null);
+        eventName.setTextSize(eventsTextSize);
+        eventName.setTypeface(null, Typeface.NORMAL);
+        eventName.setGravity(Gravity.CENTER_VERTICAL);
+        eventName.setPadding(80, 0, 0, 0);
+        eventName.setAllCaps(false);
+        eventName.setBackground(null);
 
-        buttonAndInfo.addView(button);
-        buttonAndInfo.addView(info);
+        eventNameAndInfo.addView(eventName);
+        eventNameAndInfo.addView(info);
 
-        container.addView(buttonAndInfo);
+        container.addView(eventNameAndInfo);
         container.addView(iv);
         container.addView(numGoing);
     }
@@ -711,7 +710,8 @@ public class ProfileFrag extends Fragment {
                 container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
             }
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                container.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+                container.setBackground(getResources().
+                        getDrawable(R.drawable.border_event_button_pressed));
             }
             return true;
         }

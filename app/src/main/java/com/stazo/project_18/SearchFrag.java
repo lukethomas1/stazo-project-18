@@ -3,6 +3,7 @@ package com.stazo.project_18;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,6 +38,11 @@ import java.util.HashMap;
  */
 public class SearchFrag extends Fragment {
     private static final int MAX_USERS = 3;
+    private static final int MAX_FRIENDS = 5;
+
+    private static final int eventsTextSize = 16;
+    private static final int detailsTextSize = 12;
+
     private View v;
     private Toolbar toolbar;
     private LinearLayout queryButtonLayout, friendsButtonLayout, othersButtonLayout;
@@ -116,7 +123,7 @@ public class SearchFrag extends Fragment {
             String name = friends.get(id);
             if (name.toLowerCase().contains(query.toLowerCase())) {
                 matchFriends.put(id, name);
-                if (matchFriends.size() == MAX_USERS) {
+                if (matchFriends.size() == MAX_FRIENDS) {
                     break;
                 }
             }
@@ -143,24 +150,21 @@ public class SearchFrag extends Fragment {
         for (final String id: matchUsers.keySet()) {
             LinearLayout container = new LinearLayout(getActivity());
             LinearLayout.LayoutParams lp = new LinearLayout.
-                    LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 150);
+                    LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
             //lp.height = 120;
             lp.gravity = Gravity.CENTER;
             container.setLayoutParams(lp);
             container.setOrientation(LinearLayout.HORIZONTAL);
             container.setGravity(Gravity.CENTER);
             container.setBackgroundColor(getResources().getColor(R.color.white));
+            container.setPadding(40,0,0,0);
 
             // set up button
             Button userButton = new Button(getContext());
             userButton.setText(matchUsers.get(id));
-            makePretty(userButton, false);
-            userButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goToOtherProfile(id);
-                }
-            });
+            makePretty(userButton);
+            userButton.setOnTouchListener(new EventButtonOnTouchListener(id, container));
 
             // set up image
 
@@ -173,8 +177,9 @@ public class SearchFrag extends Fragment {
                 unscaledBitmap = ((Project_18) getActivity().getApplication()).getBitmapFromMemCache(id);
 
                 // set iv
-                Bitmap profPicBitmap = Project_18.BITMAP_RESIZER(unscaledBitmap, 110, 110);
+                Bitmap profPicBitmap = Project_18.BITMAP_RESIZER(unscaledBitmap, 140, 140);
                 iv.setImageBitmap(profPicBitmap);
+
                 makePretty(iv);
 
                 // add to layout
@@ -238,16 +243,29 @@ public class SearchFrag extends Fragment {
             if (counter >= 10) {
                 break;
             }
-            Button eventButton = new Button(getContext());
-            eventButton.setText(e.getName());
-            makePretty(eventButton, true);
-            eventButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goToEventInfo(e.getEvent_id());
-                }
-            });
-            queryButtonLayout.addView(eventButton);
+
+            // things to put in
+            TextView eventName = new TextView(getContext());
+            eventName.setText(e.getName());
+            LinearLayout container = new LinearLayout(getActivity());
+            ImageView iv = new ImageView(getActivity());
+            iv.setImageResource(R.drawable.icon_multiple_people);
+            TextView tv = new TextView(getActivity());
+            tv.setText(Integer.toString(e.getAttendees().size()));
+            TextView info = new TextView(getActivity());
+            info.setText(e.getDetails());
+            makePretty(eventName, iv, tv, info, container);
+
+            // listeners
+            EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
+            container.setOnTouchListener(listener);
+            eventName.setOnTouchListener(listener);
+            iv.setOnTouchListener(listener);
+            tv.setOnTouchListener(listener);
+            info.setOnTouchListener(listener);
+
+            // add to layout
+            queryButtonLayout.addView(container);
             counter++;
         }
 
@@ -295,7 +313,7 @@ public class SearchFrag extends Fragment {
                     addBitmapToMemoryCache(id, Bitmap.createBitmap(unscaledBitmap));
 
             // set iv
-            Bitmap profPicBitmap = Project_18.BITMAP_RESIZER(unscaledBitmap, 110, 110);
+            Bitmap profPicBitmap = Project_18.BITMAP_RESIZER(unscaledBitmap, 140, 140);
             iv.setImageBitmap(profPicBitmap);
 
             makePretty(iv);
@@ -303,6 +321,7 @@ public class SearchFrag extends Fragment {
             // add to Layout
             container.addView(iv);
             container.addView(userButton);
+
             if (isFriend) {
                 friendsButtonLayout.addView(container);
             }
@@ -325,30 +344,23 @@ public class SearchFrag extends Fragment {
         }
     }
 
-    private void makePretty(Button button, boolean forEvent){
+    private void makePretty(Button button){
         RelativeLayout.LayoutParams lp;
-        if (forEvent) {
-            lp = new
-                    RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-        }
-        else {
+
             lp = new
                     RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     RelativeLayout.LayoutParams.MATCH_PARENT);
-        }
-        button.setTextSize(12);
+
+        button.setTextSize(16);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
+        button.setTypeface(null, Typeface.NORMAL);
         button.setGravity(Gravity.CENTER_VERTICAL);
         button.setPadding(40, 0, 0, 0);
         button.setLayoutParams(lp);
-        if (forEvent) {
-            button.setBackgroundColor(getResources().getColor(R.color.white));
-        }
-        else {
-            button.setBackground(null);
-        }
+
+        button.setBackground(null);
+
     }
 
     private void makePretty(TextView tv) {
@@ -360,7 +372,14 @@ public class SearchFrag extends Fragment {
     }
 
     private void makePretty(ImageView iv) {
+        LinearLayout.LayoutParams lp = new LinearLayout.
+                LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        lp.bottomMargin = 20;
+        lp.topMargin = 20;
         iv.setBackground(null);
+        iv.setLayoutParams(lp);
         iv.setAdjustViewBounds(true);
     }
 
@@ -370,6 +389,102 @@ public class SearchFrag extends Fragment {
     }
     private void goToOtherProfile(String user_id) {
         ((MainAct) getActivity()).goToOtherProfile(user_id);
+    }
+
+    private void makePretty(TextView eventName, ImageView iv, TextView numGoing,
+                            TextView info, LinearLayout container) {
+
+        LinearLayout.LayoutParams containerLP = new LinearLayout.
+                LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        containerLP.gravity = Gravity.CENTER_VERTICAL;
+        container.setLayoutParams(containerLP);
+        container.setOrientation(LinearLayout.HORIZONTAL);
+        container.setBackgroundColor(getResources().getColor(R.color.white));
+        //container.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        LinearLayout.LayoutParams numGoingLP=new LinearLayout.
+                LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        numGoingLP.gravity = Gravity.CENTER_VERTICAL;
+        numGoingLP.rightMargin = 20;
+        numGoing.setLayoutParams(numGoingLP);
+
+        LinearLayout.LayoutParams ivLP=new LinearLayout.
+                LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        ivLP.gravity=Gravity.CENTER_VERTICAL;
+        ivLP.rightMargin = 20;
+        iv.setLayoutParams(ivLP);
+
+        LinearLayout eventNameAndInfo = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams lp = new
+                LinearLayout.LayoutParams(950,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity=Gravity.NO_GRAVITY;
+        eventNameAndInfo.setLayoutParams(lp);
+        eventNameAndInfo.setOrientation(LinearLayout.VERTICAL);
+
+        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        info.setTextSize(detailsTextSize);
+        info.setPadding(120, 20, 0, 20);
+        info.setGravity(Gravity.CENTER_VERTICAL);
+
+        eventName.setTextSize(eventsTextSize);
+        eventName.setTypeface(null, Typeface.NORMAL);
+        eventName.setGravity(Gravity.CENTER_VERTICAL);
+        eventName.setPadding(40, 15, 0, 0);
+        eventName.setBackground(null);
+        eventName.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+
+        eventNameAndInfo.addView(eventName);
+        eventNameAndInfo.addView(info);
+
+        container.addView(eventNameAndInfo);
+        container.addView(iv);
+        container.addView(numGoing);
+    }
+
+    public class EventButtonOnTouchListener implements View.OnTouchListener {
+
+        private Event e;
+        private String userId;
+        private LinearLayout container;
+
+        public EventButtonOnTouchListener(Event e, LinearLayout container) {
+            this.e = e;
+            this.container = container;
+        }
+
+        public EventButtonOnTouchListener(String userId, LinearLayout container) {
+            this.userId = userId;
+            this.container = container;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (e != null) {
+                    goToEventInfo(e.getEvent_id());
+                }
+                else {
+                    goToOtherProfile(userId);
+                }
+                container.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                container.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                container.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            }
+            return true;
+        }
+
+        public void setE(Event e) {
+            this.e = e;
+        }
     }
 
     @Override
