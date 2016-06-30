@@ -3,28 +3,38 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -32,6 +42,11 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,17 +54,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
 
     private Firebase fb;
-    private String passedEventID;
+
+    public String passedEventID;
     private User currUser;
-    private Event currEvent;
+    public static Event currEvent;
     private View v;
     private View bottomSheet;
     private BottomSheetBehavior mBottomSheetBehavior;
     private User me;
+
+    // Joined scrollview stuff
+    private int SECTION_SIZE = 5;
+    private int page = 0;
+    private InteractiveScrollViewHorizontal scrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,7 +129,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // if the user is already attending an event, change the button text to "Joined"
         if (me.getAttendingEvents().contains(passedEventID)) {
+
             attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            attendButton.setTextColor(getResources().getColor(R.color.colorDivider));
+            attendButton.setTypeface(null, Typeface.ITALIC);
             attendButton.setText("Joined");
         }
 
@@ -131,7 +156,216 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         30,
                         30,
                         true));*/
+        // set scrollView
+        scrollView = (InteractiveScrollViewHorizontal) getActivity().findViewById(R.id.joinedScrollView);
+
+        scrollView.setOnBottomReachedListener(
+                new InteractiveScrollViewHorizontal.OnBottomReachedListener() {
+                    @Override
+                    public void onBottomReached() {
+                        // do something
+                        loadMore();
+                    }
+                }
+        );
     }
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // GATES AND JUSTIN IGNORE CODE BETWEEN HERE...
+
+    private synchronized void loadMore() {
+        page++;
+        generateJoined();
+    }
+
+    private void generateJoined() {
+        //(new UserNamesTask(fb)).execute();
+        final HashMap<String, String> idToName = new HashMap<String, String>();
+        int startingPoint = page * SECTION_SIZE;
+        if (startingPoint >= currEvent.getAttendees().size()) {
+            return;
+        }
+
+        int numToLoad = Math.min(SECTION_SIZE, currEvent.getAttendees().size() - startingPoint);
+
+        for (int i = page * SECTION_SIZE; ; i++) {
+
+            if (numToLoad == 0) {
+                Log.d("sizzle", "currEvent.getAttendees() is " + currEvent.getAttendees().toString());
+                (new SetButtonTask(idToName)).execute();
+                break;
+            }
+
+            final String id = currEvent.getAttendees().get(i);
+
+            idToName.put(id, Project_18.allUsers.get(id));
+            numToLoad--;
+        }
+    }
+
+    private class SetButtonTask extends AsyncTask<Void, Void, Void> {
+
+        private ConcurrentHashMap<String, Bitmap> idToBitmap =
+                new ConcurrentHashMap<String, Bitmap>();
+
+        private HashMap<String, String> userList = new HashMap<String, String>();
+
+        public SetButtonTask(HashMap<String, String> userList) {
+            this.userList = userList;
+        }
+
+        @Override
+        protected Void doInBackground(Void... v) {
+
+            for (String id: userList.keySet()) {
+
+                if (((Project_18) getActivity().getApplication()).
+                        getBitmapFromMemCache(id) != null) {
+                    idToBitmap.put(id, ((Project_18) getActivity().getApplication()).
+                            getBitmapFromMemCache(id));
+                }
+
+                else {
+                    try {
+                        idToBitmap.put(id,
+                                BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                        id +
+                                        "/picture?width=" +
+                                        Project_18.pictureSize)).openConnection().getInputStream()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            // put the same thing in cached
+            for (String id: idToBitmap.keySet()) {
+                Bitmap unscaled = Bitmap.createBitmap(idToBitmap.get(id));
+
+                // cache it
+                ((Project_18) getActivity().getApplication()).addBitmapToMemoryCache(id, unscaled);
+
+                // scale it
+                idToBitmap.put(id, Project_18.BITMAP_RESIZER(unscaled,
+                        140,
+                        140));
+            }
+
+            constructUsersLayout(idToBitmap, userList);
+            scrollView.ready();
+        }
+    }
+
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
+                                                    HashMap<String, String> idToName) {
+
+        for (String id: idToBitmap.keySet()) {
+            addToUsersLayout(idToBitmap.get(id), idToName.get(id), id);
+        }
+    }
+
+    // add button to the usersLayout
+    private void addToUsersLayout(final Bitmap profPicBitmap, final String name,
+                                  final String id) {
+
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                // the button we'll be building
+                final ImageButton b = new ImageButton(getActivity().getApplicationContext());
+
+                b.setImageBitmap(profPicBitmap);
+
+                // touch animation
+                b.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // set filter when pressed
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            b.setColorFilter(new
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                    PorterDuff.Mode.MULTIPLY));
+                        }
+
+                        // handle "click"
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Log.d("myTag", "imageButton pressed");
+                            ((MainAct) getActivity()).goToOtherProfile(id);
+                        }
+
+                        // remove filter on release/cancel
+                        if (event.getAction() == MotionEvent.ACTION_UP ||
+                                event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            b.clearColorFilter();
+                        }
+                        return true;
+                    }
+                });
+
+                // contains button and name of the user
+                LinearLayout buttonLayout = new LinearLayout(getActivity().getApplicationContext());
+
+                // make button look good and add to buttonLayout
+                makePretty(b, name, buttonLayout);
+
+                ((LinearLayout) getActivity().findViewById(R.id.joinedLayout)).addView(buttonLayout);
+            }
+        });
+    }
+
+    private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
+        //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
+
+        b.setBackgroundColor(getResources().getColor(R.color.white));
+
+        LinearLayout.LayoutParams bLP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        bLP.gravity = Gravity.CENTER_HORIZONTAL;
+        b.setPadding(0,0,0,0);
+        b.setLayoutParams(bLP);
+
+        TextView tv = new TextView(getActivity().getApplicationContext());
+        tv.setText(userName.split(" ")[0]);
+
+        makePretty(tv);
+
+        LinearLayout.LayoutParams tLP =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        tLP.gravity = Gravity.CENTER_HORIZONTAL;
+        tv.setLayoutParams(tLP);
+
+        buttonLayout.setOrientation(LinearLayout.VERTICAL);
+        buttonLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        buttonLayout.setPadding(0,0,20,0);
+
+        buttonLayout.addView(b);
+        buttonLayout.addView(tv);
+    }
+
+    private void makePretty(TextView tv) {
+        tv.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+    }
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // ... AND HERE
 
     public void hideEventInfo() {
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -184,6 +418,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 //getActivity().findViewById(R.id.arrowButtonLayout).getHeight() +
                                 getActivity().findViewById(R.id.measurement).getHeight());
 
+                        // set text for number Joined
+                        ((TextView) getActivity().findViewById(R.id.numJoinedText)).
+                                setText("Joined (" + currEvent.getAttendees().size() + ")");
+
+                        // generateJoined scrollview
+                        generateJoined();
+
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
                     }
@@ -204,7 +445,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         TextView eventDescription = (TextView) this.getActivity().findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
-        TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
+        //TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
+        ImageView eventCreatorPic = (ImageView) this.getActivity().findViewById(R.id.creatorPic);
         long startHour = 0;
         long startMinute = 0;
         //End Initialization
@@ -215,7 +457,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         // setting the event info text fields
         eventName.setText(e.getName());
         eventDescription.setText(e.getDescription());
-        eventCreator.setText("Created by: " + u.getName());
+        eventCreator.setText(u.getName());
+
+        // setting the event creator image
+        //Bitmap bmp = getFBPhoto(u.getID());
+        //eventCreatorPic.setImageBitmap(bmp);
 
         // show time fields
         //Initialize time
@@ -225,33 +471,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         Date end = new Date(endTime);
 
         //Set start time
-
-        SimpleDateFormat startDayFormat = new SimpleDateFormat("MM/dd", Locale.US);
-        SimpleDateFormat startTimeFormat = new SimpleDateFormat("HH:mm", Locale.US);
-
-        String startText = "Starting on " + startDayFormat.format(start) +
-                " at " + startTimeFormat.format(start);
+        String startText = buildStartDay(start) + " at " + buildStartTime(start);
         eventDate.setText(startText);
 
         //Set event length
-        long length = endTime - startTime;
-        long eventHour = length/(1000 * 60 * 60);
-        long eventMinute = length/(1000 * 60) - eventHour*60;
+        String durationText = buildDurationTime(startTime, endTime);
+        eventLength.setText(durationText);
 
-        if(eventHour > 0){
-            if(eventHour == 1){
-                eventLength.setText("Duration: " + eventHour + " hour and ");
-            } else {
-                eventLength.setText("Duration: " + eventHour + " hours and ");
-            }
-        }
-        if(eventMinute == 1){
-            eventLength.setText(eventLength.getText() + "" + eventMinute + " minute");
-        }
-        else {
-            eventLength.setText(eventLength.getText() + "" + eventMinute + " minutes");
-        }
-
+        /*
         //Set how long until start time or if started/completed yet
         Calendar curr = Calendar.getInstance();
         long currTime = curr.getTimeInMillis();
@@ -275,6 +502,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         else {
             eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
         }
+        */
+
         v.setVisibility(View.VISIBLE);
     }
 
@@ -292,6 +521,65 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 //        fb.child("CommentDatabase").child(event_ID).setValue(comment);
 //    }
 
+    public String buildStartDay(Date start) {
+        String finalString;
+        String dayString;
+        // get today's day in MM/dd format
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat today = new SimpleDateFormat("MM/dd", Locale.US);
+
+        // convert start time to MM/dd format
+        SimpleDateFormat startDay = new SimpleDateFormat("MM/dd", Locale.US);
+        dayString = startDay.format(start);
+
+        // compare today's date
+        if (dayString.equals(today.format(c.getTime()))) {
+            finalString = "Today";
+        }
+        else {
+            startDay = new SimpleDateFormat("MMM dd", Locale.US);
+            finalString = startDay.format(start);
+        }
+        return finalString;
+    }
+
+    public String buildStartTime(Date start) {
+        SimpleDateFormat startTime = new SimpleDateFormat("h:mm a", Locale.US);
+        return startTime.format(start);
+    }
+
+    public String buildDurationTime(long startTime, long endTime) {
+        String finalString = "";
+        long length = endTime - startTime;
+        long eventHour = length/(1000 * 60 * 60);
+        long eventMin = length/(1000 * 60) - eventHour*60;
+
+        if (eventHour > 0) {
+            finalString = finalString + eventHour;
+            if (eventHour == 1) {
+                finalString = finalString + " hr";
+            }
+            else {
+                finalString = finalString + " hrs";
+            }
+            Log.d("EventInfoFrag", "eventMin: " + eventMin);
+            if (eventMin > 0) {
+                finalString = finalString + " and " + eventMin;
+            }
+        }
+        if (eventMin > 0) {
+            if (eventMin == 1) {
+                finalString = finalString + " min";
+            }
+            else {
+                finalString = finalString + " mins";
+            }
+        }
+
+        return finalString;
+    }
+
+
     public void viewCommentClick() {
         //open comment view window
         ViewCommentFrag viewFrag = new ViewCommentFrag();
@@ -306,14 +594,27 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             me.unattendEvent(currEvent.getEvent_id(), fb);
 
             b.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            b.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            b.setTypeface(null, Typeface.BOLD);
             b.setText("Join");
 
         } else {
             me.attendEvent(currEvent.getEvent_id(), fb);
             b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            b.setTextColor(getResources().getColor(R.color.colorDivider));
+            b.setTypeface(null, Typeface.ITALIC);
             b.setText("Joined");
 
         }
+    }
+
+    // pull and set event creator picture
+    private void setCreatorPicture() {
+
+    }
+
+    public String getPassedEventID() {
+        return passedEventID;
     }
 
 

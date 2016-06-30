@@ -44,7 +44,7 @@ public class Project_18 extends Application {
     public void setMe(User user) { me = user; }
     public static final String pictureSize = "250";
     public static final String pictureSizeHigh = "400";
-    public static final String pictureSizeLow = "100";
+    public static final String pictureSizeLow = "140";
 
     final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
     final int cacheSize = maxMemory / 8;

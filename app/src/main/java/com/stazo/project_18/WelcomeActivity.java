@@ -99,11 +99,16 @@ public class WelcomeActivity extends FragmentActivity {
         setSharedPreferences();
         finish();
     }
+
     // save the userId to sharedPreferences so they don't have to relog
     private void setSharedPreferences() {
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("beenWelcomed", true);
         editor.apply();
+    }
+
+    public void proceed(View v) {
+        mPager.setCurrentItem(mPager.getCurrentItem() + 1);
     }
 }

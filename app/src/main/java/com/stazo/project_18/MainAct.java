@@ -8,7 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.AvoidXfermode;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -62,6 +65,13 @@ import java.util.List;
  */
 public class MainAct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+
+    private static final int MAP_POS = 0;
+    private static final int LIST_POS = 1;
+    private static final int PROF_POS = 3;
+    private static final int NOT_POS = 2;
+
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Toolbar toolbar;
@@ -70,9 +80,10 @@ public class MainAct extends AppCompatActivity
     private SearchFrag searchFrag;
     private SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    private static EventInfoFrag eventInfoFrag;
+    public static EventInfoFrag eventInfoFrag;
     private static ProfileFrag otherProfileFrag;
     private static ProfileFrag newOtherProfileFrag;
+    private static boolean pendingProfile = false;
 
     private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
@@ -113,21 +124,22 @@ public class MainAct extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_actionbar_map2);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_actionbar_browse2);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_actionbar_head);
+        tabLayout.getTabAt(MAP_POS).setIcon(R.drawable.ic_actionbar_map2);
+        tabLayout.getTabAt(LIST_POS).setIcon(R.drawable.ic_actionbar_browse2);
+        tabLayout.getTabAt(PROF_POS).setIcon(R.drawable.ic_actionbar_head);
+        tabLayout.getTabAt(NOT_POS).setIcon(R.drawable.ic_actionbar_notif);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int pageNumber) {
                 hideInfo();
-                for (int i = 0; i <= 2; i++) {
+
+                for (int i = 0; i <= 3; i++) {
                     if (i == pageNumber) {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
                                 getResources().getColor(R.color.colorPrimary),
                                 PorterDuff.Mode.SRC_IN);
-                    }
-                    else {
+                    } else {
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
                                 getResources().getColor(R.color.colorDivider),
                                 PorterDuff.Mode.SRC_IN);
@@ -146,13 +158,16 @@ public class MainAct extends AppCompatActivity
             }
         });
 
-        tabLayout.getTabAt(0).getIcon().setColorFilter(
+        tabLayout.getTabAt(MAP_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorPrimary),
                 PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(1).getIcon().setColorFilter(
+        tabLayout.getTabAt(LIST_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(2).getIcon().setColorFilter(
+        tabLayout.getTabAt(PROF_POS).getIcon().setColorFilter(
+                getResources().getColor(R.color.colorDivider),
+                PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(NOT_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
 
@@ -161,46 +176,11 @@ public class MainAct extends AppCompatActivity
 
         // Are we going straight to browse?
         if (getIntent().hasExtra("toBrowse")) {
-            viewPager.setCurrentItem(1);
+            viewPager.setCurrentItem(LIST_POS);
         }
 
-//        // NOTIFICATIONS
-//
-//        User currentUser = ((Project_18) this.getApplication()).getMe();
-//        Firebase fbRef = ((Project_18) this.getApplication()).getFB();
-//        fbRef.child("Notifications").push();
-//
-//
-//        // Make sure user is in notification database
-//        if(fbRef.child("Notifications") != null) {
-//            if (fbRef.child("Notifications").child(currentUser.getID()) != null) {
-//                fbRef.child("Notifications").child(currentUser.getID()).addListenerForSingleValueEvent(
-//                        new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                //notify = (boolean) dataSnapshot.child("Notify").getValue();
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(FirebaseError firebaseError) {
-//                            }
-//                        }
-//                );
-//            }
-//
-//            // If that user isn't in the notification database, add it in
-//            else {
-//
-//            }
-//        }
-//
-//        // TODO we need some sort of red exclamation mark or something to indicate this
-//        if(notify == true) {
-//            // TODODODODODODODODODODODODODODODODODODODODODODODOODODODODODODODODO
-//        }
-
         if (getIntent().hasExtra("toProfile")) {
-            viewPager.setCurrentItem(2);
+            viewPager.setCurrentItem(PROF_POS);
         }
     }
 
@@ -227,15 +207,6 @@ public class MainAct extends AppCompatActivity
 
                 // FOR MENU ITEMS NOT IN THE 3 DOTS
                 switch (item.getItemId()) {
-                    /*case R.id.action_profile:
-                        goToAddTrails();
-                        Log.d("myTag", "you hit action profile");
-                        return true;*/
-                    /*case R.id.action_map:
-                        SearchFrag searchFrag = new SearchFrag();
-                        FragmentTransaction transaction =
-                                act.getSupportFragmentManager().beginTransaction();
-                        transaction.add(R.id.show_searchFrag, searchFrag).addToBackStack("SearchFrag").commit();*/
 
                 }
                 return true;
@@ -280,6 +251,7 @@ public class MainAct extends AppCompatActivity
                         }
                         if (otherProfileFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                            otherProfileStateChange(false);
                         }
                         searched = false;
                         searchFrag = new SearchFrag();
@@ -395,6 +367,11 @@ public class MainAct extends AppCompatActivity
         if (eventInfoFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
+        if (pendingProfile) {
+            return;
+        }
+        pendingProfile = true;
+        searchView.setIconified(true);
         searchView.clearFocus();
         newOtherProfileFrag = new ProfileFrag();
         newOtherProfileFrag.setInfo(userId, false);
@@ -404,10 +381,12 @@ public class MainAct extends AppCompatActivity
     }
 
     public void updateOtherProfileFrag() {
+        otherProfileStateChange(true);
         if (otherProfileFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
         }
         otherProfileFrag = newOtherProfileFrag;
+        pendingProfile = false;
     }
 
     public void goToAddTrails(View v) {
@@ -477,6 +456,11 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails() {
         startActivity(new Intent(this, AddTrailsAct.class));
     }
+    public void goToInviteUsers(View v) {
+        InviteUsersAct.event = EventInfoFrag.currEvent;
+        startActivity(new Intent(this, InviteUsersAct.class));
+    }
+
 
     public void goToEventInfo(String event_id) {
         if (searchFrag != null) {
@@ -487,11 +471,14 @@ public class MainAct extends AppCompatActivity
         }
 
         if (otherProfileFrag != null) {
+            otherProfileStateChange(false);
             //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
             getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
         }
 
         simulateClick(event_id);
+
+        searchView.setIconified(true);
 
         searchView.clearFocus();
 
@@ -503,7 +490,7 @@ public class MainAct extends AppCompatActivity
 
     }
     public void simulateClick(String event_id) {
-        ((MapFrag) tabFragments.get(0)).simulateOnClick(event_id);
+        ((MapFrag) tabFragments.get(MAP_POS)).simulateOnClick(event_id);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -524,10 +511,10 @@ public class MainAct extends AppCompatActivity
         //preemptive set user_id and isMe
         profileFrag.setInfo(Project_18.me.getID(), true);
 
-        adapter.addFragment(mapFrag, ""); //map
-        adapter.addFragment(listAct, ""); //explore
-        adapter.addFragment(profileFrag, ""); //profile
-        adapter.addFragment(notFrag, ""); //notifications
+        adapter.addFragment(mapFrag, "");       // MAP_POS = 0
+        adapter.addFragment(listAct, "");       // LIST_POS = 1
+        adapter.addFragment(notFrag, "");       // NOT_POS = 2
+        adapter.addFragment(profileFrag, "");   // PROF_POS = 3
 
         viewPager.setAdapter(adapter);
     }
@@ -612,12 +599,43 @@ public class MainAct extends AppCompatActivity
         }
     }
 
-    private void goToInitialAct(){
+    private void goToInitialAct() {
         startActivity(new Intent(this, InitialAct.class));
+    }
+    public void otherProfileStateChange(boolean entering) {
+        if (entering) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
+        else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        }
+    }
+
+    public static Intent getOpenFacebookIntent(Context context, String userId) {
+
+        try {
+            context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
+
+            String facebookScheme = "fb://page/" + userId;
+
+            return new Intent(Intent.ACTION_VIEW, Uri.parse(facebookScheme));
+        } catch (Exception e) {
+            // Cache and Open a url in browser
+            String facebookProfileUri = "https://www.facebook.com/jasonbao";
+            return new Intent(Intent.ACTION_VIEW, Uri.parse(facebookProfileUri));
+        }
+    }
+
+    public void goToFacebookProfile(View v) {
+        Intent facebookIntent = getOpenFacebookIntent(this, Project_18.me.getID());
+        startActivity(facebookIntent);
     }
 
     @Override
     public void onBackPressed() {
+        otherProfileStateChange(false);
         System.out.println("test");
         if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
             getSupportFragmentManager().popBackStackImmediate();

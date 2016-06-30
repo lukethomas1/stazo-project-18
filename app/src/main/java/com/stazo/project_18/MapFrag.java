@@ -3,6 +3,7 @@ package com.stazo.project_18;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -86,6 +87,7 @@ public class MapFrag extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         seekbar = (SeekBar) getView().findViewById(R.id.timeSeekBar);
         timeTextView = (TextView) getView().findViewById(R.id.timeTextView);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -311,6 +313,11 @@ public class MapFrag extends Fragment {
                                 displayEvent(e);
                             }
 
+                            // if we have an eventInfo open, go to that
+                            if (MainAct.eventInfoFrag != null) {
+                                simulateOnClick(MainAct.eventInfoFrag.getPassedEventID());
+                            }
+
                             // remove this listener
                             fb.child("Events").removeEventListener(this);
                         }
@@ -446,8 +453,17 @@ public class MapFrag extends Fragment {
                     drawableID = R.drawable.marker;
             }
 
+
+
             // Set icon
             //markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
+
+            Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
+                            R.drawable.flaticon_marker),
+                    100,
+                    100);
+            markerOpts.icon(BitmapDescriptorFactory.
+                    fromBitmap(markerBitmap));
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);
