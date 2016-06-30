@@ -648,7 +648,7 @@ public class ProfileFrag extends Fragment {
                     setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
             ((Button) v.findViewById(R.id.followButton)).
                     setTextColor(getResources().getColor(R.color.colorDivider));
-            ((Button) v.findViewById(R.id.followButton)).setTypeface(null, Typeface.BOLD_ITALIC);
+            ((Button) v.findViewById(R.id.followButton)).setTypeface(null, Typeface.ITALIC);
         }
 
         else {
