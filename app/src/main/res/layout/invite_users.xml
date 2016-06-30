@@ -9,11 +9,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dip"
-        android:text="Follow a user to receive\nupdates on their events"
+        android:text="Invite people to"
         android:textSize="20dip"
         android:textColor="@color/colorTextPrimary"
         android:gravity="center"
-        android:id="@+id/textView2"
+        android:id="@+id/inviteUsersToText"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="Event Name"
+        android:textSize="30dip"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:id="@+id/eventNameText"
         android:layout_gravity="center_horizontal" />
 
     <LinearLayout
@@ -31,8 +42,8 @@
 
         <com.stazo.project_18.InteractiveScrollView
             android:layout_width="match_parent"
-            android:layout_height="370dp"
-            android:id="@+id/addTrailsScrollView"
+            android:layout_height="320dp"
+            android:id="@+id/inviteUsersScrollView"
             android:layout_marginTop="30dp">
 
             <LinearLayout
@@ -56,7 +67,7 @@
             android:textAllCaps="false"
             android:background="@color/colorAccent"
             android:id="@+id/doneButton"
-            android:onClick="goToProfile"/>
+            android:onClick="inviteUsers"/>
 
     </LinearLayout>
 

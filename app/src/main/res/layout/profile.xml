@@ -117,6 +117,7 @@
                     android:text="Follow"
                     android:textSize="10dp"
                     android:textAllCaps="false"
+                    android:textStyle="normal"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="15dp"
                     android:gravity="center"

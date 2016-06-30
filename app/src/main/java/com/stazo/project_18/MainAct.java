@@ -456,6 +456,11 @@ public class MainAct extends AppCompatActivity
     public void goToAddTrails() {
         startActivity(new Intent(this, AddTrailsAct.class));
     }
+    public void goToInviteUsers(View v) {
+        InviteUsersAct.event = EventInfoFrag.currEvent;
+        startActivity(new Intent(this, InviteUsersAct.class));
+    }
+
 
     public void goToEventInfo(String event_id) {
         if (searchFrag != null) {

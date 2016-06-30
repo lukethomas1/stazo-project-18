@@ -3,12 +3,18 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
@@ -17,15 +23,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -45,6 +54,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
 
@@ -52,11 +62,16 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
     public String passedEventID;
     private User currUser;
-    private Event currEvent;
+    public static Event currEvent;
     private View v;
     private View bottomSheet;
     private BottomSheetBehavior mBottomSheetBehavior;
     private User me;
+
+    // Joined scrollview stuff
+    private int SECTION_SIZE = 5;
+    private int page = 0;
+    private InteractiveScrollViewHorizontal scrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -114,7 +129,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // if the user is already attending an event, change the button text to "Joined"
         if (me.getAttendingEvents().contains(passedEventID)) {
+
             attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            attendButton.setTextColor(getResources().getColor(R.color.colorDivider));
+            attendButton.setTypeface(null, Typeface.ITALIC);
             attendButton.setText("Joined");
         }
 
@@ -138,7 +156,216 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         30,
                         30,
                         true));*/
+        // set scrollView
+        scrollView = (InteractiveScrollViewHorizontal) getActivity().findViewById(R.id.joinedScrollView);
+
+        scrollView.setOnBottomReachedListener(
+                new InteractiveScrollViewHorizontal.OnBottomReachedListener() {
+                    @Override
+                    public void onBottomReached() {
+                        // do something
+                        loadMore();
+                    }
+                }
+        );
     }
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // GATES AND JUSTIN IGNORE CODE BETWEEN HERE...
+
+    private synchronized void loadMore() {
+        page++;
+        generateJoined();
+    }
+
+    private void generateJoined() {
+        //(new UserNamesTask(fb)).execute();
+        final HashMap<String, String> idToName = new HashMap<String, String>();
+        int startingPoint = page * SECTION_SIZE;
+        if (startingPoint >= currEvent.getAttendees().size()) {
+            return;
+        }
+
+        int numToLoad = Math.min(SECTION_SIZE, currEvent.getAttendees().size() - startingPoint);
+
+        for (int i = page * SECTION_SIZE; ; i++) {
+
+            if (numToLoad == 0) {
+                Log.d("sizzle", "currEvent.getAttendees() is " + currEvent.getAttendees().toString());
+                (new SetButtonTask(idToName)).execute();
+                break;
+            }
+
+            final String id = currEvent.getAttendees().get(i);
+
+            idToName.put(id, Project_18.allUsers.get(id));
+            numToLoad--;
+        }
+    }
+
+    private class SetButtonTask extends AsyncTask<Void, Void, Void> {
+
+        private ConcurrentHashMap<String, Bitmap> idToBitmap =
+                new ConcurrentHashMap<String, Bitmap>();
+
+        private HashMap<String, String> userList = new HashMap<String, String>();
+
+        public SetButtonTask(HashMap<String, String> userList) {
+            this.userList = userList;
+        }
+
+        @Override
+        protected Void doInBackground(Void... v) {
+
+            for (String id: userList.keySet()) {
+
+                if (((Project_18) getActivity().getApplication()).
+                        getBitmapFromMemCache(id) != null) {
+                    idToBitmap.put(id, ((Project_18) getActivity().getApplication()).
+                            getBitmapFromMemCache(id));
+                }
+
+                else {
+                    try {
+                        idToBitmap.put(id,
+                                BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                        id +
+                                        "/picture?width=" +
+                                        Project_18.pictureSize)).openConnection().getInputStream()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            // put the same thing in cached
+            for (String id: idToBitmap.keySet()) {
+                Bitmap unscaled = Bitmap.createBitmap(idToBitmap.get(id));
+
+                // cache it
+                ((Project_18) getActivity().getApplication()).addBitmapToMemoryCache(id, unscaled);
+
+                // scale it
+                idToBitmap.put(id, Project_18.BITMAP_RESIZER(unscaled,
+                        140,
+                        140));
+            }
+
+            constructUsersLayout(idToBitmap, userList);
+            scrollView.ready();
+        }
+    }
+
+    private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
+                                                    HashMap<String, String> idToName) {
+
+        for (String id: idToBitmap.keySet()) {
+            addToUsersLayout(idToBitmap.get(id), idToName.get(id), id);
+        }
+    }
+
+    // add button to the usersLayout
+    private void addToUsersLayout(final Bitmap profPicBitmap, final String name,
+                                  final String id) {
+
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                // the button we'll be building
+                final ImageButton b = new ImageButton(getActivity().getApplicationContext());
+
+                b.setImageBitmap(profPicBitmap);
+
+                // touch animation
+                b.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // set filter when pressed
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            b.setColorFilter(new
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                    PorterDuff.Mode.MULTIPLY));
+                        }
+
+                        // handle "click"
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Log.d("myTag", "imageButton pressed");
+                            ((MainAct) getActivity()).goToOtherProfile(id);
+                        }
+
+                        // remove filter on release/cancel
+                        if (event.getAction() == MotionEvent.ACTION_UP ||
+                                event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            b.clearColorFilter();
+                        }
+                        return true;
+                    }
+                });
+
+                // contains button and name of the user
+                LinearLayout buttonLayout = new LinearLayout(getActivity().getApplicationContext());
+
+                // make button look good and add to buttonLayout
+                makePretty(b, name, buttonLayout);
+
+                ((LinearLayout) getActivity().findViewById(R.id.joinedLayout)).addView(buttonLayout);
+            }
+        });
+    }
+
+    private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
+        //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
+
+        b.setBackgroundColor(getResources().getColor(R.color.white));
+
+        LinearLayout.LayoutParams bLP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        bLP.gravity = Gravity.CENTER_HORIZONTAL;
+        b.setPadding(0,0,0,0);
+        b.setLayoutParams(bLP);
+
+        TextView tv = new TextView(getActivity().getApplicationContext());
+        tv.setText(userName.split(" ")[0]);
+
+        makePretty(tv);
+
+        LinearLayout.LayoutParams tLP =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        tLP.gravity = Gravity.CENTER_HORIZONTAL;
+        tv.setLayoutParams(tLP);
+
+        buttonLayout.setOrientation(LinearLayout.VERTICAL);
+        buttonLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        buttonLayout.setPadding(0,0,20,0);
+
+        buttonLayout.addView(b);
+        buttonLayout.addView(tv);
+    }
+
+    private void makePretty(TextView tv) {
+        tv.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+    }
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // ... AND HERE
 
     public void hideEventInfo() {
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -190,6 +417,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         mBottomSheetBehavior.setPeekHeight(
                                 //getActivity().findViewById(R.id.arrowButtonLayout).getHeight() +
                                 getActivity().findViewById(R.id.measurement).getHeight());
+
+                        // set text for number Joined
+                        ((TextView) getActivity().findViewById(R.id.numJoinedText)).
+                                setText("Joined (" + currEvent.getAttendees().size() + ")");
+
+                        // generateJoined scrollview
+                        generateJoined();
 
                         // remove this listener
                         fb.child("Events").child(event_id).removeEventListener(this);
@@ -360,11 +594,15 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             me.unattendEvent(currEvent.getEvent_id(), fb);
 
             b.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            b.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            b.setTypeface(null, Typeface.BOLD);
             b.setText("Join");
 
         } else {
             me.attendEvent(currEvent.getEvent_id(), fb);
             b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            b.setTextColor(getResources().getColor(R.color.colorDivider));
+            b.setTypeface(null, Typeface.ITALIC);
             b.setText("Joined");
 
         }
