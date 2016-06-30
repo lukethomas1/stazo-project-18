@@ -59,7 +59,9 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                 }
             });
 
-            LL1.addView(butt);
+            if(LL1 != null) {
+                LL1.addView(butt);
+            }
         }
     }
 

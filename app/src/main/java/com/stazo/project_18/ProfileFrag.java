@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,7 +61,9 @@ public class ProfileFrag extends Fragment {
     /* for grabbing info from firebase */
     private Integer currentCategoryTrail;
     private String currentUserTrail;
-    private static int eventsTextSize = 12;
+    private static int eventsTextSize = 16;
+    private static int detailsTextSize = 12;
+
     private ArrayList<Event> myEvents =  new ArrayList<Event>();
     private ArrayList<Event> attendingEvents = new ArrayList<Event>();
     private Toolbar toolbar;
@@ -110,6 +113,8 @@ public class ProfileFrag extends Fragment {
         );
 
         grabInfo();
+
+
     }
 
     // gets everything going
@@ -134,7 +139,14 @@ public class ProfileFrag extends Fragment {
             v.findViewById(R.id.goToCreateEventButton).setVisibility(View.GONE);
             v.findViewById(R.id.goToAddTrailsButton).setVisibility(View.GONE);
 
+            // set top margin
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)
+                    (v.findViewById(R.id.profileLayout)).getLayoutParams();
+            lp.topMargin = MainAct.viewPager.getTop();
+
+            v.findViewById(R.id.profileLayout).setLayoutParams(lp);
         }
+
         else {
             // hide not-me-specific info
             v.findViewById(R.id.followButton).setVisibility(View.GONE);
@@ -233,40 +245,45 @@ public class ProfileFrag extends Fragment {
 
                 /* display myEvents */
                 for (final Event e : myEvents) {
-                    Button eventButton = new Button(getContext());
-                    eventButton.setText(e.toString()); // + "Host");
-                    LinearLayout container = new LinearLayout(getActivity());
-                    ImageView iv = new ImageView(getActivity());
-                    iv.setImageResource(R.drawable.icon_multiple_people);
-                    TextView tv = new TextView(getActivity());
-                    tv.setText(Integer.toString(e.getAttendees().size()));
-                    makePretty(eventButton, iv, tv, container);
-                    eventButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            goToEventInfo(e.getEvent_id());
-                        }
-                    });
-                    eventsLayout.addView(container);
-                }
-
-                /* display attendingEvents */
-                for (final Event e : attendingEvents) {
-                    Button eventButton = new Button(getContext());
+                    TextView eventButton = new Button(getContext());
                     eventButton.setText(e.toString()); // + "Attending");
                     LinearLayout container = new LinearLayout(getActivity());
                     ImageView iv = new ImageView(getActivity());
                     iv.setImageResource(R.drawable.icon_multiple_people);
                     TextView tv = new TextView(getActivity());
                     tv.setText(Integer.toString(e.getAttendees().size()));
-                    makePretty(eventButton, iv, tv, container);
-                    eventButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            goToEventInfo(e.getEvent_id());
+                    TextView info = new TextView(getActivity());
+                    info.setText(e.getDetails());
+                    makePretty(eventButton, iv, tv, info, container);
+                    EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
+                    container.setOnTouchListener(listener);
+                    eventButton.setOnTouchListener(listener);
+                    iv.setOnTouchListener(listener);
+                    tv.setOnTouchListener(listener);
+                    info.setOnTouchListener(listener);
 
-                        }
-                    });
+                    eventsLayout.addView(container);
+                }
+
+                /* display attendingEvents */
+                for (final Event e : attendingEvents) {
+                    TextView eventButton = new Button(getContext());
+                    eventButton.setText(e.toString()); // + "Attending");
+                    LinearLayout container = new LinearLayout(getActivity());
+                    ImageView iv = new ImageView(getActivity());
+                    iv.setImageResource(R.drawable.icon_multiple_people);
+                    TextView tv = new TextView(getActivity());
+                    tv.setText(Integer.toString(e.getAttendees().size()));
+                    TextView info = new TextView(getActivity());
+                    info.setText(e.getDetails());
+                    makePretty(eventButton, iv, tv, info, container);
+                    EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
+                    container.setOnTouchListener(listener);
+                    eventButton.setOnTouchListener(listener);
+                    iv.setOnTouchListener(listener);
+                    tv.setOnTouchListener(listener);
+                    info.setOnTouchListener(listener);
+
                     eventsLayout.addView(container);
                 }
 
@@ -277,10 +294,10 @@ public class ProfileFrag extends Fragment {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-
     }
 
-    private void makePretty(Button button, ImageView iv, TextView numGoing, LinearLayout container) {
+    private void makePretty(TextView button, ImageView iv, TextView numGoing,
+                            TextView info, LinearLayout container) {
 
         LinearLayout.LayoutParams containerLP = new LinearLayout.
                 LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -305,20 +322,31 @@ public class ProfileFrag extends Fragment {
         ivLP.rightMargin = 20;
         iv.setLayoutParams(ivLP);
 
+        LinearLayout buttonAndInfo = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lp = new
                 LinearLayout.LayoutParams(950,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity=Gravity.NO_GRAVITY;
+        buttonAndInfo.setLayoutParams(lp);
+        buttonAndInfo.setOrientation(LinearLayout.VERTICAL);
+
+        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        info.setTextSize(detailsTextSize);
+        info.setPadding(160, 0, 0, 20);
+        info.setGravity(Gravity.CENTER_VERTICAL);
+
         button.setTextSize(eventsTextSize);
         button.setTypeface(null, Typeface.NORMAL);
         //button.setTypeface(Typeface.MONOSPACE);
         button.setAllCaps(false);
         button.setGravity(Gravity.CENTER_VERTICAL);
         button.setPadding(80, 0, 0, 0);
-        button.setLayoutParams(lp);
         button.setBackground(null);
 
+        buttonAndInfo.addView(button);
+        buttonAndInfo.addView(info);
 
-        container.addView(button);
+        container.addView(buttonAndInfo);
         container.addView(iv);
         container.addView(numGoing);
     }
@@ -501,7 +529,7 @@ public class ProfileFrag extends Fragment {
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             if (!nullButtons.contains(b)) {
                                 b.setColorFilter(new
-                                        PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                        PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
                                         PorterDuff.Mode.MULTIPLY));
                             }
                             heldDown = true;
@@ -662,7 +690,35 @@ public class ProfileFrag extends Fragment {
         }
     }
 
+    public class EventButtonOnTouchListener implements View.OnTouchListener {
 
+        private Event e;
+        private LinearLayout container;
 
+        public EventButtonOnTouchListener(Event e, LinearLayout container) {
+            this.e = e;
+            this.container = container;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                goToEventInfo(e.getEvent_id());
+                container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                container.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            }
+            return true;
+        }
+
+        public void setE(Event e) {
+            this.e = e;
+        }
+    }
 
 }

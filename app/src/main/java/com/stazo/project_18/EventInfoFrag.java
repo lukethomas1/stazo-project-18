@@ -67,6 +67,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private View bottomSheet;
     private BottomSheetBehavior mBottomSheetBehavior;
     private User me;
+    private Bitmap picBitmap;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
@@ -460,8 +461,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         eventCreator.setText(u.getName());
 
         // setting the event creator image
-        //Bitmap bmp = getFBPhoto(u.getID());
-        //eventCreatorPic.setImageBitmap(bmp);
+        getFBPhoto(u.getID());
 
         // show time fields
         //Initialize time
@@ -505,6 +505,43 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         */
 
         v.setVisibility(View.VISIBLE);
+    }
+
+    public void getFBPhoto(final String id) {
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    URL imageURL = new URL("https://graph.facebook.com/" +
+                            id + "/picture?width=" + Project_18.pictureSize);
+                    Log.d("EventInfoFrag", "https://graph.facebook.com/" +
+                            id + "/picture?width=" + Project_18.pictureSize);
+                    picBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                final ImageView iv = (ImageView) v.findViewById(R.id.creatorPic);
+
+                iv.post(new Runnable() {
+                    public void run() {
+
+                        // cache image
+                        ((Project_18) getActivity().getApplication()).
+                                addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
+
+                        //picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
+                        iv.setImageBitmap(picBitmap);
+                        iv.setVisibility(View.VISIBLE);
+
+                        // unhide-layout
+                        (v.findViewById(R.id.creatorPic)).setVisibility(View.VISIBLE);
+                    }
+
+                });
+
+            }
+        }).start();
     }
 
     public void writeCommentClick() {
