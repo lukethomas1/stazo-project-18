@@ -3,6 +3,7 @@ package com.stazo.project_18;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -452,8 +453,17 @@ public class MapFrag extends Fragment {
                     drawableID = R.drawable.marker;
             }
 
+
+
             // Set icon
             //markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
+
+            Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
+                            R.drawable.flaticon_marker),
+                    100,
+                    100);
+            markerOpts.icon(BitmapDescriptorFactory.
+                    fromBitmap(markerBitmap));
 
             // Add the marker to the map
             Marker marker = map.addMarker(markerOpts);

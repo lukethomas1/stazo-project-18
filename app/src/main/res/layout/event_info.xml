@@ -23,23 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="toggleState">
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_event_info_bar"
-                android:id="@+id/arrowButtonLayout"
-                android:visibility="invisible">
-
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:id="@+id/upArrow"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@null"
-                    android:onClick="toggleState"/>
-            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,7 +61,7 @@
                             android:onClick="toggleState" />
 
                         <Button
-                            android:layout_width="80dp"
+                            android:layout_width="60dp"
                             android:layout_height="30dp"
                             android:textSize="12dp"
                             android:text="Join"
@@ -88,6 +71,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="2dp"
+                            android:layout_marginLeft="10dp"
                             android:gravity="center"/>
 
                     </LinearLayout>
@@ -152,7 +136,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Length"
-                            android:textColor="@color/colorAccent"
+                            android:textColor="@color/colorAccentDark"
                             android:id="@+id/eventLength"
                             android:textAppearance="@style/EventInfoBody"
                             android:onClick="toggleState"/>
@@ -168,14 +152,6 @@
                     android:id="@+id/breakLine"
                     android:onClick="toggleState"/>
 
-                <!--<TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Event Clock"
-                    android:id="@+id/eventClock"
-                    android:textSize="40dp" />-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -230,6 +206,50 @@
                         android:onClick="toggleState" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Joined"
+                        android:textSize="18sp"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textAllCaps="false"
+                        android:onClick="toggleState"
+                        android:id="@+id/numJoinedText"/>
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
+                        android:text="Invite"
+                        android:textAllCaps="false"
+                        android:textSize="10sp"
+                        android:background="@color/colorAccent"
+                        android:onClick="goToInviteUsers"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <com.stazo.project_18.InteractiveScrollViewHorizontal
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/joinedScrollView"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/joinedLayout"
+                        android:layout_marginTop="0dip"
+                        android:layout_marginBottom="0dip">
+                    </LinearLayout>
+
+                </com.stazo.project_18.InteractiveScrollViewHorizontal>
 
                 <View
                     android:layout_width="match_parent"
