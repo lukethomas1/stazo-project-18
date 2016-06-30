@@ -441,7 +441,7 @@ public class CreateEventAct extends AppCompatActivity {
 
     public void pushMainImage(Bitmap image) {
         Firebase fb = ((Project_18) getApplication()).getFB();
-        
+
     }
 
     private void setPhoto() {
