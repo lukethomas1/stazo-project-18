@@ -1,8 +1,11 @@
 package com.stazo.project_18;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -404,6 +408,44 @@ public class CreateEventAct extends AppCompatActivity {
         i.putExtra("toProfile", true);
         startActivity(i);
         finish();
+    }
+
+
+    // Camera stuff
+
+    private void takePhoto() {
+        //just in case the phone doesn't have a camera
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, 1);
+            }
+        }
+        else {
+            //tell user u can't or smth
+            System.out.println("no camera! :(");
+        }
+    }
+
+    // On intent return with bitmap in data
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+//            ImageView mainImageView = (ImageView) this.findViewById(R.id.mainImageView);
+//            mainImageView.setImageBitmap(imageBitmap);
+        }
+    }
+
+    public void pushMainImage(Bitmap image) {
+        Firebase fb = ((Project_18) getApplication()).getFB();
+        
+    }
+
+    private void setPhoto() {
+
     }
 
     @Override
