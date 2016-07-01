@@ -46,6 +46,11 @@ public class LocSelectAct extends FragmentActivity
     private Marker eventMarker;
     private GoogleApiClient mGoogleApiClient;
 
+    // Initial Camera Position
+    private float zoom = 15;
+    private float tilt = 0;
+    private float bearing = 0;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,14 +94,12 @@ public class LocSelectAct extends FragmentActivity
         map = googleMap;
         map.setOnMapLongClickListener(this);
 
-        // Initial Camera Position
-        float zoom = 15;
-        float tilt = 0;
-        float bearing = 0;
 
         CameraPosition camPos = new CameraPosition(MapFrag.REVELLE, zoom, tilt, bearing);
 
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        //zoom in and out
+        map.getUiSettings().setZoomControlsEnabled(true);
     }
 
     // Add a marker where a long click occurs
@@ -169,8 +172,8 @@ public class LocSelectAct extends FragmentActivity
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
 
+                //setting location
                 LatLng point = place.getLatLng();
                 // Set the marker's location
                 MarkerOptions markerOpts = new MarkerOptions();
@@ -187,6 +190,10 @@ public class LocSelectAct extends FragmentActivity
 
                 // Add marker to map
                 eventMarker = map.addMarker(markerOpts);
+                
+                //moving camera to default
+                CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
             }
 
             @Override
