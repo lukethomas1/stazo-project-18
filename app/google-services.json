@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "44493715679",
+    "firebase_url": "https://stazodatabase.firebaseio.com",
+    "project_id": "stazodatabase",
+    "storage_bucket": "stazodatabase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44493715679:android:5235214c8c1e91e5",
+        "android_client_info": {
+          "package_name": "com.stazo.project_18"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44493715679-i9rqbci7ftgjkupf5a6pvenhq9gfm308.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3jZ7bld2G3j58jAyzLKGXPczp4SRXeyY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
