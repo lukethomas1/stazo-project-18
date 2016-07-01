@@ -58,7 +58,6 @@ public class User {
         this.bio = bio;
 
         fb.child("Users").child(getID()).child("bio").setValue(bio);
-
     }
 
     public String filterBio(String bio) {
@@ -128,13 +127,13 @@ public class User {
         return true;
     }
 
-
     public boolean addTrail(Firebase fb, String user_id) {
         if (userTrails.contains(user_id)) {
             return false;
         }
         userTrails.add(user_id);
         fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
+        addToFollowers(fb, user_id, ID);
         return true;
     }
 
@@ -144,10 +143,11 @@ public class User {
         }
         userTrails.remove(user_id);
         fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
+        removeFromFollowers(fb, user_id, ID);
         return true;
     }
 
-    public void addFollower (Firebase fb, String user_id) {
+    public void addFollower(Firebase fb, String user_id) {
         userFollowers.add(user_id);
         fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
     }
@@ -155,6 +155,18 @@ public class User {
     public void removeFollower(Firebase fb, String user_id) {
         userFollowers.remove(user_id);
         fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
+    }
+
+    public void addToFollowers(Firebase fb, String receivingFollowID, final String givingFollowID) {
+        // increment reports
+        fb.child("Users").child(receivingFollowID).
+                child("userFollowers").child(givingFollowID).setValue(true);
+    }
+
+    public void removeFromFollowers(Firebase fb, String receivingFollowID, final String givingFollowID) {
+        // remove reports
+        fb.child("Users").child(receivingFollowID).
+                child("userFollowers").child(givingFollowID).setValue(null);
     }
 
     /**
@@ -166,8 +178,6 @@ public class User {
     public User(String user_id) {
         this.ID = user_id;
         this.name = "";
-
-
     }
 
     // for new users
@@ -198,6 +208,8 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
+                Log.d("else", "ELSE CASE myEvents");
+
                 for (String val : ((HashMap<String, String>) userMap.get("myEvents")).values()) {
                     myEvents.add(val);
                 }
@@ -215,6 +227,7 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
+                Log.d("else", "ELSE CASE reportedEvents");
                 for (String val : ((HashMap<String, String>) userMap.get("reportedEvents")).values()) {
                     reportedEvents.add(val);
                 }
@@ -232,6 +245,8 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
+                Log.d("else", "ELSE CASE attendingEvents");
+
                 for (String val : ((HashMap<String, String>) userMap.get("attendingEvents")).values()) {
                     attendingEvents.add(val);
                 }
@@ -249,7 +264,7 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                for (Long val : ((ArrayList<Long>) userMap.get("categoryTrails"))) {
+                for (Long val : ((HashMap<String, Long>) userMap.get("categoryTrails")).values()) {
                     categoryTrails.add(val.intValue());
                 }
             }
@@ -264,9 +279,11 @@ public class User {
                 }
             }
 
+
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                for (String val : ((ArrayList<String>) userMap.get("userTrails"))) {
+                Log.d("else", "ELSE CASE + userTrails");
+                for (String val : ((HashMap<String, String>) userMap.get("userTrails")).values()) {
                     userTrails.add(val);
                 }
             }
@@ -285,7 +302,7 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                for (String val : ((ArrayList<String>) userMap.get("userFollowers"))) {
+                for (String val : ((HashMap<String, Boolean>) userMap.get("userFollowers")).keySet()) {
                     userFollowers.add(val);
                 }
             }

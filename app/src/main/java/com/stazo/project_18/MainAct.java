@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -34,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -66,15 +69,15 @@ import java.util.List;
 public class MainAct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    private static final int MAP_POS = 0;
-    private static final int LIST_POS = 1;
-    private static final int PROF_POS = 3;
-    private static final int NOT_POS = 2;
+    public static final int MAP_POS = 0;
+    public static final int LIST_POS = 1;
+    public static final int PROF_POS = 3;
+    public static final int NOT_POS = 2;
 
 
     private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private Toolbar toolbar;
+    public static ViewPager viewPager;
+    public static Toolbar toolbar;
     private ViewPagerAdapter adapter;
     private FragmentTransaction transaction;
     private SearchFrag searchFrag;
@@ -109,6 +112,8 @@ public class MainAct extends AppCompatActivity
         //moved toolbar to separate method
         setToolbar();
 
+        setStatusBarColor();
+
         //initialize all to be in filtered
         for (int index = 0; index < Event.types.length; index++) {
             Project_18.filteredCategories.add(new Integer(index));
@@ -133,6 +138,11 @@ public class MainAct extends AppCompatActivity
             @Override
             public void onPageSelected(int pageNumber) {
                 hideInfo();
+
+                if (otherProfileFrag != null) {
+                    getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
+                    otherProfileStateChange(false);
+                }
 
                 for (int i = 0; i <= 3; i++) {
                     if (i == pageNumber) {
@@ -365,7 +375,8 @@ public class MainAct extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
         if (eventInfoFrag != null) {
-            getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+            //getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
+            eventInfoFrag.collapse();
         }
         if (pendingProfile) {
             return;
@@ -633,9 +644,30 @@ public class MainAct extends AppCompatActivity
         startActivity(facebookIntent);
     }
 
+    @TargetApi(21)
+    private void setStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window window = this.getWindow();
+
+            // clear FLAG_TRANSLUCENT_STATUS flag:
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+            // finally change the color
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
+
     @Override
     public void onBackPressed() {
         otherProfileStateChange(false);
+        if (searchFrag != null) {
+            searchView.setIconified(true);
+            searchView.clearFocus();
+        }
+
         System.out.println("test");
         if (getSupportFragmentManager().findFragmentByTag("EventInfoFrag") != null) {
             getSupportFragmentManager().popBackStackImmediate();

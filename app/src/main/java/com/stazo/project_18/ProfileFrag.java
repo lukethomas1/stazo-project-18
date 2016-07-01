@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,22 +61,29 @@ public class ProfileFrag extends Fragment {
     /* for grabbing info from firebase */
     private Integer currentCategoryTrail;
     private String currentUserTrail;
-    private static int eventsTextSize = 12;
+    private static int eventsTextSize = 16;
+    private static int detailsTextSize = 12;
+
     private ArrayList<Event> myEvents =  new ArrayList<Event>();
     private ArrayList<Event> attendingEvents = new ArrayList<Event>();
     private Toolbar toolbar;
     private ArrayList<Integer> categoryTrails = new ArrayList<Integer>();
     private ArrayList<String> userTrails = new ArrayList<String>();
+    private ArrayList<String> userFollowers = new ArrayList<String>();
     private Bitmap profPicBitmap;
     //private LinearLayout currentRow;
     private LinearLayout trailsLayout;
+    private LinearLayout followersLayout;
     //private int rowIndex = 0;
     private float startTime = System.nanoTime();
     private boolean heldDown = false;
     private ArrayList<ImageButton> nullButtons = new ArrayList<ImageButton>();
     private int SECTION_SIZE = 5;
     private int page = 0;
-    private InteractiveScrollViewHorizontal scrollView;
+    private int page2 = 0;
+    private InteractiveScrollViewHorizontal scrollViewTrails;
+    private InteractiveScrollViewHorizontal scrollViewFollowers;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,24 +100,38 @@ public class ProfileFrag extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         trailsLayout = (LinearLayout) v.findViewById(R.id.trailsLayout);
+        followersLayout = (LinearLayout) v.findViewById(R.id.followersLayout);
 
         // start by hiding everything
         v.findViewById(R.id.profileLayout).setVisibility(View.INVISIBLE);
 
         // set scrollView
-        scrollView = (InteractiveScrollViewHorizontal) getActivity().findViewById(R.id.trailsScrollView);
+        scrollViewTrails = (InteractiveScrollViewHorizontal)
+                getActivity().findViewById(R.id.trailsScrollView);
+        scrollViewFollowers = (InteractiveScrollViewHorizontal)
+                getActivity().findViewById(R.id.followersScrollView);
 
-        scrollView.setOnBottomReachedListener(
+        scrollViewTrails.setOnBottomReachedListener(
                 new InteractiveScrollViewHorizontal.OnBottomReachedListener() {
                     @Override
                     public void onBottomReached() {
                         // do something
-                        loadMore();
+                        loadMoreTrails();
+                    }
+                }
+        );
+        scrollViewFollowers.setOnBottomReachedListener(
+                new InteractiveScrollViewHorizontal.OnBottomReachedListener() {
+                    @Override
+                    public void onBottomReached() {
+                        // do something
+                        loadMoreFollowers();
                     }
                 }
         );
 
         grabInfo();
+
     }
 
     // gets everything going
@@ -118,9 +140,13 @@ public class ProfileFrag extends Fragment {
         this.isMe = isMe;
     }
 
-    private synchronized void loadMore() {
+    private synchronized void loadMoreTrails() {
         page++;
         generateTrails();
+    }
+    private synchronized void loadMoreFollowers() {
+        page++;
+        generateFollowers();
     }
 
     // does everything that requires data (Firebase, userId, isMe)
@@ -134,7 +160,14 @@ public class ProfileFrag extends Fragment {
             v.findViewById(R.id.goToCreateEventButton).setVisibility(View.GONE);
             v.findViewById(R.id.goToAddTrailsButton).setVisibility(View.GONE);
 
+            // set top margin
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)
+                    (v.findViewById(R.id.profileLayout)).getLayoutParams();
+            lp.topMargin = MainAct.viewPager.getTop();
+
+            v.findViewById(R.id.profileLayout).setLayoutParams(lp);
         }
+
         else {
             // hide not-me-specific info
             v.findViewById(R.id.followButton).setVisibility(View.GONE);
@@ -163,6 +196,8 @@ public class ProfileFrag extends Fragment {
                         // display trails
                         userTrails = user.getUserTrails();
 
+                        userFollowers = user.getUserFollowers();
+
                         ((TextView) v.findViewById(R.id.myTrailsTextView)).
                                 setText("Following (" + userTrails.size() + ")");
 
@@ -183,6 +218,25 @@ public class ProfileFrag extends Fragment {
 
                             // get pictures and display imageButtons
                             generateTrails();
+                        }
+
+                        // empty case
+                        if (userFollowers.isEmpty()) {
+                            // set title to be visible
+                            v.findViewById(R.id.followersFullLayout).setVisibility(View.VISIBLE);
+                            if (!isMe) {
+                                ((TextView) v.findViewById(R.id.emptyFollowersText)).setText(
+                                        user.getName() + " has no followers.");
+                            }
+                        }
+                        // not empty
+                        else {
+                            // remove empty textview
+                            ((LinearLayout) v.findViewById(R.id.followersFullLayout)).removeView(
+                                    v.findViewById(R.id.emptyFollowersTextContainer));
+
+                            // get pictures and display imageButtons
+                            generateFollowers();
                         }
 
                         // set profile picture
@@ -222,7 +276,11 @@ public class ProfileFrag extends Fragment {
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
 
-                if (myEvents.isEmpty() && attendingEvents.isEmpty()) {
+                ArrayList<Event> allEvents = new ArrayList<Event>();
+                allEvents.addAll(myEvents);
+                allEvents.addAll(attendingEvents);
+
+                if (allEvents.isEmpty()) {
                     if (!isMe) {
                         ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
                                 user.getName() + " has no ongoing events");
@@ -232,41 +290,24 @@ public class ProfileFrag extends Fragment {
                 }
 
                 /* display myEvents */
-                for (final Event e : myEvents) {
-                    Button eventButton = new Button(getContext());
-                    eventButton.setText(e.toString()); // + "Host");
-                    LinearLayout container = new LinearLayout(getActivity());
-                    ImageView iv = new ImageView(getActivity());
-                    iv.setImageResource(R.drawable.icon_multiple_people);
-                    TextView tv = new TextView(getActivity());
-                    tv.setText(Integer.toString(e.getAttendees().size()));
-                    makePretty(eventButton, iv, tv, container);
-                    eventButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            goToEventInfo(e.getEvent_id());
-                        }
-                    });
-                    eventsLayout.addView(container);
-                }
-
-                /* display attendingEvents */
-                for (final Event e : attendingEvents) {
-                    Button eventButton = new Button(getContext());
+                for (final Event e : allEvents) {
+                    TextView eventButton = new Button(getContext());
                     eventButton.setText(e.toString()); // + "Attending");
                     LinearLayout container = new LinearLayout(getActivity());
                     ImageView iv = new ImageView(getActivity());
                     iv.setImageResource(R.drawable.icon_multiple_people);
                     TextView tv = new TextView(getActivity());
                     tv.setText(Integer.toString(e.getAttendees().size()));
-                    makePretty(eventButton, iv, tv, container);
-                    eventButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            goToEventInfo(e.getEvent_id());
+                    TextView info = new TextView(getActivity());
+                    info.setText(e.getDetails());
+                    makePretty(eventButton, iv, tv, info, container);
+                    EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
+                    container.setOnTouchListener(listener);
+                    eventButton.setOnTouchListener(listener);
+                    iv.setOnTouchListener(listener);
+                    tv.setOnTouchListener(listener);
+                    info.setOnTouchListener(listener);
 
-                        }
-                    });
                     eventsLayout.addView(container);
                 }
 
@@ -277,10 +318,10 @@ public class ProfileFrag extends Fragment {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-
     }
 
-    private void makePretty(Button button, ImageView iv, TextView numGoing, LinearLayout container) {
+    private void makePretty(TextView eventName, ImageView iv, TextView numGoing,
+                            TextView info, LinearLayout container) {
 
         LinearLayout.LayoutParams containerLP = new LinearLayout.
                 LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -305,20 +346,30 @@ public class ProfileFrag extends Fragment {
         ivLP.rightMargin = 20;
         iv.setLayoutParams(ivLP);
 
+        LinearLayout eventNameAndInfo = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lp = new
                 LinearLayout.LayoutParams(950,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        button.setTextSize(eventsTextSize);
-        button.setTypeface(null, Typeface.NORMAL);
-        //button.setTypeface(Typeface.MONOSPACE);
-        button.setAllCaps(false);
-        button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(80, 0, 0, 0);
-        button.setLayoutParams(lp);
-        button.setBackground(null);
+        lp.gravity=Gravity.NO_GRAVITY;
+        eventNameAndInfo.setLayoutParams(lp);
+        eventNameAndInfo.setOrientation(LinearLayout.VERTICAL);
 
+        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        info.setTextSize(detailsTextSize);
+        info.setPadding(160, 0, 0, 20);
+        info.setGravity(Gravity.CENTER_VERTICAL);
 
-        container.addView(button);
+        eventName.setTextSize(eventsTextSize);
+        eventName.setTypeface(null, Typeface.NORMAL);
+        eventName.setGravity(Gravity.CENTER_VERTICAL);
+        eventName.setPadding(80, 0, 0, 0);
+        eventName.setAllCaps(false);
+        eventName.setBackground(null);
+
+        eventNameAndInfo.addView(eventName);
+        eventNameAndInfo.addView(info);
+
+        container.addView(eventNameAndInfo);
         container.addView(iv);
         container.addView(numGoing);
     }
@@ -386,11 +437,34 @@ public class ProfileFrag extends Fragment {
 
         for (int i = page * SECTION_SIZE; ; i++) {
             if (numToLoad == 0) {
-                (new SetButtonTask(idToName)).execute();
+                (new SetButtonTask(idToName, true)).execute();
                 break;
             }
 
             final String id = userTrails.get(i);
+
+            idToName.put(id, Project_18.allUsers.get(id));
+            numToLoad--;
+        }
+    }
+
+    private void generateFollowers() {
+        //(new UserNamesTask(fb)).execute();
+        final HashMap<String, String> idToName = new HashMap<String, String>();
+        int startingPoint = page2 * SECTION_SIZE;
+        if (startingPoint >= userFollowers.size()) {
+            return;
+        }
+
+        int numToLoad = Math.min(SECTION_SIZE, userFollowers.size() - startingPoint);
+
+        for (int i = page2 * SECTION_SIZE; ; i++) {
+            if (numToLoad == 0) {
+                (new SetButtonTask(idToName, false)).execute();
+                break;
+            }
+
+            final String id = userFollowers.get(i);
 
             idToName.put(id, Project_18.allUsers.get(id));
             numToLoad--;
@@ -403,9 +477,12 @@ public class ProfileFrag extends Fragment {
                 new ConcurrentHashMap<String, Bitmap>();
 
         private HashMap<String, String> userList = new HashMap<String, String>();
+        private boolean forTrails;
 
-        public SetButtonTask(HashMap<String, String> userList) {
+        public SetButtonTask(HashMap<String, String> userList,
+                             boolean forTrails) {
             this.userList = userList;
+            this.forTrails = forTrails;
         }
 
         @Override
@@ -451,36 +528,28 @@ public class ProfileFrag extends Fragment {
                         180));
             }
 
-            constructUsersLayout(idToBitmap, userList);
-            scrollView.ready();
+            constructUsersLayout(idToBitmap, userList, forTrails);
+            if (forTrails) {
+                scrollViewTrails.ready();
+            }
+            else {
+                scrollViewFollowers.ready();
+            }
         }
     }
 
     private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
-                                                    HashMap<String, String> idToName) {
-
-        //trailsLayout.removeAllViews();
-
-        // make the first row
-        //currentRow = new LinearLayout(getActivity().getApplicationContext());
-
-        // make it pretty
-        //makePretty(currentRow);
-
-        // add the first row
-        //trailsLayout.addView(currentRow);
-
-        // limits 3 buttons per row
-        //rowIndex = 0;
+                                                    HashMap<String, String> idToName,
+                                                    boolean forTrails) {
 
         for (String id: idToBitmap.keySet()) {
-            addToUsersLayout(idToBitmap.get(id), idToName.get(id), id);
+            addToUsersLayout(idToBitmap.get(id), idToName.get(id), id, forTrails);
         }
     }
 
     // add button to the usersLayout
     private void addToUsersLayout(final Bitmap profPicBitmap, final String name,
-                                  final String id) {
+                                  final String id, final boolean forTrails) {
 
 
         getActivity().runOnUiThread(new Runnable() {
@@ -492,93 +561,130 @@ public class ProfileFrag extends Fragment {
 
                 b.setImageBitmap(profPicBitmap);
 
-                // touch animation
-                b.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
+                // FOR TRAILS
 
-                        // set filter when pressed
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            if (!nullButtons.contains(b)) {
+                if (forTrails) {
+                    // touch animation
+                    b.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+
+                            // set filter when pressed
+                            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                if (!nullButtons.contains(b)) {
+                                    b.setColorFilter(new
+                                            PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
+                                            PorterDuff.Mode.MULTIPLY));
+                                }
+                                heldDown = true;
+                                startTime = System.nanoTime();
+                            }
+
+                            // remove filter on release/cancel
+                            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                                if (!nullButtons.contains(b)) {
+                                    b.clearColorFilter();
+                                }
+                                heldDown = false;
+                            }
+
+                            // handle "release"
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+
+                                if (!nullButtons.contains(b)) {
+                                    b.clearColorFilter();
+                                }
+
+                                // click case
+                                if (!(heldDown && System.nanoTime() - startTime > 0.5 * (1000000000))) {
+                                    ((MainAct) getActivity()).goToOtherProfile(id);
+                                }
+
+                                // held case
+                                else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int dialogId) {
+                                            // User clicked OK button
+
+                                            if (((Project_18) getActivity().getApplication()).me.
+                                                    removeTrail(fb, id)) {
+
+                                                Toast.makeText(getActivity().getApplicationContext(),
+                                                        "Unfollowed " + name.split(" ")[0],
+                                                        Toast.LENGTH_SHORT).show();
+                                                b.setColorFilter(
+                                                        getResources().getColor(R.color.colorDividerDark),
+                                                        PorterDuff.Mode.MULTIPLY);
+                                                nullButtons.add(b);
+
+                                            } else {
+                                                Toast.makeText(getActivity().getApplicationContext(),
+                                                        "Already unfollowed " + name.split(" ")[0],
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int dialogId) {
+                                            // User cancelled the dialog
+                                        }
+                                    });
+                                    builder.setTitle("Unfollow " + name.split(" ")[0] + "?");
+                                    (builder.create()).show();
+                                }
+
+                                heldDown = false;
+                            }
+
+                            return true;
+                        }
+                    });
+                }
+
+                // FOR FOLLOWERS
+                else {
+                    // touch animation
+                    b.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+
+                            // set filter when pressed
+                            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                                 b.setColorFilter(new
-                                        PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                        PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
                                         PorterDuff.Mode.MULTIPLY));
+
                             }
-                            heldDown = true;
-                            startTime = System.nanoTime();
-                        }
 
-                        // remove filter on release/cancel
-                        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                            if (!nullButtons.contains(b)) {
-                                b.clearColorFilter();
-                            }
-                            heldDown = false;
-                        }
-
-                        // handle "release"
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-
-                            if (!nullButtons.contains(b)) {
+                            // remove filter on release/cancel
+                            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
                                 b.clearColorFilter();
                             }
 
-                            // click case
-                            if (!(heldDown && System.nanoTime() - startTime > 0.5 * (1000000000))) {
+                            // handle "click"
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+
+                                b.clearColorFilter();
                                 ((MainAct) getActivity()).goToOtherProfile(id);
                             }
 
-                            // held case
-                            else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int dialogId) {
-                                        // User clicked OK button
-
-                                        if (((Project_18) getActivity().getApplication()).me.
-                                                removeTrail(fb, id)) {
-
-                                            Toast.makeText(getActivity().getApplicationContext(),
-                                                    "Unfollowed " + name.split(" ")[0],
-                                                    Toast.LENGTH_SHORT).show();
-                                            b.setColorFilter(
-                                                    getResources().getColor(R.color.colorDividerDark),
-                                                    PorterDuff.Mode.MULTIPLY);
-                                            nullButtons.add(b);
-
-                                        } else {
-                                            Toast.makeText(getActivity().getApplicationContext(),
-                                                    "Already unfollowed " + name.split(" ")[0],
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int dialogId) {
-                                        // User cancelled the dialog
-                                    }
-                                });
-                                builder.setTitle("Unfollow " + name.split(" ")[0] + "?");
-                                (builder.create()).show();
-                            }
-
-                            heldDown = false;
+                            return true;
                         }
-
-                        return true;
-                    }
-                });
-
+                    });
+                }
                 // contains button and name of the user
                 LinearLayout buttonLayout = new LinearLayout(getActivity().getApplicationContext());
 
                 // make button look good and add to buttonLayout
                 makePretty(b, name, buttonLayout);
 
-                trailsLayout.addView(buttonLayout);
-
-                // set title to be visible
-                v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
+                if (forTrails) {
+                    trailsLayout.addView(buttonLayout);
+                }
+                else {
+                    followersLayout.addView(buttonLayout);
+                }
             }
         });
     }
@@ -620,18 +726,16 @@ public class ProfileFrag extends Fragment {
     public void followUser() {
         Firebase fb = Project_18.getFB();
         if (Project_18.me.getUserTrails().contains(user_ID)) {
-            Log.d("flw", "userTrails did contain id, now removing");
             Project_18.me.removeTrail(fb, user_ID);
-            User otherUser = new User(user_ID);
-            otherUser.removeFollower(fb, Project_18.me.getID());
+            //User otherUser = new User(user_ID);
+            //otherUser.removeFollower(fb, Project_18.me.getID());
 
             setFollowButton(false);
         }
         else {
-            Log.d("flw", "userTrails did not contain id, now adding");
             Project_18.me.addTrail(fb, user_ID);
-            User otherUser = new User(user_ID);
-            otherUser.addFollower(fb, Project_18.me.getID());
+            //User otherUser = new User(user_ID);
+            //otherUser.addFollower(fb, Project_18.me.getID());
 
             Notification not = new Notification(Project_18.me.getID(), Project_18.me.getName(), 0);
             not.pushToFirebase(fb, user_ID);
@@ -662,7 +766,36 @@ public class ProfileFrag extends Fragment {
         }
     }
 
+    public class EventButtonOnTouchListener implements View.OnTouchListener {
 
+        private Event e;
+        private LinearLayout container;
 
+        public EventButtonOnTouchListener(Event e, LinearLayout container) {
+            this.e = e;
+            this.container = container;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                goToEventInfo(e.getEvent_id());
+                container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                container.setBackground(getResources().
+                        getDrawable(R.drawable.border_event_button_pressed));
+            }
+            return true;
+        }
+
+        public void setE(Event e) {
+            this.e = e;
+        }
+    }
 
 }

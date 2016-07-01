@@ -194,6 +194,7 @@ public class ViewCommentFrag extends Fragment{
                     }
                 });
 
+        //set up write comment
         final Button submitComment = (Button) v.findViewById(R.id.submitComment);
         submitComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,6 +202,7 @@ public class ViewCommentFrag extends Fragment{
                 submitComment();
             }
         });
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         return v;
     }

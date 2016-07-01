@@ -178,6 +178,25 @@
                     android:id="@+id/EndTime" />
             </LinearLayout>
 
+            <!--Button for adding photo-->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add image"
+                android:id="@+id/AddImage"
+                />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Extra button to select a photo through library"
+                android:id="@+id/AddImageFromLibrary"/>
+
+            <!--Image View for when photo is added -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/MainImageView"/>
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
