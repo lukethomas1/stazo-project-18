@@ -48,7 +48,7 @@ public class Notification {
 
         // TYPE 2: <user_who_followed_me> is now following you.     onClickID = userId
         if(type == 2) {
-            message = name + " is now follwing you.";
+            message = name + " is now following you.";
         }
     }
 
@@ -91,7 +91,7 @@ public class Notification {
         Random rand = new Random();
         for (int i = 0; i < 10; i++) {
             String id = "" + (char) (65 + rand.nextInt(26));
-            notifID = id;
+            notifID += id;
         }
     }
 

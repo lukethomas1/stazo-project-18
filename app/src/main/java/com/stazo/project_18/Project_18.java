@@ -14,6 +14,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class Project_18 extends Application {
     private static final String fbString = "https://stazo-project-18.firebaseio.com/";
     //private static final String fbString = "https://project-18-isaac.firebaseio.com/";
+    private static final String fbStorageString = "gs://stazodatabase.appspot.com";
 
     // Popularity thresholds
     public static final int POP_THRESH1 = 10;
@@ -40,6 +43,9 @@ public class Project_18 extends Application {
     public static long relevantTime = System.currentTimeMillis();
     public static String relevantText = new String();
     public static Firebase getFB() { return new Firebase(fbString);}
+    public static StorageReference getFBStorage() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        return storage.getReferenceFromUrl(fbStorageString);}
     public User getMe() { return me; }
     public void setMe(User user) { me = user; }
     public static final String pictureSize = "250";

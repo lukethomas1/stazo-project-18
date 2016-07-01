@@ -1,5 +1,6 @@
 package com.stazo.project_18;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
@@ -7,6 +8,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by isaacwang on 6/27/16.
@@ -15,30 +17,34 @@ import java.util.ArrayList;
 // TESTING PURPOSES ONLY
 public class NotificationHandler {
 
-    private ArrayList<Notification> notifs = new ArrayList<>();
+    private ArrayList<Notification2> notifs = new ArrayList<>();
 
     public NotificationHandler() {}
 
-    public void generateNotifications() {
-        Notification notif0 = new Notification("<num_users> commented on <event_name>",
-                false, "yooGPHLVQTAYM", 0); // RICK ORD LEGACY
-        Notification notif1 = new Notification("<user_i_am_following> is hosting <event_name> " +
-                "at <location> in <hours>", false, "yooKPGCHIFIGR", 1); //SMASH
-        Notification notif2 = new Notification("<user_who_followed_me> is now following you.",
-                false, "1196215920412322", 2); //ISAAC
+    public void generateNotifications(Context context) {
+        ArrayList<String> userNames = new ArrayList<String>();
+        userNames.add("Jason");
+        userNames.add("Steve");
+        userNames.add("Mark");
+        String eventId = "yooGPHLVQTAYM";
+        NotificationCommentEvent nce = new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
+                userNames, eventId, "Legacy Speech");
+        NotificationFriendHost nfe = new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST,
+                "Bob the host", "yooKPGCHIFIGR", "Smash Bros Party", "Today at 7:00pm");
+        NotificationNewFollow nnf = new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW,
+                "Melissa the follower", "1177156832304841");
+        NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
+                "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
+
         ArrayList<String> usersWhoCare = new ArrayList<>();
+        usersWhoCare.add("1184188798300386"); // Brian
 
-        usersWhoCare.add("1184188798300386"); // BRIAN
-        notif0.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);*/
 
-        usersWhoCare.add("1177156832304841"); // ANSEL and BRIAN
-        notif1.pushToFirebase(Project_18.getFB(), usersWhoCare);
-
-        usersWhoCare.clear();
-        usersWhoCare.add("1138117392898486"); // MATTHEW
-        usersWhoCare.add("1131880253542315"); // LUKE
-        usersWhoCare.add("1184188798300386"); // BRIAN AGAIN
-        notif2.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        pullNotifications();
     }
 
     // PULL AND PRINT BRIAN'S NOTIFICATIONS
@@ -47,14 +53,22 @@ public class NotificationHandler {
                 child("1184188798300386").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot notifSnap: dataSnapshot.getChildren()) {
-                    Notification notif = notifSnap.getValue(Notification.class);
-                    notifs.add(notif);
+                for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
+                    HashMap<String, Object> notifMap = (HashMap<String, Object>) notifSnap.getValue();
+                    if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_COMMENT_EVENT) {
+                        notifs.add(new NotificationCommentEvent(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_FRIEND_HOST) {
+                        notifs.add(new NotificationFriendHost(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_NEW_FOLLOW) {
+                        notifs.add(new NotificationNewFollow(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_JOINED_EVENT) {
+                        notifs.add(new NotificationJoinedEvent(notifMap));
+                    }
                 }
-                for (int i = 0; i < notifs.size(); i++) {
-                    Log.d("Notifications", "Notification is: " + notifs.get(i).getNotifID());
+
+                for (Notification2 notif: notifs) {
+                    Log.d("notifs", notif.generateMessage());
                 }
-                testViewed();
             }
 
             @Override
@@ -62,11 +76,6 @@ public class NotificationHandler {
 
             }
         });
-    }
-
-    public void testViewed() {
-        setToViewed(notifs.get(0));
-        setToViewed(notifs.get(2));
     }
 
     public void setToViewed(final Notification notif) {

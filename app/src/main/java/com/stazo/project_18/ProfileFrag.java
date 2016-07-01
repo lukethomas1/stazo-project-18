@@ -63,6 +63,8 @@ public class ProfileFrag extends Fragment {
     private String currentUserTrail;
     private static int eventsTextSize = 16;
     private static int detailsTextSize = 12;
+    private static int followingImageSize = 120;
+    private static int followersImageSize = 120;
 
     private ArrayList<Event> myEvents =  new ArrayList<Event>();
     private ArrayList<Event> attendingEvents = new ArrayList<Event>();
@@ -78,7 +80,7 @@ public class ProfileFrag extends Fragment {
     private float startTime = System.nanoTime();
     private boolean heldDown = false;
     private ArrayList<ImageButton> nullButtons = new ArrayList<ImageButton>();
-    private int SECTION_SIZE = 5;
+    private int SECTION_SIZE = 8;
     private int page = 0;
     private int page2 = 0;
     private InteractiveScrollViewHorizontal scrollViewTrails;
@@ -200,6 +202,8 @@ public class ProfileFrag extends Fragment {
 
                         ((TextView) v.findViewById(R.id.myTrailsTextView)).
                                 setText("Following (" + userTrails.size() + ")");
+                        ((TextView) v.findViewById(R.id.myFollowersTextView)).
+                                setText("Followers (" + userFollowers.size() + ")");
 
                         // empty case
                         if (userTrails.isEmpty()) {
@@ -207,7 +211,7 @@ public class ProfileFrag extends Fragment {
                             v.findViewById(R.id.trailsFullLayout).setVisibility(View.VISIBLE);
                             if (!isMe) {
                                 ((TextView) v.findViewById(R.id.emptyTrailsText)).setText(
-                                        user.getName() + " isn't following anyone.");
+                                        user.getName().split(" ")[0] + " isn't following anyone.");
                             }
                         }
                         // not empty
@@ -226,7 +230,7 @@ public class ProfileFrag extends Fragment {
                             v.findViewById(R.id.followersFullLayout).setVisibility(View.VISIBLE);
                             if (!isMe) {
                                 ((TextView) v.findViewById(R.id.emptyFollowersText)).setText(
-                                        user.getName() + " has no followers.");
+                                        user.getName().split(" ")[0] + " has no followers.");
                             }
                         }
                         // not empty
@@ -283,7 +287,7 @@ public class ProfileFrag extends Fragment {
                 if (allEvents.isEmpty()) {
                     if (!isMe) {
                         ((TextView) v.findViewById(R.id.emptyHostingText)).setText(
-                                user.getName() + " has no ongoing events");
+                                user.getName().split(" ")[0] + " has no ongoing events");
                     }
                 } else {
                     v.findViewById(R.id.emptyHostingTextContainer).setVisibility(View.GONE);
@@ -299,7 +303,7 @@ public class ProfileFrag extends Fragment {
                     TextView tv = new TextView(getActivity());
                     tv.setText(Integer.toString(e.getAttendees().size()));
                     TextView info = new TextView(getActivity());
-                    info.setText(e.getDetails());
+                    info.setText(e.getTimeString(false));
                     makePretty(eventButton, iv, tv, info, container);
                     EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
                     container.setOnTouchListener(listener);
@@ -338,6 +342,7 @@ public class ProfileFrag extends Fragment {
         numGoingLP.gravity = Gravity.CENTER_VERTICAL;
         numGoingLP.rightMargin = 20;
         numGoing.setLayoutParams(numGoingLP);
+        numGoing.setTextColor(getResources().getColor(R.color.colorAccentDark));
 
         LinearLayout.LayoutParams ivLP=new LinearLayout.
                 LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -345,6 +350,7 @@ public class ProfileFrag extends Fragment {
         ivLP.gravity=Gravity.CENTER_VERTICAL;
         ivLP.rightMargin = 20;
         iv.setLayoutParams(ivLP);
+        iv.setColorFilter(getResources().getColor(R.color.colorTextPrimary));
 
         LinearLayout eventNameAndInfo = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lp = new
@@ -524,8 +530,8 @@ public class ProfileFrag extends Fragment {
 
                 // scale it
                 idToBitmap.put(id, Project_18.BITMAP_RESIZER(unscaled,
-                        180,
-                        180));
+                        followersImageSize,
+                        followersImageSize));
             }
 
             constructUsersLayout(idToBitmap, userList, forTrails);
@@ -692,7 +698,7 @@ public class ProfileFrag extends Fragment {
     private void makePretty(ImageButton b, String userName, LinearLayout buttonLayout) {
         //b.setBackground(getResources().getDrawable(R.drawable.button_pressed));
         b.setBackgroundColor(getResources().getColor(R.color.white));
-        b.setPadding(40, 0, 40, 0);
+        b.setPadding(15, 0, 15, 20);
         TextView tv = new TextView(getActivity().getApplicationContext());
         tv.setText(userName.split(" ")[0]);
 
@@ -705,7 +711,7 @@ public class ProfileFrag extends Fragment {
         buttonLayout.setOrientation(LinearLayout.VERTICAL);
 
         buttonLayout.addView(b);
-        buttonLayout.addView(tv);
+        //buttonLayout.addView(tv);
     }
 
     private void makePretty(TextView tv) {

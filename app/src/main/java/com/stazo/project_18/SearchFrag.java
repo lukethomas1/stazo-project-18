@@ -253,7 +253,7 @@ public class SearchFrag extends Fragment {
             TextView tv = new TextView(getActivity());
             tv.setText(Integer.toString(e.getAttendees().size()));
             TextView info = new TextView(getActivity());
-            info.setText(e.getDetails());
+            info.setText(e.getTimeString(false));
             makePretty(eventName, iv, tv, info, container);
 
             // listeners

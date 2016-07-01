@@ -31,6 +31,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -542,9 +546,12 @@ public class CreateEventAct extends AppCompatActivity {
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
                 mainImageView.setImageBitmap(imageBitmap);
+
+                //push to firebase
+                pushMainImage(Uri.fromFile((new File(cameraPhotoPath))));
             }
             catch (Exception e) {
-                System.out.println("Something went wrong when accessing photo from file path");
+                System.out.println("Something went wrong when accessing photo from file path or pushing photo");
             }
         }
 
@@ -555,11 +562,13 @@ public class CreateEventAct extends AppCompatActivity {
                 Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
                 mainImageView.setImageBitmap(selectedImage);
+
+                //push to firebase
+                pushMainImage(imageUri);
             }
             catch(Exception e) {
-                System.out.println("Something went wrong when u selected an image");
+                System.out.println("Something went wrong when u selected an image or pushing photo");
             }
-
         }
     }
 
@@ -609,9 +618,24 @@ public class CreateEventAct extends AppCompatActivity {
 
     }
 
-    public void pushMainImage(Bitmap image) {
-        Firebase fb = ((Project_18) getApplication()).getFB();
+    public void pushMainImage(Uri imageFile) {
+        StorageReference storageRef = ((Project_18) getApplication()).getFBStorage();
 
+        //replace with eventid instead of file name later
+        StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + imageFile.getLastPathSegment());
+        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("your upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("your upload succeeded");
+            }
+        });
     }
 
     private void setPhoto() {

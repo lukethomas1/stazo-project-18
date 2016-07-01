@@ -356,7 +356,7 @@ public class Event implements Parcelable {
                 endTime + 5*60*1000 > time);
     }
 
-    public String getDetails() {
+    public String getTimeString(boolean midSentence) {
         Date start = new Date(startTime);
 
         // convert start time to MM/dd format
@@ -364,7 +364,12 @@ public class Event implements Parcelable {
 
         // compare today's date
         if (startDay.equals(new SimpleDateFormat("EE", Locale.US).format(new Date()))) {
-            startDay = "Today";
+            if (midSentence) {
+                startDay = "today";
+            }
+            else {
+                startDay = "Today";
+            }
         }
 
         SimpleDateFormat startTimeFormat = new SimpleDateFormat("h:mm a", Locale.US);
