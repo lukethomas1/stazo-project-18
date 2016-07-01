@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -71,6 +73,14 @@ public class LocSelectAct extends FragmentActivity
                 .enableAutoManage(this, this)
                 .build();
 
+        //directions
+        Toast dir = Toast.makeText(getApplicationContext(),
+                "Tap and hold to choose the event's location", Toast.LENGTH_LONG);
+        //this centers the text in the toast
+        TextView v = (TextView) dir.getView().findViewById(android.R.id.message);
+        if( v != null) v.setGravity(Gravity.CENTER);
+        dir.show();
+
         //private method defined below
         setUpSearchFragment();
     }
@@ -111,7 +121,7 @@ public class LocSelectAct extends FragmentActivity
         eventToInit.setLocation(point);
 
         // Initialize the event's id
-//        eventToInit.setEvent_id(eventMarker.getId());
+        //eventToInit.setEvent_id(eventMarker.getId());
         //eventToInit.generateID();
     }
 
@@ -124,7 +134,7 @@ public class LocSelectAct extends FragmentActivity
             CharSequence text = "Please select a location";
 
             // How long to display the toast
-            int duration = Toast.LENGTH_LONG;
+            int duration = Toast.LENGTH_SHORT;
 
             // display the toast
             Toast toast = Toast.makeText(context, text, duration);
@@ -153,16 +163,30 @@ public class LocSelectAct extends FragmentActivity
     }
 
     private void setUpSearchFragment(){
-         autocompleteFragment = (PlaceAutocompleteFragment)
+        autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
-                //Log.i(TAG, "Place: " + place.getName());
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "test", Toast.LENGTH_LONG);
+
+                LatLng point = place.getLatLng();
+                // Set the marker's location
+                MarkerOptions markerOpts = new MarkerOptions();
+                markerOpts.position(point);
+                markerOpts.draggable(true);
+                // Set the color of the marker
+                markerOpts.icon(
+                        //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
+                        BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
+                // Remove the previous marker if there is one on the map
+                if (eventMarker != null) {
+                    eventMarker.remove();
+                }
+
+                // Add marker to map
+                eventMarker = map.addMarker(markerOpts);
             }
 
             @Override
@@ -176,7 +200,7 @@ public class LocSelectAct extends FragmentActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        //CONNECTION FALILED??
+        //CONNECTION FAILED??
         //OH NO
     }
 }
