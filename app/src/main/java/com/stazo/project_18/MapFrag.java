@@ -285,6 +285,8 @@ public class MapFrag extends Fragment {
             seekbar.bringToFront();
             timeTextView.bringToFront();
 
+
+
         }
 
         // Display all the events

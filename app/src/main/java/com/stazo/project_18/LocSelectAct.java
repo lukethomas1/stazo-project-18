@@ -4,11 +4,19 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -19,16 +27,23 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+
 
 /**
  * Created by Ansel on 4/28/16.
  */
 public class LocSelectAct extends FragmentActivity
-        implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
+        implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
+        OnConnectionFailedListener
 {
     private GoogleMap map;
+    private PlaceAutocompleteFragment autocompleteFragment;
     private Event eventToInit;
     private Marker eventMarker;
+    private GoogleApiClient mGoogleApiClient;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +62,17 @@ public class LocSelectAct extends FragmentActivity
                 (MapFragment) getFragmentManager().findFragmentById(R.id.mapLocSelector);
 
         mapFrag.getMapAsync(this);
+
+        // init API client
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+        //private method defined below
+        setUpSearchFragment();
     }
 
     public void onMapReady(GoogleMap googleMap) {
@@ -126,4 +152,31 @@ public class LocSelectAct extends FragmentActivity
         Firebase.setAndroidContext(this);
     }
 
+    private void setUpSearchFragment(){
+         autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                //Log.i(TAG, "Place: " + place.getName());
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "test", Toast.LENGTH_LONG);
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                //Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //CONNECTION FALILED??
+        //OH NO
+    }
 }
