@@ -456,6 +456,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         TextView eventDescription = (TextView) this.getActivity().findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
+        TextView eventStart = (TextView) this.getActivity().findViewById(R.id.starts);
+        TextView eventTimes = (TextView) this.getActivity().findViewById(R.id.times);
+        TextView eventDesc = (TextView) this.getActivity().findViewById(R.id.desc);
         //TextView eventTime = (TextView) this.getActivity().findViewById(R.id.eventTimeTo);
         ImageView eventCreatorPic = (ImageView) this.getActivity().findViewById(R.id.creatorPic);
         long startHour = 0;
@@ -467,7 +470,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // setting the event info text fields
         eventName.setText(e.getName());
-        eventDescription.setText(e.getDescription());
+        if(eventDescription.getText().length() == 0){
+            eventDescription.setVisibility(View.GONE);
+            eventDesc.setVisibility(View.GONE);
+        } else {
+            eventDescription.setText(e.getDescription());
+        }
         eventCreator.setText(u.getName());
 
         // setting the event creator image
@@ -480,9 +488,22 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         Date start = new Date(startTime);
         Date end = new Date(endTime);
 
+        Date now = new Date();
+
         //Set start time
         String startText = buildStartDay(start) + " at " + buildStartTime(start);
         eventDate.setText(startText);
+
+        if(now.getTime() > start.getTime()){
+            eventStart.setText("Started");
+            long hourdiff = (start.getHours() - now.getHours() + 1);
+            long mindiff = start.getMinutes() - now.getMinutes();
+            if(mindiff < 0){
+                hourdiff--;
+                mindiff += 60;
+            }
+            eventTimes.setText("Ends in: " + hourdiff + " h " + mindiff + "m");
+        }
 
         //Set event length
         String durationText = buildDurationTime(startTime, endTime);
