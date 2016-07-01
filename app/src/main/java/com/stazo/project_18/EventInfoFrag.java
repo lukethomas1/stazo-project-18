@@ -6,6 +6,7 @@ package com.stazo.project_18;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -300,14 +301,19 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         // set filter when pressed
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             b.setColorFilter(new
-                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
                                     PorterDuff.Mode.MULTIPLY));
                         }
 
                         // handle "click"
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Log.d("myTag", "imageButton pressed");
-                            ((MainAct) getActivity()).goToOtherProfile(id);
+                            if (id.equals(Project_18.me.getID())) {
+                                MainAct.viewPager.setCurrentItem(MainAct.PROF_POS);
+                            }
+                            else {
+                                ((MainAct) getActivity()).goToOtherProfile(id);
+                            }
                         }
 
                         // remove filter on release/cancel
@@ -542,6 +548,36 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         (v.findViewById(R.id.creatorPic)).setVisibility(View.VISIBLE);
                     }
 
+                });
+
+                // handle touch/click
+                iv.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // set filter when pressed
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            iv.setColorFilter(new
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
+                                    PorterDuff.Mode.MULTIPLY));
+                        }
+
+                        // handle "click"
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Log.d("myTag", "imageButton pressed");
+                            if (id.equals(Project_18.me.getID())) {
+                                MainAct.viewPager.setCurrentItem(MainAct.PROF_POS);
+                            } else {
+                                ((MainAct) getActivity()).goToOtherProfile(id);
+                            }
+                        }
+
+                        // remove filter on release/cancel
+                        if (event.getAction() == MotionEvent.ACTION_UP ||
+                                event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            iv.clearColorFilter();
+                        }
+                        return true;
+                    }
                 });
 
             }
