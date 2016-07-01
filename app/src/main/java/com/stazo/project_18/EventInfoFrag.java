@@ -470,7 +470,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // setting the event info text fields
         eventName.setText(e.getName());
-        if(eventDescription.getText().length() == 0){
+        eventDescription.setVisibility(View.VISIBLE);
+        eventDesc.setVisibility(View.VISIBLE);
+        if(e.getDescription().length() == 0){
             eventDescription.setVisibility(View.GONE);
             eventDesc.setVisibility(View.GONE);
         } else {
