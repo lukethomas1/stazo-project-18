@@ -279,7 +279,6 @@ public class User {
                 }
             }
 
-
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
                 Log.d("else", "ELSE CASE + userTrails");
