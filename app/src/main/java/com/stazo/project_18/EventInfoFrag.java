@@ -15,8 +15,11 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
@@ -42,12 +45,17 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,6 +77,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private BottomSheetBehavior mBottomSheetBehavior;
     private User me;
     private Bitmap picBitmap;
+    private Bitmap mainImageBitmap;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
@@ -146,6 +155,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
+        getMainImage();
         return v;
     }
 
@@ -605,6 +615,51 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             }
         }).start();
+    }
+
+    public void getMainImage() {
+        System.out.println("main image");
+        StorageReference rootRef = ((Project_18) getActivity().getApplication()).getFBStorage();
+        StorageReference mainImageRef = rootRef.child("MainImagesDatabase/" + this.passedEventID + ".jpg");
+        final ImageView mainImageView = (ImageView) v.findViewById(R.id.mainImageView);
+
+        try {
+            mainImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(final Uri uri) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                System.out.println(uri.toString());
+                                //URI downloadURI = new URI(uri.toString());
+                                URL downloadURL = new URL(uri.toString());
+                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openConnection().getInputStream());
+                            }
+                            catch (Exception e) {
+                                System.out.println("couldn't download from URL");
+                                System.out.println(e.toString());
+                            }
+                            mainImageView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mainImageView.setImageBitmap(mainImageBitmap);
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    System.out.println("url grab failed");
+                }
+            });
+        }
+        catch (Exception e) {
+            System.out.println("bad main image firebase storage ref");
+        }
+
     }
 
     public void writeCommentClick() {

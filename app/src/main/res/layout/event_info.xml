@@ -270,10 +270,10 @@
                     android:id="@+id/eventTimeTo"
                     android:onClick="toggleState"/>-->
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="toggleState">
 
@@ -286,6 +286,10 @@
                         android:layout_marginLeft="0dp"
                         android:layout_alignParentTop="true"
                         android:layout_marginTop="0dp" /-->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/mainImageView" />
                     <Button
                         android:layout_width="300dp"
                         android:layout_height="80dp"
@@ -293,7 +297,7 @@
                         android:text="View comments"
                         android:layout_centerVertical="true"/>
 
-                </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
