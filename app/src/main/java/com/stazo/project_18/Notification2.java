@@ -69,12 +69,6 @@ public abstract class Notification2 {
         }
     }
 
-    public void pushToFirebase(Firebase fb, String userWhoCares) {
-        Notification2 notif = this;
-
-        fb.child("NotifDatabase").child(userWhoCares).push().setValue(notif);
-    }
-
     public void generateNotifID() {
         notifID = "";
         Random rand = new Random();

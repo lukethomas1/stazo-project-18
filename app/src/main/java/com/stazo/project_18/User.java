@@ -136,8 +136,12 @@ public class User {
         addToFollowers(fb, user_id, ID);
 
         // send notification
-        (new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW, name, ID)).
-                pushToFirebase(fb, user_id);
+
+        ArrayList<String> notList = new ArrayList<>();
+        notList.add(user_id);
+
+                (new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW, name, ID)).
+                pushToFirebase(fb, notList);
 
         return true;
     }
@@ -360,9 +364,12 @@ public class User {
         }
 
         // send notification
+        ArrayList<String> creatorList = new ArrayList<>();
+        creatorList.add(creator_id);
+
         (new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
                 name, ID, event_name)).
-                pushToFirebase(fb, creator_id);
+                pushToFirebase(fb, creatorList);
 
         // increment popularity
         fb.child("Events").child(event_id).child("popularity").runTransaction(new Transaction.Handler() {
@@ -551,14 +558,5 @@ public class User {
                 fb.child("Users").removeEventListener(this);
             }
         });
-    }
-
-    // To be called whenever a User creates an event
-    public void notifyFollowers(String eventID, String eventName, String userName, int type) {
-        Notification not = new Notification(eventID, eventName, userName, type);
-
-        for(String followerID : userFollowers) {
-            not.pushToFirebase(Project_18.getFB(), followerID);
-        }
     }
 }

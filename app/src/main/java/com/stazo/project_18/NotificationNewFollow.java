@@ -2,6 +2,7 @@ package com.stazo.project_18;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
 
@@ -46,10 +47,13 @@ public class NotificationNewFollow extends Notification2 {
                 continue;
             }
             NotificationNewFollow nnf = new NotificationNewFollow(notifMap);
+            Log.d("wtf", "nnf id is " + nnf.getFollowerId() + ", my id is " + followerId);
             if (nnf.getFollowerId().equals(followerId) ) {
+                Log.d("wtf", "CONFLICT");
                 return new SnapToBase(notif, notif.getRef());
             }
         }
+        Log.d("wtf", "NO CONFLICT");
         return null;
     }
 
