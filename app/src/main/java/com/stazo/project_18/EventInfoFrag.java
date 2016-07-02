@@ -738,7 +738,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             b.setText("Join");
 
         } else {
-            me.attendEvent(currEvent.getEvent_id(), fb);
+            me.attendEvent(currEvent.getEvent_id(), currEvent.getName(), currEvent.getCreator_id(), fb);
             b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
             b.setTextColor(getResources().getColor(R.color.colorDivider));
             b.setTypeface(null, Typeface.ITALIC);
