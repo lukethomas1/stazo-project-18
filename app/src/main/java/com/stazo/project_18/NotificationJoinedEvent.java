@@ -3,6 +3,8 @@ package com.stazo.project_18;
 import android.content.Context;
 import android.content.Intent;
 
+import com.firebase.client.DataSnapshot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,6 +41,27 @@ public class NotificationJoinedEvent extends Notification2 {
 
     public String generateMessage() {
         return joinedUserName + " joined your event: \"" + eventName + "\".";
+    }
+
+    public SnapToBase hasConflict(DataSnapshot userNotifs) {
+        for (DataSnapshot notif: userNotifs.getChildren()) {
+            HashMap<String, Object> notifMap = (HashMap<String, Object>) notif.getValue();
+            if (((Long) notifMap.get("type")).intValue() != Notification2.TYPE_JOINED_EVENT) {
+                continue;
+            }
+            NotificationJoinedEvent nje = new NotificationJoinedEvent(notifMap);
+            if (nje.getEventId().equals(eventId) &&
+                    nje.getJoinedUserName().equals(joinedUserName)) {
+                return new SnapToBase(notif, notif.getRef());
+            }
+        }
+        return null;
+    }
+
+    public Notification2 handleConflict(SnapToBase stb) {
+
+        // if the same user joined the event twice, who cares
+        return null;
     }
 
     public String getJoinedUserName() {

@@ -39,26 +39,42 @@ public abstract class Notification2 {
 
     public abstract void onNotificationClicked(Context context);
     public abstract String generateMessage();
+    public abstract SnapToBase hasConflict(DataSnapshot userNotifs);
+    public abstract Notification2 handleConflict(SnapToBase stb);
 
-    public void pushToFirebase(Firebase fb, final ArrayList<String> usersWhoCare) {
-        final Notification2 notif = this;
+    public void pushToFirebase(final Firebase fb, final ArrayList<String> usersWhoCare) {
+        final Notification2 thisNotif = this;
 
-        for (String id: usersWhoCare) {
-            fb.child("NotifDatabase").child(id).push().setValue(notif);
+        for (final String id: usersWhoCare) {
+            fb.child("NotifDatabase").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot userNotifs) {
+                    SnapToBase stb = hasConflict(userNotifs);
+                    if (stb != null) {
+                        Notification2 resolved = handleConflict(stb);
+                        if (resolved != null) {
+                            fb.child("NotifDatabase").child(id).push().setValue(resolved);
+                        }
+                    }
+                    else {
+                        fb.child("NotifDatabase").child(id).push().setValue(thisNotif);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
         }
     }
 
-    public void pushToFirebase(Firebase fb, String userWhoCares) {
-        final Notification2 notif = this;
-
-        fb.child("NotifDatabase").child(userWhoCares).push().setValue(notif);
-    }
-
     public void generateNotifID() {
+        notifID = "";
         Random rand = new Random();
         for (int i = 0; i < 10; i++) {
             String id = "" + (char) (65 + rand.nextInt(26));
-            notifID = id;
+            notifID += id;
         }
     }
 

@@ -23,34 +23,38 @@ public class NotificationHandler {
 
     public void generateNotifications(Context context) {
         ArrayList<String> userNames = new ArrayList<String>();
-        userNames.add("Jason");
-        userNames.add("Steve");
-        userNames.add("Mark");
+        userNames.add("Jason2");
+        userNames.add("Steve2");
+        userNames.add("Mark2");
         String eventId = "yooGPHLVQTAYM";
+
         NotificationCommentEvent nce = new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
                 userNames, eventId, "Legacy Speech");
+
         NotificationFriendHost nfe = new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST,
                 "Bob the host", "yooKPGCHIFIGR", "Smash Bros Party", "Today at 7:00pm");
+
         NotificationNewFollow nnf = new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW,
                 "Melissa the follower", "1177156832304841");
+
         NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
                 "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
 
         ArrayList<String> usersWhoCare = new ArrayList<>();
-        usersWhoCare.add("1184188798300386"); // Brian
+        usersWhoCare.add("1196215920412322"); // Isaac
 
         /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nje.pushToFirebase(Project_18.getFB(), usersWhoCare);*/
 
-        pullNotifications();
+        //pullNotifications();
     }
 
     // PULL AND PRINT BRIAN'S NOTIFICATIONS
     public void pullNotifications() {
         Project_18.getFB().child("NotifDatabase").
-                child("1184188798300386").addListenerForSingleValueEvent(new ValueEventListener() {
+                child("1196215920412322").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {

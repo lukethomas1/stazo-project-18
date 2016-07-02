@@ -134,6 +134,15 @@ public class User {
         userTrails.add(user_id);
         fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
         addToFollowers(fb, user_id, ID);
+
+        // send notification
+
+        ArrayList<String> notList = new ArrayList<>();
+        notList.add(user_id);
+
+                (new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW, name, ID)).
+                pushToFirebase(fb, notList);
+
         return true;
     }
 
@@ -145,16 +154,6 @@ public class User {
         fb.child("Users").child(ID).child("userTrails").setValue(userTrails);
         removeFromFollowers(fb, user_id, ID);
         return true;
-    }
-
-    public void addFollower(Firebase fb, String user_id) {
-        userFollowers.add(user_id);
-        fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
-    }
-
-    public void removeFollower(Firebase fb, String user_id) {
-        userFollowers.remove(user_id);
-        fb.child("Users").child(ID).child("userFollowers").setValue(userFollowers);
     }
 
     public void addToFollowers(Firebase fb, String receivingFollowID, final String givingFollowID) {
@@ -358,11 +357,19 @@ public class User {
     }
 
     // true for successful attend, false for unsuccessful attend
-    public boolean attendEvent(String event_id, Firebase fb) {
+    public boolean attendEvent(String event_id, String event_name, String creator_id, Firebase fb) {
 
         if (attendingEvents.contains(event_id)) {
             return false;
         }
+
+        // send notification
+        ArrayList<String> creatorList = new ArrayList<>();
+        creatorList.add(creator_id);
+
+        (new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
+                name, ID, event_name)).
+                pushToFirebase(fb, creatorList);
 
         // increment popularity
         fb.child("Events").child(event_id).child("popularity").runTransaction(new Transaction.Handler() {
@@ -551,14 +558,5 @@ public class User {
                 fb.child("Users").removeEventListener(this);
             }
         });
-    }
-
-    // To be called whenever a User creates an event
-    public void notifyFollowers(String eventID, String eventName, String userName, int type) {
-        Notification not = new Notification(eventID, eventName, userName, type);
-
-        for(String followerID : userFollowers) {
-            not.pushToFirebase(Project_18.getFB(), followerID);
-        }
     }
 }

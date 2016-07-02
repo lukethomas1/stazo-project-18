@@ -163,7 +163,7 @@ public class Event implements Parcelable {
      * Pushes the event to Firebase
      * @param fb The Firebase ref
      */
-    public void pushToFirebase(Firebase fb) {
+    public void pushToFirebase(Firebase fb, String creator_name, ArrayList<String> followers) {
         // generate a unique id
         generateID();
 
@@ -175,6 +175,11 @@ public class Event implements Parcelable {
 
         // Add event_id to the creator's list of events (myEvents)
         fb.child("Users").child(creator_id).child("myEvents").push().setValue(event_id);
+
+        (new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST, creator_name,
+                event_id,
+                name,
+                getTimeString(true))).pushToFirebase(fb, followers);
 
         //new ReportEventTask().execute("yo");
 

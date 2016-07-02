@@ -6,18 +6,31 @@
     android:orientation="vertical"
     tools:context=".CreateEventAct">
 
-    <!--<android.support.design.widget.AppBarLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:id="@+id/appBar">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_top"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"/>
-    </android.support.design.widget.AppBarLayout>-->
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/colorPrimary">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create an Event"
+                android:layout_gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:id="@+id/toolbar_title" />
+
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -52,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Event Description:"
+                android:text="Event Description (Optional):"
                 android:id="@+id/DescText" />
 
             <EditText
@@ -66,20 +79,20 @@
                 android:maxLines="8"
                 android:scrollbars="vertical"/>
 
-            <!--<TextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Pick an Event Type"
-                android:id="@+id/PickText" />-->
+                android:text="Pick the Event Start Date"
+                android:id="@+id/PickText" />
 
-            <!--<Spinner
+            <Spinner
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/EventType" />-->
+                android:id="@+id/EventType" />
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -127,7 +140,7 @@
                     android:focusableInTouchMode="false"
                     android:clickable="true"
                     android:id="@+id/EndDate" />
-            </LinearLayout>
+            </LinearLayout> -->
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -179,17 +192,35 @@
             </LinearLayout>
 
             <!--Button for adding photo-->
-            <Button
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add image"
-                android:id="@+id/AddImage"
-                />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Extra button to select a photo through library"
-                android:id="@+id/AddImageFromLibrary"/>
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textAllCaps="false"
+                    android:text="Add Image"
+                    android:id="@+id/AddImage"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:textAllCaps="false"
+                    android:text="Select Image From Gallery"
+                    android:id="@+id/AddImageFromLibrary"/>
+            </LinearLayout>
 
             <!--Image View for when photo is added -->
             <ImageView
@@ -197,13 +228,35 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/MainImageView"/>
 
-            <Button
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create Event"
-                android:textAllCaps="false"
-                android:id="@+id/CreateEvent"
-                android:onClick="makeEvent"/>
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="10dp"
+                    android:text="Cancel"
+                    android:textAllCaps="false"
+                    android:id="@+id/cancelButton"
+                    android:onClick="cancel"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:text="Create Event"
+                    android:textAllCaps="false"
+                    android:id="@+id/CreateEvent"
+                    android:onClick="makeEvent"/>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
