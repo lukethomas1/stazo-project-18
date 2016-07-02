@@ -244,25 +244,11 @@ public class SearchFrag extends Fragment {
                 break;
             }
 
-            // things to put in
-            TextView eventName = new TextView(getContext());
-            eventName.setText(e.getName());
             LinearLayout container = new LinearLayout(getActivity());
-            ImageView iv = new ImageView(getActivity());
-            iv.setImageResource(R.drawable.icon_multiple_people);
-            TextView tv = new TextView(getActivity());
-            tv.setText(Integer.toString(e.getAttendees().size()));
-            TextView info = new TextView(getActivity());
-            info.setText(e.getTimeString(false));
-            makePretty(eventName, iv, tv, info, container);
-
-            // listeners
             EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
-            container.setOnTouchListener(listener);
-            eventName.setOnTouchListener(listener);
-            iv.setOnTouchListener(listener);
-            tv.setOnTouchListener(listener);
-            info.setOnTouchListener(listener);
+
+            ((Project_18) getActivity().getApplication()).makeEventButton
+                    (getActivity(), e, container, listener, false);
 
             // add to layout
             queryButtonLayout.addView(container);
