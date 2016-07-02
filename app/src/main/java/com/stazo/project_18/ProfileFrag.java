@@ -143,12 +143,16 @@ public class ProfileFrag extends Fragment {
     }
 
     private synchronized void loadMoreTrails() {
-        page++;
-        generateTrails();
+        if ((page+1) * SECTION_SIZE < userTrails.size()) {
+            page++;
+            generateTrails();
+        }
     }
     private synchronized void loadMoreFollowers() {
-        page++;
-        generateFollowers();
+        if ((page2+1) * SECTION_SIZE < userFollowers.size()) {
+            page2++;
+            generateFollowers();
+        }
     }
 
     // does everything that requires data (Firebase, userId, isMe)
@@ -295,22 +299,12 @@ public class ProfileFrag extends Fragment {
 
                 /* display myEvents */
                 for (final Event e : allEvents) {
-                    TextView eventButton = new Button(getContext());
-                    eventButton.setText(e.toString()); // + "Attending");
+
                     LinearLayout container = new LinearLayout(getActivity());
-                    ImageView iv = new ImageView(getActivity());
-                    iv.setImageResource(R.drawable.icon_multiple_people);
-                    TextView tv = new TextView(getActivity());
-                    tv.setText(Integer.toString(e.getAttendees().size()));
-                    TextView info = new TextView(getActivity());
-                    info.setText(e.getTimeString(false));
-                    makePretty(eventButton, iv, tv, info, container);
                     EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
-                    container.setOnTouchListener(listener);
-                    eventButton.setOnTouchListener(listener);
-                    iv.setOnTouchListener(listener);
-                    tv.setOnTouchListener(listener);
-                    info.setOnTouchListener(listener);
+
+                    ((Project_18) getActivity().getApplication()).makeEventButton
+                            (getActivity(), e, container, listener, true);
 
                     eventsLayout.addView(container);
                 }
@@ -324,8 +318,8 @@ public class ProfileFrag extends Fragment {
         });
     }
 
-    private void makePretty(TextView eventName, ImageView iv, TextView numGoing,
-                            TextView info, LinearLayout container) {
+    /*private void makePretty(TextView eventName, ImageView iv, TextView numGoing,
+                            TextView info, TextView hostOrJoined, LinearLayout container) {
 
         LinearLayout.LayoutParams containerLP = new LinearLayout.
                 LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -335,6 +329,49 @@ public class ProfileFrag extends Fragment {
         container.setOrientation(LinearLayout.HORIZONTAL);
         container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
         //container.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        LinearLayout eventNameAndInfo = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams lp = new
+                LinearLayout.LayoutParams(950,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity=Gravity.NO_GRAVITY;
+        eventNameAndInfo.setLayoutParams(lp);
+        eventNameAndInfo.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout nameAndHost = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams nameAndHostLP = new
+                LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        nameAndHost.setLayoutParams(nameAndHostLP);
+        nameAndHost.setOrientation(LinearLayout.HORIZONTAL);
+
+        hostOrJoined.setPadding(50, 0, 0, 60);
+        hostOrJoined.setTextSize(detailsTextSize);
+        hostOrJoined.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams hostLP = new
+                LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        //hostLP.gravity = Gravity.RIGHT;
+        hostOrJoined.setLayoutParams(hostLP);
+
+        eventName.setTextSize(eventsTextSize);
+        eventName.setTypeface(null, Typeface.NORMAL);
+        eventName.setGravity(Gravity.CENTER_VERTICAL);
+        eventName.setPadding(80, 0, 0, 0);
+        eventName.setWidth(740);
+        eventName.setAllCaps(false);
+        eventName.setBackground(null);
+
+        nameAndHost.addView(eventName);
+        nameAndHost.addView(hostOrJoined);
+
+        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        info.setTextSize(detailsTextSize);
+        info.setPadding(160, 0, 0, 20);
+        info.setGravity(Gravity.CENTER_VERTICAL);
+
+        eventNameAndInfo.addView(nameAndHost);
+        eventNameAndInfo.addView(info);
 
         LinearLayout.LayoutParams numGoingLP=new LinearLayout.
                 LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -352,33 +389,10 @@ public class ProfileFrag extends Fragment {
         iv.setLayoutParams(ivLP);
         iv.setColorFilter(getResources().getColor(R.color.colorTextPrimary));
 
-        LinearLayout eventNameAndInfo = new LinearLayout(getActivity());
-        LinearLayout.LayoutParams lp = new
-                LinearLayout.LayoutParams(950,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.gravity=Gravity.NO_GRAVITY;
-        eventNameAndInfo.setLayoutParams(lp);
-        eventNameAndInfo.setOrientation(LinearLayout.VERTICAL);
-
-        info.setTextColor(getResources().getColor(R.color.colorDivider));
-        info.setTextSize(detailsTextSize);
-        info.setPadding(160, 0, 0, 20);
-        info.setGravity(Gravity.CENTER_VERTICAL);
-
-        eventName.setTextSize(eventsTextSize);
-        eventName.setTypeface(null, Typeface.NORMAL);
-        eventName.setGravity(Gravity.CENTER_VERTICAL);
-        eventName.setPadding(80, 0, 0, 0);
-        eventName.setAllCaps(false);
-        eventName.setBackground(null);
-
-        eventNameAndInfo.addView(eventName);
-        eventNameAndInfo.addView(info);
-
         container.addView(eventNameAndInfo);
         container.addView(iv);
         container.addView(numGoing);
-    }
+    }*/
 
     // pull and set profile picture
     private void setProfilePicture() {
@@ -421,7 +435,7 @@ public class ProfileFrag extends Fragment {
 
 
     private void goToEventInfo(String event_id) {
-        ((MainAct) getActivity()).goToEventInfo(event_id);
+        ((MainAct) getActivity()).goToEventInfo(event_id, true);
     }
 
     private void goToBrowse() {

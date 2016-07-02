@@ -4,9 +4,12 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,28 +20,71 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.PropertyPermission;
 
 public class ListAct extends android.support.v4.app.Fragment {
 
-    private static final long HAPPENING_NOW_WINDOW = 3600000; // Milliseconds in an hour
+    private static final int NUM_HOT = 2;
+    private static final int NUM_HAPPENING_NOW = 4;
+    private static final int NUM_LATER = 4;
+    private static final long HAPPENING_NOW_WINDOW = (60 * 60 * 1000); // Milliseconds in an hour
 
     private Firebase fb;
-    ArrayList<Event> eventList = new ArrayList<Event>();
+    private ArrayList<Event> eventList = new ArrayList<Event>();
+    private ArrayList<Event> litEventsList = new ArrayList<>();
+    private ArrayList<Event> happeningNowList = new ArrayList<>();
+    private ArrayList<Event> laterList = new ArrayList<>();
+
+
     private TextView loadingText;
 
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    ArrayList<String> headerList;
-    HashMap<String, ArrayList<Event>> headerToEventListHM;
+    //ExpandableListAdapter listAdapter;
+    //ExpandableListView expListView;
+    private LinearLayout litLayout, happeningNowLayout, laterLayout;
+
+    private int pageHappeningNow = 0;
+    private int pageLater = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_list, container, false);
+        View v = inflater.inflate(R.layout.list_act_concept, container, false);
 
         fb = ((Project_18) this.getActivity().getApplication()).getFB();
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // hide activity
+        getActivity().findViewById(R.id.listActLayout).setVisibility(View.INVISIBLE);
+
+        // listeners for show more
+        getActivity().findViewById(R.id.showMoreHappeningNowButton).
+                setOnTouchListener(new ShowMoreOnTouchListener("showMoreHappeningNow",
+                        (Button) getActivity().findViewById(R.id.showMoreHappeningNowButton)));
+
+        getActivity().findViewById(R.id.showMoreLaterButton).
+                setOnTouchListener(new ShowMoreOnTouchListener("showMoreLater",
+                        (Button) getActivity().findViewById(R.id.showMoreLaterButton)));
+
+        // clear layouts
+        litLayout = (LinearLayout) getActivity().findViewById(R.id.litLayout);
+        happeningNowLayout = (LinearLayout) getActivity().findViewById(R.id.happeningNowLayout);
+        laterLayout = (LinearLayout) getActivity().findViewById(R.id.laterLayout);
+
+        eventList.clear();
+        litEventsList.clear();
+        happeningNowList.clear();
+        laterList.clear();
 
         // Pull the events from firebase
         fb.child("Events").addListenerForSingleValueEvent(
@@ -55,170 +101,267 @@ public class ListAct extends android.support.v4.app.Fragment {
                                     }));
 
                             eventList.add(e);
-
-                        }
-
-                        // Get the text in the activity
-                        loadingText = (TextView) getActivity().findViewById(R.id.loadingText);
-
-                        // Set loading text to "No events" if there are no events
-                        if (eventList.isEmpty()) {
-                            loadingText.setText("No Events");
-                        }
-
-                        // Otherwise there were events, and hide the TextView
-                        else {
-                            loadingText.setVisibility(View.GONE);
                         }
 
                         // Display all the events the were pulled from Firebase
                         // TODO do not call if list already populated
-                        displayEventList();
+                        categorizeEvents();
+                        displayAllEvents();
 
                         // remove this listener
                         fb.child("Events").removeEventListener(this);
 
                         // show activity
-                        getActivity().findViewById(R.id.eventList).setVisibility(View.VISIBLE);
+                        getActivity().findViewById(R.id.listActLayout).setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
                 });
-
-        return v;
     }
 
-    // Creates ListViews for each event in arraylist and adds them to the activity
-    private void displayEventList() {
-        //Grabs the ListView
-        expListView = (ExpandableListView) getActivity().findViewById(R.id.eventList);
-        headerList = new ArrayList<>();
-        headerToEventListHM = new HashMap<>();
+    // Put all events into categories
+    private void categorizeEvents() {
 
-        // Add event categories
-        headerList.add("Hot Events");
-        headerList.add("Happening Now");
-        headerList.add("All Events");
+        // sort events by popularity
+        Collections.sort(eventList, new popularityCompare());
 
-        // Add Hot Events
-        ArrayList<Event> hotEventsList = new ArrayList<>();
 
-        // Add all events beyond the popularity threshold to the "hot events" list
-        for (Event event : eventList) {
-            if (event.getPopularity() > Project_18.POP_THRESH2) {
-                hotEventsList.add(event);
-            }
+        // POPULAR EVENTS SECTION
+        for (int i = 0; i < NUM_HOT; i++) {
+            Event event = eventList.get(i);
+            litEventsList.add(event);
+        }
+        // Remove hot events from eventList
+        for (Event event : litEventsList) {
+            eventList.remove(event);
         }
 
-        headerToEventListHM.put(headerList.get(0), hotEventsList);
-
-        // Find events happening soon
-        User thisUser = ((Project_18) getActivity().getApplication()).getMe();
-
-        ArrayList<Event> nowEventsList = new ArrayList<>();
-
-        // Get current time in milliseconds
-        long currentTime = System.currentTimeMillis();
-
+        // HAPPENING TODAY EVENTS SECTION
         for (Event event : eventList) {
-            // Happening now if within an hour from start and hasn't ended yet
-            if (event.getStartTime() - currentTime < HAPPENING_NOW_WINDOW
-                    && currentTime < event.getEndTime()) {
-                nowEventsList.add(event);
+            if ((new Date(event.getStartTime())).getDay() == (new Date()).getDay()) {
+                happeningNowList.add(event);
             }
         }
-
-        headerToEventListHM.put(headerList.get(1), nowEventsList);
-
-        /* TODO: For local events, base it on a certain radius around the user's current location. */
-
-        ArrayList<Event> allEventsList = new ArrayList<>();
-
-        for (Event event : eventList) {
-            allEventsList.add(event);
+        // Remove current events from eventList
+        for (Event event : happeningNowList) {
+            eventList.remove(event);
         }
 
-        headerToEventListHM.put(headerList.get(2), allEventsList);
+        // LATER THIS WEEK EVENTS SECTION
+        // The remaining are happening later this week
+        laterList = new ArrayList<>(eventList);
 
-        /*
-        for(int i = 0; i < eventList.size(); i++) {
-            Event evt = eventList.get(i);
+        adjustShowMoreButtons();
+    }
 
-            listIds.add(evt.getEvent_id());
-            headerList.add(evt.getName());
+    public void adjustShowMoreButtons() {
 
-            ArrayList<Event> groupEventsList = new ArrayList<>();
-            groupEventsList.add(evt);
+        if (happeningNowList.size() > (pageHappeningNow + 1) * NUM_HAPPENING_NOW) {
+            getActivity().findViewById(R.id.showMoreHappeningNowButton).setVisibility(View.VISIBLE);
+        } else {
+            getActivity().findViewById(R.id.showMoreHappeningNowButton).setVisibility(View.GONE);
+        }
 
-            headerToEventListHM.put(headerList.get(i), groupEventsList);
-        } */
+        if (laterList.size() > (pageLater + 1) * NUM_LATER) {
+            getActivity().findViewById(R.id.showMoreLaterButton).setVisibility(View.VISIBLE);
+        } else {
+            getActivity().findViewById(R.id.showMoreLaterButton).setVisibility(View.GONE);
+        }
+    }
 
-        listAdapter = new ExpandableListAdapter(getActivity(), headerList, headerToEventListHM);
+    public void showMoreHappeningNow() {
+        if ((pageHappeningNow + 1) * NUM_HAPPENING_NOW < happeningNowList.size()) {
+            pageHappeningNow++;
+            displayHappeningNowEvents();
+            adjustShowMoreButtons();
+        }
+    }
 
-        // Display event info on child click
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
-                                        int childPosition, long id) {
-                String eventId = listAdapter.getEventId(groupPosition, childPosition);
+    public void showMoreLater() {
+        if ((pageLater + 1) * NUM_LATER < laterList.size()) {
+            pageLater++;
+            displayLaterEvents();
+            adjustShowMoreButtons();
+        }
 
-                ((MainAct)getActivity()).goToEventInfo(eventId);
+    }
 
-                return true;
+    public void displayAllEvents() {
+        displayLitEvents();
+        displayHappeningNowEvents();
+        displayLaterEvents();
+    }
+
+    public void displayLitEvents() {
+
+        // empty case
+        if (litEventsList.isEmpty()) {
+            getActivity().findViewById(R.id.emptyLitTextContainer).setVisibility(View.VISIBLE);
+        }
+        // non empty case
+        else {
+            // Remove hot events from eventList
+            for (Event event : litEventsList) {
+
+                LinearLayout container = new LinearLayout(getActivity());
+                EventButtonOnTouchListener listener = new EventButtonOnTouchListener(event, container);
+
+                ((Project_18) getActivity().getApplication()).makeEventButton
+                        (getActivity(), event, container, listener, true);
+
+                litLayout.addView(container);
             }
-        });
+        }
+    }
 
-        // Collapse open list on new expansion
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            int prevGroupPos = -1;
+    public void displayHappeningNowEvents() {
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                // Collapse open list on new expansion
-                if (prevGroupPos >= 0 && prevGroupPos != groupPosition) {
-                    expListView.collapseGroup(prevGroupPos);
+        int startPoint = pageHappeningNow * NUM_HAPPENING_NOW;
+        int numLoaded = 0;
+
+        // empty case
+        if (happeningNowList.isEmpty()) {
+            getActivity().findViewById(R.id.emptyHappeningNowTextContainer).setVisibility(View.VISIBLE);
+        }
+        // non empty case
+        else {
+
+            // Display events
+            for (int i = startPoint; i < happeningNowList.size(); i++) {
+
+                if (numLoaded == NUM_HAPPENING_NOW) {
+                    break;
                 }
+                Event event = happeningNowList.get(i);
 
-                prevGroupPos = groupPosition;
+                LinearLayout container = new LinearLayout(getActivity());
+                EventButtonOnTouchListener listener = new EventButtonOnTouchListener(event, container);
+
+                ((Project_18) getActivity().getApplication()).makeEventButton
+                        (getActivity(), event, container, listener, true);
+
+                happeningNowLayout.addView(container);
+
+                numLoaded++;
             }
-        });
-
-        expListView.setAdapter(listAdapter);
-
-        // Display hot events by default
-        expListView.expandGroup(0);
+        }
     }
 
-    /* TODO Filter lists inside of the three main categories (hot, subscribed, and local) */
+    public void displayLaterEvents() {
 
-    public void displayFilteredEventList() {
+        int startPoint = pageLater * NUM_LATER;
+        int numLoaded = 0;
 
-        headerList = new ArrayList<>();
-        headerToEventListHM = new HashMap<>();
-
-        filterEventList();
-
-        for(int i = 0; i < eventList.size(); i++) {
-            Event evt = eventList.get(i);
-
-            headerList.add(evt.getName());
-
-            ArrayList<Event> groupEventsList = new ArrayList<>();
-            groupEventsList.add(evt);
-
-            headerToEventListHM.put(headerList.get(i), groupEventsList);
+        // empty case
+        if (laterList.isEmpty()) {
+            getActivity().findViewById(R.id.emptyLaterTextContainer).setVisibility(View.VISIBLE);
         }
 
-        listAdapter = new ExpandableListAdapter(getActivity(), headerList, headerToEventListHM);
+        // non empty case
+        else {
 
-        expListView.setAdapter(listAdapter);
+            // Display events
+            for (int i = startPoint; i < laterList.size(); i++) {
+
+                if (numLoaded == NUM_LATER) {
+                    break;
+                }
+                Event event = laterList.get(i);
+
+                LinearLayout container = new LinearLayout(getActivity());
+                EventButtonOnTouchListener listener = new EventButtonOnTouchListener(event, container);
+
+                ((Project_18) getActivity().getApplication()).makeEventButton
+                        (getActivity(), event, container, listener, true);
+
+                laterLayout.addView(container);
+
+                numLoaded++;
+            }
+        }
     }
 
-    private void filterEventList() {
-        // true = don't worry about time
-        this.eventList = ((Project_18) getActivity().getApplication()).findRelevantEvents(true);
+    public class EventButtonOnTouchListener implements View.OnTouchListener {
+
+        private Event e;
+        private LinearLayout container;
+
+        public EventButtonOnTouchListener(Event e, LinearLayout container) {
+            this.e = e;
+            this.container = container;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                ((MainAct) getActivity()).goToEventInfo(e.getEvent_id(), true);
+                container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                container.setBackground(getResources().
+                        getDrawable(R.drawable.border_event_button_pressed));
+            }
+            return true;
+        }
+
+        public void setE(Event e) {
+            this.e = e;
+        }
+    }
+
+    public class ShowMoreOnTouchListener implements View.OnTouchListener {
+
+        private String buttonName;
+        private Button button;
+
+        public ShowMoreOnTouchListener(String buttonName, Button button) {
+            this.buttonName = buttonName;
+            this.button = button;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showMore();
+                button.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                button.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                button.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
+            }
+
+            return true;
+        }
+        public void showMore() {
+            if (buttonName.equals("showMoreHappeningNow")) {
+                showMoreHappeningNow();
+            }
+            if (buttonName.equals("showMoreLater")) {
+                showMoreLater();
+            }
+        }
+    }
+
+    private class popularityCompare implements Comparator<Event> {
+        @Override
+        public int compare(Event e1, Event e2) {
+            if (e1.getAttendees().size() < (e2.getAttendees().size())) {
+                return 1;
+            }
+            if (e1.getAttendees().size() > (e2.getAttendees().size())) {
+                return -1;
+            }
+            return 0;
+        }
     }
 
     @Override

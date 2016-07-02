@@ -15,8 +15,11 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
@@ -42,12 +45,17 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,11 +77,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private BottomSheetBehavior mBottomSheetBehavior;
     private User me;
     private Bitmap picBitmap;
+    private Bitmap mainImageBitmap;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
     private int page = 0;
     private InteractiveScrollViewHorizontal scrollView;
+
+    private boolean autoOpen = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +102,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (autoOpen) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
 
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -146,6 +161,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
+        getMainImage();
         return v;
     }
 
@@ -402,6 +418,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     public void setEventID(String passedEventID) {
         this.passedEventID = passedEventID;
     }
+    public void setAutoOpen(boolean autoOpen) {
+        this.autoOpen = autoOpen;
+    }
+
 
     // Pulls event info and delegates to showInfo to display the correct info
     private void grabEventInfo(final String event_id) {
@@ -511,32 +531,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         String durationText = buildDurationTime(startTime, endTime);
         eventLength.setText(durationText);
 
-        /*
-        //Set how long until start time or if started/completed yet
-        Calendar curr = Calendar.getInstance();
-        long currTime = curr.getTimeInMillis();
-        long timeTill = startTime - currTime;
-        long timeTillHour = timeTill/(1000 * 60 * 60);
-        long timeTillMinute = timeTill/(1000 * 60) - timeTillHour*60;
-
-        System.out.println("Time till: " + timeTill);
-        if (timeTill <= 0) {
-            eventTime.setText("STARTED!");
-            long timeAfterStart = endTime - currTime;
-            long timeAfterHour = timeAfterStart/(1000 * 60 * 60);
-            long timeAfterMinute = timeAfterStart/(1000 * 60) - timeAfterHour*60;
-            if (timeAfterMinute > 60) {
-                eventTime.setText("Completed");
-            }
-            if (timeAfterMinute < 0) {
-                eventTime.setText("Finished " + timeAfterMinute + " minutes ago");
-            }
-        }
-        else {
-            eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
-        }
-        */
-
         v.setVisibility(View.VISIBLE);
     }
 
@@ -605,6 +599,51 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             }
         }).start();
+    }
+
+    public void getMainImage() {
+        System.out.println("main image");
+        StorageReference rootRef = ((Project_18) getActivity().getApplication()).getFBStorage();
+        StorageReference mainImageRef = rootRef.child("MainImagesDatabase/" + this.passedEventID + ".jpg");
+        final ImageView mainImageView = (ImageView) v.findViewById(R.id.mainImageView);
+
+        try {
+            mainImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(final Uri uri) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                System.out.println(uri.toString());
+                                //URI downloadURI = new URI(uri.toString());
+                                URL downloadURL = new URL(uri.toString());
+                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openConnection().getInputStream());
+                            }
+                            catch (Exception e) {
+                                System.out.println("couldn't download from URL");
+                                System.out.println(e.toString());
+                            }
+                            mainImageView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mainImageView.setImageBitmap(mainImageBitmap);
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    System.out.println("url grab failed");
+                }
+            });
+        }
+        catch (Exception e) {
+            System.out.println("bad main image firebase storage ref");
+        }
+
     }
 
     public void writeCommentClick() {

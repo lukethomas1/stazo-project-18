@@ -165,7 +165,7 @@ public class MapFrag extends Fragment {
         String event_id = mapHandler.getEventIDFromMarker(marker);
 
         // Delegate Activity switching to encapsulating activity
-        ((MainAct)this.getActivity()).goToEventInfo(event_id);
+        ((MainAct)this.getActivity()).goToEventInfo(event_id, false);
     }
 
     public void filterRelevantEvents() {
