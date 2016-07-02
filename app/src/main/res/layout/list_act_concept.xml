@@ -1,189 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/listActLayout"
+    android:visibility="visible"
+    android:background="@color/colorDividerExtraLight">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView3" >
+        android:id="@+id/profileScrollView">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/profileLinear">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upcoming"
-                android:textSize="25dip"
-                android:layout_marginTop="24dip"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:id="@+id/Upcoming"
-                android:textColor="@color/colorTextPrimary"/>
-
-            <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dip">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="LED Anniversary"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/led"
-                    android:textColor="@color/colorTextPrimary" />
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:paddingBottom="0dp"
+                android:background="@color/white"
+                android:textSize="30dp"
+                android:textColor="@color/colorPrimary"
+                android:text="Explore"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@color/white"
+                android:textSize="15dp"
+                android:textColor="@color/colorTextPrimary"
+                android:textStyle="italic"
+                android:text="Find out what's happening around you"/>
+
+            <!-- LIT -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:id="@+id/litFullLayout"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/litTitleLayout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:text="Popular"
+                        android:layout_marginLeft="12dip"
+                        android:layout_marginBottom="12dp"
+                        android:id="@+id/litTextView"
+                        android:textAppearance="@style/ProfileHeaders"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Baewatch"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/Baewatch"
-                    android:textColor="@color/colorTextPrimary" />
+                    android:id="@+id/emptyLitTextContainer"
+                    android:background="@color/white"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="There are no ongoing events."
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyLitText"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/litLayout"
+                    android:gravity="center_horizontal">
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subscribed"
-                android:textSize="25dip"
-                android:layout_marginTop="24dip"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:id="@+id/Subscribed"
-                android:textColor="@color/colorTextPrimary" />
-
+            <!-- HAPPENING NOW -->
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dip">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Board Games in OVL"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/board"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pick-up Soccer"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/soccer"
-                    android:textColor="@color/colorTextPrimary" />
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/border_layout"
+                android:id="@+id/happeningNowFullLayout"
+                android:visibility="visible"
+                android:layout_marginTop="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dip"
+                    android:id="@+id/happeningNowTitleLayout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:text="Happening Today"
+                        android:layout_marginLeft="12dip"
+                        android:layout_marginBottom="12dp"
+                        android:id="@+id/happeningNowTextView"
+                        android:textAppearance="@style/ProfileHeaders" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Basketball 5v5"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/basketball"
-                    android:textColor="@color/colorTextPrimary" />
+                    android:id="@+id/emptyHappeningNowTextContainer"
+                    android:background="@color/white"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="There are no ongoing events."
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyHappeningNowText"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/happeningNowLayout"
+                    android:gravity="center_horizontal">
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="Show More"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextPrimary"
+                    android:background="@color/white"
+                    android:textSize="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/showMoreHappeningNowButton"/>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="All"
-                android:textSize="25dip"
-                android:layout_marginTop="24dip"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:id="@+id/All"
-                android:textColor="@color/colorTextPrimary" />
-
+            <!-- LATER THIS WEEK -->
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dip">
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/border_layout"
+                android:id="@+id/laterFullLayout"
+                android:visibility="visible"
+                android:layout_marginTop="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dip"
+                    android:id="@+id/laterTitleLayout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:text="Later this week"
+                        android:layout_marginLeft="12dip"
+                        android:layout_marginBottom="12dp"
+                        android:id="@+id/laterTextView"
+                        android:textAppearance="@style/ProfileHeaders" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Slenderman in Extension"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/emptyLaterTextContainer"
+                    android:background="@color/white"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="No upcoming events."
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="10dp"
+                        android:id="@+id/emptyLaterText"
+                        android:textColor="@color/colorTextPrimary"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tree Appreciation"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other1"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Gliderport Sunset Trip"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other2"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Study with me!!"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other3"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Melee session (experienced)"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other4"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Just chillin"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other5"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Conjuring Viewing"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other6"
-                    android:textColor="@color/colorTextPrimary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Save me from boredom pls"
-                    android:textSize="15dip"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:id="@+id/other7"
-                    android:textColor="@color/colorTextPrimary" />
+                    android:id="@+id/laterLayout"
+                    android:gravity="center_horizontal">
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="Show More"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextPrimary"
+                    android:background="@color/white"
+                    android:textSize="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/showMoreLaterButton"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>
+
+
