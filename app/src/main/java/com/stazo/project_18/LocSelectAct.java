@@ -7,10 +7,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -25,16 +34,27 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
 /**
  * Created by Ansel on 4/28/16.
  */
 public class LocSelectAct extends FragmentActivity
-        implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
+        implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
+        OnConnectionFailedListener
 {
     private GoogleMap map;
+    private PlaceAutocompleteFragment autocompleteFragment;
     private Event eventToInit;
     private Marker eventMarker;
+    private GoogleApiClient mGoogleApiClient;
+
+    // Initial Camera Position
+    private float zoom = 15;
+    private float tilt = 0;
+    private float bearing = 0;
+
 
     private Uri imageUri;
 
@@ -59,20 +79,37 @@ public class LocSelectAct extends FragmentActivity
                 (MapFragment) getFragmentManager().findFragmentById(R.id.mapLocSelector);
 
         mapFrag.getMapAsync(this);
+
+        // init API client
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+        //directions
+        Toast dir = Toast.makeText(getApplicationContext(),
+                "Tap and hold to choose the event's location", Toast.LENGTH_LONG);
+        //this centers the text in the toast
+        TextView v = (TextView) dir.getView().findViewById(android.R.id.message);
+        if( v != null) v.setGravity(Gravity.CENTER);
+        dir.show();
+
+        //private method defined below
+        setUpSearchFragment();
     }
 
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMapLongClickListener(this);
 
-        // Initial Camera Position
-        float zoom = 15;
-        float tilt = 0;
-        float bearing = 0;
 
         CameraPosition camPos = new CameraPosition(MapFrag.REVELLE, zoom, tilt, bearing);
 
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        //zoom in and out
+        map.getUiSettings().setZoomControlsEnabled(true);
     }
 
     // Add a marker where a long click occurs
@@ -97,7 +134,7 @@ public class LocSelectAct extends FragmentActivity
         eventToInit.setLocation(point);
 
         // Initialize the event's id
-//        eventToInit.setEvent_id(eventMarker.getId());
+        //eventToInit.setEvent_id(eventMarker.getId());
         //eventToInit.generateID();
     }
 
@@ -110,7 +147,7 @@ public class LocSelectAct extends FragmentActivity
             CharSequence text = "Please select a location";
 
             // How long to display the toast
-            int duration = Toast.LENGTH_LONG;
+            int duration = Toast.LENGTH_SHORT;
 
             // display the toast
             Toast toast = Toast.makeText(context, text, duration);
@@ -163,4 +200,49 @@ public class LocSelectAct extends FragmentActivity
         Firebase.setAndroidContext(this);
     }
 
+    private void setUpSearchFragment(){
+        autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+
+                //setting location
+                LatLng point = place.getLatLng();
+                // Set the marker's location
+                MarkerOptions markerOpts = new MarkerOptions();
+                markerOpts.position(point);
+                markerOpts.draggable(true);
+                // Set the color of the marker
+                markerOpts.icon(
+                        //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
+                        BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
+                // Remove the previous marker if there is one on the map
+                if (eventMarker != null) {
+                    eventMarker.remove();
+                }
+
+                // Add marker to map
+                eventMarker = map.addMarker(markerOpts);
+                
+                //moving camera to default
+                CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                //Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //CONNECTION FAILED??
+        //OH NO
+    }
 }
