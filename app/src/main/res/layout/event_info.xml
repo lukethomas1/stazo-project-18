@@ -296,6 +296,18 @@
                         android:id="@+id/viewCommentButton"
                         android:text="View comments"
                         android:layout_centerVertical="true"/>
+                    <Button
+                        android:layout_width="300dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/uploadImageButton"
+                        android:text="View comments"
+                        android:layout_centerVertical="true"/>
+                    <Button
+                        android:layout_width="300dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/viewImagesButton"
+                        android:text="View comments"
+                        android:layout_centerVertical="true"/>
 
                 </LinearLayout>
             </LinearLayout>
