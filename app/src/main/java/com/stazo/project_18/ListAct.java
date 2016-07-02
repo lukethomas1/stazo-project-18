@@ -297,7 +297,7 @@ public class ListAct extends android.support.v4.app.Fragment {
         public boolean onTouch(View v, MotionEvent event) {
 
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                ((MainAct) getActivity()).goToEventInfo(e.getEvent_id());
+                ((MainAct) getActivity()).goToEventInfo(e.getEvent_id(), true);
                 container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
             }
             if (event.getAction() == MotionEvent.ACTION_CANCEL) {

@@ -371,7 +371,7 @@ public class SearchFrag extends Fragment {
 
     private void goToEventInfo(String event_id) {
         //((MainAct) getActivity()).simulateClick(event_id);
-        ((MainAct) getActivity()).goToEventInfo(event_id);
+        ((MainAct) getActivity()).goToEventInfo(event_id, true);
     }
     private void goToOtherProfile(String user_id) {
         ((MainAct) getActivity()).goToOtherProfile(user_id);
