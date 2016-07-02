@@ -84,6 +84,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private int page = 0;
     private InteractiveScrollViewHorizontal scrollView;
 
+    private boolean autoOpen = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
@@ -100,7 +102,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (autoOpen) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
 
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -412,6 +418,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     public void setEventID(String passedEventID) {
         this.passedEventID = passedEventID;
     }
+    public void setAutoOpen(boolean autoOpen) {
+        this.autoOpen = autoOpen;
+    }
+
 
     // Pulls event info and delegates to showInfo to display the correct info
     private void grabEventInfo(final String event_id) {
@@ -520,32 +530,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //Set event length
         String durationText = buildDurationTime(startTime, endTime);
         eventLength.setText(durationText);
-
-        /*
-        //Set how long until start time or if started/completed yet
-        Calendar curr = Calendar.getInstance();
-        long currTime = curr.getTimeInMillis();
-        long timeTill = startTime - currTime;
-        long timeTillHour = timeTill/(1000 * 60 * 60);
-        long timeTillMinute = timeTill/(1000 * 60) - timeTillHour*60;
-
-        System.out.println("Time till: " + timeTill);
-        if (timeTill <= 0) {
-            eventTime.setText("STARTED!");
-            long timeAfterStart = endTime - currTime;
-            long timeAfterHour = timeAfterStart/(1000 * 60 * 60);
-            long timeAfterMinute = timeAfterStart/(1000 * 60) - timeAfterHour*60;
-            if (timeAfterMinute > 60) {
-                eventTime.setText("Completed");
-            }
-            if (timeAfterMinute < 0) {
-                eventTime.setText("Finished " + timeAfterMinute + " minutes ago");
-            }
-        }
-        else {
-            eventTime.setText(timeTillHour + " hours and " + timeTillMinute + " minutes left until start of event");
-        }
-        */
 
         v.setVisibility(View.VISIBLE);
     }
@@ -754,7 +738,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             b.setText("Join");
 
         } else {
-            me.attendEvent(currEvent.getEvent_id(), fb);
+            me.attendEvent(currEvent.getEvent_id(), currEvent.getName(), currEvent.getCreator_id(), fb);
             b.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
             b.setTextColor(getResources().getColor(R.color.colorDivider));
             b.setTypeface(null, Typeface.ITALIC);

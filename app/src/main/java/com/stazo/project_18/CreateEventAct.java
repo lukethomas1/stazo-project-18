@@ -1,19 +1,24 @@
 package com.stazo.project_18;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -191,7 +196,8 @@ public class CreateEventAct extends AppCompatActivity {
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto();
+                //takePhoto();
+                buttonChooser();
             }
         });
         Button selectPhotoButton = (Button) this.findViewById(R.id.AddImageFromLibrary);
@@ -476,6 +482,49 @@ public class CreateEventAct extends AppCompatActivity {
 
     // Camera stuff
 
+    private void buttonChooser() {
+        final CharSequence[] items = { "Take Photo", "Choose from Library",
+                "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                CreateEventAct.this);
+
+        builder.setTitle("Choose option:");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    takePhoto();
+                } else if (items[item].equals("Choose from Library")) {
+                    selectPhoto();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void photoChoices() {
+        Intent selectPhotoIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        List<Intent> intentList = new ArrayList<>();
+        intentList = addIntentsToList(getBaseContext(), intentList, takePictureIntent);
+        Intent chooseIntent = Intent.createChooser(selectPhotoIntent, "Choose option:");
+        chooseIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
+        startActivityForResult(chooseIntent, 3);
+    }
+    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
+        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo resolveInfo : resInfo) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            Intent targetedIntent = new Intent(intent);
+            targetedIntent.setPackage(packageName);
+            list.add(targetedIntent);
+        }
+        return list;
+    }
+
     private void selectPhoto() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -490,7 +539,6 @@ public class CreateEventAct extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
 
         }
-        //Go to photo library
     }
 
     private void takePhoto() {
@@ -551,9 +599,35 @@ public class CreateEventAct extends AppCompatActivity {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-//        File photo = new File(Environment.getExternalStorageDirectory(),  imageFileName);
         cameraPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //right after the user decies whether or not to give app camera permissions
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to use ur shitty camera :(");
+            }
+        }
+
+        //right after the user decides whether or not to give app photo gallery permissions
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to access photo gallery
+                selectPhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to view ur shitty photos :(");
+            }
+        }
+
     }
 
     // On intent return with bitmap in data
@@ -570,6 +644,7 @@ public class CreateEventAct extends AppCompatActivity {
             //display
             try {
 //                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cameraPhotoUri);
+                //getRotationFromCamera
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
                 mainImageView.setImageBitmap(imageBitmap);
@@ -597,52 +672,6 @@ public class CreateEventAct extends AppCompatActivity {
                 System.out.println("Something went wrong when u selected an image or pushing photo");
             }
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        //right after the user decies whether or not to give app camera permissions
-        if (requestCode == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to use camera
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                //preemptively set file location
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    System.out.println("Could not create file for camera photo");
-                }
-
-                // pass in file location and open camera
-                if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.stazo.project_18.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, 1);
-                }
-            }
-            else {
-                System.out.println("You didn't give us permission to use ur shitty camera :(");
-            }
-        }
-
-        //right after the user decides whether or not to give app photo gallery permissions
-        if (requestCode == 2) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to access photo gallery
-                Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 2); //2 is the callback number code for this specific call #magicnumbersftw #fuckstyle
-            }
-            else {
-                System.out.println("You didn't give us permission to view ur shitty photos :(");
-            }
-        }
-
     }
 
     public void pushMainImage(Uri imageFile) {

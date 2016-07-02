@@ -3,6 +3,11 @@ package com.stazo.project_18;
 import android.content.Context;
 import android.content.Intent;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,8 +40,15 @@ public class NotificationCommentEvent extends Notification2 {
         this.eventName = (String) notifMap.get("eventName");
     }
 
+    public NotificationCommentEvent(NotificationCommentEvent other) {
+        super(other.getType());
+        this.userNames = other.getUserNames();
+        this.eventId = other.getEventId();
+        this.eventName = other.getEventName();
+    }
+
     public void onNotificationClicked(Context context) {
-        ((MainAct) context).goToEventInfo(eventId);
+        ((MainAct) context).goToEventInfo(eventId, true);
     }
 
     public String generateMessage(){
@@ -50,6 +62,39 @@ public class NotificationCommentEvent extends Notification2 {
         }
         message += " commented on \"" + eventName + "\".";
         return message;
+    }
+
+    public SnapToBase hasConflict(DataSnapshot userNotifs) {
+        for (DataSnapshot notif: userNotifs.getChildren()) {
+            HashMap<String, Object> notifMap = (HashMap<String, Object>) notif.getValue();
+            if (((Long) notifMap.get("type")).intValue() != Notification2.TYPE_COMMENT_EVENT) {
+                continue;
+            }
+            NotificationCommentEvent nce = new NotificationCommentEvent(notifMap);
+            if (nce.getEventId().equals(eventId) ) {
+                return new SnapToBase(notif, notif.getRef());
+            }
+        }
+        return null;
+    }
+
+    public Notification2 handleConflict(SnapToBase stb) {
+
+        // get old notif
+        NotificationCommentEvent conflictNotif = new NotificationCommentEvent(
+                (HashMap<String, Object>) stb.getSnap().getValue());
+
+        // update new notif
+        for (String s: conflictNotif.getUserNames()) {
+            if (!userNames.contains(s)) {
+                userNames.add(s);
+            }
+        }
+
+        // remove old conflict
+        stb.getBase().setValue(null);
+
+        return new NotificationCommentEvent(this);
     }
 
     public String getEventName() {
@@ -76,4 +121,5 @@ public class NotificationCommentEvent extends Notification2 {
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
+
 }

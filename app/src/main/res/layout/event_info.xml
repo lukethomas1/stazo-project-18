@@ -244,7 +244,7 @@
                     android:layout_marginTop="10dp">
 
                     <LinearLayout
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/joinedLayout"
@@ -294,6 +294,18 @@
                         android:layout_width="300dp"
                         android:layout_height="80dp"
                         android:id="@+id/viewCommentButton"
+                        android:text="View comments"
+                        android:layout_centerVertical="true"/>
+                    <Button
+                        android:layout_width="300dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/uploadImageButton"
+                        android:text="View comments"
+                        android:layout_centerVertical="true"/>
+                    <Button
+                        android:layout_width="300dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/viewImagesButton"
                         android:text="View comments"
                         android:layout_centerVertical="true"/>
 

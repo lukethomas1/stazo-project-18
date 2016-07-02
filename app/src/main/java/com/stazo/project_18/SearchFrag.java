@@ -1,16 +1,13 @@
 package com.stazo.project_18;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -244,25 +241,11 @@ public class SearchFrag extends Fragment {
                 break;
             }
 
-            // things to put in
-            TextView eventName = new TextView(getContext());
-            eventName.setText(e.getName());
             LinearLayout container = new LinearLayout(getActivity());
-            ImageView iv = new ImageView(getActivity());
-            iv.setImageResource(R.drawable.icon_multiple_people);
-            TextView tv = new TextView(getActivity());
-            tv.setText(Integer.toString(e.getAttendees().size()));
-            TextView info = new TextView(getActivity());
-            info.setText(e.getTimeString(false));
-            makePretty(eventName, iv, tv, info, container);
-
-            // listeners
             EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
-            container.setOnTouchListener(listener);
-            eventName.setOnTouchListener(listener);
-            iv.setOnTouchListener(listener);
-            tv.setOnTouchListener(listener);
-            info.setOnTouchListener(listener);
+
+            ((Project_18) getActivity().getApplication()).makeEventButton
+                    (getActivity(), e, container, listener, false);
 
             // add to layout
             queryButtonLayout.addView(container);
@@ -385,7 +368,7 @@ public class SearchFrag extends Fragment {
 
     private void goToEventInfo(String event_id) {
         //((MainAct) getActivity()).simulateClick(event_id);
-        ((MainAct) getActivity()).goToEventInfo(event_id);
+        ((MainAct) getActivity()).goToEventInfo(event_id, true);
     }
     private void goToOtherProfile(String user_id) {
         ((MainAct) getActivity()).goToOtherProfile(user_id);

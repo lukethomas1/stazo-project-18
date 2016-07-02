@@ -67,7 +67,7 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
 
     private void goToEventInfo(String event_id) {
         // Delegate Activity switching to encapsulating activity
-        ((MainAct)this.getActivity()).goToEventInfo(event_id);
+        ((MainAct)this.getActivity()).goToEventInfo(event_id, true);
     }
 
     public void pullNotifications(String userId) {

@@ -3,6 +3,8 @@ package com.stazo.project_18;
 import android.content.Context;
 import android.content.Intent;
 
+import com.firebase.client.DataSnapshot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,11 +40,20 @@ public class NotificationFriendHost extends Notification2 {
     }
 
     public void onNotificationClicked(Context context) {
-        ((MainAct) context).goToEventInfo(eventId);
+        ((MainAct) context).goToEventInfo(eventId, true);
     }
 
     public String generateMessage(){
         return hostName + " is hosting " + eventName + " " + timeString + ".";
+    }
+
+    public SnapToBase hasConflict(DataSnapshot userNotifs) {
+        // no conflict is possible
+        return null;
+    }
+
+    public Notification2 handleConflict(SnapToBase stb) {
+        return null;
     }
 
     public String getEventName() {

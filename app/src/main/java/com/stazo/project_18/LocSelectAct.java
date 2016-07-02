@@ -161,7 +161,8 @@ public class LocSelectAct extends FragmentActivity
             System.out.println("endTimeToBePushed: " + eventToInit.getEndTime());
 
             // Push the event to the database
-            eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
+            eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
+                    Project_18.me.getName(), Project_18.me.getUserFollowers());
 
             //push the image to firebasestorage
             if (imageUri != null) {

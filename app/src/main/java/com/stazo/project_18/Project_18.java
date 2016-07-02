@@ -1,13 +1,22 @@
 package com.stazo.project_18;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -35,6 +44,9 @@ public class Project_18 extends Application {
     // Popularity thresholds
     public static final int POP_THRESH1 = 10;
     public static final int POP_THRESH2 = 20;
+
+    private static int eventsTextSize = 16;
+    private static int detailsTextSize = 12;
 
     public static User me;
     public static ArrayList<Event> pulledEvents = new ArrayList<Event>(); // list of all the events pulled
@@ -235,4 +247,117 @@ public class Project_18 extends Application {
         return scaledBitmap;
 
     }
+
+    public void makeEventButton(Context context, Event e, LinearLayout container,
+                                View.OnTouchListener listener,
+                                boolean withBorders) {
+
+        TextView eventName = new Button(context);
+        eventName.setText(e.toString());
+        ImageView iv = new ImageView(context);
+        iv.setImageResource(R.drawable.icon_multiple_people);
+        TextView numGoing = new TextView(context);
+        numGoing.setText(Integer.toString(e.getAttendees().size()));
+        TextView info = new TextView(context);
+        info.setText(e.getTimeString(false));
+        TextView hostOrJoined = new TextView(context);
+
+        if (e.getCreator_id().equals(Project_18.me.getID())) {
+            hostOrJoined.setText("Host");
+            hostOrJoined.setTextColor(getResources().getColor(R.color.colorPrimary));
+        } else if (e.getAttendees().contains(Project_18.me.getID())){
+            hostOrJoined.setText("Joined");
+            hostOrJoined.setTextColor(getResources().getColor(R.color.colorAccentDark));
+        }
+
+        // FORMATTING
+
+        LinearLayout.LayoutParams containerLP = new LinearLayout.
+                LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        containerLP.gravity = Gravity.CENTER_VERTICAL;
+        container.setLayoutParams(containerLP);
+        container.setOrientation(LinearLayout.HORIZONTAL);
+
+        if (withBorders) {
+            container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
+        } else {
+            container.setBackgroundColor(getResources().getColor(R.color.white));
+        }
+
+        LinearLayout eventNameAndInfo = new LinearLayout(context);
+        LinearLayout.LayoutParams lp = new
+                LinearLayout.LayoutParams(950,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity=Gravity.NO_GRAVITY;
+        eventNameAndInfo.setLayoutParams(lp);
+        eventNameAndInfo.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout nameAndHost = new LinearLayout(context);
+        LinearLayout.LayoutParams nameAndHostLP = new
+                LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        nameAndHost.setLayoutParams(nameAndHostLP);
+        nameAndHost.setOrientation(LinearLayout.HORIZONTAL);
+
+        hostOrJoined.setPadding(50, 0, 0, 60);
+        hostOrJoined.setTextSize(detailsTextSize);
+        hostOrJoined.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams hostLP = new
+                LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        hostOrJoined.setLayoutParams(hostLP);
+
+        eventName.setTextSize(eventsTextSize);
+        eventName.setTypeface(null, Typeface.NORMAL);
+        eventName.setGravity(Gravity.CENTER_VERTICAL);
+        eventName.setPadding(80, 0, 0, 0);
+        eventName.setWidth(740);
+        eventName.setAllCaps(false);
+        eventName.setBackground(null);
+
+        nameAndHost.addView(eventName);
+        nameAndHost.addView(hostOrJoined);
+
+        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        info.setTextSize(detailsTextSize);
+        info.setPadding(160, 0, 0, 20);
+        info.setGravity(Gravity.CENTER_VERTICAL);
+
+        LinearLayout.LayoutParams numGoingLP=new LinearLayout.
+                LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        numGoingLP.gravity = Gravity.CENTER_VERTICAL;
+        numGoingLP.rightMargin = 20;
+        numGoing.setLayoutParams(numGoingLP);
+        numGoing.setTextColor(getResources().getColor(R.color.colorAccentDark));
+
+        LinearLayout.LayoutParams ivLP=new LinearLayout.
+                LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        ivLP.gravity=Gravity.CENTER_VERTICAL;
+        ivLP.rightMargin = 20;
+        iv.setLayoutParams(ivLP);
+        iv.setColorFilter(getResources().getColor(R.color.colorTextPrimary));
+
+
+        // ADDING VIEWS
+
+        eventNameAndInfo.addView(nameAndHost);
+        eventNameAndInfo.addView(info);
+
+        container.addView(eventNameAndInfo);
+        container.addView(iv);
+        container.addView(numGoing);
+
+
+        // LISTENERS
+        container.setOnTouchListener(listener);
+        eventName.setOnTouchListener(listener);
+        iv.setOnTouchListener(listener);
+        numGoing.setOnTouchListener(listener);
+        info.setOnTouchListener(listener);
+        hostOrJoined.setOnTouchListener(listener);
+    }
+
 }
