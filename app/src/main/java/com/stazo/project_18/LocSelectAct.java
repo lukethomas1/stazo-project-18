@@ -190,7 +190,7 @@ public class LocSelectAct extends FragmentActivity
 
                 // Add marker to map
                 eventMarker = map.addMarker(markerOpts);
-                
+
                 //moving camera to default
                 CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
