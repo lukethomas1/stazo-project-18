@@ -3,7 +3,9 @@ package com.stazo.project_18;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -19,6 +21,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 /**
  * Created by Ansel on 4/28/16.
@@ -30,6 +36,8 @@ public class LocSelectAct extends FragmentActivity
     private Event eventToInit;
     private Marker eventMarker;
 
+    private Uri imageUri;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_loc_selector);
@@ -39,6 +47,10 @@ public class LocSelectAct extends FragmentActivity
 
         // Get the event to initialize
         eventToInit = (Event) callingIntent.getParcelableExtra("eventToInit");
+        String imageString = callingIntent.getStringExtra("mainImageUri");
+        if (imageString != null) {
+            imageUri = Uri.parse(imageString);
+        }
         System.out.println("Start time: " + eventToInit.getStartTime());
         System.out.println("End time: " + eventToInit.getEndTime());
 
@@ -114,10 +126,35 @@ public class LocSelectAct extends FragmentActivity
             // Push the event to the database
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 
+            //push the image to firebasestorage
+            pushMainImage(imageUri);
+
             // Go to the map screen
             Intent intent = new Intent(this, MainAct.class);
             startActivity(intent);
         }
+    }
+
+    public void pushMainImage(Uri imageFile) {
+
+        StorageReference storageRef = ((Project_18) getApplication()).getFBStorage();
+
+        //replace with eventid instead of file name later
+        StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + eventToInit.getEvent_id() + ".jpg");
+        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("your upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("your upload succeeded");
+                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
+            }
+        });
     }
 
     @Override

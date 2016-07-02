@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -74,6 +75,8 @@ public class CreateEventAct extends AppCompatActivity {
     private long startTimeLong, endTimeLong;
     //int typeNum = -1;
     int typeNum = 0;
+
+    private Uri imageUri;
 
 
     private String cameraPhotoPath;
@@ -436,6 +439,9 @@ public class CreateEventAct extends AppCompatActivity {
     private void goToLocSelectAct() {
         Intent intent = new Intent(this, LocSelectAct.class);
         intent.putExtra("eventToInit", event);
+        if (imageUri != null) {
+            intent.putExtra("mainImageUri", imageUri.toString());
+        }
         startActivity(intent);
     }
 
@@ -619,10 +625,14 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     public void pushMainImage(Uri imageFile) {
+
+        //just for passing to next intent
+        imageUri = imageFile;
+
         StorageReference storageRef = ((Project_18) getApplication()).getFBStorage();
 
         //replace with eventid instead of file name later
-        StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + imageFile.getLastPathSegment());
+        StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + "dankmemes" + ".jpg");
         UploadTask uploadTask = mainImageStorage.putFile(imageFile);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -634,6 +644,7 @@ public class CreateEventAct extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 System.out.println("your upload succeeded");
+                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
             }
         });
     }
