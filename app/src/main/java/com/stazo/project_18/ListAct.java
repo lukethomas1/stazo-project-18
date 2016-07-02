@@ -35,10 +35,10 @@ public class ListAct extends android.support.v4.app.Fragment {
     private static final long HAPPENING_NOW_WINDOW = (60 * 60 * 1000); // Milliseconds in an hour
 
     private Firebase fb;
-    ArrayList<Event> eventList = new ArrayList<Event>();
-    ArrayList<Event> litEventsList = new ArrayList<>();
-    ArrayList<Event> happeningNowList = new ArrayList<>();
-    ArrayList<Event> laterList = new ArrayList<>();
+    private ArrayList<Event> eventList = new ArrayList<Event>();
+    private ArrayList<Event> litEventsList = new ArrayList<>();
+    private ArrayList<Event> happeningNowList = new ArrayList<>();
+    private ArrayList<Event> laterList = new ArrayList<>();
 
 
     private TextView loadingText;
