@@ -36,7 +36,7 @@ public class NotificationCommentEvent extends Notification2 {
     }
 
     public void onNotificationClicked(Context context) {
-        ((MainAct) context).goToEventInfo(eventId);
+        ((MainAct) context).goToEventInfo(eventId, true);
     }
 
     public String generateMessage(){

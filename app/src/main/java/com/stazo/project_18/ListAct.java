@@ -35,10 +35,10 @@ public class ListAct extends android.support.v4.app.Fragment {
     private static final long HAPPENING_NOW_WINDOW = (60 * 60 * 1000); // Milliseconds in an hour
 
     private Firebase fb;
-    ArrayList<Event> eventList = new ArrayList<Event>();
-    ArrayList<Event> litEventsList = new ArrayList<>();
-    ArrayList<Event> happeningNowList = new ArrayList<>();
-    ArrayList<Event> laterList = new ArrayList<>();
+    private ArrayList<Event> eventList = new ArrayList<Event>();
+    private ArrayList<Event> litEventsList = new ArrayList<>();
+    private ArrayList<Event> happeningNowList = new ArrayList<>();
+    private ArrayList<Event> laterList = new ArrayList<>();
 
 
     private TextView loadingText;
@@ -75,6 +75,19 @@ public class ListAct extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.showMoreLaterButton).
                 setOnTouchListener(new ShowMoreOnTouchListener("showMoreLater",
                         (Button) getActivity().findViewById(R.id.showMoreLaterButton)));
+
+        // set layouts
+        litLayout = (LinearLayout) getActivity().findViewById(R.id.litLayout);
+        happeningNowLayout = (LinearLayout) getActivity().findViewById(R.id.happeningNowLayout);
+        laterLayout = (LinearLayout) getActivity().findViewById(R.id.laterLayout);
+
+        pageHappeningNow = 0;
+        pageLater = 0;
+
+        eventList.clear();
+        litEventsList.clear();
+        happeningNowList.clear();
+        laterList.clear();
 
         // Pull the events from firebase
         fb.child("Events").addListenerForSingleValueEvent(
@@ -114,10 +127,6 @@ public class ListAct extends android.support.v4.app.Fragment {
     // Put all events into categories
     private void categorizeEvents() {
 
-        litLayout = (LinearLayout) getActivity().findViewById(R.id.litLayout);
-        happeningNowLayout = (LinearLayout) getActivity().findViewById(R.id.happeningNowLayout);
-        laterLayout = (LinearLayout) getActivity().findViewById(R.id.laterLayout);
-
         // sort events by popularity
         Collections.sort(eventList, new popularityCompare());
 
@@ -152,13 +161,13 @@ public class ListAct extends android.support.v4.app.Fragment {
 
     public void adjustShowMoreButtons() {
 
-        if (happeningNowList.size() > NUM_HAPPENING_NOW) {
+        if (happeningNowList.size() > (pageHappeningNow + 1) * NUM_HAPPENING_NOW) {
             getActivity().findViewById(R.id.showMoreHappeningNowButton).setVisibility(View.VISIBLE);
         } else {
             getActivity().findViewById(R.id.showMoreHappeningNowButton).setVisibility(View.GONE);
         }
 
-        if (laterList.size() > NUM_LATER) {
+        if (laterList.size() > (pageLater + 1) * NUM_LATER) {
             getActivity().findViewById(R.id.showMoreLaterButton).setVisibility(View.VISIBLE);
         } else {
             getActivity().findViewById(R.id.showMoreLaterButton).setVisibility(View.GONE);
@@ -291,7 +300,7 @@ public class ListAct extends android.support.v4.app.Fragment {
         public boolean onTouch(View v, MotionEvent event) {
 
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                ((MainAct) getActivity()).goToEventInfo(e.getEvent_id());
+                ((MainAct) getActivity()).goToEventInfo(e.getEvent_id(), true);
                 container.setBackground(getResources().getDrawable(R.drawable.border_event_button));
             }
             if (event.getAction() == MotionEvent.ACTION_CANCEL) {

@@ -473,7 +473,7 @@ public class MainAct extends AppCompatActivity
     }
 
 
-    public void goToEventInfo(String event_id) {
+    public void goToEventInfo(String event_id, boolean autoOpen) {
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
@@ -495,6 +495,7 @@ public class MainAct extends AppCompatActivity
 
         eventInfoFrag = new EventInfoFrag();
         eventInfoFrag.setEventID(event_id);
+        eventInfoFrag.setAutoOpen(autoOpen);
         this.getSupportFragmentManager().beginTransaction().
                 add(R.id.show_eventInfo, eventInfoFrag).addToBackStack("EventInfoFrag").commit();
         //transaction.add(eventInfoFrag, "EventInfoFrag").commit();

@@ -435,7 +435,7 @@ public class ProfileFrag extends Fragment {
 
 
     private void goToEventInfo(String event_id) {
-        ((MainAct) getActivity()).goToEventInfo(event_id);
+        ((MainAct) getActivity()).goToEventInfo(event_id, true);
     }
 
     private void goToBrowse() {

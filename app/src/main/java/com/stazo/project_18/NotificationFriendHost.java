@@ -38,7 +38,7 @@ public class NotificationFriendHost extends Notification2 {
     }
 
     public void onNotificationClicked(Context context) {
-        ((MainAct) context).goToEventInfo(eventId);
+        ((MainAct) context).goToEventInfo(eventId, true);
     }
 
     public String generateMessage(){
