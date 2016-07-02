@@ -164,7 +164,9 @@ public class LocSelectAct extends FragmentActivity
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
 
             //push the image to firebasestorage
-            pushMainImage(imageUri);
+            if (imageUri != null) {
+                pushMainImage(imageUri);
+            }
 
             // Go to the map screen
             Intent intent = new Intent(this, MainAct.class);
