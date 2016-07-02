@@ -244,7 +244,7 @@
                     android:layout_marginTop="10dp">
 
                     <LinearLayout
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/joinedLayout"
