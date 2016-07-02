@@ -76,6 +76,16 @@ public class ListAct extends android.support.v4.app.Fragment {
                 setOnTouchListener(new ShowMoreOnTouchListener("showMoreLater",
                         (Button) getActivity().findViewById(R.id.showMoreLaterButton)));
 
+        // clear layouts
+        litLayout = (LinearLayout) getActivity().findViewById(R.id.litLayout);
+        happeningNowLayout = (LinearLayout) getActivity().findViewById(R.id.happeningNowLayout);
+        laterLayout = (LinearLayout) getActivity().findViewById(R.id.laterLayout);
+
+        eventList.clear();
+        litEventsList.clear();
+        happeningNowList.clear();
+        laterList.clear();
+
         // Pull the events from firebase
         fb.child("Events").addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -114,10 +124,6 @@ public class ListAct extends android.support.v4.app.Fragment {
     // Put all events into categories
     private void categorizeEvents() {
 
-        litLayout = (LinearLayout) getActivity().findViewById(R.id.litLayout);
-        happeningNowLayout = (LinearLayout) getActivity().findViewById(R.id.happeningNowLayout);
-        laterLayout = (LinearLayout) getActivity().findViewById(R.id.laterLayout);
-
         // sort events by popularity
         Collections.sort(eventList, new popularityCompare());
 
@@ -152,13 +158,13 @@ public class ListAct extends android.support.v4.app.Fragment {
 
     public void adjustShowMoreButtons() {
 
-        if (happeningNowList.size() > NUM_HAPPENING_NOW) {
+        if (happeningNowList.size() > (pageHappeningNow + 1) * NUM_HAPPENING_NOW) {
             getActivity().findViewById(R.id.showMoreHappeningNowButton).setVisibility(View.VISIBLE);
         } else {
             getActivity().findViewById(R.id.showMoreHappeningNowButton).setVisibility(View.GONE);
         }
 
-        if (laterList.size() > NUM_LATER) {
+        if (laterList.size() > (pageLater + 1) * NUM_LATER) {
             getActivity().findViewById(R.id.showMoreLaterButton).setVisibility(View.VISIBLE);
         } else {
             getActivity().findViewById(R.id.showMoreLaterButton).setVisibility(View.GONE);
