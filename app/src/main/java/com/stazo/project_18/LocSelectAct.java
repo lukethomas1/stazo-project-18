@@ -3,6 +3,8 @@ package com.stazo.project_18;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -119,9 +121,12 @@ public class LocSelectAct extends FragmentActivity
         markerOpts.position(point);
         markerOpts.draggable(true);
         // Set the color of the marker
-        markerOpts.icon(
-                //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-                BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
+        Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getResources(),
+                        R.drawable.flaticon_marker),
+                100,
+                100);
+        markerOpts.icon(BitmapDescriptorFactory.
+                fromBitmap(markerBitmap));
         // Remove the previous marker if there is one on the map
         if (eventMarker != null) {
             eventMarker.remove();

@@ -200,13 +200,6 @@ public class CreateEventAct extends AppCompatActivity {
                 buttonChooser();
             }
         });
-        Button selectPhotoButton = (Button) this.findViewById(R.id.AddImageFromLibrary);
-        selectPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPhoto();
-            }
-        });
     }
 
     //  TOOLBAR STUFF
@@ -369,18 +362,6 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        /*System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag
-                .getDay()
-                + "/" + startTimeFrag.getHourInt() + "/" + startTimeFrag.getMinInt() + "/");
-        System.out.println("StartDate: " + (endDateFrag.getMonth()) + "/" + endDateFrag.getDay()
-                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/"); */
-
-        int startYear = startDateFrag.getYear();
-        int startMonth = startDateFrag.getMonth() - 1;
-        int startDay = startDateFrag.getDay();
-        int startHour = startTimeFrag.getHourInt();
-        int startMin = startTimeFrag.getMinInt();
-
 
         startCal = new GregorianCalendar(startDateFrag.getYear(),
                 startDateFrag.getMonth() - 1,
@@ -394,49 +375,13 @@ public class CreateEventAct extends AppCompatActivity {
                 endTimeFrag.getMinInt());*/
 
         valid = true;
-        // Check if end date/time is after start date/time
-        /*if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
-            valid = false;
-        }*/
-
-//        //Checks if date/time that was entered is valid
-//        if (!startDate.isEmpty() && !endDate.isEmpty()) {
-//            //Checks if the end month or year is behind the start month or year
-//            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
-//                    startDateFrag.getYear() > endDateFrag.getYear()) {
-//                endDateView.setError(dateAfter);
-//                valid = false;
-//            //Checks that start day isn't after the end day if they're in the same month
-//            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
-//                    startDateFrag.getDay() > endDateFrag.getDay()) {
-//                endDateView.setError(dateAfter);
-//                valid = false;
-//            }
-//
-//            //Check for if start time and end time are on the same day
-//            if (!startTime.isEmpty() && !endTime.isEmpty() &&
-//                    startDateFrag.getDay() == endDateFrag.getDay() &&
-//                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
-//                    startDateFrag.getYear() == endDateFrag.getYear()) {
-//                //Check that start hour isn't after end hour if on the same day
-//                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
-//                    endTimeView.setError(timeAfter);
-//                    valid = false;
-//                //Check that start minute isn't after end minute in the same hour and day
-//                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
-//                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
-//                    endTimeView.setError(timeAfter);
-//                    valid = false;
-//                }
-//            }
-//        }
 
         System.out.println("startDate: " + startCal.getTime());
         //System.out.println("endDate: " + endCal.getTime());
         System.out.println("startTime: " + startCal.getTimeInMillis());
-        System.out.println("endTime: " + endCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
-        endTimeLong = endCal.getTimeInMillis();
+        // TODO: FIX THIS
+        endTimeLong = startCal.getTimeInMillis() + 999999;
 
         //Return validity of user input
         return valid;

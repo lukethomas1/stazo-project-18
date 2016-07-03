@@ -270,6 +270,7 @@ public class ProfileFrag extends Fragment {
 
                 /* add myEvents */
                 for (String event_id : user.getMyEvents()) {
+                    Log.d("debug", event_id);
                     myEvents.add(new Event(dataSnapshot.child(event_id).getValue
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));

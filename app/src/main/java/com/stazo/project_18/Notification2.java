@@ -24,6 +24,8 @@ public abstract class Notification2 {
     public static final int TYPE_FRIEND_HOST = 1;
     public static final int TYPE_NEW_FOLLOW = 2;
     public static final int TYPE_JOINED_EVENT = 3;
+    public static final int TYPE_INVITE_EVENT = 4;
+
 
     private String notifID;
     private boolean viewed = false;
