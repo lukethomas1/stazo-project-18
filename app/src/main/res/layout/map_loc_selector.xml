@@ -14,10 +14,6 @@
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         />
 
-
-
-
-
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +22,8 @@
         android:layout_centerHorizontal="true"
         app:backgroundTint="#49D0FC"
         android:layout_margin="@dimen/fab_margin"
-        android:onClick="goToMap"/>
+        android:onClick="goToMap"
+        android:visibility="gone"/>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:name="com.google.android.gms.maps.MapFragment"
@@ -34,6 +31,19 @@
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_below="@id/place_autocomplete_fragment"/>
+        android:layout_below="@id/place_autocomplete_fragment">
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Create event"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:onClick="goToMap"
+            android:gravity="center"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom = "25dp"/>
+    </fragment>
 
 </RelativeLayout>

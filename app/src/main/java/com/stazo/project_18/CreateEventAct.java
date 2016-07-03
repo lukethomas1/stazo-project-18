@@ -199,13 +199,6 @@ public class CreateEventAct extends AppCompatActivity {
                 buttonChooser();
             }
         });
-        Button selectPhotoButton = (Button) this.findViewById(R.id.AddImageFromLibrary);
-        selectPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPhoto();
-            }
-        });
     }
 
     //  TOOLBAR STUFF
@@ -369,18 +362,6 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        /*System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag
-                .getDay()
-                + "/" + startTimeFrag.getHourInt() + "/" + startTimeFrag.getMinInt() + "/");
-        System.out.println("StartDate: " + (endDateFrag.getMonth()) + "/" + endDateFrag.getDay()
-                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/"); */
-
-        int startYear = startDateFrag.getYear();
-        int startMonth = startDateFrag.getMonth() - 1;
-        int startDay = startDateFrag.getDay();
-        int startHour = startTimeFrag.getHourInt();
-        int startMin = startTimeFrag.getMinInt();
-
 
         startCal = new GregorianCalendar(startDateFrag.getYear(),
                 startDateFrag.getMonth() - 1,
@@ -430,12 +411,18 @@ public class CreateEventAct extends AppCompatActivity {
 //            }
 //        }
 
+
         //System.out.println("startDate: " + startCal.getTime());
         //System.out.println("endDate: " + endCal.getTime());
         //System.out.println("startTime: " + startCal.getTimeInMillis());
         //System.out.println("endTime: " + startCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
         //endTimeLong = endCal.getTimeInMillis();
+
+        System.out.println("startTime: " + startCal.getTimeInMillis());
+        startTimeLong = startCal.getTimeInMillis();
+        // TODO: FIX THIS
+        endTimeLong = startCal.getTimeInMillis() + 999999;
 
         //Return validity of user input
         return valid;
