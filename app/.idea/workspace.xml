@@ -10,7 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="379c00f0-628b-44a0-9413-cba1c56dafb3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" />
     </list>
     <ignored path="app.iws" />
@@ -55,11 +54,11 @@
       <file leaf-file-name="NotificationFrag.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.79965156">
-              <caret line="95" column="74" selection-start-line="95" selection-start-column="74" selection-end-line="95" selection-end-column="74" />
+            <state vertical-scroll-proportion="0.77003485">
+              <caret line="46" column="23" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
               <folding>
-                <element signature="e#2033#2272#0" expanded="true" />
-                <element signature="e#2271#2272#0" expanded="true" />
+                <element signature="e#2104#2343#0" expanded="true" />
+                <element signature="e#2342#2343#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2425,11 +2424,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.79965156">
-          <caret line="95" column="74" selection-start-line="95" selection-start-column="74" selection-end-line="95" selection-end-column="74" />
+        <state vertical-scroll-proportion="0.77003485">
+          <caret line="46" column="23" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
           <folding>
-            <element signature="e#2033#2272#0" expanded="true" />
-            <element signature="e#2271#2272#0" expanded="true" />
+            <element signature="e#2104#2343#0" expanded="true" />
+            <element signature="e#2342#2343#0" expanded="true" />
           </folding>
         </state>
       </provider>
