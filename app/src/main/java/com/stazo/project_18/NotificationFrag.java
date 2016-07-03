@@ -43,34 +43,8 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
         // Set the layout
         LL1 = (LinearLayout)v.findViewById(R.id.LL1);
 
-        /*
-        The problem here is that pullNotifications isn't updating the notifs ArrayList before the
-        rest of the code gets executed because of the whole asynchronous firebase listener things.
-
-        So I added this fake event as a demonstration that it works, and if pullNotifications did
-        update notifs early enough, uncommenting it below this would work perfectly.
-
-        I'm not sure how to fix it, so I'm just going to commit and push this and then try to figure
-        it out.
-         */
-
-        // Update the notifications
-        //pullNotifications(currentUser.getID());
-
-        NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
-                "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
-        notifs.add(nje);
-
-        // There are no notifications to show
-        if(notifs.isEmpty()) {
-            ((TextView)v.findViewById(R.id.loadingText)).setText("No Notifications");
-        }
-
-        // There are notifications to show, show them
-        else {
-            // Show them on the screen
-            displayNotifications();
-        }
+        // Update the notifications and then display them
+        pullNotifications(currentUser.getID());
 
         return v;
     }
@@ -121,8 +95,15 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                     }
                 }
 
-                for (Notification2 notif: notifs) {
-                    Log.d("notifs", notif.generateMessage());
+                // There are no notifications to show
+                if(notifs.isEmpty()) {
+                    ((TextView)v.findViewById(R.id.loadingText)).setText("No Notifications");
+                }
+
+                // There are notifications to show, show them
+                else {
+                    // Show them on the screen
+                    displayNotifications();
                 }
             }
 

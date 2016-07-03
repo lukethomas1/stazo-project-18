@@ -40,7 +40,12 @@ public class NotificationHandler {
         NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
                 "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
 
-        pullNotifications(Project_18.me.getID());
+        /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);*/
+
+        //pullNotifications();
     }
 
     // PULL AND PRINT BRIAN'S NOTIFICATIONS

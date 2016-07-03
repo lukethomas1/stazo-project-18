@@ -81,16 +81,14 @@
                     android:visibility="gone">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:text="There are no ongoing events."
-                        android:textSize="12sp"
+                        android:textSize="16sp"
                         android:lineSpacingExtra="10dp"
                         android:id="@+id/emptyLitText"
-                        android:textColor="@color/colorTextPrimary"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"/>
+                        android:textColor="@color/colorTextPrimary"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -140,14 +138,13 @@
                     android:visibility="gone">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:gravity="center"
                         android:text="There are no ongoing events."
-                        android:textSize="12sp"
+                        android:textSize="16sp"
                         android:lineSpacingExtra="10dp"
                         android:id="@+id/emptyHappeningNowText"
-                        android:textColor="@color/colorTextPrimary"
-                        android:layout_marginTop="10dp"/>
+                        android:textColor="@color/colorTextPrimary"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -208,14 +205,13 @@
                     android:visibility="gone">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:gravity="center"
-                        android:text="No upcoming events."
-                        android:textSize="12sp"
+                        android:text="There are no upcoming events."
+                        android:textSize="16sp"
                         android:lineSpacingExtra="10dp"
                         android:id="@+id/emptyLaterText"
-                        android:textColor="@color/colorTextPrimary"
-                        android:layout_marginTop="10dp"/>
+                        android:textColor="@color/colorTextPrimary"/>
                 </LinearLayout>
 
                 <LinearLayout

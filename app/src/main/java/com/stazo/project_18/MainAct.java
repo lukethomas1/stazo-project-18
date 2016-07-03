@@ -192,6 +192,9 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toProfile")) {
             viewPager.setCurrentItem(PROF_POS);
         }
+        if (getIntent().hasExtra("toEvent")) {
+            simulateClick(getIntent().getStringExtra("toEvent"));
+        }
     }
 
     public void hideInfo() {

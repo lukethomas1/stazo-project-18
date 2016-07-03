@@ -10,33 +10,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="379c00f0-628b-44a0-9413-cba1c56dafb3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/local.properties" afterPath="$PROJECT_DIR$/local.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/CreateEventAct.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/CreateEventAct.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/DatePickerFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/DatePickerFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/Event.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/Event.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/EventHandler.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/EventHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/EventInfoFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/EventInfoFrag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/InviteUsersAct.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/InviteUsersAct.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/LocSelectAct.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/LocSelectAct.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MapFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MapFrag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/Notification2.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/Notification2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationCommentEvent.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationCommentEvent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFriendHost.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFriendHost.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationJoinedEvent.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationJoinedEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationNewFollow.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationNewFollow.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/ProfileFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/ProfileFrag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/SearchFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/SearchFrag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/User.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/ViewCommentFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/ViewCommentFrag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/create_event.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/create_event.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/event_info.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/event_info.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/map_loc_selector.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/map_loc_selector.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/list_act_concept.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/list_act_concept.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/welcome_faq.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/welcome_faq.xml" />
     </list>
     <ignored path="app.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,22 +50,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MapFrag.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MapFrag.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="52" column="13" selection-start-line="52" selection-start-column="13" selection-end-line="52" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="NotificationHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="40" column="77" selection-start-line="39" selection-start-column="8" selection-end-line="40" selection-end-column="77" />
-              <folding />
+              <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+              <folding>
+                <element signature="e#592#600#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -88,12 +65,22 @@
       <file leaf-file-name="NotificationFrag.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.006968641">
-              <caret line="53" column="15" selection-start-line="53" selection-start-column="15" selection-end-line="53" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.68118465">
+              <caret line="43" column="53" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
               <folding>
-                <element signature="e#3068#3307#0" expanded="true" />
-                <element signature="e#3306#3307#0" expanded="true" />
+                <element signature="e#2033#2272#0" expanded="true" />
+                <element signature="e#2271#2272#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LocSelectAct.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/LocSelectAct.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="125" column="0" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -112,8 +99,12 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.79310346">
-              <caret line="475" column="23" selection-start-line="475" selection-start-column="16" selection-end-line="475" selection-end-column="23" />
-              <folding />
+              <caret line="479" column="23" selection-start-line="478" selection-start-column="16" selection-end-line="478" selection-end-column="23" />
+              <folding>
+                <element signature="e#17775#17776#0" expanded="false" />
+                <element signature="e#20584#20585#0" expanded="false" />
+                <element signature="e#25528#25529#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -122,7 +113,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/Event.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+              <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -132,8 +123,10 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/EventInfoFrag.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="451" column="0" selection-start-line="451" selection-start-column="0" selection-end-line="451" selection-end-column="0" />
-              <folding />
+              <caret line="457" column="0" selection-start-line="457" selection-start-column="0" selection-end-line="457" selection-end-column="0" />
+              <folding>
+                <element signature="e#15363#15364#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1946,6 +1939,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/LocSelectAct.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" />
       </list>
     </option>
@@ -2342,7 +2337,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MapFrag.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="52" column="13" selection-start-line="52" selection-start-column="13" selection-end-line="52" selection-end-column="13" />
+          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -2374,26 +2369,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="77" selection-start-line="39" selection-start-column="8" selection-end-line="40" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.79310346">
-          <caret line="475" column="23" selection-start-line="475" selection-start-column="16" selection-end-line="475" selection-end-column="23" />
-          <folding />
+          <caret line="479" column="23" selection-start-line="478" selection-start-column="16" selection-end-line="478" selection-end-column="23" />
+          <folding>
+            <element signature="e#17775#17776#0" expanded="false" />
+            <element signature="e#20584#20585#0" expanded="false" />
+            <element signature="e#25528#25529#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/Event.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+          <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -2401,8 +2392,10 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/EventInfoFrag.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="451" column="0" selection-start-line="451" selection-start-column="0" selection-end-line="451" selection-end-column="0" />
-          <folding />
+          <caret line="457" column="0" selection-start-line="457" selection-start-column="0" selection-end-line="457" selection-end-column="0" />
+          <folding>
+            <element signature="e#15363#15364#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2414,13 +2407,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/LocSelectAct.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="125" column="0" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+          <folding>
+            <element signature="e#592#600#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.006968641">
-          <caret line="53" column="15" selection-start-line="53" selection-start-column="15" selection-end-line="53" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.68118465">
+          <caret line="43" column="53" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
           <folding>
-            <element signature="e#3068#3307#0" expanded="true" />
-            <element signature="e#3306#3307#0" expanded="true" />
+            <element signature="e#2033#2272#0" expanded="true" />
+            <element signature="e#2271#2272#0" expanded="true" />
           </folding>
         </state>
       </provider>
