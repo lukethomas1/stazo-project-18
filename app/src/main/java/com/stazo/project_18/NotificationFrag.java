@@ -17,13 +17,14 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class NotificationFrag extends android.support.v4.app.Fragment {
 
     private View v;
     private Firebase fb;
     private User currentUser;
-    private ArrayList<Notification> notifs = new ArrayList<>();
+    private ArrayList<Notification2> notifs = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,24 +46,7 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
     }
 
     private void displayNotifications() {
-        LinearLayout LL1 = ((LinearLayout) this.getActivity().findViewById(R.id.LL1));
 
-        for(Notification not : notifs) {
-            final Notification finalNot = not;
-            Button butt = new Button(this.getActivity());
-            butt.setText(not.getMessage());
-
-            butt.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    goToEventInfo(finalNot.getOnClickID());
-                    setToViewed(finalNot);
-                }
-            });
-
-            if(LL1 != null) {
-                LL1.addView(butt);
-            }
-        }
     }
 
     private void goToEventInfo(String event_id) {
@@ -70,17 +54,27 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
         ((MainAct)this.getActivity()).goToEventInfo(event_id, true);
     }
 
-    public void pullNotifications(String userId) {
-
-        fb.child("NotifDatabase").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void pullNotifications(String userToPullFrom) {
+        Project_18.getFB().child("NotifDatabase").
+                child(userToPullFrom).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot notifSnap: dataSnapshot.getChildren()) {
-                    Notification notif = notifSnap.getValue(Notification.class);
-                    notifs.add(notif);
+                for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
+                    HashMap<String, Object> notifMap = (HashMap<String, Object>) notifSnap.getValue();
+                    if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_COMMENT_EVENT) {
+                        notifs.add(new NotificationCommentEvent(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_FRIEND_HOST) {
+                        notifs.add(new NotificationFriendHost(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_NEW_FOLLOW) {
+                        notifs.add(new NotificationNewFollow(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_JOINED_EVENT) {
+                        notifs.add(new NotificationJoinedEvent(notifMap));
+                    }
                 }
 
-                Log.d("Notifications", "Notifications are: " + notifs.toString());
+                for (Notification2 notif: notifs) {
+                    Log.d("notifs", notif.generateMessage());
+                }
             }
 
             @Override

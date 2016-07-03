@@ -58,7 +58,8 @@ public abstract class Notification2 {
         Random rand = new Random();
         for (int i = 0; i < 10; i++) {
             String id = "" + (char) (65 + rand.nextInt(26));
-            notifID = id;
+            notifID = "";
+            notifID += id;
         }
     }
 

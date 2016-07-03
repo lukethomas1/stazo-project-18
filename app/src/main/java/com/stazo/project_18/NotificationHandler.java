@@ -37,20 +37,20 @@ public class NotificationHandler {
                 "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
 
         ArrayList<String> usersWhoCare = new ArrayList<>();
-        usersWhoCare.add("1184188798300386"); // Brian
+        usersWhoCare.add(Project_18.me.getID()); // Brian
 
         /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
-        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);*/
+        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);
 
-        pullNotifications();
+        pullNotifications(Project_18.me.getID());*/
     }
 
     // PULL AND PRINT BRIAN'S NOTIFICATIONS
-    public void pullNotifications() {
+    public void pullNotifications(String userToPullFrom) {
         Project_18.getFB().child("NotifDatabase").
-                child("1184188798300386").addListenerForSingleValueEvent(new ValueEventListener() {
+                child(userToPullFrom).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
