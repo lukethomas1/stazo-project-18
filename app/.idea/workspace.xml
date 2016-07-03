@@ -10,7 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="379c00f0-628b-44a0-9413-cba1c56dafb3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java" afterPath="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java" />
     </list>
     <ignored path="app.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -51,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NotificationFrag.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="NotificationFrag.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.77003485">
-              <caret line="46" column="23" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
+            <state vertical-scroll-proportion="27.758621">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding>
                 <element signature="e#2104#2343#0" expanded="true" />
                 <element signature="e#2342#2343#0" expanded="true" />
@@ -94,15 +95,40 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainAct.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainAct.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.79310346">
-              <caret line="479" column="23" selection-start-line="478" selection-start-column="16" selection-end-line="478" selection-end-column="23" />
+            <state vertical-scroll-proportion="0.73944956">
+              <caret line="224" column="48" selection-start-line="224" selection-start-column="48" selection-end-line="224" selection-end-column="48" />
               <folding>
-                <element signature="e#17775#17776#0" expanded="false" />
-                <element signature="e#20584#20585#0" expanded="false" />
-                <element signature="e#25528#25529#0" expanded="false" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#3243#3253#0" expanded="true" />
+                <element signature="e#9055#9083#0" expanded="true" />
+                <element signature="e#9413#9703#0" expanded="true" />
+                <element signature="e#9702#9703#0" expanded="true" />
+                <element signature="e#9781#9930#0" expanded="true" />
+                <element signature="e#9929#9930#0" expanded="true" />
+                <element signature="e#10608#12254#0" expanded="true" />
+                <element signature="e#12253#12254#0" expanded="true" />
+                <element signature="e#19316#19317#0" expanded="true" />
+                <element signature="e#19383#19384#0" expanded="true" />
+                <element signature="e#22006#22007#0" expanded="true" />
+                <element signature="e#22044#22045#0" expanded="true" />
+                <element signature="e#22111#22112#0" expanded="true" />
+                <element signature="e#22169#22170#0" expanded="true" />
+                <element signature="e#22220#22221#0" expanded="true" />
+                <element signature="e#22271#22272#0" expanded="true" />
+                <element signature="e#22509#22510#0" expanded="true" />
+                <element signature="e#22572#22573#0" expanded="true" />
+                <element signature="e#22833#23173#0" expanded="true" />
+                <element signature="e#23172#23173#0" expanded="true" />
+                <element signature="e#23217#23491#0" expanded="true" />
+                <element signature="e#23490#23491#0" expanded="true" />
+                <element signature="e#24373#24374#0" expanded="true" />
+                <element signature="e#24438#24439#0" expanded="true" />
+                <element signature="e#24775#24803#0" expanded="true" />
+                <element signature="e#27066#27067#0" expanded="true" />
+                <element signature="e#27111#27112#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1931,6 +1957,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/LocSelectAct.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java" />
       </list>
     </option>
   </component>
@@ -2235,7 +2262,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850778" sideWeight="0.49573562" order="7" side_tool="false" content_ui="tabs" />
@@ -2243,7 +2270,7 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5021322" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850778" sideWeight="0.49573562" order="2" side_tool="false" content_ui="tabs" />
@@ -2350,26 +2377,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/Notification2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.79310346">
-          <caret line="479" column="23" selection-start-line="478" selection-start-column="16" selection-end-line="478" selection-end-column="23" />
-          <folding>
-            <element signature="e#17775#17776#0" expanded="false" />
-            <element signature="e#20584#20585#0" expanded="false" />
-            <element signature="e#25528#25529#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/Event.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2424,11 +2431,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/NotificationFrag.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.77003485">
-          <caret line="46" column="23" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
+        <state vertical-scroll-proportion="27.758621">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
           <folding>
             <element signature="e#2104#2343#0" expanded="true" />
             <element signature="e#2342#2343#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/Notification2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/stazo/project_18/MainAct.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.73944956">
+          <caret line="224" column="48" selection-start-line="224" selection-start-column="48" selection-end-line="224" selection-end-column="48" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3243#3253#0" expanded="true" />
+            <element signature="e#9055#9083#0" expanded="true" />
+            <element signature="e#9413#9703#0" expanded="true" />
+            <element signature="e#9702#9703#0" expanded="true" />
+            <element signature="e#9781#9930#0" expanded="true" />
+            <element signature="e#9929#9930#0" expanded="true" />
+            <element signature="e#10608#12254#0" expanded="true" />
+            <element signature="e#12253#12254#0" expanded="true" />
+            <element signature="e#19316#19317#0" expanded="true" />
+            <element signature="e#19383#19384#0" expanded="true" />
+            <element signature="e#22006#22007#0" expanded="true" />
+            <element signature="e#22044#22045#0" expanded="true" />
+            <element signature="e#22111#22112#0" expanded="true" />
+            <element signature="e#22169#22170#0" expanded="true" />
+            <element signature="e#22220#22221#0" expanded="true" />
+            <element signature="e#22271#22272#0" expanded="true" />
+            <element signature="e#22509#22510#0" expanded="true" />
+            <element signature="e#22572#22573#0" expanded="true" />
+            <element signature="e#22833#23173#0" expanded="true" />
+            <element signature="e#23172#23173#0" expanded="true" />
+            <element signature="e#23217#23491#0" expanded="true" />
+            <element signature="e#23490#23491#0" expanded="true" />
+            <element signature="e#24373#24374#0" expanded="true" />
+            <element signature="e#24438#24439#0" expanded="true" />
+            <element signature="e#24775#24803#0" expanded="true" />
+            <element signature="e#27066#27067#0" expanded="true" />
+            <element signature="e#27111#27112#0" expanded="true" />
           </folding>
         </state>
       </provider>

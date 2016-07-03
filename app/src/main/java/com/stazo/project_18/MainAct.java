@@ -54,6 +54,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -195,6 +196,44 @@ public class MainAct extends AppCompatActivity
         if (getIntent().hasExtra("toEvent")) {
             simulateClick(getIntent().getStringExtra("toEvent"));
         }
+
+        // Check for unviewed notifications, change notification icon if so
+        checkAllNotificationsViewed();
+    }
+
+    // Pull all notifications for user and see if there are ones that havent been viewed, changed
+    // icon of tab if so
+    private void checkAllNotificationsViewed() {
+        // Check if there are unviewed notifications and change icon if so
+        final ArrayList<Notification2> notifs = new ArrayList<>();
+        User currentUser = ((Project_18) getApplication()).getMe();
+
+        Project_18.getFB().child("NotifDatabase").
+                child(currentUser.getID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean allViewed = true;
+                for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
+                    HashMap<String, Object> notifMap = (HashMap<String, Object>) notifSnap.getValue();
+
+                    if(!((boolean)notifMap.get("viewed"))) {
+                        allViewed = false;
+                    }
+                }
+
+                if(!allViewed) {
+                    Log.d("allViewed", "FALSE");
+                    tabLayout.getTabAt(NOT_POS).getIcon().setColorFilter(
+                            getResources().getColor(R.color.colorAccentDark),
+                            PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     public void hideInfo() {
