@@ -29,7 +29,7 @@ public class NotificationJoinedEvent extends Notification2 {
     }
 
     public NotificationJoinedEvent(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue());
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
         this.joinedUserName = (String) notifMap.get("joinedUserName");
         this.eventId = (String) notifMap.get("eventId");
         this.eventName = (String) notifMap.get("eventName");
@@ -37,6 +37,7 @@ public class NotificationJoinedEvent extends Notification2 {
 
     public void onNotificationClicked(Context context) {
         ((MainAct) context).goToEventInfo(eventId, true);
+        this.setViewed(true);
     }
 
     public String generateMessage() {

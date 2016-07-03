@@ -33,9 +33,15 @@ public abstract class Notification2 {
 
     public Notification2() {}
 
-    // Type 2
+    // FOR GENERATING A NEW NOTIF
     public Notification2(int type) {
         generateNotifID();
+        this.type = type;
+    }
+
+    // FOR PULLING AN EXISTING NOTIF
+    public Notification2(int type, String id) {
+        this.notifID = id;
         this.type = type;
     }
 

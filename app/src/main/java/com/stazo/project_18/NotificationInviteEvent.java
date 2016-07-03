@@ -32,7 +32,7 @@ public class NotificationInviteEvent extends Notification2 {
     }
 
     public NotificationInviteEvent(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue());
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
         for (String s: (Iterable<String>) notifMap.get("userNames")) {
             this.userNames.add(s);
         }
@@ -41,7 +41,7 @@ public class NotificationInviteEvent extends Notification2 {
     }
 
     public NotificationInviteEvent(NotificationInviteEvent other) {
-        super(other.getType());
+        super(other.getType(), other.getNotifID());
         this.userNames = other.getUserNames();
         this.eventId = other.getEventId();
         this.eventName = other.getEventName();

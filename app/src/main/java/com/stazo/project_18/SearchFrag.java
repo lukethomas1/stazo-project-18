@@ -245,7 +245,7 @@ public class SearchFrag extends Fragment {
             EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
 
             ((Project_18) getActivity().getApplication()).makeEventButton
-                    (getActivity(), e, container, listener, false);
+                    (getActivity(), e, container, listener, false, Project_18.me);
 
             // add to layout
             queryButtonLayout.addView(container);
