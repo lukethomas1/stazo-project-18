@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -22,8 +21,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,16 +32,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -67,9 +60,9 @@ public class CreateEventAct extends AppCompatActivity {
     //The EditText views for each input
     EditText nameView, descView, startDateView, endDateView, startTimeView, endTimeView;
     // The Spinner to pick what type the event is
-    //Spinner typeSpinner;
+    Spinner typeSpinner;
     //Fragments for setting the dates
-    DatePickerFragment startDateFrag, endDateFrag;
+    DatePickerFragment startDateFrag; //endDateFrag;
     //Fragments for setting the times
     TimePickerFragment startTimeFrag, endTimeFrag;
     //Parsed user inputted values, upload these to Firebase
@@ -81,7 +74,6 @@ public class CreateEventAct extends AppCompatActivity {
     int typeNum = 0;
 
     private Uri imageUri;
-
 
     private String cameraPhotoPath;
 
@@ -106,33 +98,60 @@ public class CreateEventAct extends AppCompatActivity {
         grabEditTextViews();
 
         //Sets up the Spinner for selecting an Event Type
-        //typeSpinner = (Spinner) findViewById(R.id.EventType);
+        typeSpinner = (Spinner) findViewById(R.id.EventType);
 
         //Add values here to populate the spinner
         typeList = new ArrayList<>();
-        typeList.add("Change Me!");
-        for(int i = 0; i < Event.types.length; i++) {
-            typeList.add(Event.types[i]);
+
+        startDateFrag = new DatePickerFragment(startDateView);
+        //Set up today
+        final Calendar c = Calendar.getInstance();
+        final int year = c.get(Calendar.YEAR);
+        final int month = c.get(Calendar.MONTH);
+        final int day = c.get(Calendar.DAY_OF_MONTH);
+        startDateFrag.setYear(year);
+        startDateFrag.setMonth(month);
+        startDateFrag.setDay(day);
+
+        // TODO: ADD ERROR CHECKING FOR WRAP AROUND DATES
+        for(int i = 0; i < 7; i++) {
+            String monthStr = "" + (month + 1);
+            String dayStr = "" + (day + i);
+
+            if (month + 1 < 10) {
+                monthStr = "0" + (month + 1);
+            }
+            if (day + i < 10) {
+                dayStr = "0" + (day + i);
+            }
+            String date = monthStr+"/"+dayStr+"/"+year;
+
+            if ( i == 0 ) {
+                typeList.add( "Today (" + date + ")" );
+            }
+            else {
+                typeList.add(date);
+            }
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //typeSpinner.setAdapter(adapter);
+        typeSpinner.setAdapter(adapter);
 
         //Actions for spinner selection
-        /*typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
                                        int position, long id) {
-                pickText.setTextColor(normColor);
+                startDateFrag.setDay(day + position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {}
-        });*/
+        });
 
-        startDateView.setOnClickListener(new View.OnClickListener() {
+        /*startDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startDateFrag = new DatePickerFragment(startDateView);
@@ -150,7 +169,7 @@ public class CreateEventAct extends AppCompatActivity {
 
                 endDateView.setError(null);
             }
-        });
+        }); */
 
         startTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,13 +197,6 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(View v) {
                 //takePhoto();
                 buttonChooser();
-            }
-        });
-        Button selectPhotoButton = (Button) this.findViewById(R.id.AddImageFromLibrary);
-        selectPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPhoto();
             }
         });
     }
@@ -239,17 +251,17 @@ public class CreateEventAct extends AppCompatActivity {
     private void setUpTextColors() {
         nameText = (TextView) findViewById(R.id.NameText);
         descText = (TextView) findViewById(R.id.DescText);
-        //pickText = (TextView) findViewById(R.id.PickText);
-        startDateText = (TextView) findViewById(R.id.StartDateText);
-        endDateText = (TextView) findViewById(R.id.EndDateText);
+        pickText = (TextView) findViewById(R.id.PickText);
+        //startDateText = (TextView) findViewById(R.id.StartDateText);
+        //endDateText = (TextView) findViewById(R.id.EndDateText);
         startText = (TextView) findViewById(R.id.StartText);
         endText = (TextView) findViewById(R.id.EndText);
 
         nameText.setTextColor(normColor);
         descText.setTextColor(normColor);
-        //pickText.setTextColor(normColor);
-        startDateText.setTextColor(normColor);
-        endDateText.setTextColor(normColor);
+        pickText.setTextColor(normColor);
+        //startDateText.setTextColor(normColor);
+        //endDateText.setTextColor(normColor);
         startText.setTextColor(normColor);
         endText.setTextColor(normColor);
     }
@@ -260,8 +272,8 @@ public class CreateEventAct extends AppCompatActivity {
     private void grabEditTextViews() {
         nameView = (EditText) findViewById(R.id.EventName);
         descView = (EditText) findViewById(R.id.EventDesc);
-        startDateView = (EditText) findViewById(R.id.StartDate);
-        endDateView = (EditText) findViewById(R.id.EndDate);
+        //startDateView = (EditText) findViewById(R.id.StartDate);
+        //endDateView = (EditText) findViewById(R.id.EndDate);
         startTimeView = (EditText) findViewById(R.id.StartTime);
         endTimeView = (EditText) findViewById(R.id.EndTime);
     }
@@ -282,10 +294,12 @@ public class CreateEventAct extends AppCompatActivity {
             }
         }*/
 
-        startDate = startDateView.getText().toString();
-        endDate = endDateView.getText().toString();
+        //TODO edit startdate
+        //startDate = startDateView.getText().toString();
+        //endDate = endDateView.getText().toString();
         startTime = startTimeView.getText().toString();
         endTime = endTimeView.getText().toString();
+
     }
 
     /**
@@ -304,10 +318,10 @@ public class CreateEventAct extends AppCompatActivity {
             valid = false;
         }
 
-        if (desc.isEmpty()) {
+        /*if (desc.isEmpty()) {
             descView.setError(blankView);
             valid = false;
-        }
+        }*/
 
         if (typeNum == -1) {
             //pickText.setTextColor(errorColor);
@@ -315,7 +329,7 @@ public class CreateEventAct extends AppCompatActivity {
         }
 
         //Checks if the user inputted a date at all
-        if (startDateView.getText().toString().matches("")) {
+        /*if (startDateView.getText().toString().matches("")) {
             startDateView.setError(blankView);
             valid = false;
         }
@@ -329,7 +343,7 @@ public class CreateEventAct extends AppCompatActivity {
         }
         else {
             endDateView.setError(null);
-        }
+        } */
 
         //Checks if the user entered a time at all
         if (startTimeView.getText().toString().matches("")) {
@@ -348,34 +362,22 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag.getDay()
-                + "/" + startTimeFrag.getHourInt() + "/" + startTimeFrag.getMinInt() + "/");
-        System.out.println("StartDate: " + (endDateFrag.getMonth()) + "/" + endDateFrag.getDay()
-                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/");
-
-        int startYear = startDateFrag.getYear();
-        int startMonth = startDateFrag.getMonth() - 1;
-        int startDay = startDateFrag.getDay();
-        int startHour = startTimeFrag.getHourInt();
-        int startMin = startTimeFrag.getMinInt();
-
 
         startCal = new GregorianCalendar(startDateFrag.getYear(),
                 startDateFrag.getMonth() - 1,
                 startDateFrag.getDay(),
                 startTimeFrag.getHourInt(),
                 startTimeFrag.getMinInt());
-        endCal = new GregorianCalendar(endDateFrag.getYear(),
+        /*endCal = new GregorianCalendar(endDateFrag.getYear(),
                 endDateFrag.getMonth() - 1,
                 endDateFrag.getDay(),
                 endTimeFrag.getHourInt(),
-                endTimeFrag.getMinInt());
+                endTimeFrag.getMinInt());*/
 
-        valid = true;
         // Check if end date/time is after start date/time
-        if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
+        /*if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
             valid = false;
-        }
+        }*/
 
 //        //Checks if date/time that was entered is valid
 //        if (!startDate.isEmpty() && !endDate.isEmpty()) {
@@ -409,12 +411,18 @@ public class CreateEventAct extends AppCompatActivity {
 //            }
 //        }
 
-        System.out.println("startDate: " + startCal.getTime());
-        System.out.println("endDate: " + endCal.getTime());
-        System.out.println("startTime: " + startCal.getTimeInMillis());
-        System.out.println("endTime: " + endCal.getTimeInMillis());
+
+        //System.out.println("startDate: " + startCal.getTime());
+        //System.out.println("endDate: " + endCal.getTime());
+        //System.out.println("startTime: " + startCal.getTimeInMillis());
+        //System.out.println("endTime: " + startCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
-        endTimeLong = endCal.getTimeInMillis();
+        //endTimeLong = endCal.getTimeInMillis();
+
+        System.out.println("startTime: " + startCal.getTimeInMillis());
+        startTimeLong = startCal.getTimeInMillis();
+        // TODO: FIX THIS
+        endTimeLong = startCal.getTimeInMillis() + 999999;
 
         //Return validity of user input
         return valid;
@@ -473,7 +481,7 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
                     takePhoto();
-                } else if (items[item].equals("Choose from Library")) {
+                } else if (items[item].equals("Select from Library")) {
                     selectPhoto();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -481,26 +489,6 @@ public class CreateEventAct extends AppCompatActivity {
             }
         });
         builder.show();
-    }
-
-    private void photoChoices() {
-        Intent selectPhotoIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        List<Intent> intentList = new ArrayList<>();
-        intentList = addIntentsToList(getBaseContext(), intentList, takePictureIntent);
-        Intent chooseIntent = Intent.createChooser(selectPhotoIntent, "Choose option:");
-        chooseIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
-        startActivityForResult(chooseIntent, 3);
-    }
-    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resInfo) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            Intent targetedIntent = new Intent(intent);
-            targetedIntent.setPackage(packageName);
-            list.add(targetedIntent);
-        }
-        return list;
     }
 
     private void selectPhoto() {
@@ -677,8 +665,9 @@ public class CreateEventAct extends AppCompatActivity {
 //        });
     }
 
-    private void setPhoto() {
 
+    public void cancel(View view) {
+        onBackPressed();
     }
 
     @Override

@@ -216,7 +216,8 @@ public class MapFrag extends Fragment {
         }
 
         public void simulateOnClick(String eventId) {
-            simulateOnClick(markerLookupHM.get(eventId));
+            if (markerLookupHM.containsKey(eventId))
+                simulateOnClick(markerLookupHM.get(eventId));
         }
 
         public void simulateOnClick(Marker marker) {

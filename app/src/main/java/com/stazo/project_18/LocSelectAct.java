@@ -3,9 +3,15 @@ package com.stazo.project_18;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,6 +22,7 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -42,13 +49,13 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
  */
 public class LocSelectAct extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
-        OnConnectionFailedListener
-{
+        OnConnectionFailedListener, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks {
     private GoogleMap map;
     private PlaceAutocompleteFragment autocompleteFragment;
     private Event eventToInit;
     private Marker eventMarker;
     private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
 
     // Initial Camera Position
     private float zoom = 15;
@@ -83,6 +90,9 @@ public class LocSelectAct extends FragmentActivity
         // init API client
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
@@ -93,7 +103,7 @@ public class LocSelectAct extends FragmentActivity
                 "Tap and hold to choose the event's location", Toast.LENGTH_LONG);
         //this centers the text in the toast
         TextView v = (TextView) dir.getView().findViewById(android.R.id.message);
-        if( v != null) v.setGravity(Gravity.CENTER);
+        if (v != null) v.setGravity(Gravity.CENTER);
         dir.show();
 
         //private method defined below
@@ -110,32 +120,56 @@ public class LocSelectAct extends FragmentActivity
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         //zoom in and out
         map.getUiSettings().setZoomControlsEnabled(true);
+
+        //permission checking
+        //implement for older android versions
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        //for obtaining current location
+        map.setMyLocationEnabled(true);
+
+
+        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+
+
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return true;
+                }
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        mGoogleApiClient);
+
+                LatLng point = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+                setFlag(point);
+                return false;
+
+            }
+        });
+
+
     }
 
     // Add a marker where a long click occurs
     public void onMapLongClick(LatLng point) {
         // Set the marker's location
-        MarkerOptions markerOpts = new MarkerOptions();
-        markerOpts.position(point);
-        markerOpts.draggable(true);
-        // Set the color of the marker
-        markerOpts.icon(
-                //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-                BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
-        // Remove the previous marker if there is one on the map
-        if (eventMarker != null) {
-            eventMarker.remove();
-        }
-
-        // Add marker to map
-        eventMarker = map.addMarker(markerOpts);
-
-        // Intitialize the event with the Lat/Lng of the event
-        eventToInit.setLocation(point);
-
-        // Initialize the event's id
-        //eventToInit.setEvent_id(eventMarker.getId());
-        //eventToInit.generateID();
+        setFlag(point);
     }
 
     public void goToMap(View view) {
@@ -152,16 +186,11 @@ public class LocSelectAct extends FragmentActivity
             // display the toast
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-        }
-
-        else {
-//            System.out.println("Start: " + eventToInit.getStartDate().getTime());
-//            System.out.println("End: " + eventToInit.getEndDate().getTime());
-            System.out.println("startTimeToBePushed: " + eventToInit.getStartTime());
-            System.out.println("endTimeToBePushed: " + eventToInit.getEndTime());
+        } else {
 
             // Push the event to the database
-            eventToInit.pushToFirebase(((Project_18) getApplication()).getFB());
+            eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
+                    Project_18.me.getName(), Project_18.me.getUserFollowers());
 
             //push the image to firebasestorage
             if (imageUri != null) {
@@ -196,13 +225,8 @@ public class LocSelectAct extends FragmentActivity
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Firebase.setAndroidContext(this);
-    }
 
-    private void setUpSearchFragment(){
+    private void setUpSearchFragment() {
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
@@ -212,25 +236,8 @@ public class LocSelectAct extends FragmentActivity
 
                 //setting location
                 LatLng point = place.getLatLng();
-                // Set the marker's location
-                MarkerOptions markerOpts = new MarkerOptions();
-                markerOpts.position(point);
-                markerOpts.draggable(true);
-                // Set the color of the marker
-                markerOpts.icon(
-                        //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-                        BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
-                // Remove the previous marker if there is one on the map
-                if (eventMarker != null) {
-                    eventMarker.remove();
-                }
 
-                // Add marker to map
-                eventMarker = map.addMarker(markerOpts);
-                
-                //moving camera to default
-                CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+                setFlag(point);
             }
 
             @Override
@@ -242,9 +249,110 @@ public class LocSelectAct extends FragmentActivity
 
     }
 
+    private void setFlag(LatLng point){
+        // Set the marker's location
+        MarkerOptions markerOpts = new MarkerOptions();
+        markerOpts.position(point);
+        markerOpts.draggable(true);
+        // Set the color of the marker
+        Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getResources(),
+                R.drawable.flaticon_marker),
+                100,
+                100);
+        markerOpts.icon(BitmapDescriptorFactory.
+                fromBitmap(markerBitmap));
+        // Remove the previous marker if there is one on the map
+        if (eventMarker != null) {
+            eventMarker.remove();
+        }
+
+        // Add marker to map
+        eventMarker = map.addMarker(markerOpts);
+
+        // Intitialize the event with the Lat/Lng of the event
+        eventToInit.setLocation(point);
+
+        //moving camera to default
+        CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         //CONNECTION FAILED??
         //OH NO
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        //relevant onMyLocationButtonClick() method is in onMapReady()
+
+        /*
+        //permission checking
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return true;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        LatLng point = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+        // Set the marker's location
+        MarkerOptions markerOpts = new MarkerOptions();
+        markerOpts.position(point);
+        markerOpts.draggable(true);
+        // Set the color of the marker
+        markerOpts.icon(
+                //BitmaDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
+                BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
+        // Remove the previous marker if there is one on the map
+        if (eventMarker != null) {
+            eventMarker.remove();
+        }
+
+        // Add marker to map
+        eventMarker = map.addMarker(markerOpts);
+
+        //moving camera to default
+        CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+
+        */
+        return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Firebase.setAndroidContext(this);
+    }
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }

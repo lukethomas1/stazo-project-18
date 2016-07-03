@@ -16,13 +16,13 @@ import java.util.HashMap;
  */
 
 
-public class NotificationCommentEvent extends Notification2 {
+public class NotificationInviteEvent extends Notification2 {
 
     private String eventId;
     private String eventName;
     private ArrayList<String> userNames = new ArrayList<String>();
 
-    public NotificationCommentEvent(int type, ArrayList<String> userNames,
+    public NotificationInviteEvent(int type, ArrayList<String> userNames,
                                     String eventId,
                                     String eventName) {
         super(type);
@@ -31,7 +31,7 @@ public class NotificationCommentEvent extends Notification2 {
         this.eventName = eventName;
     }
 
-    public NotificationCommentEvent(HashMap<String, Object> notifMap) {
+    public NotificationInviteEvent(HashMap<String, Object> notifMap) {
         super(((Long) notifMap.get("type")).intValue());
         for (String s: (Iterable<String>) notifMap.get("userNames")) {
             this.userNames.add(s);
@@ -40,7 +40,7 @@ public class NotificationCommentEvent extends Notification2 {
         this.eventName = (String) notifMap.get("eventName");
     }
 
-    public NotificationCommentEvent(NotificationCommentEvent other) {
+    public NotificationInviteEvent(NotificationInviteEvent other) {
         super(other.getType());
         this.userNames = other.getUserNames();
         this.eventId = other.getEventId();
@@ -60,18 +60,18 @@ public class NotificationCommentEvent extends Notification2 {
         if (userNames.size() > 2) {
             message += "s";
         }
-        message += " commented on \"" + eventName + "\".";
+        message += " invited you to \"" + eventName + "\".";
         return message;
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {
         for (DataSnapshot notif: userNotifs.getChildren()) {
             HashMap<String, Object> notifMap = (HashMap<String, Object>) notif.getValue();
-            if (((Long) notifMap.get("type")).intValue() != Notification2.TYPE_COMMENT_EVENT) {
+            if (((Long) notifMap.get("type")).intValue() != Notification2.TYPE_INVITE_EVENT) {
                 continue;
             }
-            NotificationCommentEvent nce = new NotificationCommentEvent(notifMap);
-            if (nce.getEventId().equals(eventId) ) {
+            NotificationInviteEvent nie = new NotificationInviteEvent(notifMap);
+            if (nie.getEventId().equals(eventId) ) {
                 return new SnapToBase(notif, notif.getRef());
             }
         }
@@ -81,7 +81,7 @@ public class NotificationCommentEvent extends Notification2 {
     public Notification2 handleConflict(SnapToBase stb) {
 
         // get old notif
-        NotificationCommentEvent conflictNotif = new NotificationCommentEvent(
+        NotificationInviteEvent conflictNotif = new NotificationInviteEvent(
                 (HashMap<String, Object>) stb.getSnap().getValue());
 
         // update new notif
@@ -94,7 +94,7 @@ public class NotificationCommentEvent extends Notification2 {
         // remove old conflict
         stb.getBase().setValue(null);
 
-        return new NotificationCommentEvent(this);
+        return new NotificationInviteEvent(this);
     }
 
     public String getEventName() {

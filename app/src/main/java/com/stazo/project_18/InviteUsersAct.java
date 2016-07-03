@@ -485,12 +485,11 @@ public class InviteUsersAct extends AppCompatActivity {
     }
 
     public void inviteUsers(View v) {
-        for (String id: invitedUserIds) {
-            Log.d("inv", "Invited: " + id);
-
-            // TODO send notification to user
-            // sendNotification(event, id, Project_18.me.getID(), type=invite);
-        }
+        ArrayList<String> meList = new ArrayList<>();
+        meList.add(Project_18.me.getName());
+        (new NotificationInviteEvent(Notification2.TYPE_INVITE_EVENT, meList,
+                event.getEvent_id(),
+                event.getName())).pushToFirebase(fb, invitedUserIds);
         finish();
     }
 

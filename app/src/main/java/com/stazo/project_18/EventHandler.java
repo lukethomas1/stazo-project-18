@@ -77,7 +77,8 @@ public class EventHandler {
             // Popularity generation
             e.setPopularity((int) (Math.random() * 60));
 
-            e.pushToFirebase(new Firebase("https://stazo-project-18.firebaseio.com/"));
+            e.pushToFirebase(new Firebase("https://stazo-project-18.firebaseio.com/"),
+                    "Tester McTest", us);
         }
     }
 }

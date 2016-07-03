@@ -23,28 +23,24 @@ public class NotificationHandler {
 
     public void generateNotifications(Context context) {
         ArrayList<String> userNames = new ArrayList<String>();
-        userNames.add("Jason");
-        userNames.add("Steve");
-        userNames.add("Mark");
+        userNames.add("Jason2");
+        userNames.add("Steve2");
+        userNames.add("Mark2");
         String eventId = "yooGPHLVQTAYM";
+
         NotificationCommentEvent nce = new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
                 userNames, eventId, "Legacy Speech");
+
         NotificationFriendHost nfe = new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST,
                 "Bob the host", "yooKPGCHIFIGR", "Smash Bros Party", "Today at 7:00pm");
+
         NotificationNewFollow nnf = new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW,
                 "Melissa the follower", "1177156832304841");
+
         NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
                 "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
 
-        ArrayList<String> usersWhoCare = new ArrayList<>();
-        usersWhoCare.add(Project_18.me.getID()); // Brian
-
-        /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
-        nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
-        nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
-        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);
-
-        pullNotifications(Project_18.me.getID());*/
+        pullNotifications(Project_18.me.getID());
     }
 
     // PULL AND PRINT BRIAN'S NOTIFICATIONS

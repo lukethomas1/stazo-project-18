@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
     private Firebase fb;
     private User currentUser;
     private ArrayList<Notification2> notifs = new ArrayList<>();
+    private LinearLayout LL1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,17 +40,62 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
 
         currentUser = ((Project_18) this.getActivity().getApplication()).getMe();
 
-        // Update the notifications
-        pullNotifications(currentUser.getID());
+        // Set the layout
+        LL1 = (LinearLayout)v.findViewById(R.id.LL1);
 
-        // Show them on the screen
-        displayNotifications();
+        /*
+        The problem here is that pullNotifications isn't updating the notifs ArrayList before the
+        rest of the code gets executed because of the whole asynchronous firebase listener things.
+
+        So I added this fake event as a demonstration that it works, and if pullNotifications did
+        update notifs early enough, uncommenting it below this would work perfectly.
+
+        I'm not sure how to fix it, so I'm just going to commit and push this and then try to figure
+        it out.
+         */
+
+        // Update the notifications
+        //pullNotifications(currentUser.getID());
+
+        NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
+                "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
+        notifs.add(nje);
+
+        // There are no notifications to show
+        if(notifs.isEmpty()) {
+            ((TextView)v.findViewById(R.id.loadingText)).setText("No Notifications");
+        }
+
+        // There are notifications to show, show them
+        else {
+            // Show them on the screen
+            displayNotifications();
+        }
 
         return v;
     }
 
     private void displayNotifications() {
+        for (Notification2 not2 : notifs) {
+            // Make a final copy of not2 so that it can be used inside the onclick setter
+            final Notification2 not2Copy = not2;
 
+            // Create a new button to add to the view
+            Button butt = new Button(getActivity());
+            // Set the text of the button
+            butt.setText(not2.generateMessage());
+            // Set the onclick of the button
+            butt.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            not2Copy.onNotificationClicked(getActivity());
+                        }
+                    }
+            );
+
+            LL1.addView(butt);
+        }
     }
 
     private void goToEventInfo(String event_id) {

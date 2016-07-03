@@ -2,6 +2,9 @@ package com.stazo.project_18;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
+import com.firebase.client.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +39,31 @@ public class NotificationNewFollow extends Notification2 {
     public String generateMessage() {
         return followerName + " is now following you.";
     }
+
+    public SnapToBase hasConflict(DataSnapshot userNotifs) {
+        for (DataSnapshot notif: userNotifs.getChildren()) {
+            HashMap<String, Object> notifMap = (HashMap<String, Object>) notif.getValue();
+            if (((Long) notifMap.get("type")).intValue() != Notification2.TYPE_NEW_FOLLOW) {
+                continue;
+            }
+            NotificationNewFollow nnf = new NotificationNewFollow(notifMap);
+            Log.d("wtf", "nnf id is " + nnf.getFollowerId() + ", my id is " + followerId);
+            if (nnf.getFollowerId().equals(followerId) ) {
+                Log.d("wtf", "CONFLICT");
+                return new SnapToBase(notif, notif.getRef());
+            }
+        }
+        Log.d("wtf", "NO CONFLICT");
+        return null;
+    }
+
+    public Notification2 handleConflict(SnapToBase stb) {
+
+        // if there was a prev follow from this user, just do nothing
+        return null;
+    }
+
+
     public String getFollowerName() {
         return followerName;
     }

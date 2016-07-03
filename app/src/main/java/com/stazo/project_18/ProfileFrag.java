@@ -270,6 +270,7 @@ public class ProfileFrag extends Fragment {
 
                 /* add myEvents */
                 for (String event_id : user.getMyEvents()) {
+                    Log.d("debug", event_id);
                     myEvents.add(new Event(dataSnapshot.child(event_id).getValue
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));
@@ -747,19 +748,11 @@ public class ProfileFrag extends Fragment {
         Firebase fb = Project_18.getFB();
         if (Project_18.me.getUserTrails().contains(user_ID)) {
             Project_18.me.removeTrail(fb, user_ID);
-            //User otherUser = new User(user_ID);
-            //otherUser.removeFollower(fb, Project_18.me.getID());
 
             setFollowButton(false);
         }
         else {
             Project_18.me.addTrail(fb, user_ID);
-            //User otherUser = new User(user_ID);
-            //otherUser.addFollower(fb, Project_18.me.getID());
-
-            Notification not = new Notification(Project_18.me.getID(), Project_18.me.getName(), 0);
-            not.pushToFirebase(fb, user_ID);
-
             setFollowButton(true);
         }
     }
