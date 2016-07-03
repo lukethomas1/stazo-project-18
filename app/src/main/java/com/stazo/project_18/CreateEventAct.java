@@ -2,24 +2,25 @@ package com.stazo.project_18;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,16 +32,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -63,9 +60,9 @@ public class CreateEventAct extends AppCompatActivity {
     //The EditText views for each input
     EditText nameView, descView, startDateView, endDateView, startTimeView, endTimeView;
     // The Spinner to pick what type the event is
-    //Spinner typeSpinner;
+    Spinner typeSpinner;
     //Fragments for setting the dates
-    DatePickerFragment startDateFrag, endDateFrag;
+    DatePickerFragment startDateFrag; //endDateFrag;
     //Fragments for setting the times
     TimePickerFragment startTimeFrag, endTimeFrag;
     //Parsed user inputted values, upload these to Firebase
@@ -102,33 +99,60 @@ public class CreateEventAct extends AppCompatActivity {
         grabEditTextViews();
 
         //Sets up the Spinner for selecting an Event Type
-        //typeSpinner = (Spinner) findViewById(R.id.EventType);
+        typeSpinner = (Spinner) findViewById(R.id.EventType);
 
         //Add values here to populate the spinner
         typeList = new ArrayList<>();
-        typeList.add("Change Me!");
-        for(int i = 0; i < Event.types.length; i++) {
-            typeList.add(Event.types[i]);
+
+        startDateFrag = new DatePickerFragment(startDateView);
+        //Set up today
+        final Calendar c = Calendar.getInstance();
+        final int year = c.get(Calendar.YEAR);
+        final int month = c.get(Calendar.MONTH);
+        final int day = c.get(Calendar.DAY_OF_MONTH);
+        startDateFrag.setYear(year);
+        startDateFrag.setMonth(month);
+        startDateFrag.setDay(day);
+
+        // TODO: ADD ERROR CHECKING FOR WRAP AROUND DATES
+        for(int i = 0; i < 7; i++) {
+            String monthStr = "" + (month + 1);
+            String dayStr = "" + (day + i);
+
+            if (month + 1 < 10) {
+                monthStr = "0" + (month + 1);
+            }
+            if (day + i < 10) {
+                dayStr = "0" + (day + i);
+            }
+            String date = monthStr+"/"+dayStr+"/"+year;
+
+            if ( i == 0 ) {
+                typeList.add( "Today (" + date + ")" );
+            }
+            else {
+                typeList.add(date);
+            }
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //typeSpinner.setAdapter(adapter);
+        typeSpinner.setAdapter(adapter);
 
         //Actions for spinner selection
-        /*typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
                                        int position, long id) {
-                pickText.setTextColor(normColor);
+                startDateFrag.setDay(day + position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {}
-        });*/
+        });
 
-        startDateView.setOnClickListener(new View.OnClickListener() {
+        /*startDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startDateFrag = new DatePickerFragment(startDateView);
@@ -146,7 +170,7 @@ public class CreateEventAct extends AppCompatActivity {
 
                 endDateView.setError(null);
             }
-        });
+        }); */
 
         startTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,7 +196,8 @@ public class CreateEventAct extends AppCompatActivity {
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto();
+                //takePhoto();
+                buttonChooser();
             }
         });
         Button selectPhotoButton = (Button) this.findViewById(R.id.AddImageFromLibrary);
@@ -234,17 +259,17 @@ public class CreateEventAct extends AppCompatActivity {
     private void setUpTextColors() {
         nameText = (TextView) findViewById(R.id.NameText);
         descText = (TextView) findViewById(R.id.DescText);
-        //pickText = (TextView) findViewById(R.id.PickText);
-        startDateText = (TextView) findViewById(R.id.StartDateText);
-        endDateText = (TextView) findViewById(R.id.EndDateText);
+        pickText = (TextView) findViewById(R.id.PickText);
+        //startDateText = (TextView) findViewById(R.id.StartDateText);
+        //endDateText = (TextView) findViewById(R.id.EndDateText);
         startText = (TextView) findViewById(R.id.StartText);
         endText = (TextView) findViewById(R.id.EndText);
 
         nameText.setTextColor(normColor);
         descText.setTextColor(normColor);
-        //pickText.setTextColor(normColor);
-        startDateText.setTextColor(normColor);
-        endDateText.setTextColor(normColor);
+        pickText.setTextColor(normColor);
+        //startDateText.setTextColor(normColor);
+        //endDateText.setTextColor(normColor);
         startText.setTextColor(normColor);
         endText.setTextColor(normColor);
     }
@@ -255,8 +280,8 @@ public class CreateEventAct extends AppCompatActivity {
     private void grabEditTextViews() {
         nameView = (EditText) findViewById(R.id.EventName);
         descView = (EditText) findViewById(R.id.EventDesc);
-        startDateView = (EditText) findViewById(R.id.StartDate);
-        endDateView = (EditText) findViewById(R.id.EndDate);
+        //startDateView = (EditText) findViewById(R.id.StartDate);
+        //endDateView = (EditText) findViewById(R.id.EndDate);
         startTimeView = (EditText) findViewById(R.id.StartTime);
         endTimeView = (EditText) findViewById(R.id.EndTime);
     }
@@ -277,8 +302,9 @@ public class CreateEventAct extends AppCompatActivity {
             }
         }*/
 
-        startDate = startDateView.getText().toString();
-        endDate = endDateView.getText().toString();
+        //TODO edit startdate
+        //startDate = startDateView.getText().toString();
+        //endDate = endDateView.getText().toString();
         startTime = startTimeView.getText().toString();
         endTime = endTimeView.getText().toString();
     }
@@ -299,10 +325,10 @@ public class CreateEventAct extends AppCompatActivity {
             valid = false;
         }
 
-        if (desc.isEmpty()) {
+        /*if (desc.isEmpty()) {
             descView.setError(blankView);
             valid = false;
-        }
+        }*/
 
         if (typeNum == -1) {
             //pickText.setTextColor(errorColor);
@@ -310,7 +336,7 @@ public class CreateEventAct extends AppCompatActivity {
         }
 
         //Checks if the user inputted a date at all
-        if (startDateView.getText().toString().matches("")) {
+        /*if (startDateView.getText().toString().matches("")) {
             startDateView.setError(blankView);
             valid = false;
         }
@@ -324,7 +350,7 @@ public class CreateEventAct extends AppCompatActivity {
         }
         else {
             endDateView.setError(null);
-        }
+        } */
 
         //Checks if the user entered a time at all
         if (startTimeView.getText().toString().matches("")) {
@@ -343,10 +369,11 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag.getDay()
+        /*System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag
+                .getDay()
                 + "/" + startTimeFrag.getHourInt() + "/" + startTimeFrag.getMinInt() + "/");
         System.out.println("StartDate: " + (endDateFrag.getMonth()) + "/" + endDateFrag.getDay()
-                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/");
+                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/"); */
 
         int startYear = startDateFrag.getYear();
         int startMonth = startDateFrag.getMonth() - 1;
@@ -360,17 +387,17 @@ public class CreateEventAct extends AppCompatActivity {
                 startDateFrag.getDay(),
                 startTimeFrag.getHourInt(),
                 startTimeFrag.getMinInt());
-        endCal = new GregorianCalendar(endDateFrag.getYear(),
+        /*endCal = new GregorianCalendar(endDateFrag.getYear(),
                 endDateFrag.getMonth() - 1,
                 endDateFrag.getDay(),
                 endTimeFrag.getHourInt(),
-                endTimeFrag.getMinInt());
+                endTimeFrag.getMinInt());*/
 
         valid = true;
         // Check if end date/time is after start date/time
-        if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
+        /*if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
             valid = false;
-        }
+        }*/
 
 //        //Checks if date/time that was entered is valid
 //        if (!startDate.isEmpty() && !endDate.isEmpty()) {
@@ -405,7 +432,7 @@ public class CreateEventAct extends AppCompatActivity {
 //        }
 
         System.out.println("startDate: " + startCal.getTime());
-        System.out.println("endDate: " + endCal.getTime());
+        //System.out.println("endDate: " + endCal.getTime());
         System.out.println("startTime: " + startCal.getTimeInMillis());
         System.out.println("endTime: " + endCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
@@ -455,6 +482,29 @@ public class CreateEventAct extends AppCompatActivity {
 
     // Camera stuff
 
+    private void buttonChooser() {
+        final CharSequence[] items = { "Take Photo", "Choose from Library",
+                "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                CreateEventAct.this);
+
+        builder.setTitle("Choose option:");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    takePhoto();
+                } else if (items[item].equals("Select from Library")) {
+                    selectPhoto();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
     private void selectPhoto() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -469,7 +519,6 @@ public class CreateEventAct extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
 
         }
-        //Go to photo library
     }
 
     private void takePhoto() {
@@ -530,9 +579,35 @@ public class CreateEventAct extends AppCompatActivity {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-//        File photo = new File(Environment.getExternalStorageDirectory(),  imageFileName);
         cameraPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //right after the user decies whether or not to give app camera permissions
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to use ur shitty camera :(");
+            }
+        }
+
+        //right after the user decides whether or not to give app photo gallery permissions
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to access photo gallery
+                selectPhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to view ur shitty photos :(");
+            }
+        }
+
     }
 
     // On intent return with bitmap in data
@@ -549,6 +624,7 @@ public class CreateEventAct extends AppCompatActivity {
             //display
             try {
 //                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cameraPhotoUri);
+                //getRotationFromCamera
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
                 mainImageView.setImageBitmap(imageBitmap);
@@ -578,52 +654,6 @@ public class CreateEventAct extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        //right after the user decies whether or not to give app camera permissions
-        if (requestCode == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to use camera
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                //preemptively set file location
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    System.out.println("Could not create file for camera photo");
-                }
-
-                // pass in file location and open camera
-                if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.stazo.project_18.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, 1);
-                }
-            }
-            else {
-                System.out.println("You didn't give us permission to use ur shitty camera :(");
-            }
-        }
-
-        //right after the user decides whether or not to give app photo gallery permissions
-        if (requestCode == 2) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to access photo gallery
-                Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 2); //2 is the callback number code for this specific call #magicnumbersftw #fuckstyle
-            }
-            else {
-                System.out.println("You didn't give us permission to view ur shitty photos :(");
-            }
-        }
-
-    }
-
     public void pushMainImage(Uri imageFile) {
 
         //just for passing to next intent
@@ -649,8 +679,9 @@ public class CreateEventAct extends AppCompatActivity {
 //        });
     }
 
-    private void setPhoto() {
 
+    public void cancel(View view) {
+        onBackPressed();
     }
 
     @Override

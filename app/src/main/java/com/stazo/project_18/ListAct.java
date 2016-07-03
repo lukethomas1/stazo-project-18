@@ -76,10 +76,13 @@ public class ListAct extends android.support.v4.app.Fragment {
                 setOnTouchListener(new ShowMoreOnTouchListener("showMoreLater",
                         (Button) getActivity().findViewById(R.id.showMoreLaterButton)));
 
-        // clear layouts
+        // set layouts
         litLayout = (LinearLayout) getActivity().findViewById(R.id.litLayout);
         happeningNowLayout = (LinearLayout) getActivity().findViewById(R.id.happeningNowLayout);
         laterLayout = (LinearLayout) getActivity().findViewById(R.id.laterLayout);
+
+        pageHappeningNow = 0;
+        pageLater = 0;
 
         eventList.clear();
         litEventsList.clear();

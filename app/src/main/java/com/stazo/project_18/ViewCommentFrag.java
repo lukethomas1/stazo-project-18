@@ -63,6 +63,22 @@ public class ViewCommentFrag extends Fragment{
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         ((EditText) v.findViewById(R.id.commentText)).setText(null);
+
+        // NOTIFICATION STUFF
+        ArrayList<String> usersWhoCare = new ArrayList<>(EventInfoFrag.currEvent.getAttendees());
+        if (usersWhoCare.contains(Project_18.me.getID())) {
+            usersWhoCare.remove(Project_18.me.getID());
+        }
+
+        ArrayList<String> meList = new ArrayList<String>();
+        meList.add(Project_18.me.getName());
+
+        // send out notification
+        (new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
+                meList,
+                passedEventID,
+                EventInfoFrag.currEvent.getName())).
+                pushToFirebase(fb, usersWhoCare);
     }
 
     @Override
@@ -108,6 +124,8 @@ public class ViewCommentFrag extends Fragment{
                         //show through views and layouts
                         for (int i = numCommentsLoaded; i < commentList.size(); i++) {
 
+
+
                             //profile pic
                             Bitmap profileImage = null;
                             ImageView profileView = new ImageView(context);
@@ -144,6 +162,7 @@ public class ViewCommentFrag extends Fragment{
                                     }
                                 });
                             }
+
 
                             //comment
                             TextView commentText = new TextView(context);

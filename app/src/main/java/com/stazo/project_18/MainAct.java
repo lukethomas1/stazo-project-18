@@ -71,8 +71,8 @@ public class MainAct extends AppCompatActivity
 
     public static final int MAP_POS = 0;
     public static final int LIST_POS = 1;
-    public static final int PROF_POS = 3;
-    public static final int NOT_POS = 2;
+    public static final int PROF_POS = 2;
+    public static final int NOT_POS = 3;
 
 
     private TabLayout tabLayout;
@@ -525,8 +525,8 @@ public class MainAct extends AppCompatActivity
 
         adapter.addFragment(mapFrag, "");       // MAP_POS = 0
         adapter.addFragment(listAct, "");       // LIST_POS = 1
-        adapter.addFragment(notFrag, "");       // NOT_POS = 2
-        adapter.addFragment(profileFrag, "");   // PROF_POS = 3
+        adapter.addFragment(profileFrag, "");   // PROF_POS = 2
+        adapter.addFragment(notFrag, "");       // NOT_POS = 3
 
         viewPager.setAdapter(adapter);
     }
