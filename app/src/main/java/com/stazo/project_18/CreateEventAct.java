@@ -75,7 +75,6 @@ public class CreateEventAct extends AppCompatActivity {
 
     private Uri imageUri;
 
-
     private String cameraPhotoPath;
 
     /**
@@ -307,6 +306,7 @@ public class CreateEventAct extends AppCompatActivity {
         //endDate = endDateView.getText().toString();
         startTime = startTimeView.getText().toString();
         endTime = endTimeView.getText().toString();
+
     }
 
     /**
@@ -393,7 +393,6 @@ public class CreateEventAct extends AppCompatActivity {
                 endTimeFrag.getHourInt(),
                 endTimeFrag.getMinInt());*/
 
-        valid = true;
         // Check if end date/time is after start date/time
         /*if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
             valid = false;
@@ -431,12 +430,12 @@ public class CreateEventAct extends AppCompatActivity {
 //            }
 //        }
 
-        System.out.println("startDate: " + startCal.getTime());
+        //System.out.println("startDate: " + startCal.getTime());
         //System.out.println("endDate: " + endCal.getTime());
-        System.out.println("startTime: " + startCal.getTimeInMillis());
-        System.out.println("endTime: " + endCal.getTimeInMillis());
+        //System.out.println("startTime: " + startCal.getTimeInMillis());
+        //System.out.println("endTime: " + startCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
-        endTimeLong = endCal.getTimeInMillis();
+        //endTimeLong = endCal.getTimeInMillis();
 
         //Return validity of user input
         return valid;
