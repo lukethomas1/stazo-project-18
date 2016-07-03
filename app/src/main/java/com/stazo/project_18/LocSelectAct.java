@@ -157,25 +157,7 @@ public class LocSelectAct extends FragmentActivity
                         mGoogleApiClient);
 
                 LatLng point = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-                // Set the marker's location
-                MarkerOptions markerOpts = new MarkerOptions();
-                markerOpts.position(point);
-                markerOpts.draggable(true);
-                // Set the color of the marker
-                markerOpts.icon(
-                        //BitmaDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-                        BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
-                // Remove the previous marker if there is one on the map
-                if (eventMarker != null) {
-                    eventMarker.remove();
-                }
-
-                // Add marker to map
-                eventMarker = map.addMarker(markerOpts);
-
-                //moving camera to default
-                CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+                setFlag(point);
                 return false;
 
             }
@@ -187,30 +169,7 @@ public class LocSelectAct extends FragmentActivity
     // Add a marker where a long click occurs
     public void onMapLongClick(LatLng point) {
         // Set the marker's location
-        MarkerOptions markerOpts = new MarkerOptions();
-        markerOpts.position(point);
-        markerOpts.draggable(true);
-        // Set the color of the marker
-        Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getResources(),
-                        R.drawable.flaticon_marker),
-                100,
-                100);
-        markerOpts.icon(BitmapDescriptorFactory.
-                fromBitmap(markerBitmap));
-        // Remove the previous marker if there is one on the map
-        if (eventMarker != null) {
-            eventMarker.remove();
-        }
-
-        // Add marker to map
-        eventMarker = map.addMarker(markerOpts);
-
-        // Intitialize the event with the Lat/Lng of the event
-        eventToInit.setLocation(point);
-
-        // Initialize the event's id
-        //eventToInit.setEvent_id(eventMarker.getId());
-        //eventToInit.generateID();
+        setFlag(point);
     }
 
     public void goToMap(View view) {
@@ -277,25 +236,8 @@ public class LocSelectAct extends FragmentActivity
 
                 //setting location
                 LatLng point = place.getLatLng();
-                // Set the marker's location
-                MarkerOptions markerOpts = new MarkerOptions();
-                markerOpts.position(point);
-                markerOpts.draggable(true);
-                // Set the color of the marker
-                markerOpts.icon(
-                        //BitmapDescriptorFactory.defaultMarker(Event.typeColors[eventToInit.getType()]));
-                        BitmapDescriptorFactory.fromResource(R.drawable.marker_light_blue_3x));
-                // Remove the previous marker if there is one on the map
-                if (eventMarker != null) {
-                    eventMarker.remove();
-                }
 
-                // Add marker to map
-                eventMarker = map.addMarker(markerOpts);
-
-                //moving camera to default
-                CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+                setFlag(point);
             }
 
             @Override
@@ -307,6 +249,34 @@ public class LocSelectAct extends FragmentActivity
 
     }
 
+    private void setFlag(LatLng point){
+        // Set the marker's location
+        MarkerOptions markerOpts = new MarkerOptions();
+        markerOpts.position(point);
+        markerOpts.draggable(true);
+        // Set the color of the marker
+        Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getResources(),
+                R.drawable.flaticon_marker),
+                100,
+                100);
+        markerOpts.icon(BitmapDescriptorFactory.
+                fromBitmap(markerBitmap));
+        // Remove the previous marker if there is one on the map
+        if (eventMarker != null) {
+            eventMarker.remove();
+        }
+
+        // Add marker to map
+        eventMarker = map.addMarker(markerOpts);
+
+        // Intitialize the event with the Lat/Lng of the event
+        eventToInit.setLocation(point);
+
+        //moving camera to default
+        CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         //CONNECTION FAILED??
@@ -315,6 +285,8 @@ public class LocSelectAct extends FragmentActivity
 
     @Override
     public boolean onMyLocationButtonClick() {
+        //relevant onMyLocationButtonClick() method is in onMapReady()
+
         /*
         //permission checking
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
