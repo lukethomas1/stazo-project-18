@@ -282,6 +282,7 @@ public class ProfileFrag extends Fragment {
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));
                 }
+
                 /* dynamically add button */
                 LinearLayout eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
 

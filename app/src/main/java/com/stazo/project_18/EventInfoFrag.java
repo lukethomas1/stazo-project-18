@@ -452,12 +452,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
                                 }));
+                        if (currEvent.getName() == null) {
+                            handleNonExistentEvent();
+                            return;
+                        }
 
                         // get the info for the user
                         currUser = new User((HashMap<String, Object>) dataSnapshot.child("Users").
                                 child(currEvent.getCreator_id()).getValue());
-
-                        System.out.println(((Project_18) getActivity().getApplication()).getMe().getName());
 
                         // display event
                         showInfo(currEvent, currUser);
@@ -490,6 +492,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //Initialize Local Variables
         TextView eventDate = (TextView) this.getActivity().findViewById(R.id.eventDate);
         TextView eventName = (TextView) this.getActivity().findViewById(R.id.eventName);
+        TextView eventLoc = (TextView) this.getActivity().findViewById(R.id.locValue);
         TextView eventDescription = (TextView) this.getActivity().findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
@@ -506,9 +509,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         int findType = e.getType();
 
         // setting the event info text fields
+        eventLoc.setOnTouchListener(new LocationOnTouchListener(eventLoc));
+        eventLoc.setText(e.getAddress(getActivity()));
         eventName.setText(e.getName());
         eventDescription.setVisibility(View.VISIBLE);
         eventDesc.setVisibility(View.VISIBLE);
+
         if(e.getDescription().length() == 0){
             eventDescription.setVisibility(View.GONE);
             eventDesc.setVisibility(View.GONE);
@@ -973,6 +979,44 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         return passedEventID;
     }
 
+    public class LocationOnTouchListener implements View.OnTouchListener {
+
+        private TextView container;
+
+        public LocationOnTouchListener(TextView container) {
+            this.container = container;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (MainAct.viewPager.getCurrentItem() == MainAct.MAP_POS) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+                else {
+                    Intent i = new Intent(getActivity(), MainAct.class);
+                    i.putExtra("toEvent", currEvent.getEvent_id());
+                    startActivity(i);
+                }
+                container.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                container.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                container.setTextColor(getResources().getColor(R.color.colorAccentDark));
+            }
+
+            return true;
+        }
+    }
+
+    private void handleNonExistentEvent() {
+        Toast toast = Toast.makeText(getActivity(), "Event no longer exists", Toast.LENGTH_SHORT);
+        toast.show();
+        onDestroyView();
+    }
 
     @Override
     public void onResume() {
