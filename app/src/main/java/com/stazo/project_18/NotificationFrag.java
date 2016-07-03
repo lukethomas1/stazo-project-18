@@ -92,6 +92,8 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                         notifs.add(new NotificationNewFollow(notifMap));
                     } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_JOINED_EVENT) {
                         notifs.add(new NotificationJoinedEvent(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_INVITE_EVENT) {
+                        notifs.add(new NotificationInviteEvent(notifMap));
                     }
                 }
 
