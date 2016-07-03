@@ -306,7 +306,7 @@ public class ProfileFrag extends Fragment {
                     EventButtonOnTouchListener listener = new EventButtonOnTouchListener(e, container);
 
                     ((Project_18) getActivity().getApplication()).makeEventButton
-                            (getActivity(), e, container, listener, true, Project_18.me);
+                            (getActivity(), e, container, listener, true, user);
 
                     eventsLayout.addView(container);
                 }
