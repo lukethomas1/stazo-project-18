@@ -53,9 +53,9 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
     }
 
     private void displayNotifications() {
-        for (Notification2 not2 : notifs) {
+        for (final Notification2 not2 : notifs) {
             // Make a final copy of not2 so that it can be used inside the onclick setter
-            final Notification2 not2Copy = not2;
+            //final Notification2 not2Copy = not2;
 
             // Create a new button to add to the view
             Button butt = new Button(getActivity());
@@ -66,7 +66,8 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            not2Copy.onNotificationClicked(getActivity());
+                            not2.onNotificationClicked(getActivity());
+                            setToViewed(not2);
                         }
                     }
             );
@@ -120,14 +121,14 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
     }
 
     // Sets the current notif to "viewed" for user Me
-    public void setToViewed(final Notification notif) {
+    public void setToViewed(final Notification2 notif) {
         fb.child("NotifDatabase").child(Project_18.me.getID()).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
-                            Notification pulledNotif = notifSnap.getValue(Notification.class);
-                            if (pulledNotif.getNotifID().equals(notif.getNotifID())) {
+                            Log.d("idcheck", notifSnap.child("notifID").getValue() + " " + notif.getNotifID());
+                            if (notifSnap.child("notifID").getValue().equals(notif.getNotifID())) {
                                 notifSnap.getRef().child("viewed").setValue(true);
                             }
                         }

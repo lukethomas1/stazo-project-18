@@ -27,7 +27,7 @@ public class NotificationNewFollow extends Notification2 {
     }
 
     public NotificationNewFollow(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue());
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
         this.followerName = (String) notifMap.get("followerName");
         this.followerId = (String) notifMap.get("followerId");
     }

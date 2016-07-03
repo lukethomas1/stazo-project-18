@@ -32,7 +32,7 @@ public class NotificationFriendHost extends Notification2 {
     }
 
     public NotificationFriendHost(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue());
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
         this.hostName = (String) notifMap.get("hostName");
         this.eventId = (String) notifMap.get("eventId");
         this.eventName = (String) notifMap.get("eventName");
