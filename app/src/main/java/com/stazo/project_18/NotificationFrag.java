@@ -43,6 +43,9 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
         // Set the layout
         LL1 = (LinearLayout)v.findViewById(R.id.LL1);
 
+        // Clear notifs to prevent duplicates
+        notifs.clear();
+
         // Update the notifications and then display them
         pullNotifications(currentUser.getID());
 
