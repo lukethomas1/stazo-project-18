@@ -8,7 +8,10 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -28,6 +31,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -58,6 +65,7 @@ public class MapFrag extends Fragment {
     private GoogleMap map;
     private MapHandler mapHandler;
     private MapView mapView;
+    private GoogleApiClient mGoogleApiClient;
 
     // Time seekbar
     private SeekBar seekbar;
@@ -182,8 +190,16 @@ public class MapFrag extends Fragment {
      */
 
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback,
-            ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter
+            ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter,
+            GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
     {
+        /**
+         * Request code for location permission request.
+         *
+         * @see #onRequestPermissionsResult(int, String[], int[])
+         */
+        private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
         // Hashmap from marker id to event id (for displaying event info)
         private HashMap<String, String> idLookupHM = new HashMap<>();
 
@@ -286,8 +302,70 @@ public class MapFrag extends Fragment {
             seekbar.bringToFront();
             timeTextView.bringToFront();
 
+            // Enable MyLocation button
+
+            // Initialize API client
+            mGoogleApiClient = new GoogleApiClient
+                    .Builder(getActivity().getApplicationContext())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .build();
+
+            //permission checking
+            //implement for older android versions
+            if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+
+            //for obtaining current location
+            map.setMyLocationEnabled(true);
 
 
+            map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                            android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return true;
+                    }
+                    // Get user's current location
+                    Location currentLoc = LocationServices.FusedLocationApi.getLastLocation(
+                            mGoogleApiClient);
+
+                    LatLng point = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
+
+                    // Move camera
+                    map.moveCamera(CameraUpdateFactory.newLatLng(point));
+
+                    return false;
+
+                }
+            });
         }
 
         // Display all the events
@@ -325,8 +403,8 @@ public class MapFrag extends Fragment {
                             fb.child("Events").removeEventListener(this);
 
 
-                            //NotificationHandler nh = new NotificationHandler();
-                            //nh.generateNotifications(getActivity());
+                            /*NotificationHandler nh = new NotificationHandler();
+                            nh.generateNotifications(getActivity());*/
                         }
 
                         @Override
@@ -460,8 +538,6 @@ public class MapFrag extends Fragment {
                     drawableID = R.drawable.marker;
             }
 
-
-
             // Set icon
             //markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
 
@@ -480,6 +556,22 @@ public class MapFrag extends Fragment {
 
             // Put the marker in a HashMap to hide markers later
             markerLookupHM.put(e.getEvent_id(), marker);
+        }
+
+        // Methods for ConnectionsCallback
+        public void onConnected(@Nullable Bundle bundle) {
+
+        }
+
+
+        public void onConnectionSuspended(int i) {
+
+        }
+
+        // Method for OnConnectionFailedListener
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+            //CONNECTION FAILED??
+            //OH NO
         }
     }
 }

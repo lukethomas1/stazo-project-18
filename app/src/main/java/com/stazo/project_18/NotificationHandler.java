@@ -40,9 +40,6 @@ public class NotificationHandler {
         NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
                 "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
 
-        ArrayList<String> usersWhoCare = new ArrayList<>();
-        usersWhoCare.add("1196215920412322"); // Isaac
-
         /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
@@ -52,9 +49,9 @@ public class NotificationHandler {
     }
 
     // PULL AND PRINT BRIAN'S NOTIFICATIONS
-    public void pullNotifications() {
+    public void pullNotifications(String userToPullFrom) {
         Project_18.getFB().child("NotifDatabase").
-                child("1196215920412322").addListenerForSingleValueEvent(new ValueEventListener() {
+                child(userToPullFrom).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot notifSnap : dataSnapshot.getChildren()) {
