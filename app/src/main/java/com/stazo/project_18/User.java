@@ -368,7 +368,7 @@ public class User {
         creatorList.add(creator_id);
 
         (new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
-                name, ID, event_name)).
+                name, event_id, event_name)).
                 pushToFirebase(fb, creatorList);
 
         // increment popularity
