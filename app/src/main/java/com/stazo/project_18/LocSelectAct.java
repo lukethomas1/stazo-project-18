@@ -176,8 +176,6 @@ public class LocSelectAct extends FragmentActivity
                 //moving camera to default
                 CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
-                Toast toast = Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_LONG);
-                toast.show();
                 return false;
 
             }
@@ -317,7 +315,7 @@ public class LocSelectAct extends FragmentActivity
 
     @Override
     public boolean onMyLocationButtonClick() {
-
+        /*
         //permission checking
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -352,8 +350,8 @@ public class LocSelectAct extends FragmentActivity
         //moving camera to default
         CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
         map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
-        Toast toast = Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_LONG);
-        toast.show();
+
+        */
         return false;
     }
 
