@@ -3,10 +3,12 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
+import android.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,13 +20,18 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -48,7 +55,9 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -78,6 +87,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private User me;
     private Bitmap picBitmap;
     private Bitmap mainImageBitmap;
+    private String cameraPhotoPath;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
@@ -161,6 +171,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
+        Button uploadPhotoButton = (Button) v.findViewById(R.id.uploadImageButton);
+        uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoChooser();
+            }
+        });
         getMainImage();
         return v;
     }
@@ -619,6 +636,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 //URI downloadURI = new URI(uri.toString());
                                 URL downloadURL = new URL(uri.toString());
                                 mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openConnection().getInputStream());
+                                System.out.println("got main image bitmap");
                             }
                             catch (Exception e) {
                                 System.out.println("couldn't download from URL");
@@ -716,6 +734,205 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
 
         return finalString;
+    }
+
+    // Camera stuff
+
+    private void photoChooser() {
+        final CharSequence[] items = { "Take Photo", "Select from Library",
+                "Cancel" };
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(
+                getContext());
+
+        builder.setTitle("Choose option:");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    takePhoto();
+                } else if (items[item].equals("Select from Library")) {
+                    selectPhoto();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void selectPhoto() {
+        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 2); //2 is the callback number code for this specific call #magicnumbersftw #fuckstyle
+        }
+
+        //if no permissions, then ask
+        else {
+            System.out.println("no photo gallery permissions! :(");
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+
+        }
+    }
+
+    private void takePhoto() {
+        //just in case the phone doesn't have a camera
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            //check if capable of adding an image
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+
+                //check if camera permissions are granted
+                if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+
+                    //preemptively set file location
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        System.out.println("Could not create file for camera photo");
+                    }
+
+                    // pass in file location and open camera
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                                "com.stazo.project_18.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, 1);
+                    }
+                }
+
+                //if no permissions, then ask
+                else {
+                    System.out.println("no camera permissions! :(");
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{android.Manifest.permission.CAMERA}, 1);
+
+                }
+            }
+            else {
+                System.out.println("your phone can't use camera for some reason");
+            }
+        }
+        else {
+            //tell user u can't or smth
+            System.out.println("no camera on ur cheapo phone lmao! :(");
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        //just say the file name is timestamp
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "event_photo_" + timeStamp;
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        cameraPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //right after the user decies whether or not to give app camera permissions
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to use ur shitty camera :(");
+            }
+        }
+
+        //right after the user decides whether or not to give app photo gallery permissions
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to access photo gallery
+                selectPhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to view ur shitty photos :(");
+            }
+        }
+
+    }
+
+    // On intent return with bitmap in data
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == android.app.Activity.RESULT_OK) {
+            //also save the photo to gallery
+//            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//            File f = new File(cameraPhotoPath);
+//            Uri cameraPhotoUri = Uri.fromFile(f);
+//            mediaScanIntent.setData(cameraPhotoUri);
+//            this.sendBroadcast(mediaScanIntent);
+
+            //display
+            try {
+//                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cameraPhotoUri);
+                //getRotationFromCamera
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+//                ImageView mainImageView = (ImageView) v.findViewById(R.id.MainImageView);
+//                mainImageView.setImageBitmap(imageBitmap);
+
+                //push to firebase
+                pushMainImage(Uri.fromFile((new File(cameraPhotoPath))));
+            }
+            catch (Exception e) {
+                System.out.println("Something went wrong when accessing photo from file path or pushing photo");
+            }
+        }
+
+        if (requestCode == 2 && resultCode == android.app.Activity.RESULT_OK) {
+            Uri imageUri = data.getData();
+            //to convert to bitmap
+            try {
+                Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
+//                ImageView mainImageView = (ImageView) this.v.findViewById(R.id.MainImageView);
+//                mainImageView.setImageBitmap(selectedImage);
+
+                //push to firebase
+                pushMainImage(imageUri);
+            }
+            catch(Exception e) {
+                System.out.println("Something went wrong when u selected an image or pushing photo");
+            }
+        }
+    }
+
+    public void pushMainImage(Uri imageFile) {
+
+        //files stored in this format: EventImagesDatbase/eventid/userid_timestamp.jpg
+        StorageReference storageRef = ((Project_18) getActivity().getApplication()).getFBStorage();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        StorageReference mainImageStorage = storageRef.child("EventImagesDatabase/" +
+                this.passedEventID + "/" + me.getID() + "_" + timeStamp+ ".jpg");
+        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("your upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("your upload succeeded");
+                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
+                //push download url to image datbase in firebase
+                fb.child("ImagesDatabase").child("EventImages").child(passedEventID).push().setValue(taskSnapshot.getDownloadUrl().toString());
+            }
+        });
     }
 
 

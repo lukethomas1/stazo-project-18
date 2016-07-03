@@ -440,7 +440,7 @@ public class CreateEventAct extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
                     takePhoto();
-                } else if (items[item].equals("Choose from Library")) {
+                } else if (items[item].equals("Select from Library")) {
                     selectPhoto();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -448,26 +448,6 @@ public class CreateEventAct extends AppCompatActivity {
             }
         });
         builder.show();
-    }
-
-    private void photoChoices() {
-        Intent selectPhotoIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        List<Intent> intentList = new ArrayList<>();
-        intentList = addIntentsToList(getBaseContext(), intentList, takePictureIntent);
-        Intent chooseIntent = Intent.createChooser(selectPhotoIntent, "Choose option:");
-        chooseIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
-        startActivityForResult(chooseIntent, 3);
-    }
-    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resInfo) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            Intent targetedIntent = new Intent(intent);
-            targetedIntent.setPackage(packageName);
-            list.add(targetedIntent);
-        }
-        return list;
     }
 
     private void selectPhoto() {
@@ -644,9 +624,6 @@ public class CreateEventAct extends AppCompatActivity {
 //        });
     }
 
-    private void setPhoto() {
-
-    }
 
     public void cancel(View view) {
         onBackPressed();
