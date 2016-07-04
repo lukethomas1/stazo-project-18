@@ -13,10 +13,13 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -641,6 +644,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
 
                 final ImageView iv = (ImageView) v.findViewById(R.id.creatorPic);
+                picBitmap = getRoundedShape(picBitmap);
+
 
                 iv.post(new Runnable() {
                     public void run() {
@@ -648,6 +653,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         // cache image
                         ((Project_18) getActivity().getApplication()).
                                 addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
+
 
                         //picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
                         iv.setImageBitmap(picBitmap);
@@ -691,6 +697,29 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             }
         }).start();
+    }
+
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+        int targetWidth = Integer.parseInt(Project_18.pictureSize);
+        int targetHeight = Integer.parseInt(Project_18.pictureSize);
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight,Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth, targetHeight), null);
+        return targetBitmap;
     }
 
     public void pullMainImage() {
@@ -1359,11 +1388,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             b.setText("Joined");
 
         }
-    }
-
-    // pull and set event creator picture
-    private void setCreatorPicture() {
-
     }
 
     public String getPassedEventID() {
