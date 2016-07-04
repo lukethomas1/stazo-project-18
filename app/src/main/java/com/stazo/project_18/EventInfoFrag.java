@@ -3,31 +3,41 @@ package com.stazo.project_18;
 /**
  * Created by ericzhang on 5/14/16.
  */
+import android.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Path;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -37,6 +47,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,12 +59,17 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -81,6 +97,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private User me;
     private Bitmap picBitmap;
     private Bitmap mainImageBitmap;
+    private String cameraPhotoPath;
+    private ArrayList<Bitmap> images;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
@@ -164,7 +182,46 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
-        getMainImage();
+        final ImageButton uploadPhotoButton = (ImageButton) v.findViewById(R.id.uploadImageButton);
+        uploadPhotoButton.
+                setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            photoChooser();
+                            uploadPhotoButton.setColorFilter(
+                                    getResources().getColor(R.color.black),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+                        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            uploadPhotoButton.setColorFilter(
+                                    getResources().getColor(R.color.black),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            uploadPhotoButton.setColorFilter(
+                                    getResources().getColor(R.color.colorAccentDark),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+
+                        return false;
+                    }
+                });
+        uploadPhotoButton.setImageBitmap(Project_18.BITMAP_RESIZER(BitmapFactory.
+                decodeResource(getResources(), R.drawable.icon_camera), 70, 70));
+        uploadPhotoButton.setColorFilter(
+                getResources().getColor(R.color.black),
+                PorterDuff.Mode.SRC_IN);
+
+        Button viewHighlightsButton = (Button) v.findViewById(R.id.viewImagesButton);
+        viewHighlightsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHighlights();
+            }
+        });
+        pullMainImage();
+        pullEventImages();
         return v;
     }
 
@@ -228,6 +285,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             final String id = currEvent.getAttendees().get(i);
 
             idToName.put(id, Project_18.allUsers.get(id));
+
             numToLoad--;
         }
     }
@@ -438,12 +496,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 child(event_id).getValue(
                                 new GenericTypeIndicator<HashMap<String, Object>>() {
                                 }));
+                        if (currEvent.getName() == null) {
+                            handleNonExistentEvent();
+                            return;
+                        }
 
                         // get the info for the user
                         currUser = new User((HashMap<String, Object>) dataSnapshot.child("Users").
                                 child(currEvent.getCreator_id()).getValue());
-
-                        System.out.println(((Project_18) getActivity().getApplication()).getMe().getName());
 
                         // display event
                         showInfo(currEvent, currUser);
@@ -476,6 +536,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //Initialize Local Variables
         TextView eventDate = (TextView) this.getActivity().findViewById(R.id.eventDate);
         TextView eventName = (TextView) this.getActivity().findViewById(R.id.eventName);
+        TextView eventLoc = (TextView) this.getActivity().findViewById(R.id.locValue);
         TextView eventDescription = (TextView) this.getActivity().findViewById(R.id.eventDesc);
         TextView eventLength = (TextView) this.getActivity().findViewById(R.id.eventLength);
         TextView eventCreator = (TextView) this.getActivity().findViewById(R.id.eventCreator);
@@ -492,9 +553,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         int findType = e.getType();
 
         // setting the event info text fields
+        eventLoc.setOnTouchListener(new LocationOnTouchListener(eventLoc));
+        eventLoc.setText(e.getAddress(getActivity()));
         eventName.setText(e.getName());
         eventDescription.setVisibility(View.VISIBLE);
         eventDesc.setVisibility(View.VISIBLE);
+
         if(e.getDescription().length() == 0){
             eventDescription.setVisibility(View.GONE);
             eventDesc.setVisibility(View.GONE);
@@ -630,7 +694,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         return targetBitmap;
     }
 
-    public void getMainImage() {
+    public void pullMainImage() {
         System.out.println("main image");
         StorageReference rootRef = ((Project_18) getActivity().getApplication()).getFBStorage();
         StorageReference mainImageRef = rootRef.child("MainImagesDatabase/" + this.passedEventID + ".jpg");
@@ -647,7 +711,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println(uri.toString());
                                 //URI downloadURI = new URI(uri.toString());
                                 URL downloadURL = new URL(uri.toString());
-                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openConnection().getInputStream());
+                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openStream());
+                                System.out.println("got main image bitmap");
                             }
                             catch (Exception e) {
                                 System.out.println("couldn't download from URL");
@@ -747,6 +812,348 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         return finalString;
     }
 
+    // Camera stuff
+
+    private void photoChooser() {
+        final CharSequence[] items = { "Take Photo", "Select from Library",
+                "Cancel" };
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(
+                getContext());
+
+        builder.setTitle("Choose option:");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    takePhoto();
+                } else if (items[item].equals("Select from Library")) {
+                    selectPhoto();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void selectPhoto() {
+        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 2); //2 is the callback number code for this specific call #magicnumbersftw #fuckstyle
+        }
+
+        //if no permissions, then ask
+        else {
+            System.out.println("no photo gallery permissions! :(");
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+
+        }
+    }
+
+    private void takePhoto() {
+        //just in case the phone doesn't have a camera
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            //check if capable of adding an image
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+
+                //check if camera permissions are granted
+                if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+
+                    //preemptively set file location
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        System.out.println("Could not create file for camera photo");
+                    }
+
+                    // pass in file location and open camera
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                                "com.stazo.project_18.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, 1);
+                    }
+                }
+
+                //if no permissions, then ask
+                else {
+                    System.out.println("no camera permissions! :(");
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{android.Manifest.permission.CAMERA}, 1);
+
+                }
+            }
+            else {
+                System.out.println("your phone can't use camera for some reason");
+            }
+        }
+        else {
+            //tell user u can't or smth
+            System.out.println("no camera on ur cheapo phone lmao! :(");
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        //just say the file name is timestamp
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "event_photo_" + timeStamp;
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        cameraPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //right after the user decies whether or not to give app camera permissions
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to use ur shitty camera :(");
+            }
+        }
+
+        //right after the user decides whether or not to give app photo gallery permissions
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to access photo gallery
+                selectPhoto();
+            }
+            else {
+                System.out.println("You didn't give us permission to view ur shitty photos :(");
+            }
+        }
+
+    }
+
+    // On intent return with bitmap in data
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == android.app.Activity.RESULT_OK) {
+            //also save the photo to gallery
+//            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//            File f = new File(cameraPhotoPath);
+//            Uri cameraPhotoUri = Uri.fromFile(f);
+//            mediaScanIntent.setData(cameraPhotoUri);
+//            this.sendBroadcast(mediaScanIntent);
+
+            try {
+                //rotate bitmap and save it back
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+//                System.out.println("Image orientation: " + getImageOrientation(cameraPhotoPath));
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                File file = new File(cameraPhotoPath); // the File to save to
+                OutputStream fOut = new FileOutputStream(file);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+
+                //push to firebase
+                pushEventImage(Uri.fromFile((new File(cameraPhotoPath))));
+            }
+            catch (Exception e) {
+                System.out.println("Something went wrong when accessing photo from file path or pushing photo");
+            }
+        }
+
+        if (requestCode == 2 && resultCode == android.app.Activity.RESULT_OK) {
+            Uri imageUri = data.getData();
+            try {
+                //push to firebase
+                pushEventImage(imageUri);
+            }
+            catch(Exception e) {
+                System.out.println("Something went wrong when u selected an image or pushing photo");
+            }
+        }
+    }
+
+    public static int getImageOrientation(String imagePath){
+        int rotate = 0;
+        try {
+
+            File imageFile = new File(imagePath);
+            ExifInterface exif = new ExifInterface(
+                    imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
+    public void pushEventImage(Uri imageFile) {
+
+        //files stored in this format: EventImagesDatbase/eventid/userid_timestamp.jpg
+        StorageReference storageRef = ((Project_18) getActivity().getApplication()).getFBStorage();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        StorageReference mainImageStorage = storageRef.child("EventImagesDatabase/" +
+                this.passedEventID + "/" + me.getID() + "_" + timeStamp+ ".jpg");
+        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("your upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("your upload succeeded");
+                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
+                //push download url to image datbase in firebase
+                fb.child("ImagesDatabase").child("EventImages").child(passedEventID).push().setValue(taskSnapshot.getDownloadUrl().toString());
+                //for instant update
+                pullEventImages();
+            }
+        });
+    }
+
+    public void viewHighlights() {
+        if (images.size() > 0) {
+            System.out.println("number of images: " + images.size());
+            final ImageView imageFrameView = (ImageView) v.findViewById(R.id.imageFrameView);
+            final Iterator<Bitmap> imagesIterator = images.iterator();
+
+            imageFrameView.setImageBitmap(imagesIterator.next());
+            imageFrameView.setBackgroundColor(Color.BLACK);
+            imageFrameView.setClickable(true);
+            imageFrameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (imagesIterator.hasNext()) {
+                        System.out.println("next image");
+                        imageFrameView.setImageBitmap(imagesIterator.next());
+                    }
+                    else {
+                        System.out.println("no more images to show");
+                        imageFrameView.setImageBitmap(null);
+                        imageFrameView.setBackgroundColor(Color.TRANSPARENT);
+                        imageFrameView.setClickable(false);
+                    }
+                }
+            });
+
+
+            class eric extends GestureDetector.SimpleOnGestureListener {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    //if user swipes down
+                    if (e2.getY() - e1.getY() > 150 && Math.abs(velocityY) > 200) {
+                        System.out.println("Bottom swipe");
+
+                        //get rid of image view
+                        imageFrameView.setImageBitmap(null);
+                        imageFrameView.setBackgroundColor(Color.TRANSPARENT);
+                        imageFrameView.setClickable(false);
+                        return false; // Top to bottom
+                    }
+                    return false;
+                }
+            }
+
+            final GestureDetector gestureDetector = new GestureDetector(getActivity(), new eric());
+            imageFrameView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    gestureDetector.onTouchEvent(event);
+                    return false;
+                }
+            });
+
+        }
+        else {
+            System.out.println("show no pic dialog");
+            final CharSequence[] items = {"OK"};
+            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(
+                    getContext());
+
+            builder.setTitle("This event has no pictures yet!");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("OK")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+        }
+    }
+
+    public void pullEventImages() {
+        images = new ArrayList<Bitmap>();
+        System.out.println("pulling event images");
+        fb.child("ImagesDatabase").child("EventImages").child(this.passedEventID).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
+                        while(urlIterable.iterator().hasNext()) {
+                            System.out.println("one url: ");
+                            try {
+                                final URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
+                                System.out.println(imageUrl.toString());
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
+                                            images.add(imageBitmap);
+                                            System.out.println("num images: " + images.size());
+                                        }
+                                        catch(Exception e) {
+                                            System.out.println("Exception: " + e.toString());
+                                        }
+                                    }
+                                }).start();
+                            }
+                            catch (Exception e) {
+                                System.out.println("Exception: " + e.toString());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+    }
 
     public void viewCommentClick() {
         //open comment view window
@@ -780,6 +1187,44 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         return passedEventID;
     }
 
+    public class LocationOnTouchListener implements View.OnTouchListener {
+
+        private TextView container;
+
+        public LocationOnTouchListener(TextView container) {
+            this.container = container;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (MainAct.viewPager.getCurrentItem() == MainAct.MAP_POS) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+                else {
+                    Intent i = new Intent(getActivity(), MainAct.class);
+                    i.putExtra("toEvent", currEvent.getEvent_id());
+                    startActivity(i);
+                }
+                container.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            }
+            if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                container.setTextColor(getResources().getColor(R.color.colorTextPrimary));
+            }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                container.setTextColor(getResources().getColor(R.color.colorAccentDark));
+            }
+
+            return true;
+        }
+    }
+
+    private void handleNonExistentEvent() {
+        Toast toast = Toast.makeText(getActivity(), "Event no longer exists", Toast.LENGTH_SHORT);
+        toast.show();
+        onDestroyView();
+    }
 
     @Override
     public void onResume() {

@@ -212,7 +212,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                 EventButtonOnTouchListener listener = new EventButtonOnTouchListener(event, container);
 
                 ((Project_18) getActivity().getApplication()).makeEventButton
-                        (getActivity(), event, container, listener, true);
+                        (getActivity(), event, container, listener, true, Project_18.me);
 
                 litLayout.addView(container);
             }
@@ -243,7 +243,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                 EventButtonOnTouchListener listener = new EventButtonOnTouchListener(event, container);
 
                 ((Project_18) getActivity().getApplication()).makeEventButton
-                        (getActivity(), event, container, listener, true);
+                        (getActivity(), event, container, listener, true, Project_18.me);
 
                 happeningNowLayout.addView(container);
 
@@ -277,7 +277,7 @@ public class ListAct extends android.support.v4.app.Fragment {
                 EventButtonOnTouchListener listener = new EventButtonOnTouchListener(event, container);
 
                 ((Project_18) getActivity().getApplication()).makeEventButton
-                        (getActivity(), event, container, listener, true);
+                        (getActivity(), event, container, listener, true, Project_18.me);
 
                 laterLayout.addView(container);
 

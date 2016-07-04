@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,7 +35,9 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -74,7 +77,6 @@ public class CreateEventAct extends AppCompatActivity {
     int typeNum = 0;
 
     private Uri imageUri;
-
 
     private String cameraPhotoPath;
 
@@ -200,13 +202,6 @@ public class CreateEventAct extends AppCompatActivity {
                 buttonChooser();
             }
         });
-        Button selectPhotoButton = (Button) this.findViewById(R.id.AddImageFromLibrary);
-        selectPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPhoto();
-            }
-        });
     }
 
     //  TOOLBAR STUFF
@@ -307,6 +302,7 @@ public class CreateEventAct extends AppCompatActivity {
         //endDate = endDateView.getText().toString();
         startTime = startTimeView.getText().toString();
         endTime = endTimeView.getText().toString();
+
     }
 
     /**
@@ -369,18 +365,6 @@ public class CreateEventAct extends AppCompatActivity {
             endTimeView.setError(null);
         }
 
-        /*System.out.println("StartDate: " + (startDateFrag.getMonth()) + "/" + startDateFrag
-                .getDay()
-                + "/" + startTimeFrag.getHourInt() + "/" + startTimeFrag.getMinInt() + "/");
-        System.out.println("StartDate: " + (endDateFrag.getMonth()) + "/" + endDateFrag.getDay()
-                + "/" + endTimeFrag.getHourInt() + "/" + endTimeFrag.getMinInt() + "/"); */
-
-        int startYear = startDateFrag.getYear();
-        int startMonth = startDateFrag.getMonth() - 1;
-        int startDay = startDateFrag.getDay();
-        int startHour = startTimeFrag.getHourInt();
-        int startMin = startTimeFrag.getMinInt();
-
 
         startCal = new GregorianCalendar(startDateFrag.getYear(),
                 startDateFrag.getMonth() - 1,
@@ -393,7 +377,6 @@ public class CreateEventAct extends AppCompatActivity {
                 endTimeFrag.getHourInt(),
                 endTimeFrag.getMinInt());*/
 
-        valid = true;
         // Check if end date/time is after start date/time
         /*if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
             valid = false;
@@ -431,12 +414,18 @@ public class CreateEventAct extends AppCompatActivity {
 //            }
 //        }
 
-        System.out.println("startDate: " + startCal.getTime());
+
+        //System.out.println("startDate: " + startCal.getTime());
         //System.out.println("endDate: " + endCal.getTime());
-        System.out.println("startTime: " + startCal.getTimeInMillis());
-        System.out.println("endTime: " + endCal.getTimeInMillis());
+        //System.out.println("startTime: " + startCal.getTimeInMillis());
+        //System.out.println("endTime: " + startCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
-        endTimeLong = endCal.getTimeInMillis();
+        //endTimeLong = endCal.getTimeInMillis();
+
+        System.out.println("startTime: " + startCal.getTimeInMillis());
+        startTimeLong = startCal.getTimeInMillis();
+        // TODO: FIX THIS
+        endTimeLong = startCal.getTimeInMillis() + 999999;
 
         //Return validity of user input
         return valid;
@@ -483,7 +472,7 @@ public class CreateEventAct extends AppCompatActivity {
     // Camera stuff
 
     private void buttonChooser() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
+        final CharSequence[] items = { "Take Photo", "Select from Library",
                 "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 CreateEventAct.this);
@@ -494,38 +483,22 @@ public class CreateEventAct extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
+                    dialog.dismiss();
                     takePhoto();
-                } else if (items[item].equals("Choose from Library")) {
+                } else if (items[item].equals("Select from Library")) {
+                    dialog.dismiss();
                     selectPhoto();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
+                    System.out.println("cancelled");
                 }
             }
         });
         builder.show();
     }
 
-    private void photoChoices() {
-        Intent selectPhotoIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        List<Intent> intentList = new ArrayList<>();
-        intentList = addIntentsToList(getBaseContext(), intentList, takePictureIntent);
-        Intent chooseIntent = Intent.createChooser(selectPhotoIntent, "Choose option:");
-        chooseIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
-        startActivityForResult(chooseIntent, 3);
-    }
-    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resInfo) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            Intent targetedIntent = new Intent(intent);
-            targetedIntent.setPackage(packageName);
-            list.add(targetedIntent);
-        }
-        return list;
-    }
-
     private void selectPhoto() {
+        System.out.println("select photo");
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -644,10 +617,21 @@ public class CreateEventAct extends AppCompatActivity {
             //display
             try {
 //                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cameraPhotoUri);
-                //getRotationFromCamera
+
+                //rotate bitmap and save it back
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+//                System.out.println("Image orientation: " + getImageOrientation(cameraPhotoPath));
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                File file = new File(cameraPhotoPath); // the File to save to
+                OutputStream fOut = new FileOutputStream(file);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
-                mainImageView.setImageBitmap(imageBitmap);
+                mainImageView.setImageBitmap(rotatedBitmap);
 
                 //push to firebase
                 pushMainImage(Uri.fromFile((new File(cameraPhotoPath))));
@@ -699,9 +683,6 @@ public class CreateEventAct extends AppCompatActivity {
 //        });
     }
 
-    private void setPhoto() {
-
-    }
 
     public void cancel(View view) {
         onBackPressed();

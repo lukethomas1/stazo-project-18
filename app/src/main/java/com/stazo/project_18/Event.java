@@ -1,5 +1,8 @@
 package com.stazo.project_18;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -8,11 +11,13 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -104,6 +109,9 @@ public class Event implements Parcelable {
 
     // constructor with HashMap
     public Event(HashMap<String, Object> eventMap) {
+        if (eventMap == null) {
+            return;
+        }
         this.name = (String) eventMap.get("name");
         this.description = (String) eventMap.get("description");
         this.creator_id = (String) eventMap.get("creator_id");
@@ -179,7 +187,8 @@ public class Event implements Parcelable {
         (new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST, creator_name,
                 event_id,
                 name,
-                getTimeString(true))).pushToFirebase(fb, followers);
+                getTimeString(true),
+                creator_id)).pushToFirebase(fb, followers);
 
         //new ReportEventTask().execute("yo");
 
@@ -385,6 +394,22 @@ public class Event implements Parcelable {
     public String toString() {
         String string = name;
         return string;
+    }
+
+    public String getAddress(Context context) {
+        Geocoder geoCoder = new Geocoder(context);
+        List<Address> matches = null;
+        try {
+            matches = geoCoder.getFromLocation(location.latitude, location.longitude, 1);
+        } catch (IOException e) {
+
+        } finally {
+            if (matches == null) {
+                return null;
+            } else {
+                return (matches.isEmpty() ? null : matches.get(0)).getAddressLine(0);
+            }
+        }
     }
 
 

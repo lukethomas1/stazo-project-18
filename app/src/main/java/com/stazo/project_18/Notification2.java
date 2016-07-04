@@ -24,17 +24,28 @@ public abstract class Notification2 {
     public static final int TYPE_FRIEND_HOST = 1;
     public static final int TYPE_NEW_FOLLOW = 2;
     public static final int TYPE_JOINED_EVENT = 3;
+    public static final int TYPE_INVITE_EVENT = 4;
+
 
     private String notifID;
     private boolean viewed = false;
     private int type;
+    private String pictureId;
 
     public Notification2() {}
 
-    // Type 2
-    public Notification2(int type) {
+    // FOR GENERATING A NEW NOTIF
+    public Notification2(int type, String pictureId) {
         generateNotifID();
         this.type = type;
+        this.pictureId = pictureId;
+    }
+
+    // FOR PULLING AN EXISTING NOTIF
+    public Notification2(int type, String notifID, String pictureId) {
+        this.type = type;
+        this.notifID = notifID;
+        this.pictureId = pictureId;
     }
 
     public abstract void onNotificationClicked(Context context);
@@ -96,5 +107,14 @@ public abstract class Notification2 {
 
     public void setViewed(boolean viewed) {
         this.viewed = viewed;
+    }
+
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 }

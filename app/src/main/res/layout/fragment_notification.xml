@@ -6,19 +6,32 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.stazo.project_18.InteractiveScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/LL1">
+        android:layout_height="wrap_content"
+        android:id="@+id/notifScrollView">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Loading Notifications"
-            android:id="@+id/loadingText"
-            android:layout_gravity="center_horizontal" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/LL1">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/noNotificationsText"
+                android:textColor="@color/colorTextPrimary"
+                android:text="You have no notifications."
+                android:textSize="20sp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </com.stazo.project_18.InteractiveScrollView>
+
+
 </FrameLayout>

@@ -250,7 +250,7 @@ public class Project_18 extends Application {
 
     public void makeEventButton(Context context, Event e, LinearLayout container,
                                 View.OnTouchListener listener,
-                                boolean withBorders) {
+                                boolean withBorders, User user) {
 
         TextView eventName = new Button(context);
         eventName.setText(e.toString());
@@ -262,10 +262,10 @@ public class Project_18 extends Application {
         info.setText(e.getTimeString(false));
         TextView hostOrJoined = new TextView(context);
 
-        if (e.getCreator_id().equals(Project_18.me.getID())) {
+        if (e.getCreator_id().equals(user.getID())) {
             hostOrJoined.setText("Host");
             hostOrJoined.setTextColor(getResources().getColor(R.color.colorPrimary));
-        } else if (e.getAttendees().contains(Project_18.me.getID())){
+        } else if (e.getAttendees().contains(user.getID())){
             hostOrJoined.setText("Joined");
             hostOrJoined.setTextColor(getResources().getColor(R.color.colorAccentDark));
         }

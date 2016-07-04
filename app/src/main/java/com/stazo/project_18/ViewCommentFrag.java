@@ -23,11 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -77,7 +72,8 @@ public class ViewCommentFrag extends Fragment{
         (new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
                 meList,
                 passedEventID,
-                EventInfoFrag.currEvent.getName())).
+                EventInfoFrag.currEvent.getName(),
+                Project_18.me.getID())).
                 pushToFirebase(fb, usersWhoCare);
     }
 
