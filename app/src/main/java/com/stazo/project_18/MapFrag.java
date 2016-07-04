@@ -193,13 +193,6 @@ public class MapFrag extends Fragment {
             ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter,
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
     {
-        /**
-         * Request code for location permission request.
-         *
-         * @see #onRequestPermissionsResult(int, String[], int[])
-         */
-        private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
         // Hashmap from marker id to event id (for displaying event info)
         private HashMap<String, String> idLookupHM = new HashMap<>();
 
@@ -221,14 +214,14 @@ public class MapFrag extends Fragment {
 
         @Override
         public View getInfoWindow(Marker marker) {
-            return null; // Call getInfoContents
+            render(marker, infoWindow);
+
+            return infoWindow;
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            render(marker, infoWindow);
-
-            return infoWindow;
+            return null;
         }
 
         public void simulateOnClick(String eventId) {
@@ -242,13 +235,10 @@ public class MapFrag extends Fragment {
         }
 
         private void render(Marker marker, View inflatedLayout) {
-
             // Set title and event description
             TextView titleTV = (TextView) inflatedLayout.findViewById(R.id.eventTitleTV);
-            TextView descTV = (TextView) inflatedLayout.findViewById(R.id.eventDescTV);
 
             titleTV.setText(marker.getTitle());
-            descTV.setText(marker.getSnippet());
         }
 
         public String getEventIDFromMarker(Marker marker) {
@@ -314,27 +304,19 @@ public class MapFrag extends Fragment {
                     .addApi(Places.PLACE_DETECTION_API)
                     .build();
 
-            //permission checking
-            //implement for older android versions
+            // Permission checking: if no permissions, return
             if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                     android.Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+
                 return;
             }
 
-            //for obtaining current location
+            // Button to auto-locate current position
             map.setMyLocationEnabled(true);
-
 
             map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -344,13 +326,7 @@ public class MapFrag extends Fragment {
                             && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                             android.Manifest.permission.ACCESS_COARSE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
+
                         return true;
                     }
                     // Get user's current location
@@ -441,17 +417,9 @@ public class MapFrag extends Fragment {
             MarkerOptions markerOpts = new MarkerOptions();
 
             markerOpts.title(e.getName());
-            markerOpts.snippet(e.getDescription());
+            //markerOpts.snippet(e.getDescription());
             markerOpts.position(e.getLocation());
-            // Set the color of the marker
-            /*int height = 100;
-            int width = 100;
-            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.mipmap.marker);
-            Bitmap b=bitmapdraw.getBitmap();
-            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-            Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-            // Scale it to 50 x 50
-            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));*/
+
 
             // Get type to set color
             int eventType = e.getType();
