@@ -29,6 +29,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="40dp"
                 android:onClick="toggleState">
 
                 <LinearLayout
@@ -341,11 +342,50 @@
                             android:text="View comments"
                             android:layout_centerVertical="true"/>
 
+                        <!-- Layout to add comments to -->
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/viewCommentLayout">
+                            <TextView
+                                android:layout_width = "match_parent"
+                                android:layout_height = "30dp"
+                                android:layout_marginTop="10dp"
+                                android:textSize = "20dp"
+                                android:text = "Comments:">
+                            </TextView>
+                        </LinearLayout>
+
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
+    <!-- Layout for posting comments -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:gravity="center"
+        android:id="@+id/writeCommentLayout">
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:hint="Write comment here..."
+            android:id="@+id/commentText" />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:id="@+id/submitComment"
+            android:text="Post"
+            android:textAllCaps="false"
+            android:textSize="12dp"
+            android:textColor="@color/colorTextPrimary"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -498,7 +498,6 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     private void selectPhoto() {
-        System.out.println("select photo");
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
