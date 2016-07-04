@@ -159,27 +159,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
-        //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        //setup comment buttons
-//        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
-//        writeCommentButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                writeCommentClick();
-//            }
-//        });
-
-        Button viewCommentButton = (Button) v.findViewById(R.id.viewCommentButton);
-        viewCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewCommentClick();
-            }
-        });
-
         final Button attendButton = (Button) v.findViewById(R.id.attend);
-
         // if the user is already attending an event, change the button text to "Joined"
         if (me.getAttendingEvents().contains(passedEventID)) {
 
@@ -188,7 +168,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             attendButton.setTypeface(null, Typeface.ITALIC);
             attendButton.setText("Joined");
         }
-
         // listener for attendButton
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
