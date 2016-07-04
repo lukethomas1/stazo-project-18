@@ -206,7 +206,7 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
 
                 // There are no notifications to show
                 if(notifs.isEmpty()) {
-                    ((TextView)v.findViewById(R.id.loadingText)).setText("No Notifications");
+                    ((TextView)v.findViewById(R.id.noNotificationsText)).setText("No Notifications");
                 }
 
                 // There are notifications to show, show them
