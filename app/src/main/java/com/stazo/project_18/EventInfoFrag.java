@@ -8,15 +8,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,14 +56,17 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -88,6 +95,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap picBitmap;
     private Bitmap mainImageBitmap;
     private String cameraPhotoPath;
+    private ArrayList<Bitmap> images;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
@@ -178,7 +186,16 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 photoChooser();
             }
         });
-        getMainImage();
+
+        Button viewHighlightsButton = (Button) v.findViewById(R.id.viewImagesButton);
+        viewHighlightsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHighlights();
+            }
+        });
+        pullMainImage();
+        pullEventImages();
         return v;
     }
 
@@ -618,7 +635,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }).start();
     }
 
-    public void getMainImage() {
+    public void pullMainImage() {
         System.out.println("main image");
         StorageReference rootRef = ((Project_18) getActivity().getApplication()).getFBStorage();
         StorageReference mainImageRef = rootRef.child("MainImagesDatabase/" + this.passedEventID + ".jpg");
@@ -635,7 +652,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println(uri.toString());
                                 //URI downloadURI = new URI(uri.toString());
                                 URL downloadURL = new URL(uri.toString());
-                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openConnection().getInputStream());
+                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openStream());
                                 System.out.println("got main image bitmap");
                             }
                             catch (Exception e) {
@@ -877,16 +894,21 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 //            mediaScanIntent.setData(cameraPhotoUri);
 //            this.sendBroadcast(mediaScanIntent);
 
-            //display
             try {
-//                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cameraPhotoUri);
-                //getRotationFromCamera
+                //rotate bitmap and save it back
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+//                System.out.println("Image orientation: " + getImageOrientation(cameraPhotoPath));
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
-//                ImageView mainImageView = (ImageView) v.findViewById(R.id.MainImageView);
-//                mainImageView.setImageBitmap(imageBitmap);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                File file = new File(cameraPhotoPath); // the File to save to
+                OutputStream fOut = new FileOutputStream(file);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
 
                 //push to firebase
-                pushMainImage(Uri.fromFile((new File(cameraPhotoPath))));
+                pushEventImage(Uri.fromFile((new File(cameraPhotoPath))));
             }
             catch (Exception e) {
                 System.out.println("Something went wrong when accessing photo from file path or pushing photo");
@@ -895,14 +917,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         if (requestCode == 2 && resultCode == android.app.Activity.RESULT_OK) {
             Uri imageUri = data.getData();
-            //to convert to bitmap
             try {
-                Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
-//                ImageView mainImageView = (ImageView) this.v.findViewById(R.id.MainImageView);
-//                mainImageView.setImageBitmap(selectedImage);
-
                 //push to firebase
-                pushMainImage(imageUri);
+                pushEventImage(imageUri);
             }
             catch(Exception e) {
                 System.out.println("Something went wrong when u selected an image or pushing photo");
@@ -910,7 +927,35 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
     }
 
-    public void pushMainImage(Uri imageFile) {
+    public static int getImageOrientation(String imagePath){
+        int rotate = 0;
+        try {
+
+            File imageFile = new File(imagePath);
+            ExifInterface exif = new ExifInterface(
+                    imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
+    public void pushEventImage(Uri imageFile) {
 
         //files stored in this format: EventImagesDatbase/eventid/userid_timestamp.jpg
         StorageReference storageRef = ((Project_18) getActivity().getApplication()).getFBStorage();
@@ -931,10 +976,125 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
                 //push download url to image datbase in firebase
                 fb.child("ImagesDatabase").child("EventImages").child(passedEventID).push().setValue(taskSnapshot.getDownloadUrl().toString());
+                //for instant update
+                pullEventImages();
             }
         });
     }
 
+    public void viewHighlights() {
+        if (images.size() > 0) {
+            System.out.println("number of images: " + images.size());
+            final ImageView imageFrameView = (ImageView) v.findViewById(R.id.imageFrameView);
+            final Iterator<Bitmap> imagesIterator = images.iterator();
+
+            imageFrameView.setImageBitmap(imagesIterator.next());
+            imageFrameView.setBackgroundColor(Color.BLACK);
+            imageFrameView.setClickable(true);
+            imageFrameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (imagesIterator.hasNext()) {
+                        System.out.println("next image");
+                        imageFrameView.setImageBitmap(imagesIterator.next());
+                    }
+                    else {
+                        System.out.println("no more images to show");
+                        imageFrameView.setImageBitmap(null);
+                        imageFrameView.setBackgroundColor(Color.TRANSPARENT);
+                        imageFrameView.setClickable(false);
+                    }
+                }
+            });
+
+
+            class eric extends GestureDetector.SimpleOnGestureListener {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    //if user swipes down
+                    if (e2.getY() - e1.getY() > 150 && Math.abs(velocityY) > 200) {
+                        System.out.println("Bottom swipe");
+
+                        //get rid of image view
+                        imageFrameView.setImageBitmap(null);
+                        imageFrameView.setBackgroundColor(Color.TRANSPARENT);
+                        imageFrameView.setClickable(false);
+                        return false; // Top to bottom
+                    }
+                    return false;
+                }
+            }
+
+            final GestureDetector gestureDetector = new GestureDetector(getActivity(), new eric());
+            imageFrameView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    gestureDetector.onTouchEvent(event);
+                    return false;
+                }
+            });
+
+        }
+        else {
+            System.out.println("show no pic dialog");
+            final CharSequence[] items = {"OK"};
+            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(
+                    getContext());
+
+            builder.setTitle("This event has no pictures yet!");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("OK")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+        }
+    }
+
+    public void pullEventImages() {
+        images = new ArrayList<Bitmap>();
+        System.out.println("pulling event images");
+        fb.child("ImagesDatabase").child("EventImages").child(this.passedEventID).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
+                while(urlIterable.iterator().hasNext()) {
+                    System.out.println("one url: ");
+                    try {
+                        final URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
+                        System.out.println(imageUrl.toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
+                                    images.add(imageBitmap);
+                                    System.out.println("num images: " + images.size());
+                                }
+                                catch(Exception e) {
+                                    System.out.println("Exception: " + e.toString());
+                                }
+                            }
+                        }).start();
+                    }
+                    catch (Exception e) {
+                        System.out.println("Exception: " + e.toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
 
     public void viewCommentClick() {
         //open comment view window

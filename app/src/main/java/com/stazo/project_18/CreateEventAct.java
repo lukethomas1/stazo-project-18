@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,7 +35,9 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -624,10 +627,21 @@ public class CreateEventAct extends AppCompatActivity {
             //display
             try {
 //                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cameraPhotoUri);
-                //getRotationFromCamera
+
+                //rotate bitmap and save it back
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+//                System.out.println("Image orientation: " + getImageOrientation(cameraPhotoPath));
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                File file = new File(cameraPhotoPath); // the File to save to
+                OutputStream fOut = new FileOutputStream(file);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
-                mainImageView.setImageBitmap(imageBitmap);
+                mainImageView.setImageBitmap(rotatedBitmap);
 
                 //push to firebase
                 pushMainImage(Uri.fromFile((new File(cameraPhotoPath))));
