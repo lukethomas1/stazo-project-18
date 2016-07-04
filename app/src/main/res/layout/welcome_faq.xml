@@ -62,91 +62,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Anyone."
-                android:textStyle="bold"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="What kind of events should I post?"
-                android:textStyle="italic"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Any kind."
-                android:textStyle="bold"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Can I attach a description to my event?"
-                android:textStyle="italic"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No."
-                android:textStyle="bold"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Please?"
-                android:textStyle="italic"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No."
-                android:textStyle="bold"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Do I need to take a picture to make an event?"
-                android:textStyle="italic"
-                android:textAppearance="@style/WelcomeDesc"
-                android:layout_gravity="center"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Yup."
+                android:text="Anyone can post an event."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
                 android:layout_gravity="center"/>
@@ -161,14 +77,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="What if I have nothing to take a picture of?"
+                android:text="What kind of events should I post?"
                 android:textStyle="italic"
                 android:textAppearance="@style/WelcomeDesc"
                 android:layout_gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Take a picture of nothing."
+                android:text="Any kind you want."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
                 android:layout_gravity="center"/>

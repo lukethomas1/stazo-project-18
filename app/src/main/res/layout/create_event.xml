@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".CreateEventAct">
 
     <android.support.design.widget.AppBarLayout
@@ -50,13 +51,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Event Name:"
+                android:text="What is your event called?"
                 android:id="@+id/NameText"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your event's name!"
+                android:hint=""
                 android:id="@+id/EventName"
                 android:layout_gravity="center_horizontal"
                 android:singleLine="true"/>
@@ -65,13 +66,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Event Description (Optional):"
+                android:text="Describe your event (optional):"
                 android:id="@+id/DescText" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your event's description!"
+                android:hint=""
                 android:gravity="start"
                 android:id="@+id/EventDesc"
                 android:layout_gravity="center_horizontal"
@@ -83,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Pick the Event Start Date"
+                android:text="When is it happening?"
                 android:id="@+id/PickText" />
 
             <Spinner
@@ -206,20 +207,20 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginRight="10dp"
                     android:textAllCaps="false"
-                    android:text="Add Image"
-                    android:id="@+id/AddImage"
-                    />
+                    android:text="Add image (optional)"
+                    android:id="@+id/AddImage" />
+
 
                 <Button
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:background="@color/colorPrimary"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="10dp"
+                    android:text="Choose location"
                     android:textAllCaps="false"
-                    android:text="Select Image From Gallery"
-                    android:id="@+id/AddImageFromLibrary"/>
+                    android:id="@+id/CreateEvent"
+                    android:onClick="makeEvent"/>
             </LinearLayout>
 
             <!--Image View for when photo is added -->
@@ -237,24 +238,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:background="@color/colorPrimary"
-                    android:textColor="@color/white"
-                    android:layout_marginRight="10dp"
+                    android:background="@color/colorDividerLight"
+                    android:textColor="@color/colorTextPrimary"
                     android:text="Cancel"
                     android:textAllCaps="false"
                     android:id="@+id/cancelButton"
                     android:onClick="cancel"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:background="@color/colorPrimary"
-                    android:textColor="@color/white"
-                    android:text="Create Event"
-                    android:textAllCaps="false"
-                    android:id="@+id/CreateEvent"
-                    android:onClick="makeEvent"/>
             </LinearLayout>
 
         </LinearLayout>
