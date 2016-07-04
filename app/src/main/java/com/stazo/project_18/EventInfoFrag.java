@@ -179,13 +179,36 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
-        Button uploadPhotoButton = (Button) v.findViewById(R.id.uploadImageButton);
-        uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                photoChooser();
-            }
-        });
+        final ImageButton uploadPhotoButton = (ImageButton) v.findViewById(R.id.uploadImageButton);
+        uploadPhotoButton.
+                setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            photoChooser();
+                            uploadPhotoButton.setColorFilter(
+                                    getResources().getColor(R.color.black),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+                        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            uploadPhotoButton.setColorFilter(
+                                    getResources().getColor(R.color.black),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            uploadPhotoButton.setColorFilter(
+                                    getResources().getColor(R.color.colorAccentDark),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+
+                        return false;
+                    }
+                });
+        uploadPhotoButton.setImageBitmap(Project_18.BITMAP_RESIZER(BitmapFactory.
+                decodeResource(getResources(), R.drawable.icon_camera), 70, 70));
+        uploadPhotoButton.setColorFilter(
+                getResources().getColor(R.color.black),
+                PorterDuff.Mode.SRC_IN);
 
         Button viewHighlightsButton = (Button) v.findViewById(R.id.viewImagesButton);
         viewHighlightsButton.setOnClickListener(new View.OnClickListener() {
@@ -1067,39 +1090,39 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         System.out.println("pulling event images");
         fb.child("ImagesDatabase").child("EventImages").child(this.passedEventID).
                 addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
-                while(urlIterable.iterator().hasNext()) {
-                    System.out.println("one url: ");
-                    try {
-                        final URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
-                        System.out.println(imageUrl.toString());
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
-                                    images.add(imageBitmap);
-                                    System.out.println("num images: " + images.size());
-                                }
-                                catch(Exception e) {
-                                    System.out.println("Exception: " + e.toString());
-                                }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
+                        while(urlIterable.iterator().hasNext()) {
+                            System.out.println("one url: ");
+                            try {
+                                final URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
+                                System.out.println(imageUrl.toString());
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
+                                            images.add(imageBitmap);
+                                            System.out.println("num images: " + images.size());
+                                        }
+                                        catch(Exception e) {
+                                            System.out.println("Exception: " + e.toString());
+                                        }
+                                    }
+                                }).start();
                             }
-                        }).start();
+                            catch (Exception e) {
+                                System.out.println("Exception: " + e.toString());
+                            }
+                        }
                     }
-                    catch (Exception e) {
-                        System.out.println("Exception: " + e.toString());
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
                     }
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+                });
 
     }
 

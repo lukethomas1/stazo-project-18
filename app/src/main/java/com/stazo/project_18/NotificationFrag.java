@@ -206,14 +206,13 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
 
                 // There are no notifications to show
                 if(notifs.isEmpty()) {
-                    ((TextView)v.findViewById(R.id.noNotificationsText)).setText("You have no notifications");
+                    v.findViewById(R.id.noNotificationsText).setVisibility(View.VISIBLE);
                 }
 
                 // There are notifications to show, show them
-                else {
-                    // Show them on the screen
-                    displayNotifications();
-                }
+                // Show them on the screen
+                displayNotifications();
+
             }
 
             @Override

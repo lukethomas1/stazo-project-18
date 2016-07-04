@@ -22,10 +22,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/noNotificationsText"
                 android:textColor="@color/colorTextPrimary"
+                android:text="You have no notifications."
                 android:textSize="20sp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

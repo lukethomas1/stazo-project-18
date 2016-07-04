@@ -21,18 +21,18 @@
     <color name="colorAccentDark">#FF4081</color>-->
 
     <!-- THEME LIGHT-BLUE WITH YELLOW ACCENT-->
-    <!--<color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryDark">#0288D1</color>
-    <color name="colorPrimaryLight">#B3E5FC</color>
-    <color name="colorAccent">#FFEB3B</color>
-    <color name="colorAccentDark">#FBC02D</color>-->
-
-    <!-- THEME LIGHT-BLUE WITH RED ACCENT-->
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorPrimaryLight">#B3E5FC</color>
+    <color name="colorAccent">#FFEB3B</color>
+    <color name="colorAccentDark">#FBC02D</color>
+
+    <!-- THEME LIGHT-BLUE WITH RED ACCENT-->
+    <!--<color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorPrimaryLight">#B3E5FC</color>
     <color name="colorAccent">#E53935</color>
-    <color name="colorAccentDark">#C62828</color>
+    <color name="colorAccentDark">#C62828</color>-->
 
     <!-- THEME LIGHT-BLUE WITH DEEP ORANGE ACCENT-->
     <!--<color name="colorPrimary">#03A9F4</color>
