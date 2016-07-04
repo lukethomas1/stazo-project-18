@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -35,6 +36,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -67,6 +69,11 @@ public class MapFrag extends Fragment {
     private MapView mapView;
     private GoogleApiClient mGoogleApiClient;
 
+
+    // Initial Camera Position
+    private float zoom = 14.5f;
+    private float tilt = 0;
+    private float bearing = 0;
     // Time seekbar
     private SeekBar seekbar;
     private TextView timeTextView;
@@ -75,8 +82,6 @@ public class MapFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.map_overview, container, false);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         // Initialize Firebase
         Firebase.setAndroidContext(this.getActivity());
@@ -164,9 +169,6 @@ public class MapFrag extends Fragment {
         mapView.onLowMemory();
     }
 
-//    public void goToCreateEvent(View view) {
-//        startActivity(new Intent(this.getActivity(), CreateEventAct.class));
-//    }
 
     private void goToEventInfo(Marker marker) {
         // Get event's database id
@@ -188,7 +190,6 @@ public class MapFrag extends Fragment {
     /**
      * Map Handler
      */
-
     private class MapHandler extends FragmentActivity implements OnMapReadyCallback,
             ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.InfoWindowAdapter,
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
@@ -289,10 +290,6 @@ public class MapFrag extends Fragment {
 
             displayAllEvents();
 
-            // Initial Camera Position
-            float zoom = 14.5f;
-            float tilt = 0;
-            float bearing = 0;
 
             CameraPosition camPos = new CameraPosition(REVELLE, zoom, tilt, bearing);
 
@@ -302,7 +299,6 @@ public class MapFrag extends Fragment {
             seekbar.bringToFront();
             timeTextView.bringToFront();
 
-            // Enable MyLocation button
 
             // Initialize API client
             mGoogleApiClient = new GoogleApiClient
@@ -334,38 +330,6 @@ public class MapFrag extends Fragment {
 
             //for obtaining current location
             map.setMyLocationEnabled(true);
-
-
-            map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                            android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                            android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return true;
-                    }
-                    // Get user's current location
-                    Location currentLoc = LocationServices.FusedLocationApi.getLastLocation(
-                            mGoogleApiClient);
-
-                    LatLng point = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
-
-                    // Move camera
-                    map.moveCamera(CameraUpdateFactory.newLatLng(point));
-
-                    return false;
-
-                }
-            });
         }
 
         // Display all the events
