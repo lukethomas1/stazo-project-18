@@ -472,7 +472,7 @@ public class CreateEventAct extends AppCompatActivity {
     // Camera stuff
 
     private void buttonChooser() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
+        final CharSequence[] items = { "Take Photo", "Select from Library",
                 "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 CreateEventAct.this);
@@ -483,11 +483,14 @@ public class CreateEventAct extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
+                    dialog.dismiss();
                     takePhoto();
                 } else if (items[item].equals("Select from Library")) {
+                    dialog.dismiss();
                     selectPhoto();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
+                    System.out.println("cancelled");
                 }
             }
         });
@@ -495,6 +498,7 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     private void selectPhoto() {
+        System.out.println("select photo");
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
