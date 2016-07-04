@@ -259,6 +259,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             final String id = currEvent.getAttendees().get(i);
 
             idToName.put(id, Project_18.allUsers.get(id));
+
             numToLoad--;
         }
     }
