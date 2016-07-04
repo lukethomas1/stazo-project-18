@@ -77,7 +77,8 @@ public class ViewCommentFrag extends Fragment{
         (new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
                 meList,
                 passedEventID,
-                EventInfoFrag.currEvent.getName())).
+                EventInfoFrag.currEvent.getName(),
+                Project_18.me.getID())).
                 pushToFirebase(fb, usersWhoCare);
     }
 

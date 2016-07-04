@@ -21,23 +21,26 @@ public class NotificationJoinedEvent extends Notification2 {
 
     public NotificationJoinedEvent(int type, String joinedUserName,
                                    String eventId,
-                                   String eventName) {
-        super(type);
+                                   String eventName,
+                                   String pictureId) {
+        super(type, pictureId);
         this.joinedUserName = joinedUserName;
         this.eventId = eventId;
         this.eventName = eventName;
     }
 
     public NotificationJoinedEvent(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"),
+                (String) notifMap.get("pictureId"));
         this.joinedUserName = (String) notifMap.get("joinedUserName");
         this.eventId = (String) notifMap.get("eventId");
         this.eventName = (String) notifMap.get("eventName");
+        setViewed((Boolean) notifMap.get("viewed"));
     }
 
     public void onNotificationClicked(Context context) {
         ((MainAct) context).goToEventInfo(eventId, true);
-        this.setViewed(true);
+        setViewed(true);
     }
 
     public String generateMessage() {

@@ -23,8 +23,9 @@ public class NotificationFriendHost extends Notification2 {
     public NotificationFriendHost(int type, String hostName,
                                     String eventId,
                                     String eventName,
-                                  String timeString) {
-        super(type);
+                                  String timeString,
+                                  String pictureId) {
+        super(type, pictureId);
         this.hostName = hostName;
         this.eventId = eventId;
         this.eventName = eventName;
@@ -32,15 +33,18 @@ public class NotificationFriendHost extends Notification2 {
     }
 
     public NotificationFriendHost(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"),
+                (String) notifMap.get("pictureId"));
         this.hostName = (String) notifMap.get("hostName");
         this.eventId = (String) notifMap.get("eventId");
         this.eventName = (String) notifMap.get("eventName");
         this.timeString = (String) notifMap.get("timeString");
+        setViewed((Boolean) notifMap.get("viewed"));
     }
 
     public void onNotificationClicked(Context context) {
         ((MainAct) context).goToEventInfo(eventId, true);
+        setViewed(true);
     }
 
     public String generateMessage(){

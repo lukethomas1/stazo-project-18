@@ -28,22 +28,26 @@ public class NotificationHandler {
         userNames.add("Mark2");
         String eventId = "yooGPHLVQTAYM";
 
+        ArrayList<String> usersWhoCare = new ArrayList<>();
+        usersWhoCare.add("1196215920412322");
+
         NotificationCommentEvent nce = new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
-                userNames, eventId, "Legacy Speech");
+                userNames, eventId, "Legacy Speech", "1177156832304841");
 
         NotificationFriendHost nfe = new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST,
-                "Bob the host", "yooKPGCHIFIGR", "Smash Bros Party", "Today at 7:00pm");
+                "Bob the host", "yooKPGCHIFIGR", "Smash Bros Party", "Today at 7:00pm",
+                "1177156832304841");
 
         NotificationNewFollow nnf = new NotificationNewFollow(Notification2.TYPE_NEW_FOLLOW,
                 "Melissa the follower", "1177156832304841");
 
         NotificationJoinedEvent nje = new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
-                "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial");
+                "Alice the event joiner", "yooQEFISGNDVK", "TamarackSocial", "1177156832304841");
 
-        /*nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
+        nce.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nfe.pushToFirebase(Project_18.getFB(), usersWhoCare);
         nnf.pushToFirebase(Project_18.getFB(), usersWhoCare);
-        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);*/
+        nje.pushToFirebase(Project_18.getFB(), usersWhoCare);
 
         //pullNotifications();
     }

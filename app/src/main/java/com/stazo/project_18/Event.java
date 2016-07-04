@@ -187,7 +187,8 @@ public class Event implements Parcelable {
         (new NotificationFriendHost(Notification2.TYPE_FRIEND_HOST, creator_name,
                 event_id,
                 name,
-                getTimeString(true))).pushToFirebase(fb, followers);
+                getTimeString(true),
+                creator_id)).pushToFirebase(fb, followers);
 
         //new ReportEventTask().execute("yo");
 

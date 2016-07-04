@@ -21,19 +21,22 @@ public class NotificationNewFollow extends Notification2 {
 
     public NotificationNewFollow(int type, String followerName,
                                   String followerId) {
-        super(type);
+        super(type, followerId);
         this.followerName = followerName;
         this.followerId = followerId;
     }
 
     public NotificationNewFollow(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"),
+                (String) notifMap.get("pictureId"));
         this.followerName = (String) notifMap.get("followerName");
         this.followerId = (String) notifMap.get("followerId");
+        setViewed((Boolean) notifMap.get("viewed"));
     }
 
     public void onNotificationClicked(Context context) {
         ((MainAct) context).goToOtherProfile(followerId);
+        setViewed(true);
     }
 
     public String generateMessage() {

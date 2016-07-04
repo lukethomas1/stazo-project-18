@@ -403,8 +403,8 @@ public class MapFrag extends Fragment {
                             fb.child("Events").removeEventListener(this);
 
 
-                            /*NotificationHandler nh = new NotificationHandler();
-                            nh.generateNotifications(getActivity());*/
+                            //NotificationHandler nh = new NotificationHandler();
+                            //nh.generateNotifications(getActivity());
                         }
 
                         @Override

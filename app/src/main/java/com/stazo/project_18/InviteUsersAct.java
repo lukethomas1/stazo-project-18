@@ -489,7 +489,8 @@ public class InviteUsersAct extends AppCompatActivity {
         meList.add(Project_18.me.getName());
         (new NotificationInviteEvent(Notification2.TYPE_INVITE_EVENT, meList,
                 event.getEvent_id(),
-                event.getName())).pushToFirebase(fb, invitedUserIds);
+                event.getName(),
+                Project_18.me.getID())).pushToFirebase(fb, invitedUserIds);
         finish();
     }
 

@@ -22,33 +22,39 @@ public class NotificationCommentEvent extends Notification2 {
     private String eventName;
     private ArrayList<String> userNames = new ArrayList<String>();
 
+
     public NotificationCommentEvent(int type, ArrayList<String> userNames,
                                     String eventId,
-                                    String eventName) {
-        super(type);
+                                    String eventName,
+                                    String pictureId) {
+        super(type, pictureId);
         this.userNames = userNames;
         this.eventId = eventId;
         this.eventName = eventName;
     }
 
     public NotificationCommentEvent(HashMap<String, Object> notifMap) {
-        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"));
+        super(((Long) notifMap.get("type")).intValue(), (String) notifMap.get("notifID"),
+                (String) notifMap.get("pictureId"));
         for (String s: (Iterable<String>) notifMap.get("userNames")) {
             this.userNames.add(s);
         }
         this.eventId = (String) notifMap.get("eventId");
         this.eventName = (String) notifMap.get("eventName");
+        setViewed((Boolean) notifMap.get("viewed"));
     }
 
     public NotificationCommentEvent(NotificationCommentEvent other) {
-        super(other.getType(), other.getNotifID());
+        super(other.getType(), other.getNotifID(), other.getPictureId());
         this.userNames = other.getUserNames();
         this.eventId = other.getEventId();
         this.eventName = other.getEventName();
+        setViewed(other.isViewed());
     }
 
     public void onNotificationClicked(Context context) {
         ((MainAct) context).goToEventInfo(eventId, true);
+        setViewed(true);
     }
 
     public String generateMessage(){

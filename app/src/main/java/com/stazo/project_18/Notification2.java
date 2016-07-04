@@ -30,19 +30,22 @@ public abstract class Notification2 {
     private String notifID;
     private boolean viewed = false;
     private int type;
+    private String pictureId;
 
     public Notification2() {}
 
     // FOR GENERATING A NEW NOTIF
-    public Notification2(int type) {
+    public Notification2(int type, String pictureId) {
         generateNotifID();
         this.type = type;
+        this.pictureId = pictureId;
     }
 
     // FOR PULLING AN EXISTING NOTIF
-    public Notification2(int type, String id) {
-        this.notifID = id;
+    public Notification2(int type, String notifID, String pictureId) {
         this.type = type;
+        this.notifID = notifID;
+        this.pictureId = pictureId;
     }
 
     public abstract void onNotificationClicked(Context context);
@@ -104,5 +107,14 @@ public abstract class Notification2 {
 
     public void setViewed(boolean viewed) {
         this.viewed = viewed;
+    }
+
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 }
