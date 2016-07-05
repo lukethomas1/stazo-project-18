@@ -164,7 +164,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // if the user is already attending an event, change the button text to "Joined"
         if (me.getAttendingEvents().contains(passedEventID)) {
-
             attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
             attendButton.setTextColor(getResources().getColor(R.color.colorDivider));
             attendButton.setTypeface(null, Typeface.ITALIC);
