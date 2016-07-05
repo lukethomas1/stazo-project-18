@@ -339,15 +339,36 @@
                             android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
                             android:id="@+id/viewCommentLayout">
                             <TextView
                                 android:layout_width = "match_parent"
                                 android:layout_height = "30dp"
-                                android:layout_marginTop="10dp"
-                                android:textSize = "20dp"
+                                android:layout_marginTop="15dp"
+                                android:textSize = "20sp"
                                 android:textAlignment="center"
-                                android:text = "Comments">
+                                android:text = "Comments"
+                                android:textColor="@color/colorTextPrimary"
+                                android:layout_marginBottom="2dp">
                             </TextView>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorDivider"
+                                android:layout_marginBottom="10dp"></LinearLayout>
+                            <TextView
+                                android:layout_width = "match_parent"
+                                android:layout_height = "30dp"
+                                android:textSize = "14sp"
+                                android:textAlignment="center"
+                                android:text = "There are no comments yet."
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/colorTextSecondary"
+                                android:visibility="gone"
+                                android:id="@+id/noCommentsText">
+                            </TextView>
+
                         </LinearLayout>
 
                     </LinearLayout>
@@ -360,7 +381,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:layout_marginTop="5dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
