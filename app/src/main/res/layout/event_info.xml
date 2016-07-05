@@ -357,27 +357,41 @@
     </android.support.design.widget.CoordinatorLayout>
     <!-- Layout for posting comments -->
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:gravity="center"
-        android:id="@+id/writeCommentLayout">
-        <EditText
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:hint="Write comment here..."
-            android:id="@+id/commentText" />
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:id="@+id/submitComment"
-            android:text="Post"
-            android:textAllCaps="false"
-            android:textSize="12dp"
-            android:textColor="@color/colorTextPrimary"
-            android:background="@color/colorAccent"/>
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDividerLight"></LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:gravity="center"
+            android:id="@+id/writeCommentLayout"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:hint="Write a comment..."
+                android:id="@+id/commentText"
+                android:background="@null"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
+                android:id="@+id/submitComment"
+                android:text="Post"
+                android:textAllCaps="false"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:background="@color/colorPrimary"/>
+        </LinearLayout>
     </LinearLayout>
     <ImageView
         android:layout_width="match_parent"
