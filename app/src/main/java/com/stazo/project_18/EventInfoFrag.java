@@ -11,8 +11,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Path;
@@ -23,6 +25,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.SensorManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,10 +44,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
@@ -949,8 +955,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             try {
                 //rotate bitmap and save it back
                 Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-//                System.out.println("Image orientation: " + getImageOrientation(cameraPhotoPath));
+                matrix.postRotate(getImageOrientation(cameraPhotoPath));
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
@@ -970,6 +975,17 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         if (requestCode == 2 && resultCode == android.app.Activity.RESULT_OK) {
             Uri imageUri = data.getData();
             try {
+
+                Matrix matrix = new Matrix();
+                matrix.postRotate(getImageOrientation2(imageUri));
+                Bitmap imageBitmap = BitmapFactory.decodeFile(getRealPathFromURI(getContext(), imageUri));
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                File file = new File(getRealPathFromURI(getContext(), imageUri)); // the File to save to
+                OutputStream fOut = new FileOutputStream(file);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+
                 //push to firebase
                 pushEventImage(imageUri);
             }
@@ -979,32 +995,75 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
     }
 
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
     public static int getImageOrientation(String imagePath){
         int rotate = 0;
         try {
 
             File imageFile = new File(imagePath);
+            System.out.println("getting exif");
             ExifInterface exif = new ExifInterface(
                     imageFile.getAbsolutePath());
-            int orientation = exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL);
-
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotate = 270;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotate = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotate = 90;
-                    break;
-            }
+//            exif.setAttribute(ExifInterface.TAG_ORIENTATION, "-90");
+            rotate = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            System.out.println("rotation: " + rotate);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return rotate;
+    }
+
+    public int getImageOrientation2(Uri photoUri) {
+        int photoRotation = 0;
+        boolean hasRotation = false;
+        String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
+        try {
+            Cursor cursor = getActivity().getContentResolver().query(photoUri, projection, null, null, null);
+            if (cursor.moveToFirst()) {
+                photoRotation = cursor.getInt(0);
+                hasRotation = true;
+            }
+            cursor.close();
+        } catch (Exception e) {}
+
+        if (!hasRotation) {
+            try {
+                ExifInterface exif = new ExifInterface(photoUri.getPath());
+                int exifRotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);
+
+                switch (exifRotation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90: {
+                        photoRotation = 90;
+                        break;
+                    }
+                    case ExifInterface.ORIENTATION_ROTATE_180: {
+                        photoRotation = 180;
+                        break;
+                    }
+                    case ExifInterface.ORIENTATION_ROTATE_270: {
+                        photoRotation = 270;
+                        break;
+                    }
+                }
+            } catch(Exception e) {e.printStackTrace();};
+        }
+        System.out.println("photo rotation: " + photoRotation);
+        return photoRotation;
     }
 
     public void pushEventImage(Uri imageFile) {
