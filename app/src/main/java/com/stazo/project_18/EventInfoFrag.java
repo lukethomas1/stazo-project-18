@@ -6,16 +6,20 @@ package com.stazo.project_18;
 import android.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -35,6 +39,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -43,7 +48,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -96,6 +104,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap mainImageBitmap;
     private String cameraPhotoPath;
     private ArrayList<Bitmap> images;
+    private int numCommentsLoaded = 0;
 
     // Joined scrollview stuff
     private int SECTION_SIZE = 5;
@@ -122,8 +131,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //mBottomSheetBehavior.setPeekHeight(610);
         if (autoOpen) {
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            v.findViewById(R.id.writeCommentLayout).setVisibility(View.VISIBLE);
         } else {
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
         }
 
         mBottomSheetBehavior.setHideable(true);
@@ -132,6 +143,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     mBottomSheetBehavior.setPeekHeight(0);
+                    v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
+                }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    v.findViewById(R.id.writeCommentLayout).setVisibility(View.VISIBLE);
+                }
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
                 }
             }
 
@@ -141,27 +159,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
-        //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        //setup comment buttons
-//        Button writeCommentButton = (Button) v.findViewById(R.id.writeCommentButton);
-//        writeCommentButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                writeCommentClick();
-//            }
-//        });
-
-        Button viewCommentButton = (Button) v.findViewById(R.id.viewCommentButton);
-        viewCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewCommentClick();
-            }
-        });
-
         final Button attendButton = (Button) v.findViewById(R.id.attend);
-
         // if the user is already attending an event, change the button text to "Joined"
         if (me.getAttendingEvents().contains(passedEventID)) {
             attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
@@ -169,7 +167,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             attendButton.setTypeface(null, Typeface.ITALIC);
             attendButton.setText("Joined");
         }
-
         // listener for attendButton
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +213,19 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 viewHighlights();
             }
         });
+        //set up write comment
+        v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
+        final Button submitComment = (Button) v.findViewById(R.id.submitComment);
+        submitComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitComment();
+            }
+        });
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        //pull necessary images and comments
+        pullComments(inflater);
         pullMainImage();
         pullEventImages();
         return v;
@@ -612,6 +622,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
 
                 final ImageView iv = (ImageView) v.findViewById(R.id.creatorPic);
+                picBitmap = getRoundedShape(picBitmap);
+
 
                 iv.post(new Runnable() {
                     public void run() {
@@ -619,6 +631,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         // cache image
                         ((Project_18) getActivity().getApplication()).
                                 addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
+
 
                         //picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
                         iv.setImageBitmap(picBitmap);
@@ -662,6 +675,29 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             }
         }).start();
+    }
+
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+        int targetWidth = Integer.parseInt(Project_18.pictureSize);
+        int targetHeight = Integer.parseInt(Project_18.pictureSize);
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight,Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth, targetHeight), null);
+        return targetBitmap;
     }
 
     public void pullMainImage() {
@@ -709,20 +745,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
 
     }
-
-    public void writeCommentClick() {
-        //open comment write window
-        WriteCommentFrag writeFrag = new WriteCommentFrag();
-        writeFrag.setEventID(this.passedEventID);
-        FragmentTransaction trans = this.getActivity().getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.show_writeComment, writeFrag).addToBackStack("WriteCommentFrag").commit();
-    }
-
-//    public void pushComment(Comment comment) {
-//        fb = ((Project_18) this.getActivity().getApplication()).getFB();
-//        String event_ID = comment.getEvent_ID();
-//        fb.child("CommentDatabase").child(event_ID).setValue(comment);
-//    }
 
     public String buildStartDay(Date start) {
         String finalString;
@@ -1133,6 +1155,199 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         trans.add(R.id.show_writeComment, viewFrag).addToBackStack("ViewCommentFrag").commit();
     }
 
+    public void pullComments(final LayoutInflater inflater) {
+        final Context context = getContext();
+        fb.child("CommentDatabase").child(this.passedEventID).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //get arraylist of comments from iterable snapshots by iterating through and adding
+                        final ArrayList<Comment> commentList = new ArrayList<Comment>();
+                        Iterable<DataSnapshot> commentIterable = dataSnapshot.child("comments").getChildren();
+                        while (commentIterable.iterator().hasNext()) {
+                            commentList.add((Comment) commentIterable.iterator().next().getValue(Comment.class));
+                        }
+                        //show through views and layouts
+                        for (int i = numCommentsLoaded; i < commentList.size(); i++) {
+
+                            //profile pic
+                            Bitmap profileImage = null;
+                            ImageView profileView = new ImageView(context);
+                            profileView.setImageBitmap(profileImage);
+                            //get cache and check ID against it
+                            //HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
+                            //if this line is crashing, need to just save ref to activity(ask eric)
+                            if (((Project_18) getActivity().getApplication()).
+                                    getBitmapFromMemCache(commentList.get(i).getUser_ID()) != null) {
+                                System.out.println("cache hit");
+                                profileImage = ((Project_18) getActivity().getApplication()).
+                                        getBitmapFromMemCache(commentList.get(i).getUser_ID());
+                                profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
+                            } else {
+                                Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
+                                profileThread.start();
+                            }
+
+                            //user_id
+                            final TextView userText = new TextView(context);
+                            if (Project_18.cachedIdToName.containsKey(commentList.get(i).getUser_ID())) {
+                                userText.setText(Project_18.cachedIdToName.get(commentList.get(i).getUser_ID()));
+                                System.out.println("name cache hit");
+                            } else {
+                                fb.child("Users").child(commentList.get(i).getUser_ID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        userText.setText((String) dataSnapshot.child("name").getValue());
+                                        Project_18.cachedIdToName.put(dataSnapshot.getKey(), (String) dataSnapshot.child("name").getValue());
+                                    }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+
+                                    }
+                                });
+                            }
+
+                            //comment
+                            TextView commentText = new TextView(context);
+                            commentText.setText(commentList.get(i).getComment());
+
+                            //layout
+                            LinearLayout mainLayout = (LinearLayout) v.findViewById(R.id.viewCommentLayout);
+                            LinearLayout commentLayout = new LinearLayout(context);
+                            commentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.MATCH_PARENT));
+                            commentLayout.setOrientation(LinearLayout.HORIZONTAL);
+                            LinearLayout textLayout = new LinearLayout(context);
+                            textLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+                            textLayout.setOrientation(LinearLayout.VERTICAL);
+
+                            textLayout.addView(userText);
+                            textLayout.addView(commentText);
+                            commentLayout.addView(profileView);
+                            commentLayout.addView(textLayout);
+
+                            //layout params for views
+                            profileView.setLayoutParams(new LinearLayout.LayoutParams(getDPI(60), getDPI(70)));
+                            LinearLayout.LayoutParams userTextLayoutParams = new LinearLayout.LayoutParams((getDPI(250)), getDPI(20));
+                            userTextLayoutParams.setMargins(getDPI(10), 0, 0, 0);
+                            userText.setLayoutParams(userTextLayoutParams);
+                            userText.setTypeface(null, Typeface.BOLD);
+                            userText.setTextSize(16);
+                            LinearLayout.LayoutParams commentTextLayoutParams = new LinearLayout.LayoutParams(getDPI(250), LinearLayout.LayoutParams.WRAP_CONTENT);
+                            commentTextLayoutParams.setMargins(getDPI(10), 0, 0, 0);
+                            commentText.setLayoutParams(commentTextLayoutParams);
+
+                            //spacer and inc counter
+                            View space = inflater.inflate(R.layout.spacer, null);
+                            getActivity().runOnUiThread(new UpdateViewRunnable(mainLayout, commentLayout, space));
+                            numCommentsLoaded++;
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+    }
+
+    private class ProfilePicRunnable implements Runnable {
+        private Bitmap profileImage;
+        String user_ID;
+        ImageView profileView;
+        ProfilePicRunnable(Bitmap profileImage, String user_ID, ImageView profileView) {
+            this.profileImage = profileImage;
+            this.user_ID = user_ID;
+            this.profileView = profileView;
+        }
+        public void run() {
+            try {
+                URL imageURL = new URL("https://graph.facebook.com/" + user_ID
+                        + "/picture?width=" + Project_18.pictureSize);
+                profileImage = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+                profileView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
+                    }
+                });
+
+                // add to cache
+                ((Project_18) getActivity().getApplication()).
+                        addBitmapToMemoryCache(user_ID, profileImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    private class UpdateViewRunnable implements Runnable {
+        private LinearLayout mainLayout;
+        private View addedView;
+        private View addedView2;
+
+        UpdateViewRunnable(LinearLayout mainLayout, View addedView, View addedView2) {
+            this.mainLayout = mainLayout;
+            this.addedView = addedView;
+            this.addedView2 = addedView2;
+        }
+        @Override
+        public void run() {
+            mainLayout.addView(addedView);
+            mainLayout.addView(addedView2);
+            System.out.println("run on ui thread");
+        }
+    }
+
+    public int getDPI(int size){
+        DisplayMetrics metrics;
+        metrics = new DisplayMetrics();
+        if (getActivity() == null) {
+            System.out.println("null");
+        }
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        return (size * metrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT;
+    }
+
+    public void submitComment() {
+        //if this line is crashing, need to just save ref to activity(ask eric)
+        Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
+        String commentText = ((EditText) v.findViewById(R.id.commentText)).getText().toString();
+
+        //used push instead of updating an arrray list, pushing it into the comments array of
+        //the EventComments tied to an Event_ID
+        String user_ID = ((Project_18)this.getActivity().getApplication()).getMe().getID();
+        Comment comment = new Comment(this.passedEventID, commentText, user_ID);
+        fb.child("CommentDatabase").child(this.passedEventID).child("comments").push().setValue(comment);
+
+        //hide keyboard and remove text after comment is pushed
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        ((EditText) v.findViewById(R.id.commentText)).setText(null);
+
+        // NOTIFICATION STUFF
+        ArrayList<String> usersWhoCare = new ArrayList<>(EventInfoFrag.currEvent.getAttendees());
+        if (usersWhoCare.contains(Project_18.me.getID())) {
+            usersWhoCare.remove(Project_18.me.getID());
+        }
+
+        ArrayList<String> meList = new ArrayList<String>();
+        meList.add(Project_18.me.getName());
+
+        // send out notification
+        (new NotificationCommentEvent(Notification2.TYPE_COMMENT_EVENT,
+                meList,
+                passedEventID,
+                EventInfoFrag.currEvent.getName(),
+                Project_18.me.getID())).
+                pushToFirebase(fb, usersWhoCare);
+    }
+
+
+
     public void attendClick(Button b) {
         if(b.getText() == "Joined"){
             // get the info for the user
@@ -1151,11 +1366,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             b.setText("Joined");
 
         }
-    }
-
-    // pull and set event creator picture
-    private void setCreatorPicture() {
-
     }
 
     public String getPassedEventID() {

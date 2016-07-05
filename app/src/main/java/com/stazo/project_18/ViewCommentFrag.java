@@ -83,44 +83,18 @@ public class ViewCommentFrag extends Fragment{
         final Firebase fb = ((Project_18) this.getActivity().getApplication()).getFB();
         final Context context = getContext();
         a = getActivity();
-
-        //POTENTIALLY BAD, SHOULD DO ASYNC INSTEAD, BUT MIGHT FUCK MESS UP VIEWS
-        //DANGER DANGER DANGUH
-        //CAUTION CAUTION CAUTION
-        /*
-        ALSO STUFF TO STILL KINDA FIX: The loading time on 10+ comments w different profiles, which is caused by loading a shitton of images
-
-         */
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         fb.child("CommentDatabase").child(this.passedEventID).addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        //get arraylist of comments
+                        //get arraylist of comments from iterable snapshots by iterating through and adding
                         final ArrayList<Comment> commentList = new ArrayList<Comment>();
-
-//                commentList = dataSnapshot.child("comments").getValue(
-//                        new GenericTypeIndicator<ArrayList<String>>() {});
-
-                        //get iterable snapshots, iterate through and add to commentList
                         Iterable<DataSnapshot> commentIterable = dataSnapshot.child("comments").getChildren();
                         while (commentIterable.iterator().hasNext()) {
-                            //System.out.println(commentIterable.iterator().next().getValue());
                             commentList.add((Comment) commentIterable.iterator().next().getValue(Comment.class));
                         }
-
-                        //print it
-                        for (int i = 0; i < commentList.size(); i++) {
-                            System.out.print(commentList.get(i).getUser_ID() + ": ");
-                            System.out.println(commentList.get(i).getComment());
-                        }
-
                         //show through views and layouts
                         for (int i = numCommentsLoaded; i < commentList.size(); i++) {
-
-
 
                             //profile pic
                             Bitmap profileImage = null;
@@ -194,11 +168,7 @@ public class ViewCommentFrag extends Fragment{
 
                             //spacer and inc counter
                             View space = inflater.inflate(R.layout.spacer, null);
-
                             getActivity().runOnUiThread(new UpdateViewRunnable(mainLayout, commentLayout, space));
-
-//                            mainLayout.addView(commentLayout);
-//                            mainLayout.addView(space);
                             numCommentsLoaded++;
                         }
 
@@ -232,15 +202,11 @@ public class ViewCommentFrag extends Fragment{
             this.profileView = profileView;
         }
         public void run() {
-
             try {
                 URL imageURL = new URL("https://graph.facebook.com/" + user_ID
                         + "/picture?width=" + Project_18.pictureSize);
                 profileImage = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-
-                //
-                Handler updateView = new Handler(Looper.getMainLooper());
-                updateView.post(new Runnable() {
+                profileView.post(new Runnable() {
                     @Override
                     public void run() {
                         profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
@@ -250,7 +216,6 @@ public class ViewCommentFrag extends Fragment{
                 // add to cache
                 ((Project_18) getActivity().getApplication()).
                         addBitmapToMemoryCache(user_ID, profileImage);
-                System.out.println("Thread finished");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
