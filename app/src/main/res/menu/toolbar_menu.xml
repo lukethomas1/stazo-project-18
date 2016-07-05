@@ -17,11 +17,11 @@
         app:showAsAction="always"
         android:visible="true"/>
 
-    <group>
+    <!--<group>
         <item android:id="@+id/Logout"
             android:title="Logout">
         </item>
-    </group>
+    </group>-->
 
 
 
