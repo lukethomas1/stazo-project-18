@@ -402,7 +402,8 @@ public class User {
 
         System.out.println("AttendingEvents is " + attendingEvents);
         System.out.println("User id is" + ID);
-        fb.child("Users").child(ID).child("attendingEvents").setValue(attendingEvents);
+        //fb.child("Users").child(ID).child("attendingEvents").setValue(attendingEvents);
+        fb.child("Users").child(ID).child("attendingEvents").push().setValue(event_id);
         return true;
     }
 
