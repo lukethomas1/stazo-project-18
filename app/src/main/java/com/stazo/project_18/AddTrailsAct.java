@@ -150,7 +150,7 @@ public class AddTrailsAct extends AppCompatActivity {
         friends = new HashMap(((Project_18) getApplication()).getMe().getFriends());
 
         // testing purposes
-        generateFakeAccounts();
+        //generateFakeAccounts();
 
         // take out users we are already following
         filterUsers();

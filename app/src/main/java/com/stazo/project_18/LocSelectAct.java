@@ -78,8 +78,8 @@ public class LocSelectAct extends FragmentActivity
         if (imageString != null) {
             imageUri = Uri.parse(imageString);
         }
-        System.out.println("Start time: " + eventToInit.getStartTime());
-        System.out.println("End time: " + eventToInit.getEndTime());
+        //System.out.println("Start time: " + eventToInit.getStartTime());
+        //System.out.println("End time: " + eventToInit.getEndTime());
 
         // Initialize the map_overview
         MapFragment mapFrag =
@@ -100,7 +100,7 @@ public class LocSelectAct extends FragmentActivity
 
         //directions
         Toast dir = Toast.makeText(getApplicationContext(),
-                "Tap and hold to choose the event's location", Toast.LENGTH_LONG);
+                "Tap to choose the event's location", Toast.LENGTH_LONG);
         //this centers the text in the toast
         TextView v = (TextView) dir.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);

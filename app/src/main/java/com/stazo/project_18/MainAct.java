@@ -101,6 +101,7 @@ public class MainAct extends AppCompatActivity
     private AppCompatActivity act = this;
 
     private boolean searched; // did the user just submit a query?
+    private boolean notifTabHighlight = false; // should the notifTab be highlighted? (new notif)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,10 +148,16 @@ public class MainAct extends AppCompatActivity
 
                 for (int i = 0; i <= 3; i++) {
                     if (i == pageNumber) {
+                        if (i == NOT_POS && notifTabHighlight) {
+                            notifTabHighlight = false;
+                        }
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
                                 getResources().getColor(R.color.colorPrimary),
                                 PorterDuff.Mode.SRC_IN);
                     } else {
+                        if (i == NOT_POS && notifTabHighlight) {
+                            continue;
+                        }
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
                                 getResources().getColor(R.color.colorDivider),
                                 PorterDuff.Mode.SRC_IN);
@@ -218,11 +225,12 @@ public class MainAct extends AppCompatActivity
 
                     if(!((boolean)notifMap.get("viewed"))) {
                         allViewed = false;
+                        break;
                     }
                 }
 
                 if(!allViewed) {
-                    Log.d("allViewed", "FALSE");
+                    notifTabHighlight = true;
                     tabLayout.getTabAt(NOT_POS).getIcon().setColorFilter(
                             getResources().getColor(R.color.colorAccentDark),
                             PorterDuff.Mode.SRC_IN);

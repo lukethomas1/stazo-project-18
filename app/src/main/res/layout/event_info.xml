@@ -21,16 +21,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="true"
-            android:background="@drawable/border_event_info_layout"
+            android:background="@color/white"
             app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
             android:elevation="15dp"
             android:onClick="toggleState">
+
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingBottom="40dp"
                 android:onClick="toggleState">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="@color/colorPrimaryLight"></LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -410,6 +416,7 @@
             <EditText
                 android:layout_width="250dp"
                 android:layout_height="40dp"
+                android:textSize="16sp"
                 android:hint="Write a comment..."
                 android:id="@+id/commentText"
                 android:background="@null"/>

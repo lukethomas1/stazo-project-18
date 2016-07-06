@@ -413,6 +413,15 @@ public class Event implements Parcelable {
     }
 
 
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Event)) {
+            return false;
+        }
+        return event_id.equals(((Event) other).getEvent_id());
+    }
+
+
     /*class ReportEventTask extends AsyncTask<String, Void, String> {
         private Exception exception;
 

@@ -444,6 +444,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         TextView tv = new TextView(getActivity().getApplicationContext());
         tv.setText(userName.split(" ")[0]);
+        tv.setTextSize(getDPI(3));
+        tv.setTextColor(getResources().getColor(R.color.colorTextPrimary));
 
         makePretty(tv);
 
@@ -1177,12 +1179,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(
                     getContext());
 
-            builder.setTitle("This event has no pictures yet!");
+            builder.setTitle("This event has no pictures yet.");
             builder.setItems(items, new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("OK")) {
+                    if (items[item].equals("Okay")) {
                         dialog.dismiss();
                     }
                 }
@@ -1434,6 +1436,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         ArrayList<String> usersWhoCare = new ArrayList<>(EventInfoFrag.currEvent.getAttendees());
         if (usersWhoCare.contains(Project_18.me.getID())) {
             usersWhoCare.remove(Project_18.me.getID());
+
+            // Add in the event creator if they aren't in it already
+            if (!usersWhoCare.contains(currEvent.getCreator_id())) {
+                usersWhoCare.add(currEvent.getCreator_id());
+            }
         }
 
         ArrayList<String> meList = new ArrayList<String>();
