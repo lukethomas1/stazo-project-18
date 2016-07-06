@@ -1166,12 +1166,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(
                     getContext());
 
-            builder.setTitle("This event has no pictures yet!");
+            builder.setTitle("This event has no pictures yet.");
             builder.setItems(items, new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("OK")) {
+                    if (items[item].equals("Okay")) {
                         dialog.dismiss();
                     }
                 }
