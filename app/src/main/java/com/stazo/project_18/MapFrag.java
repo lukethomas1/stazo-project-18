@@ -78,6 +78,8 @@ public class MapFrag extends Fragment {
     private SeekBar seekbar;
     private TextView timeTextView;
 
+    private float testTime;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,6 +94,8 @@ public class MapFrag extends Fragment {
         mapView = (MapView) v.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapHandler);
+
+        testTime = System.nanoTime();
 
         return v;
     }
@@ -117,8 +121,7 @@ public class MapFrag extends Fragment {
                         Project_18.GMTOffset) % 24;
                 if (progress == 0) {
                     timeTextView.setText("Now");
-                }
-                else {
+                } else {
                     if (hours >= 12 && hours < 24) {
                         period = "PM";
                     }
@@ -130,19 +133,21 @@ public class MapFrag extends Fragment {
                     }
                     time = (String.format("%2d:%02d",
                             hours,
-                            (TimeUnit.MILLISECONDS.toMinutes(rTime)%60)
+                            (TimeUnit.MILLISECONDS.toMinutes(rTime) % 60)
                     ));
                     time += period;
                     timeTextView.setText(time);
                 }
 
                 // filter out the irrelevant events
-                filterRelevantEvents();
+                //filterRelevantEvents();
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 timeTextView.setVisibility(View.VISIBLE);
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 timeTextView.setVisibility(View.INVISIBLE);
@@ -178,11 +183,6 @@ public class MapFrag extends Fragment {
         ((MainAct)this.getActivity()).goToEventInfo(event_id, false);
     }
 
-    public void filterRelevantEvents() {
-        ArrayList<String> relevantEventIds =
-                ((Project_18) getActivity().getApplication()).findRelevantEventIds();
-        mapHandler.displayRelevantEvents(relevantEventIds);
-    }
     public void simulateOnClick(String event_id) {
         mapHandler.simulateOnClick(event_id);
     }
@@ -247,6 +247,9 @@ public class MapFrag extends Fragment {
         }
 
         public void onMapReady(GoogleMap googleMap) {
+
+            Log.d("TimeTest", "Map ready at " + (System.nanoTime() - testTime));
+
             // Initialize global variable
             map = googleMap;
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -320,67 +323,58 @@ public class MapFrag extends Fragment {
             // Clear existing markers on the map
             map.clear();
 
-            // Listener for pulling the events
-            fb.child("Events").addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            ((Project_18) getActivity().getApplication()).clearPulledEvents();
-                            // For every event in fb.child("Events"), create event and displayEvent
-                            for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-                                // get the info, storage?
-                                Event e = new Event(eventSnapshot.getValue(
-                                        new GenericTypeIndicator<HashMap<String, Object>>() {
-                                        }));
+            if (!Project_18.pulledEvents.isEmpty()) {
+                for (Event e: Project_18.pulledEvents) {
+                    displayEvent(e);
+                }
 
-                                // add the event to the local ArrayList
-                                ((Project_18) getActivity().getApplication()).addPulledEvent(e);
+                Log.d("TimeTest", "Cached events loaded at " + (System.nanoTime() - testTime));
+            }
 
-                                // display event
-                                displayEvent(e);
+            else {
+                // Listener for pulling the events
+                fb.child("Events").addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                //((Project_18) getActivity().getApplication()).clearPulledEvents();
+                                // For every event in fb.child("Events"), create event and displayEvent
+                                for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                                    // get the info, storage?
+                                    Event e = new Event(eventSnapshot.getValue(
+                                            new GenericTypeIndicator<HashMap<String, Object>>() {
+                                            }));
+
+                                    // add the event to the local ArrayList
+                                    ((Project_18) getActivity().getApplication()).addPulledEvent(e);
+
+                                    // display event
+                                    displayEvent(e);
+                                }
+
+                                Log.d("TimeTest", "Non-cached events loaded at " + (System.nanoTime() - testTime));
+
+                                // if we have an eventInfo open, go to that
+                                if (MainAct.eventInfoFrag != null) {
+                                    simulateOnClick(MainAct.eventInfoFrag.getPassedEventID());
+                                }
+
+                                // remove this listener
+                                fb.child("Events").removeEventListener(this);
+
+
+                                //NotificationHandler nh = new NotificationHandler();
+                                //nh.generateNotifications(getActivity());
                             }
 
-                            // if we have an eventInfo open, go to that
-                            if (MainAct.eventInfoFrag != null) {
-                                simulateOnClick(MainAct.eventInfoFrag.getPassedEventID());
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
                             }
-
-                            // remove this listener
-                            fb.child("Events").removeEventListener(this);
-
-
-                            //NotificationHandler nh = new NotificationHandler();
-                            //nh.generateNotifications(getActivity());
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                        }
-                    });
-        }
-
-        // Hide irrelevant events, show relevant events
-        public void displayRelevantEvents(ArrayList<String> relevantEventIds) {
-            //Iterator it = markerLookupHM.entrySet().iterator();
-
-            // iterate through map of event_ids to markers
-            for (String key: markerLookupHM.keySet()) {
-                //HashMap.Entry pair = (HashMap.Entry)it.next();
-                //System.out.println(pair.getKey() + " = " + pair.getValue());
-                // if the event_id of a marker is not contained in relevantEventIds
-                if (relevantEventIds.contains(key)) {
-                    // hide the marker
-                    markerLookupHM.get(key).setVisible(true);
-                }
-                // if it is relevant, make it visible
-                else {
-                    markerLookupHM.get(key).setVisible(false);
-                }
-                //it.remove(); // avoids a ConcurrentModificationException
+                        });
             }
         }
-
 
         // Displays a single event
         private void displayEvent(Event e) {
@@ -391,99 +385,23 @@ public class MapFrag extends Fragment {
             //markerOpts.snippet(e.getDescription());
             markerOpts.position(e.getLocation());
 
-
-            // Get type to set color
-            int eventType = e.getType();
-
             // Figure out icon size
             int size;
 
             if (e.getPopularity() < Project_18.POP_THRESH1) {
-                size = 1;
+                size = Project_18.MARK_SIZE_1;
             }
             else if (e.getPopularity() < Project_18.POP_THRESH2) {
-                size = 2;
+                size = Project_18.MARK_SIZE_2;
             }
             else {
-                size = 3;
+                size = Project_18.MARK_SIZE_3;
             }
-
-            // Get ID to set marker icon
-            int drawableID = 0;
-            
-            switch (Event.types[eventType]) {
-                case "Food":
-                    if (size == 1) {
-                        drawableID = R.drawable.marker;
-                    }
-
-                    else if (size == 2) {
-                        drawableID = R.drawable.marker_2x;
-                    }
-                    else {
-                        drawableID = R.drawable.marker_3x;
-                    }
-                    break;
-
-                case "Sports":
-                    if (size == 1) {
-                        drawableID = R.drawable.marker_green;
-                    }
-                    else if (size == 2) {
-                        drawableID = R.drawable.marker_green_2x;
-                    }
-                    else {
-                        drawableID = R.drawable.marker_green_3x;
-                    }
-                    break;
-
-                case "Performance":
-                    if (size == 1) {
-                        drawableID = R.drawable.marker_yellow;
-                    }
-                    if (size == 2) {
-                        drawableID = R.drawable.marker_yellow_2x;
-                    }
-                    else {
-                        drawableID = R.drawable.marker_yellow_3x;
-                    }
-                    break;
-
-                case "Academic":
-                    if (size == 1) {
-                        drawableID = R.drawable.marker_magenta;
-                    }
-                    else if (size == 2) {
-                        drawableID = R.drawable.marker_magenta_2x;
-                    }
-                    else {
-                        drawableID = R.drawable.marker_magenta_3x;
-                    }
-                    break;
-
-                case "Social":
-                    if (size == 1) {
-                        drawableID = R.drawable.marker_light_blue;
-                    }
-                    else if (size == 2) {
-                        drawableID = R.drawable.marker_light_blue_2x;
-                    }
-                    else {
-                        drawableID = R.drawable.marker_light_blue_3x;
-                    }
-                    break;
-
-                default:
-                    drawableID = R.drawable.marker;
-            }
-
-            // Set icon
-            //markerOpts.icon(BitmapDescriptorFactory.fromResource(drawableID));
 
             Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
                             R.drawable.flaticon_marker),
-                    100,
-                    100);
+                    size,
+                    size);
             markerOpts.icon(BitmapDescriptorFactory.
                     fromBitmap(markerBitmap));
 

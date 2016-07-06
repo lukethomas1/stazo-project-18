@@ -45,6 +45,11 @@ public class Project_18 extends Application {
     public static final int POP_THRESH1 = 10;
     public static final int POP_THRESH2 = 20;
 
+    public static final int MARK_SIZE_1 = 90;
+    public static final int MARK_SIZE_2 = 110;
+    public static final int MARK_SIZE_3 = 140;
+
+
     private static int eventsTextSize = 16;
     private static int detailsTextSize = 12;
 
