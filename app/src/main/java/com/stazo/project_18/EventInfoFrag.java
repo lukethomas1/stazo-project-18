@@ -1236,6 +1236,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             try {
 //                Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
                 BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
                 Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream(), null, options);
                 imageArray[index] =  imageBitmap;
                 System.out.println("Event image number " + index);
@@ -1533,10 +1535,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
     public void recycleImages() {
-        System.out.println("Destroying view... freeing image memory alloc");
-        for (int i = 0; i < imageArray.length; i++) {
-            if (imageArray[i] != null) {
-                imageArray[i].recycle();
+        if (imageArray != null) {
+            System.out.println("Destroying view... freeing image memory alloc");
+            for (int i = 0; i < imageArray.length; i++) {
+                if (imageArray[i] != null) {
+                    imageArray[i].recycle();
+                }
             }
         }
     }
