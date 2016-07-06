@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -518,8 +520,7 @@ public class CreateEventAct extends AppCompatActivity {
 
                 //rotate bitmap and save it back
                 Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-//                System.out.println("Image orientation: " + getImageOrientation(cameraPhotoPath));
+                matrix.postRotate(getImageOrientation(cameraPhotoPath));
                 Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
@@ -543,6 +544,17 @@ public class CreateEventAct extends AppCompatActivity {
             Uri imageUri = data.getData();
             //to convert to bitmap
             try {
+
+                Matrix matrix = new Matrix();
+                matrix.postRotate(getImageOrientation2(imageUri));
+                Bitmap imageBitmap = BitmapFactory.decodeFile(getRealPathFromURI(getBaseContext(), imageUri));
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                File file = new File(getRealPathFromURI(getBaseContext(), imageUri)); // the File to save to
+                OutputStream fOut = new FileOutputStream(file);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+
                 Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
                 mainImageView.setImageBitmap(selectedImage);
@@ -554,6 +566,87 @@ public class CreateEventAct extends AppCompatActivity {
                 System.out.println("Something went wrong when u selected an image or pushing photo");
             }
         }
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public static int getImageOrientation(String imagePath){
+        int rotate = 0;
+        try {
+
+            File imageFile = new File(imagePath);
+            System.out.println("getting exif");
+            ExifInterface exif = new ExifInterface(
+                    imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+            System.out.println("rotation: " + rotate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
+    public int getImageOrientation2(Uri photoUri) {
+        int photoRotation = 0;
+        boolean hasRotation = false;
+        String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
+        try {
+            Cursor cursor = getContentResolver().query(photoUri, projection, null, null, null);
+            if (cursor.moveToFirst()) {
+                photoRotation = cursor.getInt(0);
+                hasRotation = true;
+            }
+            cursor.close();
+        } catch (Exception e) {}
+
+        if (!hasRotation) {
+            try {
+                ExifInterface exif = new ExifInterface(photoUri.getPath());
+                int exifRotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);
+
+                switch (exifRotation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90: {
+                        photoRotation = 90;
+                        break;
+                    }
+                    case ExifInterface.ORIENTATION_ROTATE_180: {
+                        photoRotation = 180;
+                        break;
+                    }
+                    case ExifInterface.ORIENTATION_ROTATE_270: {
+                        photoRotation = 270;
+                        break;
+                    }
+                }
+            } catch(Exception e) {e.printStackTrace();};
+        }
+        System.out.println("photo rotation: " + photoRotation);
+        return photoRotation;
     }
 
     public void pushMainImage(Uri imageFile) {

@@ -93,6 +93,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
@@ -110,7 +111,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap picBitmap;
     private Bitmap mainImageBitmap;
     private String cameraPhotoPath;
+    private Bitmap[] imageArray;
     private ArrayList<Bitmap> images;
+    private int numImagesLoaded;
     private int numCommentsLoaded = 0;
 
     // Joined scrollview stuff
@@ -157,6 +160,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
+                    System.out.println("hidden");
+                    recycleImages();
                 }
             }
 
@@ -714,7 +719,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
     public void pullMainImage() {
-        System.out.println("main image");
+        System.out.println("pulling main image");
         StorageReference rootRef = ((Project_18) getActivity().getApplication()).getFBStorage();
         StorageReference mainImageRef = rootRef.child("MainImagesDatabase/" + this.passedEventID + ".jpg");
         final ImageView mainImageView = (ImageView) v.findViewById(R.id.mainImageView);
@@ -1110,6 +1115,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
     public void viewHighlights() {
+        images = new ArrayList<>();
+        for (int i = 0; i < imageArray.length; i++) {
+            if (imageArray[i] != null) {
+                images.add(imageArray[i]);
+            }
+        }
         if (images.size() > 0) {
             System.out.println("number of images: " + images.size());
             final ImageView imageFrameView = (ImageView) v.findViewById(R.id.imageFrameView);
@@ -1183,35 +1194,24 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
     public void pullEventImages() {
-        images = new ArrayList<Bitmap>();
         System.out.println("pulling event images");
         fb.child("ImagesDatabase").child("EventImages").child(this.passedEventID).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        imageArray = new Bitmap[(int) dataSnapshot.getChildrenCount()];
                         Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
+                        numImagesLoaded = 0;
                         while(urlIterable.iterator().hasNext()) {
-                            System.out.println("one url: ");
                             try {
-                                final URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
+                                URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
                                 System.out.println(imageUrl.toString());
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
-                                            images.add(imageBitmap);
-                                            System.out.println("num images: " + images.size());
-                                        }
-                                        catch(Exception e) {
-                                            System.out.println("Exception: " + e.toString());
-                                        }
-                                    }
-                                }).start();
+                                new Thread(new EventImageRunnable(numImagesLoaded, imageUrl)).start();
                             }
                             catch (Exception e) {
                                 System.out.println("Exception: " + e.toString());
                             }
+                            numImagesLoaded++;
                         }
                     }
 
@@ -1221,6 +1221,31 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                     }
                 });
 
+    }
+
+    private class EventImageRunnable implements Runnable {
+        private int index;
+        private URL imageUrl;
+        public EventImageRunnable (int index, URL imageUrl) {
+            this.index = index;
+            this.imageUrl = imageUrl;
+        }
+
+        @Override
+        public void run() {
+            try {
+//                Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
+                Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream(), null, options);
+                imageArray[index] =  imageBitmap;
+                System.out.println("Event image number " + index);
+            }
+            catch(Exception e) {
+                System.out.println("Exception: " + e.toString());
+            }
+        }
     }
 
     public void viewCommentClick() {
@@ -1260,7 +1285,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             //if this line is crashing, need to just save ref to activity(ask eric)
                             if (((Project_18) getActivity().getApplication()).
                                     getBitmapFromMemCache(commentList.get(i).getUser_ID()) != null) {
-                                System.out.println("cache hit");
                                 profileImage = ((Project_18) getActivity().getApplication()).
                                         getBitmapFromMemCache(commentList.get(i).getUser_ID());
                                 profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, COM_PIC_SIZ, COM_PIC_SIZ));
@@ -1273,7 +1297,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             final TextView userText = new TextView(context);
                             if (Project_18.cachedIdToName.containsKey(commentList.get(i).getUser_ID())) {
                                 userText.setText(Project_18.cachedIdToName.get(commentList.get(i).getUser_ID()));
-                                System.out.println("name cache hit");
                             } else {
                                 fb.child("Users").child(commentList.get(i).getUser_ID()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -1382,7 +1405,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         public void run() {
             mainLayout.addView(addedView);
             mainLayout.addView(addedView2);
-            System.out.println("run on ui thread");
         }
     }
 
@@ -1504,6 +1526,23 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     public void onResume() {
         super.onResume();
         Firebase.setAndroidContext(getContext());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        recycleImages();
+    }
+
+    public void recycleImages() {
+        if (imageArray != null) {
+            System.out.println("Destroying view... freeing image memory alloc");
+            for (int i = 0; i < imageArray.length; i++) {
+                if (imageArray[i] != null) {
+                    imageArray[i].recycle();
+                }
+            }
+        }
     }
 
     @Override
