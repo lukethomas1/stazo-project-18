@@ -439,6 +439,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         TextView tv = new TextView(getActivity().getApplicationContext());
         tv.setText(userName.split(" ")[0]);
+        tv.setTextSize(getDPI(3));
+        tv.setTextColor(getResources().getColor(R.color.colorTextPrimary));
 
         makePretty(tv);
 
