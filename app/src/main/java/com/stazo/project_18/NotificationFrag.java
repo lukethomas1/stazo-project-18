@@ -29,6 +29,7 @@ import org.w3c.dom.Text;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class NotificationFrag extends android.support.v4.app.Fragment {
@@ -208,6 +209,9 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                 if(notifs.isEmpty()) {
                     v.findViewById(R.id.noNotificationsText).setVisibility(View.VISIBLE);
                 }
+
+                // Make newest notifs show at the top
+                Collections.reverse(notifs);
 
                 // There are notifications to show, show them
                 // Show them on the screen
