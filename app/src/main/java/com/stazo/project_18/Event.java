@@ -370,6 +370,9 @@ public class Event implements Parcelable {
                 equals(new SimpleDateFormat("EE", Locale.US).format(new Date())) &&
                 endTime > System.currentTimeMillis();
     }
+    public boolean happeningSoon() {
+        return (startTime - System.currentTimeMillis()) < 60 * 60 * 1000 && endTime > System.currentTimeMillis();
+    }
 
     public String getTimeString(boolean midSentence) {
         Date start = new Date(startTime);

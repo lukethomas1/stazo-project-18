@@ -1184,10 +1184,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             builder.setTitle("This event has no pictures yet.");
             builder.setItems(items, new DialogInterface.OnClickListener() {
-
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Okay")) {
+                    if (items[item].equals("OK")) {
                         dialog.dismiss();
                     }
                 }
