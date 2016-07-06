@@ -259,7 +259,7 @@
 
                     <com.stazo.project_18.InteractiveScrollViewHorizontal
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="70dp"
                         android:id="@+id/joinedScrollView"
                         android:layout_marginTop="10dp">
 
@@ -270,6 +270,16 @@
                             android:id="@+id/joinedLayout"
                             android:layout_marginTop="0dip"
                             android:layout_marginBottom="0dip">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="No one has joined yet."
+                                android:textColor="@color/colorTextSecondary"
+                                android:gravity="center_vertical"
+                                android:textSize="14sp"
+                                android:visibility="gone"
+                                android:id="@+id/noJoinedText"/>
                         </LinearLayout>
 
                     </com.stazo.project_18.InteractiveScrollViewHorizontal>

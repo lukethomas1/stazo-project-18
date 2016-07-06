@@ -529,6 +529,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         ((TextView) getActivity().findViewById(R.id.numJoinedText)).
                                 setText("Joined (" + currEvent.getAttendees().size() + ")");
 
+                        if (currEvent.getAttendees().size() == 0) {
+                            getActivity().findViewById(R.id.noJoinedText).setVisibility(View.VISIBLE);
+                        }
+
                         // generateJoined scrollview
                         generateJoined();
 
@@ -629,8 +633,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
 
                 final ImageView iv = (ImageView) v.findViewById(R.id.creatorPic);
-                picBitmap = getRoundedShape(picBitmap);
-
 
                 iv.post(new Runnable() {
                     public void run() {
@@ -639,8 +641,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         ((Project_18) getActivity().getApplication()).
                                 addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
 
+                        // round the shape
+                        picBitmap = getRoundedShape(picBitmap);
 
-                        //picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
+                        // picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
                         iv.setImageBitmap(picBitmap);
                         iv.setVisibility(View.VISIBLE);
 
