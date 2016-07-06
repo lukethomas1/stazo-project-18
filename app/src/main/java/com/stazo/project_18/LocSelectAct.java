@@ -197,7 +197,6 @@ public class LocSelectAct extends FragmentActivity
             // Push the event to the database
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
                     Project_18.me.getName(), Project_18.me.getUserFollowers());
-
             ((Project_18) getApplication()).addPulledEvent(eventToInit);
 
             //push the image to firebasestorage
