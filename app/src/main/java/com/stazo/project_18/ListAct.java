@@ -133,6 +133,9 @@ public class ListAct extends android.support.v4.app.Fragment {
 
         // POPULAR EVENTS SECTION
         for (int i = 0; i < NUM_HOT; i++) {
+            if (i >= eventList.size()) {
+                break;
+            }
             Event event = eventList.get(i);
             litEventsList.add(event);
         }
