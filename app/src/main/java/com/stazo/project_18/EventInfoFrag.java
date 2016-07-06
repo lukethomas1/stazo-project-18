@@ -112,7 +112,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap picBitmap;
     private Bitmap mainImageBitmap;
     private String cameraPhotoPath;
-    private Bitmap[] imageArray;
+    private Bitmap[] imageArray = null;
     private ArrayList<Bitmap> images;
     private int numImagesLoaded;
     private int numCommentsLoaded = 0;
@@ -970,7 +970,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 //rotate bitmap and save it back
                 Matrix matrix = new Matrix();
                 matrix.postRotate(getImageOrientation(cameraPhotoPath));
-                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath, options);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
                 File file = new File(cameraPhotoPath); // the File to save to
@@ -1119,9 +1122,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
     public void viewHighlights() {
         images = new ArrayList<>();
-        for (int i = 0; i < imageArray.length; i++) {
-            if (imageArray[i] != null) {
-                images.add(imageArray[i]);
+        if (imageArray != null) {
+            for (int i = 0; i < imageArray.length; i++) {
+                if (imageArray[i] != null) {
+                    images.add(imageArray[i]);
+                }
             }
         }
         if (images.size() > 0) {
