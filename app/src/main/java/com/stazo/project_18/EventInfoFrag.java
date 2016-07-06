@@ -100,6 +100,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
     private Firebase fb;
     private static final int COM_PIC_SIZ = 150;
+    private static final int CAM_ICON_SIZ = 100;
 
     public String passedEventID;
     private User currUser;
@@ -212,7 +213,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                     }
                 });
         uploadPhotoButton.setImageBitmap(Project_18.BITMAP_RESIZER(BitmapFactory.
-                decodeResource(getResources(), R.drawable.icon_camera), 70, 70));
+                decodeResource(getResources(), R.drawable.icon_camera), CAM_ICON_SIZ, CAM_ICON_SIZ));
         uploadPhotoButton.setColorFilter(
                 getResources().getColor(R.color.black),
                 PorterDuff.Mode.SRC_IN);
