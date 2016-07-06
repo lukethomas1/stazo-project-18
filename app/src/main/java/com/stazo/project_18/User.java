@@ -363,13 +363,15 @@ public class User {
             return false;
         }
 
-        // send notification
-        ArrayList<String> creatorList = new ArrayList<>();
-        creatorList.add(creator_id);
+        // send notification only if i'm not the creator
+        if (!creator_id.equals(ID)) {
+            ArrayList<String> creatorList = new ArrayList<>();
+            creatorList.add(creator_id);
 
-        (new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
-                name, event_id, event_name, ID)).
-                pushToFirebase(fb, creatorList);
+            (new NotificationJoinedEvent(Notification2.TYPE_JOINED_EVENT,
+                    name, event_id, event_name, ID)).
+                    pushToFirebase(fb, creatorList);
+        }
 
         // increment popularity
         fb.child("Events").child(event_id).child("popularity").runTransaction(new Transaction.Handler() {
