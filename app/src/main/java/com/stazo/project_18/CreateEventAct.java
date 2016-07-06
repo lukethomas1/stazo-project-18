@@ -306,12 +306,12 @@ public class CreateEventAct extends AppCompatActivity {
 
 
         startCal = new GregorianCalendar(startDateFrag.getYear(),
-                startDateFrag.getMonth() - 1,
+                startDateFrag.getMonth(),
                 startDateFrag.getDay(),
                 startTimeFrag.getHourInt(),
                 startTimeFrag.getMinInt());
         endCal = new GregorianCalendar(startDateFrag.getYear(),
-                startDateFrag.getMonth() - 1,
+                startDateFrag.getMonth(),
                 startDateFrag.getDay(),
                 endTimeFrag.getHourInt(),
                 endTimeFrag.getMinInt());
