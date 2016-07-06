@@ -1239,7 +1239,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
                 options.inSampleSize = 2;
                 Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream(), null, options);
-                imageArray[index] =  imageBitmap;
+                if (imageArray != null) {
+                    imageArray[index] =  imageBitmap;
+                }
+                else {
+                    imageBitmap = null;
+                }
                 System.out.println("Event image number " + index);
             }
             catch(Exception e) {
@@ -1543,6 +1548,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
             }
         }
+        imageArray = null;
     }
 
     @Override
