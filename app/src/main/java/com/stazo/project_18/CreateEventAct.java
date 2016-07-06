@@ -127,14 +127,15 @@ public class CreateEventAct extends AppCompatActivity {
             if (day + i < 10) {
                 dayStr = "0" + (day + i);
             }
-            String date = monthStr+"/"+dayStr+"/"+year;
+            String date = monthStr+"/"+dayStr;
 
             if ( i == 0 ) {
-                typeList.add( "Today (" + date + ")" );
+                typeList.add( "Today (" + date +")");
             }
             else {
-                typeList.add(date);
+                typeList.add(new SimpleDateFormat("EEEE").format(c.getTime()) + " (" + date+")");
             }
+            c.add(Calendar.DATE, 1);
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -153,26 +154,6 @@ public class CreateEventAct extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
-
-        /*startDateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDateFrag = new DatePickerFragment(startDateView);
-                startDateFrag.show(getSupportFragmentManager(), "datePicker");
-
-                startDateView.setError(null);
-            }
-        });
-
-        endDateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                endDateFrag = new DatePickerFragment(endDateView);
-                endDateFrag.show(getSupportFragmentManager(), "datePicker");
-
-                endDateView.setError(null);
-            }
-        }); */
 
         startTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,50 +184,6 @@ public class CreateEventAct extends AppCompatActivity {
             }
         });
     }
-
-    //  TOOLBAR STUFF
-
-    private void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        //getSupportActionBar().setNavigationIcon(R.mipmap.ic_launcher);
-        //getSupportActionBar().setTitle(getString(R.string.app_name));
-        //getSupportActionBar().setSubtitle("By: Stazo");
-        //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                switch (item.getItemId()) {
-
-                    /*case R.id.action_profile:
-                        goToProfile();
-                        Log.d("myTag", "you hit action profile");
-                        return true;*/
-                    default:
-                        return true;
-                }
-            }
-        });
-
-        //back button action
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-    }
-
-    /*public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        super.onCreateOptionsMenu(menu);
-        return true;
-    }*/
 
     /**
      * Changes all of the TextViews to the default color black.
@@ -371,61 +308,23 @@ public class CreateEventAct extends AppCompatActivity {
                 startDateFrag.getDay(),
                 startTimeFrag.getHourInt(),
                 startTimeFrag.getMinInt());
-        /*endCal = new GregorianCalendar(endDateFrag.getYear(),
-                endDateFrag.getMonth() - 1,
-                endDateFrag.getDay(),
+        endCal = new GregorianCalendar(startDateFrag.getYear(),
+                startDateFrag.getMonth() - 1,
+                startDateFrag.getDay(),
                 endTimeFrag.getHourInt(),
-                endTimeFrag.getMinInt());*/
-
-        // Check if end date/time is after start date/time
-        /*if(endCal.getTime().getTime() - startCal.getTime().getTime() <= 0) {
-            valid = false;
-        }*/
-
-//        //Checks if date/time that was entered is valid
-//        if (!startDate.isEmpty() && !endDate.isEmpty()) {
-//            //Checks if the end month or year is behind the start month or year
-//            if (startDateFrag.getMonth() > endDateFrag.getMonth() ||
-//                    startDateFrag.getYear() > endDateFrag.getYear()) {
-//                endDateView.setError(dateAfter);
-//                valid = false;
-//            //Checks that start day isn't after the end day if they're in the same month
-//            } else if (startDateFrag.getMonth() == endDateFrag.getMonth() &&
-//                    startDateFrag.getDay() > endDateFrag.getDay()) {
-//                endDateView.setError(dateAfter);
-//                valid = false;
-//            }
-//
-//            //Check for if start time and end time are on the same day
-//            if (!startTime.isEmpty() && !endTime.isEmpty() &&
-//                    startDateFrag.getDay() == endDateFrag.getDay() &&
-//                    startDateFrag.getMonth() == endDateFrag.getMonth() &&
-//                    startDateFrag.getYear() == endDateFrag.getYear()) {
-//                //Check that start hour isn't after end hour if on the same day
-//                if (startTimeFrag.getHourInt() > endTimeFrag.getHourInt()) {
-//                    endTimeView.setError(timeAfter);
-//                    valid = false;
-//                //Check that start minute isn't after end minute in the same hour and day
-//                } else if (startTimeFrag.getHourInt() == endTimeFrag.getHourInt() &&
-//                        startTimeFrag.getMinInt() > endTimeFrag.getMinInt()) {
-//                    endTimeView.setError(timeAfter);
-//                    valid = false;
-//                }
-//            }
-//        }
-
-
-        //System.out.println("startDate: " + startCal.getTime());
-        //System.out.println("endDate: " + endCal.getTime());
-        //System.out.println("startTime: " + startCal.getTimeInMillis());
-        //System.out.println("endTime: " + startCal.getTimeInMillis());
+                endTimeFrag.getMinInt());
         startTimeLong = startCal.getTimeInMillis();
-        //endTimeLong = endCal.getTimeInMillis();
 
-        System.out.println("startTime: " + startCal.getTimeInMillis());
         startTimeLong = startCal.getTimeInMillis();
-        // TODO: FIX THIS
-        endTimeLong = startCal.getTimeInMillis() + 999999;
+        endTimeLong = endCal.getTimeInMillis();
+
+        // If endTime < startTime, the user meant the next day, so we add a day
+        if (endTimeLong < startTimeLong) {
+            endTimeLong += 1000 * 60 * 60 * 24;
+        }
+        System.out.println("startTime: " + startTimeLong);
+        System.out.println("endTime: " + endTimeLong);
+
 
         //Return validity of user input
         return valid;

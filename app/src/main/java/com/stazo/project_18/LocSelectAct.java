@@ -48,7 +48,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
  * Created by Ansel on 4/28/16.
  */
 public class LocSelectAct extends FragmentActivity
-        implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
+        implements OnMapReadyCallback, GoogleMap.OnMapClickListener,
         OnConnectionFailedListener, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks {
     private GoogleMap map;
     private PlaceAutocompleteFragment autocompleteFragment;
@@ -112,7 +112,7 @@ public class LocSelectAct extends FragmentActivity
 
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        map.setOnMapLongClickListener(this);
+        map.setOnMapClickListener(this);
 
 
         CameraPosition camPos = new CameraPosition(MapFrag.REVELLE, zoom, tilt, bearing);
@@ -173,7 +173,7 @@ public class LocSelectAct extends FragmentActivity
     }
 
     // Add a marker where a long click occurs
-    public void onMapLongClick(LatLng point) {
+    public void onMapClick(LatLng point) {
         // Set the marker's location
         setFlag(point);
     }
@@ -279,8 +279,10 @@ public class LocSelectAct extends FragmentActivity
         eventToInit.setLocation(point);
 
         //moving camera to default
-        CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+        //CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
+        //map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
+        map.moveCamera(CameraUpdateFactory.newLatLng(point));
+
     }
 
     @Override
