@@ -259,7 +259,7 @@
 
                     <com.stazo.project_18.InteractiveScrollViewHorizontal
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="70dp"
                         android:id="@+id/joinedScrollView"
                         android:layout_marginTop="10dp">
 
@@ -270,6 +270,16 @@
                             android:id="@+id/joinedLayout"
                             android:layout_marginTop="0dip"
                             android:layout_marginBottom="0dip">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="No one has joined yet."
+                                android:textColor="@color/colorTextSecondary"
+                                android:gravity="center_vertical"
+                                android:textSize="14sp"
+                                android:visibility="gone"
+                                android:id="@+id/noJoinedText"/>
                         </LinearLayout>
 
                     </com.stazo.project_18.InteractiveScrollViewHorizontal>
@@ -339,15 +349,36 @@
                             android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
                             android:id="@+id/viewCommentLayout">
                             <TextView
                                 android:layout_width = "match_parent"
                                 android:layout_height = "30dp"
-                                android:layout_marginTop="10dp"
-                                android:textSize = "20dp"
+                                android:layout_marginTop="15dp"
+                                android:textSize = "20sp"
                                 android:textAlignment="center"
-                                android:text = "Comments">
+                                android:text = "Comments"
+                                android:textColor="@color/colorTextPrimary"
+                                android:layout_marginBottom="2dp">
                             </TextView>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorDivider"
+                                android:layout_marginBottom="10dp"></LinearLayout>
+                            <TextView
+                                android:layout_width = "match_parent"
+                                android:layout_height = "30dp"
+                                android:textSize = "14sp"
+                                android:textAlignment="center"
+                                android:text = "There are no comments yet."
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/colorTextSecondary"
+                                android:visibility="gone"
+                                android:id="@+id/noCommentsText">
+                            </TextView>
+
                         </LinearLayout>
 
                     </LinearLayout>
@@ -357,27 +388,42 @@
     </android.support.design.widget.CoordinatorLayout>
     <!-- Layout for posting comments -->
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:gravity="center"
-        android:id="@+id/writeCommentLayout">
-        <EditText
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:hint="Write comment here..."
-            android:id="@+id/commentText" />
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:id="@+id/submitComment"
-            android:text="Post"
-            android:textAllCaps="false"
-            android:textSize="12dp"
-            android:textColor="@color/colorTextPrimary"
-            android:background="@color/colorAccent"/>
+        android:layout_marginTop="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDividerLight"></LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:gravity="center"
+            android:id="@+id/writeCommentLayout"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:hint="Write a comment..."
+                android:id="@+id/commentText"
+                android:background="@null"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
+                android:id="@+id/submitComment"
+                android:text="Post"
+                android:textAllCaps="false"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:background="@color/colorPrimary"/>
+        </LinearLayout>
     </LinearLayout>
     <ImageView
         android:layout_width="match_parent"

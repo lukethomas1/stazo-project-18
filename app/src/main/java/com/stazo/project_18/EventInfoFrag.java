@@ -98,6 +98,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventInfoFrag extends Fragment implements GestureDetector.OnGestureListener {
 
     private Firebase fb;
+    private static final int COM_PIC_SIZ = 150;
 
     public String passedEventID;
     private User currUser;
@@ -168,7 +169,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         final Button attendButton = (Button) v.findViewById(R.id.attend);
         // if the user is already attending an event, change the button text to "Joined"
         if (me.getAttendingEvents().contains(passedEventID)) {
-
             attendButton.setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
             attendButton.setTextColor(getResources().getColor(R.color.colorDivider));
             attendButton.setTypeface(null, Typeface.ITALIC);
@@ -529,6 +529,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         ((TextView) getActivity().findViewById(R.id.numJoinedText)).
                                 setText("Joined (" + currEvent.getAttendees().size() + ")");
 
+                        if (currEvent.getAttendees().size() == 0) {
+                            getActivity().findViewById(R.id.noJoinedText).setVisibility(View.VISIBLE);
+                        }
+
                         // generateJoined scrollview
                         generateJoined();
 
@@ -629,8 +633,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
 
                 final ImageView iv = (ImageView) v.findViewById(R.id.creatorPic);
-                picBitmap = getRoundedShape(picBitmap);
-
 
                 iv.post(new Runnable() {
                     public void run() {
@@ -639,8 +641,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         ((Project_18) getActivity().getApplication()).
                                 addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
 
+                        // round the shape
+                        picBitmap = getRoundedShape(picBitmap);
 
-                        //picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
+                        // picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
                         iv.setImageBitmap(picBitmap);
                         iv.setVisibility(View.VISIBLE);
 
@@ -1237,6 +1241,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         while (commentIterable.iterator().hasNext()) {
                             commentList.add((Comment) commentIterable.iterator().next().getValue(Comment.class));
                         }
+
+                        if (commentList.size() == 0) {
+                            getActivity().findViewById(R.id.noCommentsText).setVisibility(View.VISIBLE);
+                        }
+
                         //show through views and layouts
                         for (int i = numCommentsLoaded; i < commentList.size(); i++) {
 
@@ -1252,7 +1261,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println("cache hit");
                                 profileImage = ((Project_18) getActivity().getApplication()).
                                         getBitmapFromMemCache(commentList.get(i).getUser_ID());
-                                profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
+                                profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, COM_PIC_SIZ, COM_PIC_SIZ));
                             } else {
                                 Thread profileThread = new Thread(new ProfilePicRunnable(profileImage, commentList.get(i).getUser_ID(), profileView));
                                 profileThread.start();
@@ -1281,6 +1290,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             //comment
                             TextView commentText = new TextView(context);
                             commentText.setText(commentList.get(i).getComment());
+                            commentText.setTextColor(getResources().getColor(R.color.colorTextPrimary));
 
                             //layout
                             LinearLayout mainLayout = (LinearLayout) v.findViewById(R.id.viewCommentLayout);
@@ -1305,6 +1315,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             userText.setLayoutParams(userTextLayoutParams);
                             userText.setTypeface(null, Typeface.BOLD);
                             userText.setTextSize(16);
+                            userText.setTextColor(getResources().getColor(R.color.colorTextPrimary));
                             LinearLayout.LayoutParams commentTextLayoutParams = new LinearLayout.LayoutParams(getDPI(250), LinearLayout.LayoutParams.WRAP_CONTENT);
                             commentTextLayoutParams.setMargins(getDPI(10), 0, 0, 0);
                             commentText.setLayoutParams(commentTextLayoutParams);
@@ -1340,7 +1351,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 profileView.post(new Runnable() {
                     @Override
                     public void run() {
-                        profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage, 150, 150));
+                        profileView.setImageBitmap(Project_18.BITMAP_RESIZER(profileImage,
+                                COM_PIC_SIZ, COM_PIC_SIZ));
                     }
                 });
 
