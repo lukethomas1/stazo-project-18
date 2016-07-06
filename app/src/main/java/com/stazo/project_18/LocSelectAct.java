@@ -198,6 +198,8 @@ public class LocSelectAct extends FragmentActivity
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
                     Project_18.me.getName(), Project_18.me.getUserFollowers());
 
+            ((Project_18) getApplication()).addPulledEvent(eventToInit);
+
             //push the image to firebasestorage
             if (imageUri != null) {
                 pushMainImage(imageUri);
@@ -278,10 +280,15 @@ public class LocSelectAct extends FragmentActivity
         // Intitialize the event with the Lat/Lng of the event
         eventToInit.setLocation(point);
 
+        // NOTE: I feel like moving the camera like this is disorienting kind of. Like
+        // I tap and then I'm like woah where am I now. So I'm commmenting it out for now.
+
         //moving camera to default
         //CameraPosition newPos = new CameraPosition(point, zoom, tilt, bearing);
         //map.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
-        map.moveCamera(CameraUpdateFactory.newLatLng(point));
+
+
+        //map.moveCamera(CameraUpdateFactory.newLatLng(point));
 
     }
 
