@@ -312,7 +312,7 @@ public class MapFrag extends Fragment {
             }
 
             // Button to auto-locate current position
-            map.setMyLocationEnabled(true); 
+            map.setMyLocationEnabled(true);
         }
 
         // Display all the events
