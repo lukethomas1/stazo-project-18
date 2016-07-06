@@ -1278,10 +1278,40 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         //show through views and layouts
                         for (int i = numCommentsLoaded; i < commentList.size(); i++) {
 
+                            final String id = commentList.get(i).getUser_ID();
+
                             //profile pic
                             Bitmap profileImage = null;
-                            ImageView profileView = new ImageView(context);
+                            final ImageView profileView = new ImageView(context);
                             profileView.setImageBitmap(profileImage);
+                            profileView.setOnTouchListener(new View.OnTouchListener() {
+                                @Override
+                                public boolean onTouch(View v, MotionEvent event) {
+                                    // set filter when pressed
+                                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                        profileView.setColorFilter(new
+                                                PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
+                                                PorterDuff.Mode.MULTIPLY));
+                                    }
+
+                                    // handle "click"
+                                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                                        Log.d("myTag", "imageButton pressed");
+                                        if (id.equals(Project_18.me.getID())) {
+                                            MainAct.viewPager.setCurrentItem(MainAct.PROF_POS);
+                                        } else {
+                                            ((MainAct) getActivity()).goToOtherProfile(id);
+                                        }
+                                    }
+
+                                    // remove filter on release/cancel
+                                    if (event.getAction() == MotionEvent.ACTION_UP ||
+                                            event.getAction() == MotionEvent.ACTION_CANCEL) {
+                                        profileView.clearColorFilter();
+                                    }
+                                    return true;
+                                }
+                            });
                             //get cache and check ID against it
                             //HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
                             //if this line is crashing, need to just save ref to activity(ask eric)
