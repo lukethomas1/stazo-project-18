@@ -122,7 +122,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private InteractiveScrollViewHorizontal scrollView;
 
     private boolean autoOpen = false;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.event_info, container, false);
@@ -297,6 +296,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             if (numToLoad == 0) {
                 Log.d("sizzle", "currEvent.getAttendees() is " + currEvent.getAttendees().toString());
                 (new SetButtonTask(idToName)).execute();
+
                 break;
             }
 
@@ -369,6 +369,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
     private synchronized void constructUsersLayout (ConcurrentHashMap<String, Bitmap> idToBitmap,
                                                     HashMap<String, String> idToName) {
+
+        ((LinearLayout) getActivity().findViewById(R.id.joinedLayout)).removeAllViews();
 
         for (String id: idToBitmap.keySet()) {
             addToUsersLayout(idToBitmap.get(id), idToName.get(id), id);
