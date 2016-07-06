@@ -521,8 +521,11 @@ public class CreateEventAct extends AppCompatActivity {
                 //rotate bitmap and save it back
                 Matrix matrix = new Matrix();
                 matrix.postRotate(getImageOrientation(cameraPhotoPath));
-                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
-                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath, options);                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
                 File file = new File(cameraPhotoPath); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
