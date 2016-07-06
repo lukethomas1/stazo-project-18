@@ -323,16 +323,6 @@ public class MapFrag extends Fragment {
             // Clear existing markers on the map
             map.clear();
 
-
-            if (!Project_18.pulledEvents.isEmpty()) {
-                for (Event e: Project_18.pulledEvents) {
-                    displayEvent(e);
-                }
-
-                Log.d("TimeTest", "Cached events loaded at " + (System.nanoTime() - testTime));
-            }
-
-            else {
                 // Listener for pulling the events
                 fb.child("Events").addListenerForSingleValueEvent(
                         new ValueEventListener() {
@@ -349,9 +339,10 @@ public class MapFrag extends Fragment {
 
                                     // add the event to the local ArrayList
                                     ((Project_18) getActivity().getApplication()).addPulledEvent(e);
-
-                                    // display event
-                                    displayEvent(e);
+                                    if (e.happeningLaterToday()) {
+                                        // display event
+                                        displayEvent(e);
+                                    }
                                 }
 
                                 Log.d("TimeTest", "Non-cached events loaded at " + (System.nanoTime() - testTime));
@@ -373,7 +364,7 @@ public class MapFrag extends Fragment {
                             public void onCancelled(FirebaseError firebaseError) {
                             }
                         });
-            }
+
         }
 
         // Displays a single event
