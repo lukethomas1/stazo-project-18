@@ -1446,7 +1446,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         @Override
         public void run() {
             mainLayout.addView(addedView);
-            mainLayout.addView(addedView2);
+            //mainLayout.addView(addedView2);
         }
     }
 
@@ -1498,6 +1498,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 EventInfoFrag.currEvent.getName(),
                 Project_18.me.getID())).
                 pushToFirebase(fb, usersWhoCare);
+
+        // if it's the first comment we need to hide this
+        getActivity().findViewById(R.id.noCommentsText).setVisibility(View.GONE);
     }
 
 
