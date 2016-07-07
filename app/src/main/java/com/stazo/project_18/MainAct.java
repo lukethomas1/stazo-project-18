@@ -152,7 +152,7 @@ public class MainAct extends AppCompatActivity
                             notifTabHighlight = false;
                         }
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
-                                getResources().getColor(R.color.colorPrimary),
+                                getResources().getColor(R.color.colorPrimaryLight),
                                 PorterDuff.Mode.SRC_IN);
                     } else {
                         if (i == NOT_POS && notifTabHighlight) {
@@ -177,7 +177,7 @@ public class MainAct extends AppCompatActivity
         });
 
         tabLayout.getTabAt(MAP_POS).getIcon().setColorFilter(
-                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorPrimaryLight),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(LIST_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorDivider),

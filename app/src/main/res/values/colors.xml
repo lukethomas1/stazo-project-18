@@ -30,7 +30,7 @@
     <!-- THEME BLUE WITH YELLOW ACCENT-->
     <color name="colorPrimary">#0288D1</color>
     <color name="colorPrimaryDark">#01579B</color>
-    <color name="colorPrimaryLight">#4FC3F7</color>
+    <color name="colorPrimaryLight">#03A9F4</color>
     <color name="colorAccent">#FFEB3B</color>
     <color name="colorAccentDark">#FBC02D</color>
 
