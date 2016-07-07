@@ -614,7 +614,7 @@ public class MainAct extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Log Out");
-        builder.setMessage("Are you sure? Like really sure?");
+        builder.setMessage("Are you sure you want to log out?");
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 

@@ -279,7 +279,10 @@ public class MapFrag extends Fragment {
                 @Override
                 public void onInfoWindowClose(Marker marker) {
                     // Hides the eventInfoFrag when the infoWindow disappears
-                    ((MainAct) getActivity()).hideInfo();
+
+                    if (getActivity() != null) {
+                        ((MainAct) getActivity()).hideInfo();
+                    }
                 }
             });
 

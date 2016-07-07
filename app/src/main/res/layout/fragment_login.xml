@@ -8,25 +8,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.stazo.project_18.LoginFrag"
     tools:showIn="@layout/login"
-    android:background="@color/colorPrimary" >
+    android:background="@color/white" >
 
     <TextView
         android:id="@+id/title_text"
-        android:layout_above="@+id/login_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textSize="40sp"
         android:gravity="center"
-        android:textColor="@color/white" />
+        android:textColor="@color/colorPrimary"
+        android:layout_centerInParent="true"
+        android:paddingBottom="60dp"/>
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
+        android:layout_below="@+id/title_text"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="30dp" />
 
     <ImageButton
         android:layout_width="wrap_content"

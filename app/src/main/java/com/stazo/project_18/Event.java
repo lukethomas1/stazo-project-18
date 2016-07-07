@@ -371,7 +371,7 @@ public class Event implements Parcelable {
                 endTime > System.currentTimeMillis();
     }
     public boolean happeningSoon() {
-        return (startTime - System.currentTimeMillis()) < 60 * 60 * 1000 && endTime > System.currentTimeMillis();
+        return (startTime - System.currentTimeMillis()) < 60 * 60 * 1000 * 2 && endTime > System.currentTimeMillis();
     }
 
     public String getTimeString(boolean midSentence) {

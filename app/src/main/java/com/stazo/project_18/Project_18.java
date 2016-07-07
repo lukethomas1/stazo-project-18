@@ -241,7 +241,12 @@ public class Project_18 extends Application {
         nameAndHost.addView(eventName);
         nameAndHost.addView(hostOrJoined);
 
-        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        if (e.happeningSoon()) {
+            info.setTextColor(getResources().getColor(R.color.colorAccentDark));
+        } else {
+            info.setTextColor(getResources().getColor(R.color.colorDivider));
+        }
+
         info.setTextSize(detailsTextSize);
         info.setPadding(160, 0, 0, 20);
         info.setGravity(Gravity.CENTER_VERTICAL);

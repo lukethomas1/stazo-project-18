@@ -1478,13 +1478,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // NOTIFICATION STUFF
         ArrayList<String> usersWhoCare = new ArrayList<>(EventInfoFrag.currEvent.getAttendees());
+
+        // Add in the event creator if they aren't in it already
+        if (!usersWhoCare.contains(currEvent.getCreator_id())) {
+            usersWhoCare.add(currEvent.getCreator_id());
+        }
+        // Take me, the commenter, out of it
         if (usersWhoCare.contains(Project_18.me.getID())) {
             usersWhoCare.remove(Project_18.me.getID());
-
-            // Add in the event creator if they aren't in it already
-            if (!usersWhoCare.contains(currEvent.getCreator_id())) {
-                usersWhoCare.add(currEvent.getCreator_id());
-            }
         }
 
         ArrayList<String> meList = new ArrayList<String>();
