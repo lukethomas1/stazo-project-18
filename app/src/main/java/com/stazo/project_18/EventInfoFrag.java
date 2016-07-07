@@ -88,6 +88,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -121,6 +122,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private int SECTION_SIZE = 5;
     private int page = 0;
     private InteractiveScrollViewHorizontal scrollView;
+    private LayoutInflater inflater;
 
     private boolean autoOpen = false;
     @Override
@@ -236,6 +238,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         });
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
+        this.inflater = inflater;
         //pull necessary images and comments
         pullComments(inflater);
         pullMainImage();
@@ -1130,9 +1133,17 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         }
         if (images.size() > 0) {
-            System.out.println("number of images: " + images.size());
+        //if (numImagesLoaded > 0) {
+            //System.out.println("number of images: " + images.size());
+
+            //final View imageLayout = inflater.inflate(R.layout.stream_image_layout, null);
+
             final ImageView imageFrameView = (ImageView) v.findViewById(R.id.imageFrameView);
+            //final ImageView imageFrameView = (ImageView) imageLayout.findViewById(R.id.streamImageView);
+
             final Iterator<Bitmap> imagesIterator = images.iterator();
+            //final Iterator<Bitmap> imagesIterator =
+            //        (new ArrayList(Arrays.asList(imageArray))).iterator();
 
             imageFrameView.setImageBitmap(imagesIterator.next());
             imageFrameView.setBackgroundColor(Color.BLACK);
@@ -1181,6 +1192,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             });
 
         }
+
         else {
             System.out.println("show no pic dialog");
             final CharSequence[] items = {"OK"};
@@ -1224,7 +1236,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
                     }
                 });
 
