@@ -525,11 +525,12 @@ public class CreateEventAct extends AppCompatActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
                 options.inSampleSize = 2;
-                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath, options);                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath, options);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
                 File file = new File(cameraPhotoPath); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
                 fOut.close();
 
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
@@ -555,7 +556,7 @@ public class CreateEventAct extends AppCompatActivity {
 
                 File file = new File(getRealPathFromURI(getBaseContext(), imageUri)); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
                 fOut.close();
 
                 Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);

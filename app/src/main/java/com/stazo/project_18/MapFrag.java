@@ -217,14 +217,14 @@ public class MapFrag extends Fragment {
 
         @Override
         public View getInfoWindow(Marker marker) {
-            render(marker, infoWindow);
-
-            return infoWindow;
+            return null;
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            return null;
+            render(marker, infoWindow);
+
+            return infoWindow;
         }
 
         public void simulateOnClick(String eventId) {
