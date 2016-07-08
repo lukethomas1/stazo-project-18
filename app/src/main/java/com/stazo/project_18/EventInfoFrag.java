@@ -115,6 +115,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap[] imageArray = null;
     private ArrayList<Bitmap> images;
     private int numImagesLoaded;
+    private int numImagesToLoad;
     private int numCommentsLoaded = 0;
 
     // Joined scrollview stuff
@@ -1212,6 +1213,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         imageArray = new Bitmap[(int) dataSnapshot.getChildrenCount()];
                         Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
                         numImagesLoaded = 0;
+                        numImagesToLoad = 0;
                         while(urlIterable.iterator().hasNext()) {
                             try {
                                 URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
@@ -1222,6 +1224,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println("Exception: " + e.toString());
                             }
                             numImagesLoaded++;
+                            numImagesToLoad++;
                         }
                     }
 
@@ -1253,7 +1256,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                     imageArray[index] =  imageBitmap;
                 }
                 else {
-                    imageBitmap = null;
+                    imageBitmap.recycle();
                 }
                 System.out.println("Event image number " + index);
             }
