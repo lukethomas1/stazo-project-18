@@ -365,9 +365,13 @@ public class Event implements Parcelable {
         return 0;
     }
 
-    public boolean isInTime(long time) {
-        return (startTime - 5*60*1000 < time &&
-                endTime + 5*60*1000 > time);
+    public boolean happeningLaterToday() {
+        return new SimpleDateFormat("EE").format(startTime).
+                equals(new SimpleDateFormat("EE", Locale.US).format(new Date())) &&
+                endTime > System.currentTimeMillis();
+    }
+    public boolean happeningSoon() {
+        return (startTime - System.currentTimeMillis()) < 60 * 60 * 1000 * 2 && endTime > System.currentTimeMillis();
     }
 
     public String getTimeString(boolean midSentence) {

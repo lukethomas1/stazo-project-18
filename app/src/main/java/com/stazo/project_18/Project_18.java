@@ -54,6 +54,15 @@ public class Project_18 extends Application {
     private static int detailsTextSize = 12;
 
     public static User me;
+
+    public static ArrayList<Event> getPulledEvents() {
+        return pulledEvents;
+    }
+
+    public static void setPulledEvents(ArrayList<Event> pulledEvents) {
+        Project_18.pulledEvents = pulledEvents;
+    }
+
     public static ArrayList<Event> pulledEvents = new ArrayList<Event>(); // list of all the events pulled
     public static ArrayList<Integer> filteredCategories = new ArrayList<>();
     public static int GMTOffset = ((new GregorianCalendar()).getTimeZone()).getRawOffset();
@@ -108,12 +117,6 @@ public class Project_18 extends Application {
         }
     }
 
-    private void refreshPulledEvents() {
-    }
-
-    public ArrayList<Event> getPulledEvents (){return pulledEvents;}
-    public void clearPulledEvents() {pulledEvents = new ArrayList<Event>();}
-
     // update the time we're interested in
     public void setRelevantTime(int progress) {
         relevantTime = System.currentTimeMillis() + (progress * 60*60*1000);
@@ -121,100 +124,14 @@ public class Project_18 extends Application {
 
     public long getRelevantTime() {return relevantTime;}
 
+    public static boolean isInTime(Event e) {
+        return (e.getStartTime() < (System.currentTimeMillis() + 60*60*1000) &&
+        e.getEndTime() > (System.currentTimeMillis()));
+    }
+
     public void setRelevantText(String newText) {
         relevantText = newText;
     }
-
-    // returns list of event_ids in order of relevance
-    public ArrayList<String> findRelevantEventIds () {
-        ArrayList<String> relatedEventIds = new ArrayList<String>();
-        for (Event e: pulledEvents) {
-            int relevance = e.findRelevance(relevantText);
-            switch (relevance) {
-                case 2:
-                    // if it is a relevant category, and at a relevant time
-                    //if (filteredCategories.contains(new Integer(e.getType())) &&
-                      //      e.isInTime(relevantTime)) {
-                        // add to start
-                        relatedEventIds.add(0, e.getEvent_id());
-                    //}
-                    break;
-                case 1:
-
-                    // if it is a relevant category, and at a relevant time
-                    //if (filteredCategories.contains(new Integer(e.getType())) &&
-                      //      e.isInTime(relevantTime)) {
-                        // add to end
-                        relatedEventIds.add(e.getEvent_id());
-                    //}
-                    break;
-                default:
-                    break;
-            }
-        }
-        return relatedEventIds;
-    }
-
-    /*public ArrayList<Event> findRelevantEvents (final boolean noTime) {
-        final Firebase fb = getFB();
-
-        fb.child("Events").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        clearPulledEvents();
-                        // For every event in fb.child("Events"), create event and displayEvent
-                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-                            // get the info, storage?
-                            Event e = new Event(eventSnapshot.getValue(
-                                    new GenericTypeIndicator<HashMap<String, Object>>() {
-                                    }));
-
-                            // add the event to the local ArrayList
-                            addPulledEvent(e);
-                        }
-
-                        // remove this listener
-                        fb.child("Events").removeEventListener(this);
-
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
-                });
-    }*/
-
-    // filter based on search and categories, use time if !noTime
-    public ArrayList<Event> findRelevantEvents (boolean noTime) {
-        ArrayList<Event> relatedEvents = new ArrayList<Event>();
-        for (Event e: pulledEvents) {
-            int relevance = e.findRelevance(relevantText);
-            switch (relevance) {
-                case 2:
-                    // if it is a relevant category, and at a relevant time
-                    //if (filteredCategories.contains(new Integer(e.getType())) &&
-                      //      (noTime || e.isInTime(relevantTime))) {
-                        // add to start
-                        relatedEvents.add(0, e);
-                    //}
-                    break;
-                case 1:
-                    // if it is a relevant category, and at a relevant time
-                    //if (filteredCategories.contains(new Integer(e.getType())) &&
-                      //      (noTime || e.isInTime(relevantTime))) {
-                        // add to end
-                        relatedEvents.add(e);
-                    //}
-                    break;
-                default:
-                    break;
-            }
-        }
-        return relatedEvents;
-    }
-
 
     public void pullAllUsers() {
         getFB().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -324,7 +241,12 @@ public class Project_18 extends Application {
         nameAndHost.addView(eventName);
         nameAndHost.addView(hostOrJoined);
 
-        info.setTextColor(getResources().getColor(R.color.colorDivider));
+        if (e.happeningSoon()) {
+            info.setTextColor(getResources().getColor(R.color.colorAccentDark));
+        } else {
+            info.setTextColor(getResources().getColor(R.color.colorDivider));
+        }
+
         info.setTextSize(detailsTextSize);
         info.setPadding(160, 0, 0, 20);
         info.setGravity(Gravity.CENTER_VERTICAL);

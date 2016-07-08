@@ -112,7 +112,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap picBitmap;
     private Bitmap mainImageBitmap;
     private String cameraPhotoPath;
-    private Bitmap[] imageArray;
+    private Bitmap[] imageArray = null;
     private ArrayList<Bitmap> images;
     private int numImagesLoaded;
     private int numCommentsLoaded = 0;
@@ -970,7 +970,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 //rotate bitmap and save it back
                 Matrix matrix = new Matrix();
                 matrix.postRotate(getImageOrientation(cameraPhotoPath));
-                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath, options);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
                 File file = new File(cameraPhotoPath); // the File to save to
@@ -1119,9 +1122,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
     public void viewHighlights() {
         images = new ArrayList<>();
-        for (int i = 0; i < imageArray.length; i++) {
-            if (imageArray[i] != null) {
-                images.add(imageArray[i]);
+        if (imageArray != null) {
+            for (int i = 0; i < imageArray.length; i++) {
+                if (imageArray[i] != null) {
+                    images.add(imageArray[i]);
+                }
             }
         }
         if (images.size() > 0) {
@@ -1184,10 +1189,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             builder.setTitle("This event has no pictures yet.");
             builder.setItems(items, new DialogInterface.OnClickListener() {
-
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Okay")) {
+                    if (items[item].equals("OK")) {
                         dialog.dismiss();
                     }
                 }
@@ -1442,7 +1446,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         @Override
         public void run() {
             mainLayout.addView(addedView);
-            mainLayout.addView(addedView2);
+            //mainLayout.addView(addedView2);
         }
     }
 
@@ -1474,13 +1478,14 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // NOTIFICATION STUFF
         ArrayList<String> usersWhoCare = new ArrayList<>(EventInfoFrag.currEvent.getAttendees());
+
+        // Add in the event creator if they aren't in it already
+        if (!usersWhoCare.contains(currEvent.getCreator_id())) {
+            usersWhoCare.add(currEvent.getCreator_id());
+        }
+        // Take me, the commenter, out of it
         if (usersWhoCare.contains(Project_18.me.getID())) {
             usersWhoCare.remove(Project_18.me.getID());
-
-            // Add in the event creator if they aren't in it already
-            if (!usersWhoCare.contains(currEvent.getCreator_id())) {
-                usersWhoCare.add(currEvent.getCreator_id());
-            }
         }
 
         ArrayList<String> meList = new ArrayList<String>();
@@ -1493,6 +1498,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 EventInfoFrag.currEvent.getName(),
                 Project_18.me.getID())).
                 pushToFirebase(fb, usersWhoCare);
+
+        // if it's the first comment we need to hide this
+        getActivity().findViewById(R.id.noCommentsText).setVisibility(View.GONE);
     }
 
 

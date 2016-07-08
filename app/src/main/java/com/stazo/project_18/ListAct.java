@@ -141,7 +141,7 @@ public class ListAct extends android.support.v4.app.Fragment {
         }
         // Remove hot events from eventList
         for (Event event : litEventsList) {
-            eventList.remove(event);
+            //eventList.remove(event);
         }
 
         // HAPPENING TODAY EVENTS SECTION
@@ -150,6 +150,10 @@ public class ListAct extends android.support.v4.app.Fragment {
                 happeningNowList.add(event);
             }
         }
+
+        // Sort happening now by time
+        Collections.sort(happeningNowList, new timeCompare());
+
         // Remove current events from eventList
         for (Event event : happeningNowList) {
             eventList.remove(event);
@@ -364,6 +368,19 @@ public class ListAct extends android.support.v4.app.Fragment {
                 return 1;
             }
             if (e1.getAttendees().size() > (e2.getAttendees().size())) {
+                return -1;
+            }
+            return 0;
+        }
+    }
+
+    private class timeCompare implements Comparator<Event> {
+        @Override
+        public int compare(Event e1, Event e2) {
+            if (e1.getStartTime() > e2.getStartTime()) {
+                return 1;
+            }
+            if (e1.getStartTime() < e2.getStartTime()) {
                 return -1;
             }
             return 0;

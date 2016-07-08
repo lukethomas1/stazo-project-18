@@ -62,7 +62,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Anyone can post an event."
+                android:text="Anyone."
                 android:textStyle="bold"
                 android:textAppearance="@style/WelcomeDesc"
                 android:layout_gravity="center"/>

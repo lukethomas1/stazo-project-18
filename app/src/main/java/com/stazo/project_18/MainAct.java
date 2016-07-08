@@ -152,7 +152,7 @@ public class MainAct extends AppCompatActivity
                             notifTabHighlight = false;
                         }
                         tabLayout.getTabAt(i).getIcon().setColorFilter(
-                                getResources().getColor(R.color.colorPrimary),
+                                getResources().getColor(R.color.colorPrimaryLight),
                                 PorterDuff.Mode.SRC_IN);
                     } else {
                         if (i == NOT_POS && notifTabHighlight) {
@@ -177,7 +177,7 @@ public class MainAct extends AppCompatActivity
         });
 
         tabLayout.getTabAt(MAP_POS).getIcon().setColorFilter(
-                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorPrimaryLight),
                 PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(LIST_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorDivider),
@@ -614,7 +614,7 @@ public class MainAct extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Log Out");
-        builder.setMessage("Are you sure? Like really sure?");
+        builder.setMessage("Are you sure you want to log out?");
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
