@@ -736,7 +736,12 @@ public class MainAct extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        Firebase.setAndroidContext(this);
+        if (Project_18.me == null) {
+            startActivity(new Intent(this, InitialAct.class));
+            finish();
+        } else {
+            Firebase.setAndroidContext(this);
+        }
     }
 
     public void followUser(View v) {

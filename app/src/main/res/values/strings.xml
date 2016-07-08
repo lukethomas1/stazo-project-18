@@ -13,8 +13,8 @@
     <string name="other">Other</string>
 
     <!-- MYSTRINGS -->
-    <string name="welcome_header_1">Welcome to fumono!</string>
-    <string name="welcome_desc_1">Fumono is a locale-based event finder.
+    <string name="welcome_header_1">Welcome to Campus!</string>
+    <string name="welcome_desc_1">Campus is a locale-based event finder.
         That means everything fun happening nearby can be found here.</string>
 
     <string name="welcome_header_2">Things to Know</string>
@@ -22,7 +22,7 @@
         everyone\n2. Anyone can post an event to fumono\n3.
         Any event is welcome (study sessions, beach trips, night socials, etc.) </string>
 
-    <string name="welcome_header_3">Community Guidelines</string>
+    <string name="welcome_header_3">Campus Guidelines</string>
     <string name="welcome_desc_3">1. Be nice\n2. Don\'t be shy\n3. Have fun</string>
 
     <string name="welcome_header_4">Guideline Number Two: Be Inviting</string>
@@ -33,10 +33,10 @@
     <string name="welcome_desc_5">You\'ve never been in higher demand.
         Every host wants YOU at their event. Don\'t be afraid to explore something new!</string>
 
-    <string name="welcome_header_FAQ">FAQ</string>
+    <string name="welcome_header_FAQ">Frequently Asked Questions</string>
 
     <string name="welcome_header_6">You\'re Ready!</string>
-    <string name="welcome_desc_6">Go out and have your first adventure.</string>
+    <string name="welcome_desc_6">Go out and find your next adventure.</string>
 
     <!-- Strings related to login -->
     <string name="facebook_app_id">1071049549602950</string>
