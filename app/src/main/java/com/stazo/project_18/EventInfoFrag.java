@@ -741,7 +741,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println(uri.toString());
                                 //URI downloadURI = new URI(uri.toString());
                                 URL downloadURL = new URL(uri.toString());
-                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openStream());
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                                options.inSampleSize = 2;
+                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openStream(), null, options);
                                 System.out.println("got main image bitmap");
                             }
                             catch (Exception e) {
@@ -1601,6 +1604,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         }
         imageArray = null;
+        if (mainImageBitmap != null) {
+            mainImageBitmap.recycle();
+        }
     }
 
     @Override
