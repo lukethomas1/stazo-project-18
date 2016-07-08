@@ -23,6 +23,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
@@ -116,6 +117,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap[] imageArray = null;
     private ArrayList<Bitmap> images;
     private int numImagesLoaded;
+    private int numImagesToLoad;
     private int numCommentsLoaded = 0;
 
     // Joined scrollview stuff
@@ -1224,6 +1226,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         imageArray = new Bitmap[(int) dataSnapshot.getChildrenCount()];
                         Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
                         numImagesLoaded = 0;
+                        numImagesToLoad = 0;
                         while(urlIterable.iterator().hasNext()) {
                             try {
                                 URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
@@ -1234,6 +1237,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println("Exception: " + e.toString());
                             }
                             numImagesLoaded++;
+                            numImagesToLoad++;
                         }
                     }
 
@@ -1264,7 +1268,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                     imageArray[index] =  imageBitmap;
                 }
                 else {
-                    imageBitmap = null;
+                    imageBitmap.recycle();
                 }
                 System.out.println("Event image number " + index);
             }
@@ -1595,6 +1599,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     }
 
     public void recycleImages() {
+
         if (imageArray != null) {
             System.out.println("Destroying view... freeing image memory alloc");
             for (int i = 0; i < imageArray.length; i++) {
