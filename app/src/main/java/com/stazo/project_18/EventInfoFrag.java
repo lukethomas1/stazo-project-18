@@ -978,7 +978,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
                 File file = new File(cameraPhotoPath); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
                 fOut.close();
 
                 //push to firebase
@@ -1000,7 +1000,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
                 File file = new File(getRealPathFromURI(getContext(), imageUri)); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
                 fOut.close();
 
                 //push to firebase
