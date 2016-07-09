@@ -34,12 +34,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -63,6 +66,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +78,8 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -115,9 +121,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private Bitmap mainImageBitmap;
     private String cameraPhotoPath;
     private Bitmap[] imageArray = null;
-    private ArrayList<Bitmap> images;
+    private long[] imageTimeArray = null;
+    private String[] imageUserArray = null;
+    boolean enableClick = true;
+    private Iterator<DataSnapshot> urlIterator;
     private int numImagesLoaded;
-    private int numImagesToLoad;
     private int numCommentsLoaded = 0;
 
     // Joined scrollview stuff
@@ -164,7 +172,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 }
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
-                    System.out.println("hidden");
+                    if (getActivity() != null) {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
                     recycleImages();
                 }
             }
@@ -243,8 +254,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         this.inflater = inflater;
         //pull necessary images and comments
         pullComments(inflater);
-        pullMainImage();
-        pullEventImages();
+//        pullMainImage();
+//        pullEventImages();
+        setUpImageIterator(); //also pulls first image
         return v;
     }
 
@@ -1108,7 +1120,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         StorageReference mainImageStorage = storageRef.child("EventImagesDatabase/" +
                 this.passedEventID + "/" + me.getID() + "_" + timeStamp+ ".jpg");
-        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+        StorageMetadata metta = new StorageMetadata.Builder()
+                .setCustomMetadata("Time", Long.toString(Calendar.getInstance().getTimeInMillis()))
+                .setCustomMetadata("User", me.getID())
+                .build();
+        UploadTask uploadTask = mainImageStorage.putFile(imageFile, metta);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -1128,46 +1144,137 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         });
     }
 
+    private int currHighlightIndex;
     public void viewHighlights() {
-        images = new ArrayList<>();
-        if (imageArray != null) {
-            for (int i = 0; i < imageArray.length; i++) {
-                if (imageArray[i] != null) {
-                    images.add(imageArray[i]);
-                }
-            }
-        }
-        if (images.size() > 0) {
-        //if (numImagesLoaded > 0) {
-            //System.out.println("number of images: " + images.size());
+        if (numImagesLoaded > 0) {
+            currHighlightIndex = 0;
 
-            //final View imageLayout = inflater.inflate(R.layout.stream_image_layout, null);
+            final View highlightLayout = inflater.inflate(R.layout.stream_image_layout, null);
+            ((FrameLayout) v.findViewById(R.id.eventFrameLayout)).addView(highlightLayout);
 
-            final ImageView imageFrameView = (ImageView) v.findViewById(R.id.imageFrameView);
-            //final ImageView imageFrameView = (ImageView) imageLayout.findViewById(R.id.streamImageView);
+            final RelativeLayout imageLayout = (RelativeLayout) v.findViewById(R.id.streamImageLayout);
+            final ImageView imageFrameView = (ImageView) v.findViewById(R.id.streamImageView);
+            final TextView imageTimeView = (TextView) v.findViewById(R.id.streamTimeView);
+            final TextView imageUserView = (TextView) v.findViewById(R.id.streamUserView);
+            final LinearLayout loadingView = (LinearLayout) v.findViewById(R.id.streamLoadingText);
+            loadingView.setClickable(true);
 
-            final Iterator<Bitmap> imagesIterator = images.iterator();
-            //final Iterator<Bitmap> imagesIterator =
-            //        (new ArrayList(Arrays.asList(imageArray))).iterator();
-
-            imageFrameView.setImageBitmap(imagesIterator.next());
-            imageFrameView.setBackgroundColor(Color.BLACK);
-            imageFrameView.setClickable(true);
             imageFrameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (imagesIterator.hasNext()) {
+                    System.out.println(enableClick);
+                    if (enableClick) {
                         System.out.println("next image");
-                        imageFrameView.setImageBitmap(imagesIterator.next());
-                    }
-                    else {
-                        System.out.println("no more images to show");
-                        imageFrameView.setImageBitmap(null);
-                        imageFrameView.setBackgroundColor(Color.TRANSPARENT);
-                        imageFrameView.setClickable(false);
+                        currHighlightIndex++;
+                        pullNextEventImage();
+                        if (currHighlightIndex < numImagesLoaded) {
+                            if (imageArray[currHighlightIndex] != null) {
+                                String userText = ((Project_18)getActivity().getApplication())
+                                        .allUsers.get(imageUserArray[currHighlightIndex]);
+                                imageUserView.setText(userText);
+                                String timeText = new SimpleDateFormat("HH:mm a")
+                                        .format(imageTimeArray[currHighlightIndex]);
+                                imageTimeView.setText(timeText);
+                                imageFrameView.setImageBitmap(imageArray[currHighlightIndex]);
+                            }
+                            else {
+                                //loading
+                                imageLayout.setVisibility(View.INVISIBLE);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        while (true) {
+                                            SystemClock.sleep(2000);
+                                            System.out.println("try");
+                                            if (imageArray != null) {
+                                                if (imageArray[currHighlightIndex] != null) {
+                                                    imageLayout.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            String userText = ((Project_18)getActivity().getApplication())
+                                                                    .allUsers.get(imageUserArray[currHighlightIndex]);
+                                                            imageUserView.setText(userText);
+                                                            String timeText = new SimpleDateFormat("HH:mm a")
+                                                                    .format(imageTimeArray[currHighlightIndex]);
+                                                            imageTimeView.setText(timeText);
+                                                            imageFrameView.setImageBitmap(imageArray[currHighlightIndex]);
+                                                            imageLayout.setVisibility(View.VISIBLE);
+                                                        }
+                                                    });
+                                                    break;
+                                                }
+                                            }
+                                            else {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }).start();
+                            }
+                        }
+                        else {
+                            System.out.println("no more images to show");
+                            //hide everything
+//                            imageUserView.setText(null);
+//                            imageTimeView.setText(null);
+//                            imageFrameView.setImageBitmap(null);
+//                            imageFrameView.setBackgroundColor(Color.TRANSPARENT);
+//                            imageFrameView.setClickable(false);
+                            ((ViewGroup) highlightLayout.getParent()).removeView(highlightLayout);
+                        }
                     }
                 }
             });
+
+            pullNextEventImage();
+            if (imageArray[currHighlightIndex] != null) {
+                System.out.println("first image");
+                String userText = ((Project_18)getActivity().getApplication())
+                        .allUsers.get(imageUserArray[currHighlightIndex]);
+                imageUserView.setText(userText);
+                String timeText = new SimpleDateFormat("HH:mm a")
+                        .format(imageTimeArray[currHighlightIndex]);
+                imageTimeView.setText(timeText);
+                imageFrameView.setImageBitmap(imageArray[currHighlightIndex]);
+
+            }
+            else {
+                //loading
+                System.out.println("loading");
+                imageLayout.setVisibility(View.INVISIBLE);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true) {
+                            SystemClock.sleep(2000);
+                            System.out.println("try");
+                            if (imageArray != null) {
+                                if (imageArray[currHighlightIndex] != null) {
+                                    imageLayout.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String userText = ((Project_18)getActivity().getApplication())
+                                                    .allUsers.get(imageUserArray[currHighlightIndex]);
+                                            imageUserView.setText(userText);
+                                            String timeText = new SimpleDateFormat("HH:mm a")
+                                                    .format(imageTimeArray[currHighlightIndex]);
+                                            imageTimeView.setText(timeText);
+                                            imageFrameView.setImageBitmap(imageArray[currHighlightIndex]);
+                                            imageLayout.setVisibility(View.VISIBLE);
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                    }
+                }).start();
+
+            }
+
 
 
             class eric extends GestureDetector.SimpleOnGestureListener {
@@ -1178,9 +1285,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         System.out.println("Bottom swipe");
 
                         //get rid of image view
+                        imageUserView.setText(null);
+                        imageTimeView.setText(null);
                         imageFrameView.setImageBitmap(null);
                         imageFrameView.setBackgroundColor(Color.TRANSPARENT);
-                        imageFrameView.setClickable(false);
+                        imageFrameView.setEnabled(false);
+                        ((ViewGroup) highlightLayout.getParent()).removeView(highlightLayout);
                         return false; // Top to bottom
                     }
                     return false;
@@ -1195,6 +1305,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                     return false;
                 }
             });
+            loadingView.setOnTouchListener((new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    gestureDetector.onTouchEvent(event);
+                    return false;
+                }
+            }));
 
         }
 
@@ -1217,19 +1334,60 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }
     }
 
-    public void pullEventImages() {
-        System.out.println("pulling event images");
+    public void setUpImageIterator() {
+        System.out.println("generating list of url's");
         fb.child("ImagesDatabase").child("EventImages").child(this.passedEventID).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        imageArray = new Bitmap[(int) dataSnapshot.getChildrenCount()];
+                        int childrenCount = (int) dataSnapshot.getChildrenCount();
+                        imageArray = new Bitmap[childrenCount];
+                        imageTimeArray = new long[childrenCount];
+                        imageUserArray = new String[childrenCount];
                         Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
-                        numImagesLoaded = 0;
-                        numImagesToLoad = 0;
-                        while(urlIterable.iterator().hasNext()) {
+                        urlIterator = urlIterable.iterator();
+                        numImagesLoaded = 0; //starts at 0 and gets inc for each next() in iterator loop
+                        pullNextEventImage();
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+    }
+
+    public void pullNextEventImage() {
+        if (urlIterator != null) {
+            if (urlIterator.hasNext()) {
+                System.out.println("pulling event image: " + numImagesLoaded);
+                try {
+                    URL imageUrl = new URL(urlIterator.next().getValue().toString());
+                    System.out.println(imageUrl.toString());
+                    new Thread(new EventImageRunnable(numImagesLoaded, imageUrl)).start();
+                }
+                catch (Exception e) {
+                    System.out.println("Exception: " + e.toString());
+                }
+                numImagesLoaded++;
+            }
+        }
+    }
+
+    public void pullEventImages() {
+        System.out.println("pulling all event images");
+        fb.child("ImagesDatabase").child("EventImages").child(this.passedEventID).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        int childrenCount = (int) dataSnapshot.getChildrenCount();
+                        imageArray = new Bitmap[childrenCount];
+                        imageTimeArray = new long[childrenCount];
+                        imageUserArray = new String[childrenCount];
+                        Iterable<DataSnapshot> urlIterable = dataSnapshot.getChildren();
+                        Iterator<DataSnapshot> iterator = urlIterable.iterator();
+                        numImagesLoaded = 0; //starts at 0 and gets inc for each next() in iterator loop
+                        while(iterator.hasNext()) {
                             try {
-                                URL imageUrl = new URL(urlIterable.iterator().next().getValue().toString());
+                                URL imageUrl = new URL(iterator.next().getValue().toString());
                                 System.out.println(imageUrl.toString());
                                 new Thread(new EventImageRunnable(numImagesLoaded, imageUrl)).start();
                             }
@@ -1237,7 +1395,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 System.out.println("Exception: " + e.toString());
                             }
                             numImagesLoaded++;
-                            numImagesToLoad++;
+                        }
+                        if (numImagesLoaded != childrenCount) {
+                            System.out.println("some URL got bopped in pullEventImages");
                         }
                     }
 
@@ -1259,6 +1419,16 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         @Override
         public void run() {
             try {
+                FirebaseStorage.getInstance().getReferenceFromUrl(String.valueOf(imageUrl))
+                        .getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                    @Override
+                    public void onSuccess(StorageMetadata storageMetadata) {
+                        if (storageMetadata.getCustomMetadata("Time") != null) {
+                            imageTimeArray[index] = Long.parseLong(storageMetadata.getCustomMetadata("Time"));
+                        }
+                        imageUserArray[index] = storageMetadata.getCustomMetadata("User");
+                    }
+                });
 //                Bitmap imageBitmap = BitmapFactory.decodeStream(imageUrl.openStream());
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -1270,7 +1440,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 else {
                     imageBitmap.recycle();
                 }
-                System.out.println("Event image number " + index);
+                System.out.println("Received event image number " + index);
             }
             catch(Exception e) {
                 System.out.println("Exception: " + e.toString());
@@ -1295,8 +1465,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         //get arraylist of comments from iterable snapshots by iterating through and adding
                         final ArrayList<Comment> commentList = new ArrayList<Comment>();
                         Iterable<DataSnapshot> commentIterable = dataSnapshot.child("comments").getChildren();
-                        while (commentIterable.iterator().hasNext()) {
-                            commentList.add((Comment) commentIterable.iterator().next().getValue(Comment.class));
+                        Iterator<DataSnapshot> commentIterator = commentIterable.iterator();
+                        while (commentIterator.hasNext()) {
+                            commentList.add((Comment) commentIterator.next().getValue(Comment.class));
                         }
 
                         if (commentList.size() == 0) {

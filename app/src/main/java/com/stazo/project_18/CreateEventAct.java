@@ -654,28 +654,8 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     public void pushMainImage(Uri imageFile) {
-
         //just for passing to next intent
         imageUri = imageFile;
-
-//        StorageReference storageRef = ((Project_18) getApplication()).getFBStorage();
-//
-//        //replace with eventid instead of file name later
-//        StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + "dankmemes" + ".jpg");
-//        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
-//
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                System.out.println("your upload failed");
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                System.out.println("your upload succeeded");
-//                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
-//            }
-//        });
     }
 
 

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/streamFullLayout">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/streamLoadingText">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Loading image... "
-            android:id="@+id/streamLoadingText"
             android:textColor="@color/colorTextSecondary"
             android:layout_gravity="center"
             android:layout_weight="0.5"
@@ -22,14 +23,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/streamLoadedLayout"
-        android:visibility="invisible">
+        android:id="@+id/streamImageLayout">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/streamImageView"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/black"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:id="@+id/streamNameText"
+            android:id="@+id/streamUserView"
             android:layout_marginRight="15dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
@@ -50,12 +50,12 @@
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:id="@+id/streamTimeText"
+            android:id="@+id/streamTimeView"
             android:layout_marginRight="15dp"
             android:layout_marginTop="25dp"
-            android:layout_alignTop="@id/streamNameText"
+            android:layout_alignTop="@id/streamUserView"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
-</AbsoluteLayout>
+</RelativeLayout>
