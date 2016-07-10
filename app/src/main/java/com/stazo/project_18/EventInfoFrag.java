@@ -560,6 +560,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             getActivity().findViewById(R.id.noJoinedText).setVisibility(View.VISIBLE);
                         }
 
+                        if (!currEvent.happeningLaterToday()) {
+                            getActivity().findViewById(R.id.streamLayout).setVisibility(View.GONE);
+                        }
+
                         // generateJoined scrollview
                         generateJoined();
 
@@ -1349,6 +1353,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         numImagesLoaded = 0; //starts at 0 and gets inc for each next() in iterator loop
                         pullNextEventImage();
                     }
+
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }

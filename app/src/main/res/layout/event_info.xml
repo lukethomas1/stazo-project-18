@@ -274,9 +274,7 @@
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:id="@+id/joinedLayout"
-                            android:layout_marginTop="0dip"
-                            android:layout_marginBottom="0dip">
+                            android:id="@+id/joinedLayout">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -290,12 +288,6 @@
                         </LinearLayout>
 
                     </com.stazo.project_18.InteractiveScrollViewHorizontal>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginBottom="5dp"
-                        android:onClick="toggleState"/>
 
                     <!--<TextView
                         android:layout_width="wrap_content"
@@ -331,7 +323,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:id="@+id/streamLayout">
                             <Button
                                 android:layout_width="80dp"
                                 android:layout_height="30dp"
