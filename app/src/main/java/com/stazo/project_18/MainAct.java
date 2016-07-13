@@ -522,7 +522,6 @@ public class MainAct extends AppCompatActivity
         startActivity(new Intent(this, InviteUsersAct.class));
     }
 
-
     public void goToEventInfo(String event_id, boolean autoOpen) {
         if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
@@ -551,6 +550,13 @@ public class MainAct extends AppCompatActivity
         //transaction.add(eventInfoFrag, "EventInfoFrag").commit();
 
     }
+
+    public void deleteEvent(View view) {
+        eventInfoFrag.deleteEvent();
+
+
+    }
+
     public void simulateClick(String event_id) {
         ((MapFrag) tabFragments.get(MAP_POS)).simulateOnClick(event_id);
     }
