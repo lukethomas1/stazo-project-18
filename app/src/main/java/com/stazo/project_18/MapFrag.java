@@ -69,6 +69,8 @@ public class MapFrag extends Fragment {
     private MapView mapView;
     private GoogleApiClient mGoogleApiClient;
 
+    // When we've focused on an event
+    private static final float ZOOM_IN = 16;
 
     // Initial Camera Position
     private float zoom = 14.5f;
@@ -215,14 +217,14 @@ public class MapFrag extends Fragment {
 
         @Override
         public View getInfoWindow(Marker marker) {
-            render(marker, infoWindow);
-
-            return infoWindow;
+            return null;
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            return null;
+            render(marker, infoWindow);
+
+            return infoWindow;
         }
 
         public void simulateOnClick(String eventId) {
@@ -232,7 +234,7 @@ public class MapFrag extends Fragment {
 
         public void simulateOnClick(Marker marker) {
             marker.showInfoWindow();
-            map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM_IN), 250, null);
         }
 
         private void render(Marker marker, View inflatedLayout) {
@@ -277,7 +279,10 @@ public class MapFrag extends Fragment {
                 @Override
                 public void onInfoWindowClose(Marker marker) {
                     // Hides the eventInfoFrag when the infoWindow disappears
-                    ((MainAct) getActivity()).hideInfo();
+
+                    if (getActivity() != null) {
+                        ((MainAct) getActivity()).hideInfo();
+                    }
                 }
             });
 
@@ -323,16 +328,6 @@ public class MapFrag extends Fragment {
             // Clear existing markers on the map
             map.clear();
 
-
-            if (!Project_18.pulledEvents.isEmpty()) {
-                for (Event e: Project_18.pulledEvents) {
-                    displayEvent(e);
-                }
-
-                Log.d("TimeTest", "Cached events loaded at " + (System.nanoTime() - testTime));
-            }
-
-            else {
                 // Listener for pulling the events
                 fb.child("Events").addListenerForSingleValueEvent(
                         new ValueEventListener() {
@@ -350,8 +345,8 @@ public class MapFrag extends Fragment {
                                     // add the event to the local ArrayList
                                     ((Project_18) getActivity().getApplication()).addPulledEvent(e);
 
-                                    // display event
-                                    displayEvent(e);
+                                        // display event
+                                        displayEvent(e);
                                 }
 
                                 Log.d("TimeTest", "Non-cached events loaded at " + (System.nanoTime() - testTime));
@@ -373,7 +368,7 @@ public class MapFrag extends Fragment {
                             public void onCancelled(FirebaseError firebaseError) {
                             }
                         });
-            }
+
         }
 
         // Displays a single event
@@ -398,14 +393,34 @@ public class MapFrag extends Fragment {
                 size = Project_18.MARK_SIZE_3;
             }
 
-            Bitmap markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
-                            R.drawable.flaticon_marker),
-                    size,
-                    size);
+            Bitmap markerBitmap;
+
+            // TODO separate drawable for happening soon and not happening today
+
+            if (e.happeningSoon()) {
+                markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
+                                R.drawable.flaticon_marker),
+                        size,
+                        size);
+            }
+            else if (!e.happeningLaterToday()) {
+                markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
+                                R.drawable.flaticon_marker),
+                        size,
+                        size);
+            }
+            else {
+                markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
+                                R.drawable.flaticon_marker),
+                        size,
+                        size);
+            }
+
             markerOpts.icon(BitmapDescriptorFactory.
                     fromBitmap(markerBitmap));
 
             // Add the marker to the map
+
             Marker marker = map.addMarker(markerOpts);
 
             // Put the marker in a HashMap to look up IDs later

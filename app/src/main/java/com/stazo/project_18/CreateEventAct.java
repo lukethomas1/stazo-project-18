@@ -306,12 +306,12 @@ public class CreateEventAct extends AppCompatActivity {
 
 
         startCal = new GregorianCalendar(startDateFrag.getYear(),
-                startDateFrag.getMonth() - 1,
+                startDateFrag.getMonth(),
                 startDateFrag.getDay(),
                 startTimeFrag.getHourInt(),
                 startTimeFrag.getMinInt());
         endCal = new GregorianCalendar(startDateFrag.getYear(),
-                startDateFrag.getMonth() - 1,
+                startDateFrag.getMonth(),
                 startDateFrag.getDay(),
                 endTimeFrag.getHourInt(),
                 endTimeFrag.getMinInt());
@@ -521,12 +521,16 @@ public class CreateEventAct extends AppCompatActivity {
                 //rotate bitmap and save it back
                 Matrix matrix = new Matrix();
                 matrix.postRotate(getImageOrientation(cameraPhotoPath));
-                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath);
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
+                Bitmap imageBitmap = BitmapFactory.decodeFile(cameraPhotoPath, options);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
 
                 File file = new File(cameraPhotoPath); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
                 fOut.close();
 
                 ImageView mainImageView = (ImageView) this.findViewById(R.id.MainImageView);
@@ -552,7 +556,7 @@ public class CreateEventAct extends AppCompatActivity {
 
                 File file = new File(getRealPathFromURI(getBaseContext(), imageUri)); // the File to save to
                 OutputStream fOut = new FileOutputStream(file);
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
                 fOut.close();
 
                 Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
@@ -650,28 +654,8 @@ public class CreateEventAct extends AppCompatActivity {
     }
 
     public void pushMainImage(Uri imageFile) {
-
         //just for passing to next intent
         imageUri = imageFile;
-
-//        StorageReference storageRef = ((Project_18) getApplication()).getFBStorage();
-//
-//        //replace with eventid instead of file name later
-//        StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + "dankmemes" + ".jpg");
-//        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
-//
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                System.out.println("your upload failed");
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                System.out.println("your upload succeeded");
-//                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
-//            }
-//        });
     }
 
 

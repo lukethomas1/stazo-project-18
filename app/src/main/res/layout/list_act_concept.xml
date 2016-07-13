@@ -30,7 +30,7 @@
                 android:paddingBottom="0dp"
                 android:background="@color/white"
                 android:textSize="30dp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimaryLight"
                 android:text="Explore"/>
 
             <TextView

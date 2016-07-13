@@ -68,6 +68,8 @@ public class AddTrailsAct extends AppCompatActivity {
     private HashMap<String, String> allUsers = new HashMap<String, String>();  // id to name
     private HashMap<String, String> friends = new HashMap<String, String>();  // id to name
 
+    private ArrayList<String> followedList = new ArrayList<>();
+
     //private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
     private Firebase fb;
     private LinearLayout currentRow;
@@ -76,7 +78,6 @@ public class AddTrailsAct extends AppCompatActivity {
     private int rowIndex;
     private AddTrailsAct instance = this;
     private SetButtonTask currentTask = null;
-    private boolean changedTrails = false;
     private int numToLoad = 0;
     private int pageNumber = 0;
     private static final int SECTION_SIZE = 16;
@@ -210,6 +211,11 @@ public class AddTrailsAct extends AppCompatActivity {
     }*/
 
     public void goToProfile(View v) {
+
+        //add followers
+        for (String newId: followedList) {
+            Project_18.me.addTrail(fb, newId);
+        }
 
         //onBackPressed();
         Intent i = new Intent(this, MainAct.class);
@@ -430,14 +436,14 @@ public class AddTrailsAct extends AppCompatActivity {
 
                 b.setImageBitmap(profPicBitmap);
 
-                // touch animation
+                    // touch animation
                 b.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         // set filter when pressed
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             b.setColorFilter(new
-                                    PorterDuffColorFilter(getResources().getColor(R.color.colorPrimaryLight),
+                                    PorterDuffColorFilter(getResources().getColor(R.color.colorDividerLight),
                                     PorterDuff.Mode.MULTIPLY));
                         }
 
@@ -448,23 +454,13 @@ public class AddTrailsAct extends AppCompatActivity {
                             // add the trail
 
                             // already added
-                            if (!((Project_18) getApplication()).me.addTrail(fb, id)) {
-                                ((Project_18) getApplication()).me.removeTrail(fb, id);
-                                /*Toast.makeText(getApplicationContext(),
-                                        "No longer following " + name.split(" ")[0],
-                                        Toast.LENGTH_SHORT).show();*/
-                                changedTrails = true;
-
+                            if (followedList.contains(id)) {
+                                followedList.remove(id);
                                 // remove border
-                                b.setBackgroundResource(0);
-                            }
+                                b.setBackground(null);
 
-                            // not yet added
-                            else {
-                                /*Toast.makeText(getApplicationContext(),
-                                        "Followed " + name.split(" ")[0],
-                                        Toast.LENGTH_SHORT).show();*/
-
+                            } else {
+                                followedList.add(id);
                                 // add border
                                 b.setBackground(getResources().
                                         getDrawable(R.drawable.border_add_trails_button));
@@ -479,6 +475,13 @@ public class AddTrailsAct extends AppCompatActivity {
                         return true;
                     }
                 });
+
+                if (followedList.contains(id)) {
+                    b.setBackground(getResources().
+                            getDrawable(R.drawable.border_add_trails_button));
+                } else {
+                    b.setBackground(null);
+                }
 
                 // contains button and name of the user
                 LinearLayout buttonLayout = new LinearLayout(getApplicationContext());
@@ -514,7 +517,7 @@ public class AddTrailsAct extends AppCompatActivity {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.setMargins(25,0,25,0);
 
-        b.setBackgroundColor(getResources().getColor(R.color.white));
+        //b.setBackgroundColor(getResources().getColor(R.color.white));
         b.setPadding(6, 6, 6, 6);
         b.setLayoutParams(lp);
         TextView tv = new TextView(getApplicationContext());

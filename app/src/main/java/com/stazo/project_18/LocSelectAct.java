@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -39,10 +40,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Ansel on 4/28/16.
@@ -197,7 +203,6 @@ public class LocSelectAct extends FragmentActivity
             // Push the event to the database
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
                     Project_18.me.getName(), Project_18.me.getUserFollowers());
-
             ((Project_18) getApplication()).addPulledEvent(eventToInit);
 
             //push the image to firebasestorage
@@ -217,7 +222,31 @@ public class LocSelectAct extends FragmentActivity
 
         //replace with eventid instead of file name later
         StorageReference mainImageStorage = storageRef.child("MainImagesDatabase/" + eventToInit.getEvent_id() + ".jpg");
-        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+//        UploadTask uploadTask = mainImageStorage.putFile(imageFile);
+//
+//        uploadTask.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                System.out.println("your upload failed");
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                System.out.println("your upload succeeded");
+//                System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
+//            }
+//        });
+
+
+        //files stored in this format: EventImagesDatbase/eventid/userid_timestamp.jpg
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        StorageReference eventImageStorage = storageRef.child("EventImagesDatabase/" +
+                eventToInit.getEvent_id() + "/" + ((Project_18) getApplication()).getMe().getID() + "_" + timeStamp+ ".jpg");
+        StorageMetadata metta = new StorageMetadata.Builder()
+                .setCustomMetadata("Time", Long.toString(Calendar.getInstance().getTimeInMillis()))
+                .setCustomMetadata("User", ((Project_18) getApplication()).getMe().getID())
+                .build();
+        UploadTask uploadTask = eventImageStorage.putFile(imageFile, metta);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -229,8 +258,13 @@ public class LocSelectAct extends FragmentActivity
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 System.out.println("your upload succeeded");
                 System.out.println("download url is: " + taskSnapshot.getDownloadUrl());
+                //push download url to image datbase in firebase
+                ((Project_18) getApplication()).getFB().child("ImagesDatabase").child("EventImages").
+                        child(eventToInit.getEvent_id()).push().setValue(taskSnapshot.getDownloadUrl().toString());
             }
         });
+
+
     }
 
 

@@ -227,6 +227,11 @@ public class LoginFrag extends Fragment {
 
         //fb.child("Users").child(userId).setValue(me);
         me.pushToFirebase(fb);
+
+        ArrayList<String> meList = new ArrayList<>();
+        meList.add(userId);
+
+        (new NotificationWelcome(Notification2.TYPE_WELCOME, userName)).pushToFirebase(fb, meList);
     }
 
     @Override

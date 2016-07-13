@@ -141,20 +141,24 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
         @Override
         protected Void doInBackground(Void... v) {
 
-            if (((Project_18) getActivity().getApplication()).
-                    getBitmapFromMemCache(id) != null) {
-                bitmap = ((Project_18) getActivity().getApplication()).
-                        getBitmapFromMemCache(id);
-            }
+            if (!id.equals("0")) {
 
-            else {
-                try {
-                    bitmap = BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
-                                    id + "/picture?width=" +
-                                    Project_18.pictureSize)).openConnection().getInputStream());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                if (((Project_18) getActivity().getApplication()).
+                        getBitmapFromMemCache(id) != null) {
+                    bitmap = ((Project_18) getActivity().getApplication()).
+                            getBitmapFromMemCache(id);
+                } else {
+                    try {
+                        bitmap = BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
+                                id + "/picture?width=" +
+                                Project_18.pictureSize)).openConnection().getInputStream());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+            }
+            else {
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.app_logo_icon);
             }
 
             return null;
@@ -202,6 +206,8 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                         notifs.add(new NotificationJoinedEvent(notifMap));
                     } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_INVITE_EVENT) {
                         notifs.add(new NotificationInviteEvent(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_WELCOME) {
+                        notifs.add(new NotificationWelcome(notifMap));
                     }
                 }
 
