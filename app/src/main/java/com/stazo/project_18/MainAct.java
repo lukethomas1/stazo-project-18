@@ -72,8 +72,7 @@ public class MainAct extends AppCompatActivity
 
     public static final int MAP_POS = 0;
     public static final int LIST_POS = 1;
-    public static final int PROF_POS = 2;
-    public static final int NOT_POS = 3;
+    public static final int NOT_POS = 2;
 
 
     private TabLayout tabLayout;
@@ -85,9 +84,6 @@ public class MainAct extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static EventInfoFrag eventInfoFrag;
-    private static ProfileFrag otherProfileFrag;
-    private static ProfileFrag newOtherProfileFrag;
-    private static boolean pendingProfile = false;
 
     private static ArrayList<Fragment> tabFragments = new ArrayList<Fragment>();
 
@@ -133,7 +129,6 @@ public class MainAct extends AppCompatActivity
 
         tabLayout.getTabAt(MAP_POS).setIcon(R.drawable.ic_actionbar_map2);
         tabLayout.getTabAt(LIST_POS).setIcon(R.drawable.ic_actionbar_browse2);
-        tabLayout.getTabAt(PROF_POS).setIcon(R.drawable.ic_actionbar_head);
         tabLayout.getTabAt(NOT_POS).setIcon(R.drawable.ic_actionbar_notif);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -141,12 +136,7 @@ public class MainAct extends AppCompatActivity
             public void onPageSelected(int pageNumber) {
                 hideInfo();
 
-                if (otherProfileFrag != null) {
-                    getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
-                    otherProfileStateChange(false);
-                }
-
-                for (int i = 0; i <= 3; i++) {
+                for (int i = 0; i <= 2; i++) {
                     if (i == pageNumber) {
                         if (i == NOT_POS && notifTabHighlight) {
                             notifTabHighlight = false;
@@ -182,9 +172,6 @@ public class MainAct extends AppCompatActivity
         tabLayout.getTabAt(LIST_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(PROF_POS).getIcon().setColorFilter(
-                getResources().getColor(R.color.colorDivider),
-                PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(NOT_POS).getIcon().setColorFilter(
                 getResources().getColor(R.color.colorDivider),
                 PorterDuff.Mode.SRC_IN);
@@ -195,10 +182,6 @@ public class MainAct extends AppCompatActivity
         // Are we going straight to browse?
         if (getIntent().hasExtra("toBrowse")) {
             viewPager.setCurrentItem(LIST_POS);
-        }
-
-        if (getIntent().hasExtra("toProfile")) {
-            viewPager.setCurrentItem(PROF_POS);
         }
         if (getIntent().hasExtra("toEvent")) {
             simulateClick(getIntent().getStringExtra("toEvent"));
@@ -309,10 +292,6 @@ public class MainAct extends AppCompatActivity
                         if (eventInfoFrag != null) {
                             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
                         }
-                        if (otherProfileFrag != null) {
-                            getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
-                            otherProfileStateChange(false);
-                        }
                         searched = false;
                         searchFrag = new SearchFrag();
                         transaction =
@@ -421,7 +400,7 @@ public class MainAct extends AppCompatActivity
 //    }
 
     public void goToOtherProfile(String userId) {
-        if (searchFrag != null) {
+        /*if (searchFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(searchFrag).commit();
         }
         if (eventInfoFrag != null) {
@@ -438,16 +417,16 @@ public class MainAct extends AppCompatActivity
         newOtherProfileFrag.setInfo(userId, false);
         FragmentTransaction transaction =
                 this.getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.show_otherProfile, newOtherProfileFrag).addToBackStack("ProfileFrag").commit();
+        transaction.add(R.id.show_otherProfile, newOtherProfileFrag).addToBackStack("ProfileFrag").commit();*/
     }
 
     public void updateOtherProfileFrag() {
-        otherProfileStateChange(true);
+        /*otherProfileStateChange(true);
         if (otherProfileFrag != null) {
             getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
         }
         otherProfileFrag = newOtherProfileFrag;
-        pendingProfile = false;
+        pendingProfile = false;*/
     }
 
     public void goToAddTrails(View v) {
@@ -530,12 +509,6 @@ public class MainAct extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().remove(eventInfoFrag).commit();
         }
 
-        if (otherProfileFrag != null) {
-            otherProfileStateChange(false);
-            //getSupportFragmentManager().beginTransaction().remove(otherProfileFrag).commit();
-            getSupportFragmentManager().beginTransaction().hide(otherProfileFrag).commit();
-        }
-
         simulateClick(event_id);
 
         searchView.setIconified(true);
@@ -567,22 +540,16 @@ public class MainAct extends AppCompatActivity
         //-----> REPLACE FRAGMENTS HERE <---------------
         MapFrag mapFrag = new MapFrag();
         ListAct listAct = new ListAct();
-        ProfileFrag profileFrag= new ProfileFrag();
         NotificationFrag notFrag = new NotificationFrag();
 
         // save references to fragments
         tabFragments.add(mapFrag);
         tabFragments.add(listAct);
-        tabFragments.add(profileFrag);
         tabFragments.add(notFrag);
-
-        //preemptive set user_id and isMe
-        profileFrag.setInfo(Project_18.me.getID(), true);
 
         adapter.addFragment(mapFrag, "");       // MAP_POS = 0
         adapter.addFragment(listAct, "");       // LIST_POS = 1
-        adapter.addFragment(profileFrag, "");   // PROF_POS = 2
-        adapter.addFragment(notFrag, "");       // NOT_POS = 3
+        adapter.addFragment(notFrag, "");       // NOT_POS = 2
 
         viewPager.setAdapter(adapter);
     }
@@ -751,6 +718,6 @@ public class MainAct extends AppCompatActivity
     }
 
     public void followUser(View v) {
-        otherProfileFrag.followUser();
+        //otherProfileFrag.followUser();
     }
 }
