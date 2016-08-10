@@ -646,6 +646,22 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         String durationText = buildDurationTime(startTime, endTime);
         eventLength.setText(durationText);
 
+        final Button deleteButtonBig = (Button) v.findViewById(R.id.deleteEventBig);
+        final Button deleteButtonSmall = (Button) v.findViewById(R.id.deleteEventSmall);
+        Log.d("EventInfoFrag", "CreatorID: " + currEvent.getCreator_id());
+        Log.d("EventInfoFrag", "UserID: " + me.getID());
+        Log.d("EventInfoFrag", "CreatorID == UserID? " + (currEvent.getCreator_id().equals(me.getID())));
+        if (currEvent.getCreator_id().equals(me.getID())) {
+            Log.d("EventInfoFrag", "My Event: Delete Button Shown");
+            deleteButtonSmall.setVisibility(View.VISIBLE);
+            deleteButtonBig.setVisibility(View.VISIBLE);
+        }
+        else {
+            Log.d("EventInfoFrag", "My Event: Delete Button Hidden");
+            deleteButtonSmall.setVisibility(View.GONE);
+            deleteButtonBig.setVisibility(View.GONE);
+        }
+
         v.setVisibility(View.VISIBLE);
     }
 
@@ -673,7 +689,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
 
                         // round the shape
-                        picBitmap = getRoundedShape(picBitmap);
+                        picBitmap = getRoundedShape(picBitmap, Project_18.pictureSize);
 
                         // picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
                         iv.setImageBitmap(picBitmap);
@@ -719,9 +735,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         }).start();
     }
 
-    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
-        int targetWidth = Integer.parseInt(Project_18.pictureSize);
-        int targetHeight = Integer.parseInt(Project_18.pictureSize);
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage, String pictureSize) {
+        int targetWidth = Integer.parseInt(pictureSize);
+        int targetHeight = Integer.parseInt(pictureSize);
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
                 targetHeight,Bitmap.Config.ARGB_8888);
 
@@ -1717,6 +1733,39 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             b.setText("Joined");
 
         }
+    }
+
+    public void deleteEvent() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+
+        builder.setTitle("Delete Event");
+        builder.setMessage("Are you sure? Like really sure?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("EventInfoFrag", "Delete Event Confirmed");
+
+                // Delete event
+                currEvent.deleteFromFirebase(fb, currEvent.getCreator_id(), currEvent.getEvent_id());
+                dialog.dismiss();
+                startActivity(new Intent(getActivity(), MainAct.class));
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("EventInfoFrag", "Delete Event Cancelled");
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public String getPassedEventID() {

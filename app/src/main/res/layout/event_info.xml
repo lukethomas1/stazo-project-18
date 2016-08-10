@@ -52,13 +52,14 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/measurement"
                         android:orientation="vertical"
-                        android:onClick="toggleState">
+                        android:onClick="toggleState" >
 
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:onClick="toggleState">
+                            android:onClick="toggleState"
+                            android:layout_marginBottom="0dp">
 
                             <TextView
                                 android:layout_width="0dp"
@@ -69,9 +70,6 @@
                                 android:id="@+id/eventName"
                                 android:text="Text"
                                 android:textSize="20dp"
-                                android:layout_marginBottom="5dp"
-                                android:layout_marginTop="5dp"
-                                android:paddingTop="5dp"
                                 android:gravity="center_vertical"
                                 android:onClick="toggleState" />
 
@@ -84,12 +82,23 @@
                                 android:id="@+id/attend"
                                 android:background="@color/colorAccent"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginBottom="2dp"
                                 android:layout_marginLeft="10dp"
                                 android:gravity="center"/>
 
                         </LinearLayout>
+
+                        <Button
+                            android:id="@+id/deleteEventSmall"
+                            android:text="Delete Event"
+                            android:textSize="12dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="18dp"
+                            android:layout_gravity="left"
+                            android:onClick="deleteEvent"
+                            android:textColor="@color/colorDivider"
+                            android:background="@null"
+                            android:textAllCaps="false"
+                            android:visibility="invisible" />
 
                         <View
                             android:layout_width="match_parent"
@@ -233,6 +242,8 @@
                             android:layout_marginBottom="10dp"
                             android:textAppearance="@style/EventInfoBody"
                             android:onClick="toggleState" />
+
+
 
                     </LinearLayout>
 
@@ -382,6 +393,20 @@
                         </LinearLayout>
 
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/deleteEventBig"
+                        android:text="Delete Event"
+                        android:textSize="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:onClick="deleteEvent"
+                        android:background="@color/colorAccent"
+                        android:textAllCaps="false"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="invisible" />
+
                 </LinearLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

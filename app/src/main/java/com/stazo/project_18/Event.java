@@ -1,14 +1,18 @@
 package com.stazo.project_18;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -192,6 +196,84 @@ public class Event implements Parcelable {
 
         //new ReportEventTask().execute("yo");
 
+    }
+
+    /**
+     * Deletes the event from firebase
+     * Used in eventInfoFrag
+     * @param fb
+     * @param creator_id
+     * @param event_id
+     */
+    public void deleteFromFirebase(final Firebase fb, String creator_id, final String event_id) {
+        // check if there are any attendees and remove the event from the attendees list
+        fb.child("Events").child(event_id).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // unattend each user from the event
+                DataSnapshot attendeesSnapshot = dataSnapshot.child("attendees");
+                // not sure if we can do this?
+                for (DataSnapshot userSnapshot : attendeesSnapshot.getChildren()) {
+                    unattendFromEvent(fb, ((String)userSnapshot.getValue()), event_id);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("Delete Event", "Users were not unattended");
+            }
+        });
+
+        // remove event from the creator's myEvents
+        fb.child("Users").child(creator_id).child("myEvents").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // for every event in myEvents
+                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                            if (((String)eventSnapshot.getValue()).equals(event_id)) {
+                                eventSnapshot.getRef().removeValue();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Log.e("Delete Event", "Event was not removed from creator myEvents");
+                    }
+                }
+        );
+
+        // remove the event itself
+        fb.child("Events").child(event_id).removeValue();
+    }
+
+    /**
+     * Helper method for deleteFromFirebase to unattend all the users from the event
+     * @param fb
+     * @param user_id
+     * @param event_id
+     */
+    public void unattendFromEvent(Firebase fb, String user_id, final String event_id) {
+        fb.child("Users").child(user_id).child("attendingEvents").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // check all the events and if it matches the deleted event, remove it
+                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                            if (((String)eventSnapshot.getValue()).equals(event_id)) {
+                                eventSnapshot.getRef().removeValue();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                }
+        );
     }
 
     //Getters and setters
