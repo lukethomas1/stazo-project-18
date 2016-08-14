@@ -202,44 +202,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
-        final ImageButton uploadPhotoButton = (ImageButton) v.findViewById(R.id.uploadImageButton);
-        uploadPhotoButton.
-                setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            photoChooser();
-                            uploadPhotoButton.setColorFilter(
-                                    getResources().getColor(R.color.black),
-                                    PorterDuff.Mode.SRC_IN);
-                        }
-                        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                            uploadPhotoButton.setColorFilter(
-                                    getResources().getColor(R.color.black),
-                                    PorterDuff.Mode.SRC_IN);
-                        }
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            uploadPhotoButton.setColorFilter(
-                                    getResources().getColor(R.color.colorAccentDark),
-                                    PorterDuff.Mode.SRC_IN);
-                        }
-
-                        return false;
-                    }
-                });
-        uploadPhotoButton.setImageBitmap(Project_18.BITMAP_RESIZER(BitmapFactory.
-                decodeResource(getResources(), R.drawable.icon_camera), CAM_ICON_SIZ, CAM_ICON_SIZ));
-        uploadPhotoButton.setColorFilter(
-                getResources().getColor(R.color.black),
-                PorterDuff.Mode.SRC_IN);
-
-        Button viewHighlightsButton = (Button) v.findViewById(R.id.viewImagesButton);
-        viewHighlightsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewHighlights();
-            }
-        });
         //set up write comment
         v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
         final Button submitComment = (Button) v.findViewById(R.id.submitComment);
@@ -752,55 +714,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         sourceBitmap.getHeight()),
                 new Rect(0, 0, targetWidth, targetHeight), null);
         return targetBitmap;
-    }
-
-    public void pullMainImage() {
-        System.out.println("pulling main image");
-        StorageReference rootRef = ((Project_18) getActivity().getApplication()).getFBStorage();
-        StorageReference mainImageRef = rootRef.child("MainImagesDatabase/" + this.passedEventID + ".jpg");
-        final ImageView mainImageView = (ImageView) v.findViewById(R.id.mainImageView);
-
-        try {
-            mainImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(final Uri uri) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                System.out.println(uri.toString());
-                                //URI downloadURI = new URI(uri.toString());
-                                URL downloadURL = new URL(uri.toString());
-                                BitmapFactory.Options options = new BitmapFactory.Options();
-                                options.inPreferredConfig = Bitmap.Config.RGB_565;
-                                options.inSampleSize = 2;
-                                mainImageBitmap = BitmapFactory.decodeStream(downloadURL.openStream(), null, options);
-                                System.out.println("got main image bitmap");
-                            }
-                            catch (Exception e) {
-                                System.out.println("couldn't download from URL");
-                                System.out.println(e.toString());
-                            }
-                            mainImageView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mainImageView.setImageBitmap(mainImageBitmap);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    System.out.println("url grab failed");
-                }
-            });
-        }
-        catch (Exception e) {
-            System.out.println("bad main image firebase storage ref");
-        }
-
     }
 
     public String buildStartDay(Date start) {

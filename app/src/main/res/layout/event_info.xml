@@ -308,59 +308,12 @@
                         android:layout_marginBottom="5dp"
                         android:onClick="toggleState"/>
 
-                    <!--<TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="X h Y m left"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:id="@+id/eventTimeTo"
-                        android:onClick="toggleState"/>-->
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_gravity="center_vertical"
                         android:onClick="toggleState">
-
-                        <!--Button
-                            android:layout_width="120dp"
-                            android:layout_height="80dp"
-                            android:id="@+id/writeCommentButton"
-                            android:text="Write comment"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="0dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginTop="0dp" /-->
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/mainImageView" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center">
-                            <Button
-                                android:layout_width="80dp"
-                                android:layout_height="30dp"
-                                android:id="@+id/viewImagesButton"
-                                android:text="View stream"
-                                android:layout_gravity="center"
-                                android:textAllCaps="false"
-                                android:textSize="10sp"
-                                android:background="@color/colorPrimary"
-                                android:textColor="@color/white"/>
-                            <ImageButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/uploadImageButton"
-                                android:layout_gravity="center"
-                                android:background="@null"
-                                android:layout_marginLeft="10dp"/>
-                        </LinearLayout>
 
                         <!-- Layout to add comments to -->
                         <LinearLayout
