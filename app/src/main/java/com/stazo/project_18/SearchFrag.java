@@ -114,7 +114,7 @@ public class SearchFrag extends Fragment {
         matchUsers = new HashMap<String, String>();
         HashMap<String, String> matchFriends = new HashMap<>();
         HashMap<String, String> matchOthers = new HashMap<>();
-
+        /*
         // look through friends first
         for (String id: friends.keySet()) {
             String name = friends.get(id);
@@ -196,7 +196,7 @@ public class SearchFrag extends Fragment {
                 tasks.add(newTask);
                 newTask.execute();
             }
-        }
+        }*/
 
         // UPDATE EVENTS
         matchEvents = new ArrayList<Event>();

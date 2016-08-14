@@ -285,9 +285,7 @@
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:id="@+id/joinedLayout"
-                            android:layout_marginTop="0dip"
-                            android:layout_marginBottom="0dip">
+                            android:id="@+id/joinedLayout">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -307,6 +305,15 @@
                         android:layout_height="0dp"
                         android:layout_marginBottom="5dp"
                         android:onClick="toggleState"/>
+
+                    <!--<TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="X h Y m left"
+                        android:textAppearance="@style/EventInfoBody"
+                        android:id="@+id/eventTimeTo"
+                        android:onClick="toggleState"/>-->
 
                     <LinearLayout
                         android:layout_width="match_parent"

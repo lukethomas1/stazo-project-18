@@ -47,6 +47,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -201,8 +203,10 @@ public class LocSelectAct extends FragmentActivity
         } else {
 
             // Push the event to the database
+            /*eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
+                    Project_18.me.getName(), Project_18.me.getUserFollowers());*/
             eventToInit.pushToFirebase(((Project_18) getApplication()).getFB(),
-                    Project_18.me.getName(), Project_18.me.getUserFollowers());
+                    Project_18.me.getName(), new ArrayList<String>(Project_18.me.getFriends().keySet()));
             ((Project_18) getApplication()).addPulledEvent(eventToInit);
 
             //push the image to firebasestorage

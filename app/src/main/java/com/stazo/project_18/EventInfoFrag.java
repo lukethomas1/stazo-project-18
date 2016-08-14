@@ -372,7 +372,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 b.setImageBitmap(profPicBitmap);
 
                 // touch animation
-                b.setOnTouchListener(new View.OnTouchListener() {
+                /*b.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         // set filter when pressed
@@ -400,7 +400,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         }
                         return true;
                     }
-                });
+                });*/
 
                 // contains button and name of the user
                 LinearLayout buttonLayout = new LinearLayout(getActivity().getApplicationContext());
@@ -520,6 +520,10 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
                         if (currEvent.getAttendees().size() == 0) {
                             getActivity().findViewById(R.id.noJoinedText).setVisibility(View.VISIBLE);
+                        }
+
+                        if (!currEvent.happeningLaterToday()) {
+                            getActivity().findViewById(R.id.streamLayout).setVisibility(View.GONE);
                         }
 
                         // generateJoined scrollview
@@ -660,7 +664,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 });
 
                 // handle touch/click
-                iv.setOnTouchListener(new View.OnTouchListener() {
+                /*iv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         // set filter when pressed
@@ -687,7 +691,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         }
                         return true;
                     }
-                });
+                });*/
 
             }
         }).start();
@@ -1278,6 +1282,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         numImagesLoaded = 0; //starts at 0 and gets inc for each next() in iterator loop
                         pullNextEventImage();
                     }
+
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
@@ -1412,7 +1417,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             Bitmap profileImage = null;
                             final ImageView profileView = new ImageView(context);
                             profileView.setImageBitmap(profileImage);
-                            profileView.setOnTouchListener(new View.OnTouchListener() {
+                            /*profileView.setOnTouchListener(new View.OnTouchListener() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
                                     // set filter when pressed
@@ -1439,7 +1444,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                     }
                                     return true;
                                 }
-                            });
+                            });*/
                             //get cache and check ID against it
                             //HashMap<String, Bitmap> imageCache = Project_18.cachedIdToBitmap;
                             //if this line is crashing, need to just save ref to activity(ask eric)
