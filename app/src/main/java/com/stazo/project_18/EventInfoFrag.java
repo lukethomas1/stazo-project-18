@@ -522,10 +522,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                             getActivity().findViewById(R.id.noJoinedText).setVisibility(View.VISIBLE);
                         }
 
-                        if (!currEvent.happeningLaterToday()) {
-                            getActivity().findViewById(R.id.streamLayout).setVisibility(View.GONE);
-                        }
-
                         // generateJoined scrollview
                         generateJoined();
 
