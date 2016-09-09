@@ -594,13 +594,13 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         if(now.getTime() > start.getTime()){
             eventStart.setText("Started");
-            long hourdiff = (start.getHours() - now.getHours() + 1);
+            /*long hourdiff = (start.getHours() - now.getHours() + 1);
             long mindiff = start.getMinutes() - now.getMinutes();
             if(mindiff < 0){
                 hourdiff--;
                 mindiff += 60;
             }
-            eventTimes.setText("Ends in: " + hourdiff + " h " + mindiff + "m");
+            eventTimes.setText("Ends in: " + hourdiff + " h " + mindiff + "m");*/
         }
 
         //Set event length
