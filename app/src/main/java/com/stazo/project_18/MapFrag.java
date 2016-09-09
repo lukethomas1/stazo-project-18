@@ -402,7 +402,7 @@ public class MapFrag extends Fragment {
                                 R.drawable.flaticon_marker),
                         size,
                         size);
-                
+
                 markerOpts.icon(BitmapDescriptorFactory.
                         fromBitmap(markerBitmap));
 

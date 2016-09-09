@@ -81,7 +81,7 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
     private void makeNotificationButton(Notification2 notif, final LinearLayout container) {
 
         // Format container
-        container.setMinimumHeight(200);
+        container.setMinimumHeight(250);
         container.setOrientation(LinearLayout.HORIZONTAL);
         if (notif.isViewed()) {
             container.setBackground(getResources().getDrawable(R.drawable.border_notif_button_viewed));
@@ -113,6 +113,10 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
         ImageView iv = new ImageView(getActivity());
         (new SetPictureTask(iv, notif.getPictureId())).execute();
         iv.setPadding(20, 20, 20, 20);
+        LinearLayout.LayoutParams ivLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        ivLP.gravity = Gravity.CENTER_VERTICAL;
+        iv.setLayoutParams(ivLP);
 
 
         // Add listeners
