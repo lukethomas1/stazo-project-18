@@ -611,12 +611,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         Log.d("EventInfoFrag", "CreatorID == UserID? " + (currEvent.getCreator_id().equals(me.getID())));
         if (currEvent.getCreator_id().equals(me.getID())) {
             Log.d("EventInfoFrag", "My Event: Delete Button Shown");
-            deleteButtonSmall.setVisibility(View.VISIBLE);
+            //deleteButtonSmall.setVisibility(View.VISIBLE);
             deleteButtonBig.setVisibility(View.VISIBLE);
         }
         else {
             Log.d("EventInfoFrag", "My Event: Delete Button Hidden");
-            deleteButtonSmall.setVisibility(View.GONE);
+            //deleteButtonSmall.setVisibility(View.GONE);
             deleteButtonBig.setVisibility(View.GONE);
         }
 
