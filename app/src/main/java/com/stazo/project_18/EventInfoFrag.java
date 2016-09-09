@@ -751,6 +751,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         long eventHour = length/(1000 * 60 * 60);
         long eventMin = length/(1000 * 60) - eventHour*60;
 
+        Log.d("EventHour", eventHour+"");
+        Log.d("EventMin", eventMin+"");
+
         if (eventHour > 0) {
             finalString = finalString + eventHour;
             if (eventHour == 1) {
@@ -759,12 +762,12 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             else {
                 finalString = finalString + " hrs";
             }
-            Log.d("EventInfoFrag", "eventMin: " + eventMin);
             if (eventMin > 0) {
-                finalString = finalString + " and " + eventMin;
+                finalString = finalString + " and ";
             }
         }
         if (eventMin > 0) {
+            finalString = finalString + eventMin;
             if (eventMin == 1) {
                 finalString = finalString + " min";
             }
@@ -1661,7 +1664,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         builder.setTitle("Delete Event");
         builder.setMessage("Are you sure? Like really sure?");
 
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 Log.i("EventInfoFrag", "Delete Event Confirmed");
@@ -1673,7 +1676,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             }
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
