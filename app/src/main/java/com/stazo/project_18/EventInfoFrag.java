@@ -647,9 +647,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                                 addBitmapToMemoryCache(id, Bitmap.createBitmap(picBitmap));
 
                         // round the shape
-                        picBitmap = getRoundedShape(picBitmap, Project_18.pictureSize);
+                        // picBitmap = getRoundedShape(picBitmap, Project_18.pictureSize);
 
-                        // picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
+                        picBitmap = Project_18.BITMAP_RESIZER(picBitmap, 250, 250);
                         iv.setImageBitmap(picBitmap);
                         iv.setVisibility(View.VISIBLE);
 
