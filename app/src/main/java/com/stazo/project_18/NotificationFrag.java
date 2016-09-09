@@ -158,7 +158,7 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                 }
             }
             else {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.app_logo_icon);
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo_nobkg);
             }
 
             return null;
