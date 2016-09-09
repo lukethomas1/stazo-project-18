@@ -406,6 +406,15 @@ public class MapFrag extends Fragment {
                 markerOpts.icon(BitmapDescriptorFactory.
                         fromBitmap(markerBitmap));
 
+                // Add the marker to the map
+
+                Marker marker = map.addMarker(markerOpts);
+
+                // Put the marker in a HashMap to look up IDs later
+                idLookupHM.put(marker.getId(), e.getEvent_id());
+
+                // Put the marker in a HashMap to hide markers later
+                markerLookupHM.put(e.getEvent_id(), marker);
             }
             /*else if (!e.happeningLaterToday()) {
                 markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
@@ -419,15 +428,6 @@ public class MapFrag extends Fragment {
                         size,
                         size);
             }*/
-            // Add the marker to the map
-
-            Marker marker = map.addMarker(markerOpts);
-
-            // Put the marker in a HashMap to look up IDs later
-            idLookupHM.put(marker.getId(), e.getEvent_id());
-
-            // Put the marker in a HashMap to hide markers later
-            markerLookupHM.put(e.getEvent_id(), marker);
         }
 
         // Methods for ConnectionsCallback
