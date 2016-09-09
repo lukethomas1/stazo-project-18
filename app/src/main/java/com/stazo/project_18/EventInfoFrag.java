@@ -154,9 +154,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
         if (autoOpen) {
+            Log.d("autoOpen", "open expanded");
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             v.findViewById(R.id.writeCommentLayout).setVisibility(View.VISIBLE);
         } else {
+            Log.d("autoOpen", "open collapsed");
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
         }
@@ -205,7 +207,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         });
 
         //set up write comment
-        v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
         final Button submitComment = (Button) v.findViewById(R.id.submitComment);
         submitComment.setOnClickListener(new View.OnClickListener() {
             @Override
