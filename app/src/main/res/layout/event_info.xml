@@ -98,7 +98,7 @@
                             android:textColor="@color/colorDivider"
                             android:background="@null"
                             android:textAllCaps="false"
-                            android:visibility="invisible" />
+                            android:visibility="gone" />
 
                         <View
                             android:layout_width="match_parent"
