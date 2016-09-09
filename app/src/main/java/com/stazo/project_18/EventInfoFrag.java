@@ -134,6 +134,8 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
     private InteractiveScrollViewHorizontal scrollView;
     private LayoutInflater inflater;
 
+    private ArrayList<String> commentPeople = new ArrayList<String>();
+
     private boolean autoOpen = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -1397,7 +1399,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                         Iterable<DataSnapshot> commentIterable = dataSnapshot.child("comments").getChildren();
                         Iterator<DataSnapshot> commentIterator = commentIterable.iterator();
                         while (commentIterator.hasNext()) {
-                            commentList.add((Comment) commentIterator.next().getValue(Comment.class));
+                            Comment c = (Comment) commentIterator.next().getValue(Comment.class);
+                            commentList.add(c);
+                            if (!commentPeople.contains(c.getUser_ID())) {
+                                commentPeople.add(c.getUser_ID());
+                            }
                         }
 
                         if (commentList.size() == 0) {
@@ -1597,6 +1603,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         // NOTIFICATION STUFF
         ArrayList<String> usersWhoCare = new ArrayList<>(EventInfoFrag.currEvent.getAttendees());
+        for (String commenter: commentPeople) {
+            if (!usersWhoCare.contains(commenter)) {
+                usersWhoCare.add(commenter);
+            }
+        }
 
         // Add in the event creator if they aren't in it already
         if (!usersWhoCare.contains(currEvent.getCreator_id())) {
