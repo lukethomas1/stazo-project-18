@@ -26,6 +26,7 @@ public abstract class Notification2 {
     public static final int TYPE_JOINED_EVENT = 3;
     public static final int TYPE_INVITE_EVENT = 4;
     public static final int TYPE_WELCOME = 5;
+    public static final int TYPE_EVENT_TODAY = 6;
 
 
     private String notifID;

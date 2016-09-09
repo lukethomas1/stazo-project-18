@@ -208,6 +208,8 @@ public class NotificationFrag extends android.support.v4.app.Fragment {
                         notifs.add(new NotificationInviteEvent(notifMap));
                     } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_WELCOME) {
                         notifs.add(new NotificationWelcome(notifMap));
+                    } else if (((Long) notifMap.get("type")).intValue() == Notification2.TYPE_EVENT_TODAY) {
+                        notifs.add(new NotificationEventToday(notifMap));
                     }
                 }
 

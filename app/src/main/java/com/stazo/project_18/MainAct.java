@@ -51,6 +51,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
@@ -187,8 +188,41 @@ public class MainAct extends AppCompatActivity
             simulateClick(getIntent().getStringExtra("toEvent"));
         }
 
+        // Send out NotificationEventToday
+        addEventTodayNotifications();
+
         // Check for unviewed notifications, change notification icon if so
         checkAllNotificationsViewed();
+    }
+
+    private void addEventTodayNotifications() {
+        for (String eventID: ((Project_18) getApplication()).getMe().getAttendingEvents()) {
+            ((Project_18) getApplication()).getFB().child("Events").
+                    child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot eventSnapshot) {
+                    Event e = new Event(eventSnapshot.getValue(
+                            new GenericTypeIndicator<HashMap<String, Object>>() {
+                            }));
+                    long difference = e.getStartTime() - System.currentTimeMillis();
+                    if (difference > 0 &&
+                            difference < 10 * 60 * 60 * 1000) {
+
+                        ArrayList<String> notList = new ArrayList<>();
+                        notList.add(((Project_18) getApplication()).getMe().getID());
+
+                        (new NotificationEventToday(Notification2.TYPE_EVENT_TODAY, e.getTimeString(true),
+                                e.getEvent_id(), e.getName(), "0")).
+                                pushToFirebase(((Project_18) getApplication()).getFB(),
+                                        notList);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+        }
     }
 
     // Pull all notifications for user and see if there are ones that havent been viewed, changed

@@ -119,7 +119,7 @@ public class Event implements Parcelable {
         this.name = (String) eventMap.get("name");
         this.description = (String) eventMap.get("description");
         this.creator_id = (String) eventMap.get("creator_id");
-        this.type = ((Integer) eventMap.get("type")).intValue();
+        //this.type = ((Integer) eventMap.get("type")).intValue();
         this.popularity = ((Integer) eventMap.get("popularity")).intValue();
         this.reports = ((Integer) eventMap.get("reports")).intValue();
 
