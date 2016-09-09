@@ -159,7 +159,7 @@ public class LoginFrag extends Fragment {
                             dataSnapshot.child(userId).child("myEvents").getValue());
                             */
                     //User me = new User(userId, userName, myEvents);
-                    User me = new User((HashMap<String,Object>)
+                    User me = new User((HashMap<String, Object>)
                             dataSnapshot.child(userId).getValue());
 
                     // construct friends list
@@ -210,8 +210,15 @@ public class LoginFrag extends Fragment {
     }
 
     private void goToMainAct(){
-        startActivity(new Intent(getActivity(), MainAct.class));
-        getActivity().finish();
+        // If I have not been welcomed
+        if (!sharedPreferences.getBoolean("beenWelcomed", false)) {
+            startActivity(new Intent(getActivity(), WelcomeActivity.class));
+        }
+
+        else {
+            startActivity(new Intent(getActivity(), MainAct.class));
+            getActivity().finish();
+        }
     }
 
     // creates a User and pushes it to Firebase
