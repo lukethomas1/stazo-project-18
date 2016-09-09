@@ -601,11 +601,17 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
                 mindiff += 60;
             }
             eventTimes.setText("Ends in: " + hourdiff + " h " + mindiff + "m");*/
-        }
+            eventTimes.setText("Ends in");
+            long difference = endTime - System.currentTimeMillis();
+            long hours = difference / (1000 * 60 * 60);
+            long minutes = ((difference / 1000) % (60 * 60)) / 60;
+            eventLength.setText(hours + " hr " + minutes + " min");
+        } else {
 
-        //Set event length
-        String durationText = buildDurationTime(startTime, endTime);
-        eventLength.setText(durationText);
+            //Set event lengt
+            String durationText = buildDurationTime(startTime, endTime);
+            eventLength.setText(durationText);
+        }
 
         final Button deleteButtonBig = (Button) v.findViewById(R.id.deleteEventBig);
         final Button deleteButtonSmall = (Button) v.findViewById(R.id.deleteEventSmall);
