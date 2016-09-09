@@ -31,7 +31,7 @@ public class NotificationWelcome extends Notification2{
     }
 
     public String generateMessage() {
-        return "Welcome to Campus, " + name.split(" ")[0] +"!";
+        return filterMessageByLength("Welcome to Campus, " + name.split(" ")[0] +"!");
     }
     public SnapToBase hasConflict(DataSnapshot userNotifs) {
         // no conflicts for this app

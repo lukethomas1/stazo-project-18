@@ -28,6 +28,8 @@ public abstract class Notification2 {
     public static final int TYPE_WELCOME = 5;
     public static final int TYPE_EVENT_TODAY = 6;
 
+    public static final int MAX_MESSAGE_LENGTH = 80;
+
 
     private String notifID;
     private boolean viewed = false;
@@ -88,6 +90,14 @@ public abstract class Notification2 {
         for (int i = 0; i < 10; i++) {
             String id = "" + (char) (65 + rand.nextInt(26));
             notifID += id;
+        }
+    }
+
+    public String filterMessageByLength(String message) {
+        if (message.length() > MAX_MESSAGE_LENGTH) {
+            return message.substring(0, Math.min(message.length(), MAX_MESSAGE_LENGTH - 3)) + "...";
+        } else {
+            return message;
         }
     }
 

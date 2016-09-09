@@ -67,7 +67,7 @@ public class NotificationCommentEvent extends Notification2 {
             message += "s";
         }
         message += " commented on \"" + eventName + "\".";
-        return message;
+        return filterMessageByLength(message);
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {

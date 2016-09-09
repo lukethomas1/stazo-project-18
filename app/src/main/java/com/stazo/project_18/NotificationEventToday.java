@@ -40,7 +40,7 @@ public class NotificationEventToday extends Notification2 {
     }
 
     public String generateMessage() {
-        return eventName + " is happening " + timeString;
+        return filterMessageByLength(eventName + " is happening " + timeString);
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {

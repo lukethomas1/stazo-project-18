@@ -60,7 +60,8 @@
                 android:hint=""
                 android:id="@+id/EventName"
                 android:layout_gravity="center_horizontal"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:maxLength="35"/>
 
             <TextView
                 android:layout_width="wrap_content"

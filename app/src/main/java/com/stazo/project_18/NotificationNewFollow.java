@@ -40,7 +40,7 @@ public class NotificationNewFollow extends Notification2 {
     }
 
     public String generateMessage() {
-        return followerName + " is now following you.";
+        return filterMessageByLength(followerName + " is now following you.");
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {
