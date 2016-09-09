@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -114,6 +115,9 @@ public class InitialAct extends AppCompatActivity {
                 else {
                     // remove listener
                     fb.child("Users").removeEventListener(this);
+
+                    // force FB logout when FB access token is valid, but no entry in database
+                    LoginManager.getInstance().logOut();
 
                     // go to Login screen
                     goToLoginAct();
