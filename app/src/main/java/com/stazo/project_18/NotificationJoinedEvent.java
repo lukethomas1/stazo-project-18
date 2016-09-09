@@ -44,7 +44,7 @@ public class NotificationJoinedEvent extends Notification2 {
     }
 
     public String generateMessage() {
-        return joinedUserName + " joined your event: \"" + eventName + "\".";
+        return filterMessageByLength(joinedUserName + " joined your event: \"" + eventName + "\".");
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {

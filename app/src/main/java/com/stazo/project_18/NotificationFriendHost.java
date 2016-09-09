@@ -48,7 +48,7 @@ public class NotificationFriendHost extends Notification2 {
     }
 
     public String generateMessage(){
-        return hostName + " is hosting " + eventName + " " + timeString + ".";
+        return filterMessageByLength(hostName + " is hosting " + eventName + " " + timeString + ".");
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {

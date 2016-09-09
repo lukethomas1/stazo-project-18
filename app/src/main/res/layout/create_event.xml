@@ -60,7 +60,8 @@
                 android:hint=""
                 android:id="@+id/EventName"
                 android:layout_gravity="center_horizontal"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:maxLength="35"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,7 +79,8 @@
                 android:layout_gravity="center_horizontal"
                 android:minLines="4"
                 android:maxLines="8"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:maxLength="300"/>
 
             <TextView
                 android:layout_width="wrap_content"

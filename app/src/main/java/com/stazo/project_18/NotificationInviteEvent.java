@@ -66,7 +66,7 @@ public class NotificationInviteEvent extends Notification2 {
             message += "s";
         }
         message += " invited you to \"" + eventName + "\".";
-        return message;
+        return filterMessageByLength(message);
     }
 
     public SnapToBase hasConflict(DataSnapshot userNotifs) {
