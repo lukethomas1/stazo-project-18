@@ -345,8 +345,8 @@ public class MapFrag extends Fragment {
                                     // add the event to the local ArrayList
                                     ((Project_18) getActivity().getApplication()).addPulledEvent(e);
 
-                                        // display event
-                                        displayEvent(e);
+                                    // display event
+                                    displayEvent(e);
                                 }
 
                                 Log.d("TimeTest", "Non-cached events loaded at " + (System.nanoTime() - testTime));
@@ -402,8 +402,12 @@ public class MapFrag extends Fragment {
                                 R.drawable.flaticon_marker),
                         size,
                         size);
+                
+                markerOpts.icon(BitmapDescriptorFactory.
+                        fromBitmap(markerBitmap));
+
             }
-            else if (!e.happeningLaterToday()) {
+            /*else if (!e.happeningLaterToday()) {
                 markerBitmap = Project_18.BITMAP_RESIZER(BitmapFactory.decodeResource(getActivity().getResources(),
                                 R.drawable.flaticon_marker),
                         size,
@@ -414,11 +418,7 @@ public class MapFrag extends Fragment {
                                 R.drawable.flaticon_marker),
                         size,
                         size);
-            }
-
-            markerOpts.icon(BitmapDescriptorFactory.
-                    fromBitmap(markerBitmap));
-
+            }*/
             // Add the marker to the map
 
             Marker marker = map.addMarker(markerOpts);
