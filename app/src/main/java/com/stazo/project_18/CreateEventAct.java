@@ -177,14 +177,6 @@ public class CreateEventAct extends AppCompatActivity {
             }
         });
 
-        Button addImageButton = (Button) this.findViewById(R.id.AddImage);
-        addImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //takePhoto();
-                buttonChooser();
-            }
-        });
     }
 
     /**
