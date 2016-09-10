@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.stazo.project_18">
+    package="com.stazo.campus">
 
     <!-- for FB login -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,7 +18,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name=".Project_18"
+        android:name="com.stazo.campus.Campus"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +27,7 @@
 
         <!-- Initial Act -->
         <activity
-            android:name=".InitialAct"
+            android:name="com.stazo.campus.InitialAct"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -41,7 +41,7 @@
 
         <!-- Create Event Act -->
         <activity
-            android:name=".CreateEventAct"
+            android:name="com.stazo.campus.CreateEventAct"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
@@ -61,13 +61,13 @@
 
         <!-- Main Act -->
         <activity
-            android:name=".MainAct"
+            android:name="com.stazo.campus.MainAct"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
         <!-- Login Act -->
         <activity
-            android:name=".LoginAct"
+            android:name="com.stazo.campus.LoginAct"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
@@ -84,13 +84,13 @@
 
         <!-- Location Select Act -->
         <activity
-            android:name=".LocSelectAct"
+            android:name="com.stazo.campus.LocSelectAct"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
         <!-- Logout Act (temporary) -->
         <activity
-            android:name=".LogoutAct"
+            android:name="com.stazo.campus.LogoutAct"
             android:label="@string/title_activity_logout"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -102,22 +102,21 @@
 
 
         <!-- <activity android:name=".InitialAct"></activity> -->
-        <activity android:name=".ListActConcept" />
 
         <!-- Add Trails Act -->
         <activity
-            android:name=".AddTrailsAct"
+            android:name="com.stazo.campus.AddTrailsAct"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_add_trails"
-            android:parentActivityName=".MainAct"
+            android:parentActivityName="com.stazo.campus.MainAct"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainAct" />
+                android:value="com.stazo.campus.MainAct" />
         </activity>
         <activity
-            android:name=".WelcomeActivity"
+            android:name="com.stazo.campus.WelcomeActivity"
             android:label="@string/title_activity_welcome"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -133,14 +132,14 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".InviteUsersAct"
+            android:name="com.stazo.campus.InviteUsersAct"
             android:label="@string/title_activity_invite_user"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <!-- For storing photos -->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.stazo.project_18.fileprovider"
+            android:authorities="com.stazo.campus.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
