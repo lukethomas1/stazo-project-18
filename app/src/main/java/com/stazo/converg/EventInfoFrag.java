@@ -138,7 +138,7 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    mBottomSheetBehavior.setPeekHeight(0);
+                    mBottomSheetBehavior.setPeekHeight(getActivity().findViewById(R.id.measurement).getHeight());
                     v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
                 }
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
