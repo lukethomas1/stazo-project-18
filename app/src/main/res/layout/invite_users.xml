@@ -42,7 +42,7 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:id="@+id/searchView" />
 
-        <com.stazo.campus.InteractiveScrollView
+        <com.stazo.converg.InteractiveScrollView
             android:layout_width="match_parent"
             android:layout_height="320dp"
             android:id="@+id/inviteUsersScrollView"
@@ -57,7 +57,7 @@
                 android:layout_marginBottom="0dip">
             </LinearLayout>
 
-        </com.stazo.campus.InteractiveScrollView>
+        </com.stazo.converg.InteractiveScrollView>
 
         <Button
             android:layout_width="wrap_content"

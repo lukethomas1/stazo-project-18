@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Campus</string>
+    <string name="app_name">Converg</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_test">Sign in</string>
 
@@ -13,8 +13,8 @@
     <string name="other">Other</string>
 
     <!-- MYSTRINGS -->
-    <string name="welcome_header_1">Welcome to Campus!</string>
-    <string name="welcome_desc_1">Campus is a locale-based event finder.
+    <string name="welcome_header_1">Welcome to Converg!</string>
+    <string name="welcome_desc_1">Converg is a locale-based event finder.
         That means everything fun happening nearby can be found here.</string>
 
     <string name="welcome_header_2">Things to Know</string>
@@ -22,7 +22,7 @@
         everyone\n2. Anyone can post an event to fumono\n3.
         Any event is welcome (study sessions, beach trips, night socials, etc.) </string>
 
-    <string name="welcome_header_3">Campus Guidelines</string>
+    <string name="welcome_header_3">Converg Guidelines</string>
     <string name="welcome_desc_3">1. Be nice\n2. Don\'t be shy\n3. Have fun</string>
 
     <string name="welcome_header_4">Guideline Number Two: Be Inviting</string>

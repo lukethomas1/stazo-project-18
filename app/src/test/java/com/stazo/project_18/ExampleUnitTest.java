@@ -1,4 +1,4 @@
-package com.stazo.campus;
+package com.stazo.converg;
 
 import org.junit.Test;
 
