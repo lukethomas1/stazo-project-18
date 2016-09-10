@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -277,7 +276,6 @@ public class InviteUsersAct extends AppCompatActivity {
 
                 else {
                     try {
-                        Log.d("check", "id: " + id);
                         idToBitmap.put(id,
                                 BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                         id +
@@ -311,7 +309,6 @@ public class InviteUsersAct extends AppCompatActivity {
             constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;
             scrollView.ready();
-            Log.d("cancel", "task COMPLETED...");
         }
     }
 
@@ -375,7 +372,6 @@ public class InviteUsersAct extends AppCompatActivity {
 
                         // handle "click"
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            Log.d("myTag", "imageButton pressed");
 
                             // add the trail
 

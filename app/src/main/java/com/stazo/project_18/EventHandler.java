@@ -72,7 +72,6 @@ public class EventHandler {
             Event e = new Event(eventNames.get(i), eventDescriptions.get(i), us.get(i+1), 0, locations.get(i),
             System.currentTimeMillis()+ ((i+1) * 6 - 3) * (1000 * 60 * 60),     // events start in 3, 9, 15 hours
                     System.currentTimeMillis() + ((i+1) * 6) * (1000 * 60 * 60)); //  end in 6, 12, 18
-            //Log.d("myTag", "" + e.getEvent_id());
 
             // Popularity generation
             e.setPopularity((int) (Math.random() * 60));

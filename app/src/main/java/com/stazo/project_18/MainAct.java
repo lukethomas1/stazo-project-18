@@ -30,7 +30,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -626,7 +625,6 @@ public class MainAct extends AppCompatActivity
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("MainAct", "Logout Confirmed: Logging Out");
 
                 clearSharedPreferences();
                 fbLogout();
@@ -640,7 +638,6 @@ public class MainAct extends AppCompatActivity
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("MainAct", "Logout Cancelled");
 
                 // Do nothing
                 dialog.dismiss();
@@ -660,10 +657,8 @@ public class MainAct extends AppCompatActivity
     }
 
     private void fbLogout() {
-        Log.i("MainAct", "Accesstoken should be something: " + AccessToken.getCurrentAccessToken());
         if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
-            Log.i("MainAct", "Accesstoken should be null: " + AccessToken.getCurrentAccessToken());
             Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
         }
     }

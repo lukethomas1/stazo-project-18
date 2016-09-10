@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,21 +84,16 @@ public class LoginFrag extends Fragment {
                 tryAccount();
             }
             Toast.makeText(getActivity().getApplicationContext(), "Logged in", Toast.LENGTH_SHORT).show();
-            Log.d("FB SDK", "Name: " + userName);
-            Log.d("FB SDK", "UserId: " + userId);
-
         }
 
         @Override
         public void onCancel() {
-            Log.d("FB SDK", "Facebook Login Cancelled");
             Toast.makeText(getActivity().getApplicationContext(), "Login Cancelled", Toast.LENGTH_SHORT).show();
 
         }
 
         @Override
         public void onError(FacebookException error) {
-            Log.d("FB SDK", "Facebook Login Error");
             Toast.makeText(getActivity().getApplicationContext(), "Login Error: Try again later", Toast.LENGTH_SHORT).show();
 
         }

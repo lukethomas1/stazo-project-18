@@ -207,8 +207,6 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                Log.d("else", "ELSE CASE myEvents");
-
                 for (String val : ((HashMap<String, String>) userMap.get("myEvents")).values()) {
                     myEvents.add(val);
                 }
@@ -226,7 +224,6 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                Log.d("else", "ELSE CASE reportedEvents");
                 for (String val : ((HashMap<String, String>) userMap.get("reportedEvents")).values()) {
                     reportedEvents.add(val);
                 }
@@ -244,8 +241,6 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                Log.d("else", "ELSE CASE attendingEvents");
-
                 for (String val : ((HashMap<String, String>) userMap.get("attendingEvents")).values()) {
                     attendingEvents.add(val);
                 }
@@ -280,7 +275,6 @@ public class User {
 
             // if stored as HashMap (from event.pushToFirebase, firebase "push" method)
             else {
-                Log.d("else", "ELSE CASE + userTrails");
                 for (String val : ((HashMap<String, String>) userMap.get("userTrails")).values()) {
                     userTrails.add(val);
                 }
@@ -379,10 +373,8 @@ public class User {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
                 if (currentData.getValue() == null) {
-                    //Log.d("AttendEvents", "not attending events");
                     currentData.setValue(1);
                 } else {
-                    //Log.d("AttendEvents", "actually attending events");
                     currentData.setValue((Long) currentData.getValue() + 1);
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
@@ -418,12 +410,10 @@ public class User {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
                 if (currentData.getValue() == null) {
-                    Log.d("AttendEvents", "Unattend aborting");
                     // inclusion of line causes first transaction to fail!!!
                     //return Transaction.abort();
                 } else {
                     currentData.setValue((Long) currentData.getValue() - 1);
-                    Log.d("AttendEvents", "decremented, data now " + currentData.getValue());
                 }
                 return Transaction.success(currentData); //we can also abort by calling Transaction.abort()
             }
@@ -508,7 +498,6 @@ public class User {
     public void constructFriends(final Firebase fb) {
         /* make the API call */
         if (AccessToken.getCurrentAccessToken() == null) {
-            Log.d("myTag", "access token was null");
             return;
         }
 
@@ -521,11 +510,9 @@ public class User {
                     public void onCompleted(GraphResponse response) {
                         try {
                             final JSONArray json = response.getJSONObject().getJSONArray("data");
-                            Log.d("json", "JSON is " + json.toString());
                             for(int i=0; i < json.length(); i++){
                                 String name = (String)((JSONObject)json.get(i)).get("name");
                                 String id = (String)((JSONObject)json.get(i)).get("id");
-                                Log.d("friends", "Name: " + name + " ID: " + id);
                                 // if this user is not already in, add to friends
                                 if (!friends.values().contains(id)) {
                                     //addFriend(fb, id, name);
@@ -549,10 +536,8 @@ public class User {
 
                 // if the friend also has our app, add them
                 if (dataSnapshot.hasChild(id)) {
-                    Log.d("valid_friends", "VALID Name: " + name + " ID: " + id);
                     friends.put(name, id);
                 }
-                Log.d("invalid_friends", "INVALID Name: " + name + " ID: " + id);
                 fb.child("Users").removeEventListener(this);
             }
 

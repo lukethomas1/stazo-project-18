@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.Gravity;
 import android.view.View;

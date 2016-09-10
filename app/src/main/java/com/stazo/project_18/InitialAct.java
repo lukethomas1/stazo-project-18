@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -67,20 +66,16 @@ public class InitialAct extends AppCompatActivity {
             updateWithToken(accessToken);
         }
         else { // first time logging in
-            Log.d("FB SDK", "InitialAct: First Time Logging In");
             goToLoginAct();
         }
     }
 
     // Checks if the AccessToken is null and runs the appropriate method
     private void updateWithToken(AccessToken currentAccessToken) {
-        Log.d("FB SDK", "Initial Act: Checking the accessTokens");
         if (currentAccessToken != null) {
-            Log.d("FB SDK", "InitialAct: AccessToken is not null");
             tryAccount(); // check sharedPrefs to see if user is logged in
         }
         else {
-            Log.d("FB SDK", "InitialAct: AccessToken is null");
             goToLoginAct(); // else go to loginAct
         }
         //accessTokenTracker.stopTracking();

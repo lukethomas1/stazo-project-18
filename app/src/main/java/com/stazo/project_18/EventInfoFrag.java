@@ -47,7 +47,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -154,11 +153,9 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         //mBottomSheetBehavior.setPeekHeight(680);
         //mBottomSheetBehavior.setPeekHeight(610);
         if (autoOpen) {
-            Log.d("autoOpen", "open expanded");
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             v.findViewById(R.id.writeCommentLayout).setVisibility(View.VISIBLE);
         } else {
-            Log.d("autoOpen", "open collapsed");
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             v.findViewById(R.id.writeCommentLayout).setVisibility(View.GONE);
         }
@@ -277,7 +274,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         for (int i = page * SECTION_SIZE; ; i++) {
 
             if (numToLoad == 0) {
-                Log.d("sizzle", "currEvent.getAttendees() is " + currEvent.getAttendees().toString());
                 (new SetButtonTask(idToName)).execute();
 
                 break;
@@ -615,16 +611,11 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
         final Button deleteButtonBig = (Button) v.findViewById(R.id.deleteEventBig);
         final Button deleteButtonSmall = (Button) v.findViewById(R.id.deleteEventSmall);
-        Log.d("EventInfoFrag", "CreatorID: " + currEvent.getCreator_id());
-        Log.d("EventInfoFrag", "UserID: " + me.getID());
-        Log.d("EventInfoFrag", "CreatorID == UserID? " + (currEvent.getCreator_id().equals(me.getID())));
         if (currEvent.getCreator_id().equals(me.getID())) {
-            Log.d("EventInfoFrag", "My Event: Delete Button Shown");
             //deleteButtonSmall.setVisibility(View.VISIBLE);
             deleteButtonBig.setVisibility(View.VISIBLE);
         }
         else {
-            Log.d("EventInfoFrag", "My Event: Delete Button Hidden");
             //deleteButtonSmall.setVisibility(View.GONE);
             deleteButtonBig.setVisibility(View.GONE);
         }
@@ -638,8 +629,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
             public void run() {
                 try {
                     URL imageURL = new URL("https://graph.facebook.com/" +
-                            id + "/picture?width=" + Project_18.pictureSize);
-                    Log.d("EventInfoFrag", "https://graph.facebook.com/" +
                             id + "/picture?width=" + Project_18.pictureSize);
                     picBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
                 } catch (IOException e) {
@@ -757,9 +746,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         long length = endTime - startTime;
         long eventHour = length/(1000 * 60 * 60);
         long eventMin = length/(1000 * 60) - eventHour*60;
-
-        Log.d("EventHour", eventHour+"");
-        Log.d("EventMin", eventMin+"");
 
         if (eventHour > 0) {
             finalString = finalString + eventHour;
@@ -1674,7 +1660,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("EventInfoFrag", "Delete Event Confirmed");
 
                 // Delete event
                 currEvent.deleteFromFirebase(fb, currEvent.getCreator_id(), currEvent.getEvent_id());
@@ -1687,7 +1672,6 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("EventInfoFrag", "Delete Event Cancelled");
 
                 // Do nothing
                 dialog.dismiss();

@@ -428,7 +428,6 @@ public class Event implements Parcelable {
 
             event_id = event_id.concat("" + add);
         }
-        Log.d("myTag", "GENERATING: " + this.event_id);
     }
 
     // determines how relevant this event is to a query (3,2,1,0)

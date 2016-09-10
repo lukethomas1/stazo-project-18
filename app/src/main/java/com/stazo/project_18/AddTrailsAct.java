@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -280,11 +279,9 @@ public class AddTrailsAct extends AppCompatActivity {
 
         // optimization
         if (currentTask != null) {
-            Log.d("cancel", "task CANCELLED");
             currentTask.cancel(true);
         }
         currentTask = new SetButtonTask(relevantUsers, clearLayout, pageNumber * 12);
-        Log.d("cancel", "task EXECUTING...");
         currentTask.execute();
     }
 
@@ -330,16 +327,12 @@ public class AddTrailsAct extends AppCompatActivity {
                 }
 
                 if (((Project_18) getApplication()).getBitmapFromMemCache(id) != null) {
-                    Log.d("check", "we have cached entry number " + i);
                     idToBitmap.put(id, ((Project_18) getApplication()).getBitmapFromMemCache(id));
                     numToLoad--;
                 }
 
                 else {
-                    Log.d("memCheck", "Not in cache, size of cache is " +
-                            ((Project_18) getApplication()).getMemoryCache().size());
                     try {
-                        Log.d("check", "we are processing entry number " + i);
 
                         // FOR TESTING PURPOSES
                         if (id.length() < 5) {
@@ -351,7 +344,6 @@ public class AddTrailsAct extends AppCompatActivity {
                             numToLoad--;
                         }
                         else {
-                            Log.d("check", "id: " + id);
                             idToBitmap.put(id,
                                     BitmapFactory.decodeStream((new URL("https://graph.facebook.com/" +
                                             id +
@@ -385,7 +377,6 @@ public class AddTrailsAct extends AppCompatActivity {
             constructUsersLayout(idToBitmap, userList, clearLayout);
             currentTask = null;
             scrollView.ready();
-            Log.d("cancel", "task COMPLETED...");
         }
     }
 
@@ -449,7 +440,6 @@ public class AddTrailsAct extends AppCompatActivity {
 
                         // handle "click"
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            Log.d("myTag", "imageButton pressed");
 
                             // add the trail
 

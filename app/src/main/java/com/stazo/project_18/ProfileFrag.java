@@ -19,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -276,7 +275,6 @@ public class ProfileFrag extends Fragment {
 
                 /* add myEvents */
                 for (String event_id : user.getMyEvents()) {
-                    Log.d("debug", event_id);
                     myEvents.add(new Event(dataSnapshot.child(event_id).getValue
                             (new GenericTypeIndicator<HashMap<String, Object>>() {
                             })));
@@ -801,7 +799,6 @@ public class ProfileFrag extends Fragment {
 
     private void setFollowButton(boolean following) {
         if (following) {
-            Log.d("flw", "setting to following");
             ((Button) v.findViewById(R.id.followButton)).setText("Following");
             v.findViewById(R.id.followButton).
                     setBackgroundColor(getResources().getColor(R.color.colorDividerLight));
@@ -811,7 +808,6 @@ public class ProfileFrag extends Fragment {
         }
 
         else {
-            Log.d("flw", "setting to follow");
             ((Button) v.findViewById(R.id.followButton)).setText("Follow");
             v.findViewById(R.id.followButton).
                     setBackgroundColor(getResources().getColor(R.color.colorAccent));

@@ -18,7 +18,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -250,8 +249,6 @@ public class MapFrag extends Fragment {
 
         public void onMapReady(GoogleMap googleMap) {
 
-            Log.d("TimeTest", "Map ready at " + (System.nanoTime() - testTime));
-
             // Initialize global variable
             map = googleMap;
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -348,8 +345,6 @@ public class MapFrag extends Fragment {
                                     // display event
                                     displayEvent(e);
                                 }
-
-                                Log.d("TimeTest", "Non-cached events loaded at " + (System.nanoTime() - testTime));
 
                                 // if we have an eventInfo open, go to that
                                 if (MainAct.eventInfoFrag != null) {

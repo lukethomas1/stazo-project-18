@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,7 +34,6 @@ public class LogoutAct extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("FB SDK", "LogoutAct: Going to Next Act");
 
                 fbLogout();
                 clearSharedPreferences();
@@ -58,10 +56,8 @@ public class LogoutAct extends AppCompatActivity {
     }
 
     private void fbLogout() {
-        Log.d("FB SDK", "Logout Act: Accesstoken should be something: " + AccessToken.getCurrentAccessToken());
         if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
-            Log.d("FB SDK", "Logout Act: Accesstoken should be null: " + AccessToken.getCurrentAccessToken());
             Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
 
         }
