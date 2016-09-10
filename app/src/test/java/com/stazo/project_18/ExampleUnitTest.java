@@ -1,4 +1,4 @@
-package com.stazo.project_18;
+package com.stazo.campus;
 
 import org.junit.Test;
 

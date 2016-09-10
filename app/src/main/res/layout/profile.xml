@@ -11,7 +11,7 @@
     android:layout_marginTop="?android:attr/actionBarSize"
     android:layout_marginBottom="0dp">
 
-    <com.stazo.project_18.InteractiveScrollView
+    <com.stazo.campus.InteractiveScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/profileScrollView">
@@ -265,7 +265,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:background="@color/white"></LinearLayout>
-                <com.stazo.project_18.InteractiveScrollViewHorizontal
+                <com.stazo.campus.InteractiveScrollViewHorizontal
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/trailsScrollView"
@@ -277,7 +277,7 @@
                         android:id="@+id/trailsLayout"
                         android:layout_marginBottom="5dp">
                     </LinearLayout>
-                </com.stazo.project_18.InteractiveScrollViewHorizontal>
+                </com.stazo.campus.InteractiveScrollViewHorizontal>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -331,7 +331,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:background="@color/white"></LinearLayout>
-                <com.stazo.project_18.InteractiveScrollViewHorizontal
+                <com.stazo.campus.InteractiveScrollViewHorizontal
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/followersScrollView"
@@ -343,10 +343,10 @@
                         android:id="@+id/followersLayout"
                         android:layout_marginBottom="5dp">
                     </LinearLayout>
-                </com.stazo.project_18.InteractiveScrollViewHorizontal>
+                </com.stazo.campus.InteractiveScrollViewHorizontal>
             </LinearLayout>
         </LinearLayout>
-    </com.stazo.project_18.InteractiveScrollView>
+    </com.stazo.campus.InteractiveScrollView>
 
 </LinearLayout>
 
