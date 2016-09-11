@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.stazo.converg">
+    package="com.stazo.project_18">
 
     <!-- for FB login -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,7 +18,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name="com.stazo.converg.Converg"
+        android:name="com.stazo.project_18.Converg"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +27,7 @@
 
         <!-- Initial Act -->
         <activity
-            android:name="com.stazo.converg.InitialAct"
+            android:name="com.stazo.project_18.InitialAct"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -41,7 +41,7 @@
 
         <!-- Create Event Act -->
         <activity
-            android:name="com.stazo.converg.CreateEventAct"
+            android:name="com.stazo.project_18.CreateEventAct"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
@@ -61,13 +61,13 @@
 
         <!-- Main Act -->
         <activity
-            android:name="com.stazo.converg.MainAct"
+            android:name="com.stazo.project_18.MainAct"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
         <!-- Login Act -->
         <activity
-            android:name="com.stazo.converg.LoginAct"
+            android:name="com.stazo.project_18.LoginAct"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
@@ -84,13 +84,13 @@
 
         <!-- Location Select Act -->
         <activity
-            android:name="com.stazo.converg.LocSelectAct"
+            android:name="com.stazo.project_18.LocSelectAct"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
         <!-- Logout Act (temporary) -->
         <activity
-            android:name="com.stazo.converg.LogoutAct"
+            android:name="com.stazo.project_18.LogoutAct"
             android:label="@string/title_activity_logout"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -105,18 +105,18 @@
 
         <!-- Add Trails Act -->
         <activity
-            android:name="com.stazo.converg.AddTrailsAct"
+            android:name="com.stazo.project_18.AddTrailsAct"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_add_trails"
-            android:parentActivityName="com.stazo.converg.MainAct"
+            android:parentActivityName="com.stazo.project_18.MainAct"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.stazo.converg.MainAct" />
+                android:value="com.stazo.project_18.MainAct" />
         </activity>
         <activity
-            android:name="com.stazo.converg.WelcomeActivity"
+            android:name="com.stazo.project_18.WelcomeActivity"
             android:label="@string/title_activity_welcome"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -132,14 +132,14 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name="com.stazo.converg.InviteUsersAct"
+            android:name="com.stazo.project_18.InviteUsersAct"
             android:label="@string/title_activity_invite_user"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <!-- For storing photos -->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.stazo.converg.fileprovider"
+            android:authorities="com.stazo.project_18.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

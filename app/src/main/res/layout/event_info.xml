@@ -275,7 +275,7 @@
                             android:gravity="center"/>
                     </LinearLayout>
 
-                    <com.stazo.converg.InteractiveScrollViewHorizontal
+                    <com.stazo.project_18.InteractiveScrollViewHorizontal
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:id="@+id/joinedScrollView"
@@ -298,7 +298,7 @@
                                 android:id="@+id/noJoinedText"/>
                         </LinearLayout>
 
-                    </com.stazo.converg.InteractiveScrollViewHorizontal>
+                    </com.stazo.project_18.InteractiveScrollViewHorizontal>
 
                     <View
                         android:layout_width="match_parent"

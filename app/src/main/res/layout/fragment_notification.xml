@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.stazo.converg.NotificationFrag">
+    tools:context="com.stazo.project_18.NotificationFrag">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <com.stazo.converg.InteractiveScrollView
+    <com.stazo.project_18.InteractiveScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/notifScrollView">
@@ -31,7 +31,7 @@
 
         </LinearLayout>
 
-    </com.stazo.converg.InteractiveScrollView>
+    </com.stazo.project_18.InteractiveScrollView>
 
 
 </FrameLayout>
