@@ -1661,6 +1661,90 @@ public class EventInfoFrag extends Fragment implements GestureDetector.OnGesture
         alert.show();
     }
 
+    public void flagEvent() {
+        String[] options = {"Flag Inappropriate Event", "Block Creator"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+
+        builder.setTitle("Flag Event")
+                .setItems(options, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                flagInappropriate();
+                                dialog.dismiss();
+                                break;
+                            case 1:
+                                blockUser();
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void flagInappropriate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+
+        builder.setTitle("Flag Event");
+        builder.setMessage("Report this event as inappropriate?");
+
+        builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Flag Event
+                // TODO: Code for flagging inappropriate events
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void blockUser() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+
+        builder.setTitle("Block User");
+        builder.setMessage("Are you sure you want to block the creator?");
+
+        builder.setPositiveButton("Block", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Block Creator
+                // TODO: Code for blocking creator
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     public String getPassedEventID() {
         return passedEventID;
     }

@@ -24,15 +24,13 @@
             android:clipToPadding="true"
             android:background="@color/white"
             app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-            android:elevation="15dp"
-            android:onClick="toggleState">
+            android:elevation="15dp">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="40dp"
-                android:onClick="toggleState">
+                android:paddingBottom="40dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -44,21 +42,18 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:onClick="toggleState">
+                    android:paddingRight="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/measurement"
-                        android:orientation="vertical"
-                        android:onClick="toggleState" >
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:onClick="toggleState"
                             android:layout_marginBottom="0dp">
 
                             <TextView
@@ -83,7 +78,8 @@
                                 android:background="@color/colorAccent"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:onClick="toggleState" />
 
                         </LinearLayout>
 
@@ -104,14 +100,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="@color/colorPrimaryLight"
-                            android:layout_marginBottom="10dp"
-                            android:onClick="toggleState"/>
+                            android:layout_marginBottom="10dp" />
 
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:onClick="toggleState">
+                            android:layout_height="match_parent">
 
                             <TextView
                                 android:id="@+id/starts"
@@ -120,8 +114,7 @@
                                 android:text="Starts"
                                 android:textSize="12sp"
                                 android:layout_marginBottom="0dp"
-                                android:textAppearance="@style/EventInfoBody"
-                                android:onClick="toggleState"/>
+                                android:textAppearance="@style/EventInfoBody" />
 
                             <View android:layout_width="0dp"
                                 android:layout_height="match_parent"
@@ -134,8 +127,7 @@
                                 android:text="Length"
                                 android:textSize="12sp"
                                 android:layout_marginBottom="0dp"
-                                android:textAppearance="@style/EventInfoBody"
-                                android:onClick="toggleState"/>
+                                android:textAppearance="@style/EventInfoBody" />
 
                         </LinearLayout>
 
@@ -143,7 +135,6 @@
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:onClick="toggleState"
                             android:layout_marginBottom="10dp" >
 
                             <TextView
@@ -151,8 +142,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Event Date"
                                 android:id="@+id/eventDate"
-                                android:textAppearance="@style/EventInfoBody"
-                                android:onClick="toggleState"/>
+                                android:textAppearance="@style/EventInfoBody" />
 
                             <View android:layout_width="0dp"
                                 android:layout_height="match_parent"
@@ -164,8 +154,7 @@
                                 android:text="Length"
                                 android:textColor="@color/colorAccentDark"
                                 android:id="@+id/eventLength"
-                                android:textAppearance="@style/EventInfoBody"
-                                android:onClick="toggleState"/>
+                                android:textAppearance="@style/EventInfoBody" />
 
                         </LinearLayout>
 
@@ -178,16 +167,34 @@
                         android:id="@+id/loc"
                         android:textSize="12sp"
                         android:layout_marginBottom="0dp"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:onClick="toggleState"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:id="@+id/locValue"
-                        android:layout_marginBottom="10dp"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:onClick="toggleState" />
+                        android:textAppearance="@style/EventInfoBody" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="10dp" >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/locValue"
+                            android:layout_marginBottom="10dp"
+                            android:textAppearance="@style/EventInfoBody" />
+
+                        <View android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <ImageButton
+                            android:id="@+id/flagEventBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_flag_black_24dp"
+                            android:background="?android:selectableItemBackground"
+                            android:onClick="flagEvent"/>
+
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -196,8 +203,7 @@
                         android:id="@+id/desc"
                         android:textSize="12sp"
                         android:layout_marginBottom="0dp"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:onClick="toggleState"/>
+                        android:textAppearance="@style/EventInfoBody" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -205,47 +211,7 @@
                         android:text=""
                         android:id="@+id/eventDesc"
                         android:layout_marginBottom="10dp"
-                        android:textAppearance="@style/EventInfoBody"
-                        android:onClick="toggleState" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:onClick="toggleState" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Created by"
-                            android:layout_marginBottom="10dp"
-                            android:textAppearance="@style/EventInfoBody"
-                            android:onClick="toggleState" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/creatorPic"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="20dip"
-                            android:layout_marginLeft="20dip"
-                            android:layout_marginBottom="10dip"
-                            android:background="@null"
-                            android:visibility="invisible"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Creator"
-                            android:id="@+id/eventCreator"
-                            android:layout_marginBottom="10dp"
-                            android:textAppearance="@style/EventInfoBody"
-                            android:onClick="toggleState" />
-
-
-
-                    </LinearLayout>
+                        android:textAppearance="@style/EventInfoBody" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -259,7 +225,6 @@
                             android:textSize="18sp"
                             android:textColor="@color/colorTextPrimary"
                             android:textAllCaps="false"
-                            android:onClick="toggleState"
                             android:id="@+id/numJoinedText"/>
 
                         <Button
@@ -300,18 +265,17 @@
 
                     </com.stazo.project_18.InteractiveScrollViewHorizontal>
 
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginBottom="5dp"
-                        android:onClick="toggleState"/>
+                        android:layout_marginBottom="5dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="toggleState">
+                        android:layout_gravity="center_vertical">
 
                         <!-- Layout to add comments to -->
                         <LinearLayout
@@ -349,6 +313,41 @@
                             </TextView>
 
                         </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Event Created by"
+                            android:layout_marginBottom="5dp"
+                            android:textAppearance="@style/EventInfoBody" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/creatorPic"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="20dip"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginBottom="5dip"
+                            android:background="@null"
+                            android:visibility="invisible"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Creator"
+                            android:id="@+id/eventCreator"
+                            android:layout_marginBottom="5dp"
+                            android:textAppearance="@style/EventInfoBody" />
+
 
                     </LinearLayout>
 

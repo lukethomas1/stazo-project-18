@@ -547,9 +547,12 @@ public class MainAct extends AppCompatActivity
 
     public void deleteEvent(View view) {
         eventInfoFrag.deleteEvent();
-
-
     }
+
+    public void flagEvent(View view) {
+        eventInfoFrag.flagEvent();
+    }
+
 
     public void simulateClick(String event_id) {
         ((MapFrag) tabFragments.get(MAP_POS)).simulateOnClick(event_id);
