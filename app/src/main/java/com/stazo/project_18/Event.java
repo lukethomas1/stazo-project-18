@@ -32,7 +32,9 @@ public class Event implements Parcelable {
     private String event_id = "yoo";
     private int type;
     private int popularity = 0;
-    private int reports = 0;
+    //private int reports = 0;
+
+    private ArrayList<String> reporters = new ArrayList<String>();
 
 //    private GregorianCalendar startDate;
 //    private GregorianCalendar endDate;
@@ -77,7 +79,7 @@ public class Event implements Parcelable {
         setEvent_id(in.readString());
         setType(in.readInt());
         setPopularity(in.readInt());
-        setReports(in.readInt());
+        //setReports(in.readInt());
         setStartTime(in.readLong());
         setEndTime(in.readLong());
         setTest(in.readString());
@@ -117,8 +119,7 @@ public class Event implements Parcelable {
         this.creator_id = (String) eventMap.get("creator_id");
         //this.type = ((Integer) eventMap.get("type")).intValue();
         this.popularity = ((Integer) eventMap.get("popularity")).intValue();
-        this.reports = ((Integer) eventMap.get("reports")).intValue();
-
+        //this.reports = ((Integer) eventMap.get("reports")).intValue();
 //        Date sDate = new Date((Long) eventMap.get("startDate"));
 //        Date eDate = new Date((Long) eventMap.get("endDate"));
 //        this.startDate = new GregorianCalendar(sDate.getYear(),
@@ -145,6 +146,14 @@ public class Event implements Parcelable {
         if (attendeesIterable != null) {
             for(Object value : attendeesIterable.values()) {
                 this.attendees.add((String) value);
+            }
+        }
+        //pull reporters with iterable
+        this.reporters = new ArrayList<>();
+        HashMap<Object, Object> reportersIterable = (HashMap<Object, Object>) eventMap.get("reporters");
+        if (reportersIterable != null) {
+            for(Object value : reportersIterable.values()) {
+                this.reporters.add((String) value);
             }
         }
     }
@@ -301,7 +310,9 @@ public class Event implements Parcelable {
         this.popularity = popularity;
     }
 
-    public void setReports(int r) { this.reports = r; }
+    //public void setReports(int r) { this.reports = r; }
+
+    public void setReporters(ArrayList<String> r) { this.reporters = r;}
 
 //    public void setStartDate(GregorianCalendar date) {
 //        this.startDate = date;
@@ -337,7 +348,7 @@ public class Event implements Parcelable {
         return popularity;
     }
 
-    public int getReports() { return reports; }
+    public ArrayList<String> getReporters() { return reporters; }
 
 //    public GregorianCalendar getStartDate() {
 //        return startDate;
@@ -390,7 +401,7 @@ public class Event implements Parcelable {
         out.writeString(getEvent_id());
         out.writeInt(getType());
         out.writeInt(getPopularity());
-        out.writeInt(getReports());
+        //out.writeInt(getReports());
 
 //        out.writeInt(getStartYear());
 //        out.writeInt(getStartMonth());

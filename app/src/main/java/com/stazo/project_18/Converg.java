@@ -279,7 +279,7 @@ public class Converg extends Application {
         numGoingParams.addRule(RelativeLayout.CENTER_VERTICAL);
         numGoing.setPadding(0,0,60,0);
 
-        numGoing.setId(1);
+        numGoing.setId(R.id.numGoingId);
         RelativeLayout.LayoutParams ivParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         ivParams.addRule(RelativeLayout.LEFT_OF, numGoing.getId());
