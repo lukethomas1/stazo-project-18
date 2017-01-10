@@ -6,5 +6,5 @@ __Built using:__
 
 Google Maps API  
 Facebook Login and Friends API  
-Firebase\n  
+Firebase  
 Node (separate repo)  
