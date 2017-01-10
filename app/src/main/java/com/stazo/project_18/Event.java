@@ -57,7 +57,7 @@ public class Event implements Parcelable {
 
     // Extracts the Event from a Parcel for CreateEventAct -> LocSelectAct
     public static final Parcelable.Creator<Event> CREATOR
-            = new Parcelable.Creator<Event>() {
+    = new Parcelable.Creator<Event>() {
 
         public Event createFromParcel(Parcel in) {
             return new Event(in);
