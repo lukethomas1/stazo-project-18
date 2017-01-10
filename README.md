@@ -2,9 +2,9 @@
 
 Converg is an event-discovery app available for both Android and iOS. After connecting via Facebook, users can browse, post, and discuss events happening right then, right there. 
 
-# Built using:
+__Built using:__
 
-Google Maps API
-Facebook Login and Friends API
-Firebase
-Node (separate repo)
+Google Maps API  
+Facebook Login and Friends API  
+Firebase\n  
+Node (separate repo)  
